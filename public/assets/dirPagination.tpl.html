@@ -1,0 +1,44 @@
+<div ng-if="range.total>0" class="dataTables_info" id="DataTables_Table_0_info " role="status" aria-live="polite" >Showing {{pagination.current==1?1:pagination.current*range.pageper+1-range.pageper}} to {{pagination.current == pagination.last?range.total :pagination.current*range.pageper }} of {{range.total}} Record(s)</div>
+<div ng-if="range.total>0" class="dataTables_paginate paging_full_numbers" id="DataTables_Table_0_paginate">
+    <a ng-if="boundaryLinks" class="paginate_button first [[pagination.current == 1?'disabled' :'' ]]"
+        ng-click="setCurrent(1)">First</a>
+    <a ng-if="directionLinks" class="paginate_button previous [[pagination.current == 1?'disabled' :'' ]]"
+        ng-click="setCurrent(pagination.current - 1)">Previous</a>
+    <span>
+
+        <a ng-repeat="pageNumber in pages track by $index"
+            class="paginate_button [[pagination.current == pageNumber?'current' :'' ]] [[pageNumber == '...'?'disabled' :'' ]]"
+            ng-click="setCurrent(pageNumber)">
+            {{ pageNumber }}
+        </a>
+    </span>
+    <a ng-if="directionLinks" class="paginate_button next [[pagination.current == pagination.last?'disabled' :'' ]]"
+        ng-click="setCurrent(pagination.current + 1)">Next</a>
+    <a ng-if="boundaryLinks" class="paginate_button last [[pagination.current == pagination.last?'disabled' :'' ]]"
+        ng-click="setCurrent(pagination.last)">Last</a>
+</div>
+
+
+
+
+
+
+<!-- <ul class="pagination waqas" ng-if="1 < pages.length">
+    <li ng-if="boundaryLinks" ng-class="{ disabled : pagination.current == 1 }">
+        <a href="" ng-click="setCurrent(1)">&laquo;</a>
+    </li>
+    <li ng-if="directionLinks" ng-class="{ disabled : pagination.current == 1 }" class="ng-scope">
+        <a href="" ng-click="setCurrent(pagination.current - 1)" class="ng-binding">‹</a>
+    </li>
+    <li ng-repeat="pageNumber in pages track by $index"
+        ng-class="{ active : pagination.current == pageNumber, disabled : pageNumber == '...' }">
+        <a href="" ng-click="setCurrent(pageNumber)">{{ pageNumber }}</a>
+    </li>
+
+    <li ng-if="directionLinks" ng-class="{ disabled : pagination.current == pagination.last }" class="ng-scope">
+        <a href="" ng-click="setCurrent(pagination.current + 1)" class="ng-binding">›</a>
+    </li>
+    <li ng-if="boundaryLinks" ng-class="{ disabled : pagination.current == pagination.last }">
+        <a href="" ng-click="setCurrent(pagination.last)">&raquo;</a>
+    </li>
+</ul> -->

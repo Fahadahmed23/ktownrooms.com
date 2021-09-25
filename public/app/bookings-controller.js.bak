@@ -1,0 +1,611 @@
+app.controller('bookingsCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder) {
+    // variables
+
+    $scope.cities = [];
+    $scope.hotels = [];
+    $scope.formType = "";
+    $scope.booking = {};
+    $scope.bookings = [];
+    $scope.rooms = [];
+    $scope.bookingDetail = {};
+    $scope.start_date = moment(new Date()).format('M/D/YYYY');
+    $scope.end_date = moment(new Date()).format('M/D/YYYY');
+    $scope.optionsRadio = {};
+    $scope.nBooking = {};
+    $scope.payTyp = {};
+    // $scope.custEmail = {}
+    $scope.customer = {};
+    $scope.promotion = {};
+    $scope.tax_rate_id = 0;
+    $scope.taxrates = [];
+    $scope.selectedRoom = {};
+    $scope.bookOccupant = {};
+    $scope.inBooking = false;
+    $scope.promo_applied = false;
+    // datatables
+    $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers')
+        .withDOM("<'row'<'col-sm-12'tr>>" +
+            "<'row p-2 '<'col-sm-5'i><'col-sm-7'p>>")
+        .withOption('stateSave', true);
+    $scope.dtColumnDefs = [
+        DTColumnDefBuilder.newColumnDef([2]).notSortable()
+    ];
+
+    // functions
+
+    $scope.init = function() {
+        $scope.getBookings();
+    }
+    $scope.showOccupantsModal = function() {
+        $scope.bookOccupant = {};
+        $('#addOccupant').modal();
+    }
+    $scope.showOccupantsModalEdit = function(nOccupant) {
+        $scope.bookOccupant = {
+            FirstName: nOccupant.FirstName,
+            LastName: nOccupant.LastName,
+            CNIC: nOccupant.CNIC,
+        };
+        $('#addOccupant').modal();
+    }
+    $scope.showOccupants = function() {
+        // $scope.nBooking.booking_occupants = [];
+        $scope.nBooking.booking_occupants.push($scope.bookOccupant);
+        $scope.bookOccupant = {};
+        console.log("here");
+        $('#addOccupant').modal('hide');
+        $('#mediaList').show
+    }
+
+
+
+
+    $scope.checkCustAvl = function() {
+        $scope.ajaxPost('findCustomer', {
+                'Email': $scope.nBooking.customer.Email
+            }, false)
+            .then(function(response) {
+                console.log(response);
+                if (response.customer.length > 0) {
+                    $scope.nBooking.customer = response.customer[0];
+                    $('.customercard').show();
+                    $('.customerinfofieldset').hide();
+                } else {
+                    // bootbox.alert("Customer Not Found");
+                }
+            }).catch(function(e) {
+                console.log(e)
+            });
+
+        return false;
+    }
+
+    $scope.showSearch = function() {
+        $('#ANR-filter').show('slow');
+        $scope.formType = "create";
+        $scope.hideTable();
+        $scope.nBooking.occupants = 1;
+        $scope.nBooking.no_rooms = 1;
+        $('.customercard').hide();
+        $('.customerinfofieldset').show();
+    }
+
+    $scope.hideSearch = function() {
+        $('#ANR-filter').hide('slow');
+        $scope.hideBookForm();
+        $scope.newBooking();
+        $scope.showTable();
+        $scope.hideRooms();
+    }
+
+    $scope.editBooking = function(b) {
+        console.log(b);
+        if (b.promotion_id != null) {
+            $('#promo_button').hide();
+        }
+        $scope.nBooking = angular.copy(b);
+        $scope.formType = "edit";
+        $scope.tax_rate = angular.copy(b.tax_rate);
+        $scope.nBooking.cheque_no = b.invoice.payment_mode_details;
+
+        // set payment type
+        for (let i = 0; i < $scope.paymenttypes.length; i++) {
+            if ($scope.paymenttypes[i].id == $scope.nBooking.invoice.payment_mode_id) {
+                $scope.nBooking.payTyp = $scope.paymenttypes[i];
+                console.log($scope.nBooking.payTyp);
+                break;
+            }
+        }
+
+        // set tax
+        for (let i = 0; i < $scope.taxrates.length; i++) {
+            if ($scope.taxrates[i].id == $scope.nBooking.tax_rate_id) {
+                $scope.nBooking.tax_rate_id = $scope.taxrates[i].id;
+                $scope.tax_rate = angular.copy($scope.taxrates[i]);
+                $scope.TaxValue = $scope.tax_rate.TaxValue;
+                break;
+            }
+        }
+
+        $scope.nBooking.start_date = $scope.nBooking.BookingFrom;
+        $scope.nBooking.end_date = $scope.nBooking.BookingTo;
+        $scope.nBooking.occupants = $scope.nBooking.no_occupants;
+        $scope.nBooking.promo = $scope.nBooking.promotion;
+
+        // $scope.nBooking.rooms = $scope.nBooking.rooms.map((room) => room.id);
+
+        // select Search Form fields
+        $scope.nBooking.city_id = $scope.nBooking.hotel.city_id;
+
+        // $scope.nBooking.city_id = 
+
+        $('.customercard').show();
+        $('.customerinfofieldset').hide();
+        $scope.hideFilter();
+        $scope.showBookForm();
+		// set search form
+        $scope.setSearchForm();
+        $('#ANR-filter').show('slow');
+        console.log($scope.nBooking);
+        console.log($scope.nBooking.booking_occupants);
+		$scope.setSearchForm = function() {
+        $scope.nBooking.no_rooms = $scope.nBooking.rooms.length;
+        $scope.rooms = [];
+    }
+
+    $scope.applyPromo = function() {
+        $scope.ajaxPost('searchPromotion', {
+            'code': $scope.nBooking.promotion.Code
+        }, false).then(function(response) {
+            // console.log(response.promotion);
+            if (response.promotion.length > 0) {
+                $scope.promotion = response.promotion[0];
+                $scope.nBooking.promo = response.promotion[0];
+                $('#promo_button').hide();
+                console.log(response);
+                // calculate amount
+                $scope.applyPromotion();
+            }
+        }).catch(function(e) {
+
+        });
+
+        return false;
+    }
+
+    $scope.applyPromotion = function() {
+        if ($scope.promotion.IsPercentage == 1) {
+            $scope.nBooking.invoice.discount_amount = $scope.nBooking.invoice.total * ($scope.promotion.DiscountValue / 100);
+        } else {
+            $scope.nBooking.invoice.discount_amount = $scope.promotion.DiscountValue
+        }
+
+        $scope.nBooking.invoice.net_total = $scope.nBooking.invoice.net_total - $scope.nBooking.invoice.discount_amount;
+    }
+
+    $scope.applyTax = function() {
+        console.log('in tax');
+        $scope.nBooking.invoice.tax_charges = (parseFloat($scope.tax_rate.TaxValue) / 100) * $scope.nBooking.invoice.total;
+        $scope.nBooking.invoice.net_total = parseFloat($scope.nBooking.invoice.total) + parseFloat($scope.nBooking.invoice.tax_charges);
+        $scope.nBooking.tax_rate_id = $scope.tax_rate.id;
+        $scope.nBooking.invoice.tax_rate = $scope.tax_rate.TaxValue;
+
+        // recalculate discount also
+        if ($scope.promotion.id) {
+            $scope.applyPromotion();
+        }
+    }
+
+    $scope.saveForm = function() {
+        // console.log($scope.nBooking);
+        $scope.nBooking.hotel = $scope.nBooking.hotel.id;
+        let url = "bookings";
+        url += $scope.formType == "edit" ? "/" + $scope.nBooking.id : "";
+        console.log($scope.nBooking);
+        $scope.ajaxPost(url, { 'booking': $scope.nBooking }, false).then(function(response) {
+            if (response.success) {
+                if ($scope.formType == 'create') {
+                    $scope.bookings.push(response.booking);
+                } else {
+                    $scope.bookings = $scope.bookings.map((booking) => booking.id == response.booking.id ? response.booking : booking)
+                }
+
+                $scope.afterSaveOrEdit();
+            }
+
+
+        }).catch(function(e) {
+            console.log(e)
+        })
+    }
+
+    $scope.afterSaveOrEdit = function() {
+        $('#ANR-filter').hide('slow');
+        $('.bookingForm').hide('slow');
+        $scope.showTable();
+        // $('.bookingTable').show('slow');
+        $('#invoiceBox').modal('hide');
+    }
+
+    $scope.showInvoice = function(bookingInvoice) {
+        // at least 1 or more room(s) should be selected
+        if ($scope.nBooking.rooms.length == 0) {
+            bootbox.alert('Please Select at least one room');
+
+            // show rooms
+            $scope.showRooms();
+            $scope.hideBookForm()
+            return;
+        }
+
+
+        $('#invoiceBox').modal('show');
+        $scope.Invoice = angular.copy(bookingInvoice);
+        console.log($scope.Invoice);
+    }
+
+    $scope.searchRooms = function() {
+        $scope.nBooking.start_date = $("input[name='start_date']").val();
+        $scope.nBooking.end_date = $("input[name='end_date']").val();
+
+        $scope.newBooking();
+
+        $scope.ajaxPost('searchRooms', $scope.nBooking, false)
+            .then(function(response) {
+                // console.log(response);
+                $scope.rooms = response.rooms;
+
+                if ($scope.rooms.length > 0) {
+                    $scope.showRooms();
+                    $scope.hideTable();
+                    $scope.nBooking.rooms = [];
+                    $scope.nBooking.total = 0;
+                } else {
+                    alert('No rooms found');
+                }
+            }).catch(function(e) {
+                console.log(e)
+            })
+    }
+
+    $scope.newBooking = function() {
+        $scope.nBooking.invoice = {
+            'total': 0,
+            'tax_rate': 0,
+            'tax_charges': 0,
+            'discount_amount': 0
+        };
+
+        $scope.nBooking.payTyp = $scope.paymenttypes[0];
+        console.log($scope.tax_rate);
+        $scope.tax_rate_id = 0;
+
+        let is_break = 0;
+        for (let i = 0; i < $scope.taxrates.length; i++) {
+            if ($scope.taxrates[i].IsDefault == 1) {
+                $scope.nBooking.tax_rate_id = $scope.taxrates[i].id;
+                $scope.tax_rate = angular.copy($scope.taxrates[i]);
+                $scope.TaxValue = $scope.tax_rate.TaxValue;
+                is_break = 1;
+                break;
+            }
+        }
+
+        if (is_break == 0) {
+            $scope.nBooking.tax_rate_id = $scope.taxrates[0].id;
+            $scope.tax_rate = angular.copy($scope.taxrates[0]);
+            $scope.TaxValue = $scope.tax_rate.TaxValue;
+        }
+        $scope.nBooking.customer = {};
+        $scope.nBooking.booking_occupants = [];
+    }
+
+    $scope.getBookings = function() {
+        $scope.ajaxGet('getBookings', {}, true)
+            .then(function(response) {
+                console.log(response);
+                $scope.bookings = response.bookings;
+                $scope.paymenttypes = response.paymenttypes;
+                $scope.cities = response.cities;
+                $scope.hotels = response.hotels;
+                $scope.taxrates = response.taxrates;
+                // console.log($scope.hotels);
+
+                for (let i = 0; i < $scope.bookings.length; i++) {
+                    $scope.bookings[i].BookingDate = new Date($scope.bookings[i].BookingDate);
+                }
+
+
+            })
+            .catch(function(e) {
+                console.log(e);
+            })
+    }
+
+    $scope.showBookDetailRBox = function(b) {
+        $scope.bookingDetail = {};
+        $scope.bookingDetail = angular.copy(b);
+        console.log($scope.bookingDetail);
+
+
+        $('.BookDetailRBox').show('slow');
+        $('#bookings-table').removeClass('col-lg-12').addClass('col-lg-8');
+        $scope.hideFilter();
+    }
+
+    $scope.hideBookDetailRBox = function() {
+        $('.BookDetailRBox').hide();
+        $('#bookings-table').removeClass('col-lg-8').addClass('col-lg-12');
+    }
+
+    $scope.showBookForm = function() {
+        $('.bookingForm').show('slow');
+        $('.BookDetailRBox').hide();
+        $scope.hideTable();
+        // $('.bookingTable').hide();
+        $('#rooms-available').hide();
+        $('#ANR-filter').hide('slow');
+
+        if ($scope.formType == "create") {
+            $scope.nBooking.invoice.net_total = $scope.nBooking.invoice.total;
+            console.log($scope.nBooking.invoice.total);
+            // apply taxes
+            $scope.nBooking.invoice.tax_charges = (parseFloat($scope.TaxValue) / 100) * $scope.nBooking.invoice.total;
+            $scope.nBooking.invoice.net_total += $scope.nBooking.invoice.tax_charges;
+        }
+    }
+
+    $scope.hideBookForm = function() {
+        $('.bookingForm').hide();
+        $('#ANR-filter').hide();
+        $scope.newBooking();
+        $('#bookings-table').removeClass('col-lg-8').addClass('col-lg-12');
+        $scope.showTable();
+    }
+
+    $scope.changePayType = function() {
+        if ($scope.payTyp.id == 1) {
+            console.log($scope.payTyp);
+            $('.chequerow').hide('fast');
+            $('.creditrow').hide('fast');
+            $('.amountrow').show('slow');
+        }
+        if ($scope.payTyp.id == 2) {
+            console.log($scope.payTyp);
+            $('.amountrow').hide('fast');
+            $('.creditrow').hide('fast');
+            $('.chequerow').show('slow');
+        }
+        if ($scope.payTyp.id == 3) {
+            console.log($scope.payTyp);
+            $('.amountrow').hide('fast');
+            $('.chequerow').hide('fast');
+            $('.creditrow').show('slow');
+        }
+    }
+
+    $scope.selectRoom = function(room) {
+        $scope.nBooking.invoice.total = parseInt($scope.nBooking.invoice.total);
+        if (room.st.name == 'Open') {
+            $('#room' + room.id).show().css('display', 'flex');
+            $scope.nBooking.rooms.push(room);
+            $scope.nBooking.invoice.total += parseInt(room.RoomCharges);
+            console.log($scope.nBooking.invoice.total + parseInt(room.RoomCharges))
+        }
+
+        console.log($scope.nBooking.rooms);
+
+        if ($scope.nBooking.rooms.length > 0) {
+            $('.selected-rm-detail').show('slow');
+            $('.room-container').removeClass('col-lg-12').addClass('col-lg-10');
+        } else {
+            $('.selected-rm-detail').hide('slow');
+            $('.room-container').removeClass('col-lg-10').addClass('col-lg-12');
+        }
+    }
+
+    $scope.deleteRoom = function(room) {
+        console.log($scope.rooms);
+        $scope.selectedRoom = angular.copy(room);
+
+        if ($scope.formType == 'edit') {
+            console.log($scope.nBooking);
+            if ($scope.nBooking.IsCheckedIn > 0) {
+                bootbox.alert('Cannot remove room after Check-In');
+                return;
+            }
+
+
+        }
+
+        bootbox.confirm({
+            title: 'Confirm Cancelation',
+            message: "Are you sure you want to remove '" + room.room_title + "' from Booking ?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-link'
+                }
+            },
+            callback: function(result) {
+                if (result) {
+                    
+                    $scope.deselectRoom(room);
+                    console.log(room);
+                    
+                    $scope.$apply();
+                }
+            }
+        });
+    }
+
+    $scope.deselectRoom = function(room) {
+        $scope.nBooking.invoice.total = parseInt($scope.nBooking.invoice.total);
+        $scope.nBooking.rooms = $scope.nBooking.rooms.filter((r) => r.id != room.id);
+        $scope.nBooking.invoice.total -= parseInt(room.RoomCharges);
+
+        if (!room.st) {
+            $scope.rooms = $scope.rooms.filter(function(r){
+                if (r.id == room.id) {
+                    r.st.name='Open';
+                    r.st.text_style = 'text-dark book-room';
+                    r.st.card_style = 'bg';
+                    return r;
+                } else {
+                    return r;
+                }
+            })
+        } else {
+            $('#room' + room.id).hide();
+        }
+
+        console.log($scope.rooms);
+
+        if ($scope.nBooking.rooms.length <= 0) {
+            $('.selected-rm-detail').hide();
+            $('.room-container').removeClass('col-lg-10').addClass('col-lg-12');
+        }
+    }
+
+    $scope.cancelBooking = function(c) {
+        $scope.bookingDetail = angular.copy(c);
+
+        bootbox.prompt({
+            title: 'Please enter a reason for cancellation',
+            inputType: 'text',
+            minlength: 4,
+            callback: function(result) {
+                if (result) {
+                    $scope.ajaxPost('bookings/cancel/' + c.id, {
+                        reason: result,
+                    }, false).then(function(response){
+                        if (response.id) {
+                            $scope.bookings = $scope.bookings.filter(function(booking){
+                                if (booking.id == response.id) {
+                                    booking.status = 'Cancelled';
+                                    return booking;
+                                } else {
+                                    return booking;
+                                }
+                            })
+                        }
+                    }).catch(function(e){
+
+                    });
+                }
+            }
+        });
+    }
+
+
+    $scope.deleteBooking = function(d) {
+        $scope.bookingDetail = angular.copy(d);
+        bootbox.confirm({
+            title: 'Confirm Deletion',
+            message: "Are you sure you want to Delete '" + d.customer.FirstName + " " + d.customer.LastName + "'s Booking ?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-link'
+                }
+            },
+            callback: function(result) {
+                // if (result) {
+                //     $scope.ajaxPost('users/del', $scope.user, false)
+                //         .then(function(response) {
+                //             $scope.users = $scope.users.filter((user) => user.id != response.id);
+                //         })
+                //         .catch(function(e) {
+                //             toastr.error(e);
+                //         })
+                // }
+            }
+        });
+    }
+
+    $scope.showFilter = function() {
+        $('.sidebar').toggle();
+    }
+
+    $scope.hideFilter = function() {
+        $('.sidebar').hide();
+    }
+
+    $scope.showRooms = function() {
+        $('#rooms-available').show('slow');
+    }
+
+    $scope.hideRooms = function() {
+        $('#rooms-available').hide('slow');
+    }
+
+    $scope.showTable = function() {
+        $('#bookings-table').show('slow');
+    }
+
+    $scope.hideTable = function() {
+        $('#bookings-table').hide('slow');
+        $('.BookDetailRBox').hide();
+        $scope.hideFilter();
+    }
+
+    $scope.addRooms = function() {
+        if ($scope.formType == 'edit') {
+            // $scope.showSearch();
+        }
+
+        $scope.showRooms();
+        $('.bookingForm').hide();
+    }
+
+    $scope.resendInvoice = function(id) {
+        $scope.ajaxPost('resendBookingInvoice', { id: id }, false)
+            .then(function(response) {
+
+            }).catch(function(e) {
+                console.log(e);
+            });
+    }
+
+    $scope.searchAddRooms = function() {
+        $('.selected-rm-detail').show('slow');
+        $('.room-container').removeClass('col-lg-12').addClass('col-lg-10');
+        console.log($scope.nBooking.invoice);
+        if ($scope.rooms.length > 0) {
+            $scope.showRooms();
+            
+            return;
+        }
+        $scope.ajaxPost('searchRooms', $scope.nBooking, false)
+            .then(function(response) {
+                // console.log(response);
+                $scope.rooms = response.rooms;
+                let booking_rooms = $scope.nBooking.rooms.map((r) => r.id);
+                // console.log(booking_rooms);
+                $scope.showRooms();
+                
+                // select rooms which are in the nBooking
+                $scope.rooms = $scope.rooms.filter(function(room){
+                    if (booking_rooms.indexOf(room.id) > -1) {
+                        room.st.name = "Booked";
+                        room.st.card_style = "bg-success-400";
+                        room.text_style = "text-dark";
+                        console.log(room.id);
+                        return room;
+                    } else {
+                        return room;
+                    }
+                })
+            }).catch(function(e) {
+                console.log(e)
+            })
+    }
+});

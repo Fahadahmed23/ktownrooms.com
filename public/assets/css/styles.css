@@ -1,0 +1,141 @@
+/* modal css */
+
+.form-header label {
+    width: 85%;
+}
+
+span.form-actions {
+    float: right;
+}
+
+.form-group .input-group input {
+    background: #eeeded;
+}
+
+.form-group form {
+    width: 100%;
+}
+
+.sidebar.sidebar-light {
+    margin-right: 0.3125rem !important;
+}
+
+
+/* .table-responsive {
+    overflow-x: hidden;
+} */
+
+*/ img#preview {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #a6a7a8;
+    border-radius: 100%;
+}
+
+.btns-div {
+    position: absolute;
+    bottom: 0;
+}
+
+.output_image {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #d3d3d3;
+    float: left;
+    border-radius: 50%;
+}
+
+.custom-file {
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+input[type=file] {
+    display: block;
+}
+
+.logo {
+    height: 100px;
+    cursor: pointer;
+}
+
+.custom-file-input {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: calc(1.5385em + .875rem + 2px);
+    margin: 0;
+    opacity: 0;
+}
+
+.custom-file-label {
+    margin-bottom: 0;
+}
+
+.custom-file-label {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    height: calc(1.5385em + .875rem + 2px);
+    padding: .4375rem .875rem;
+    font-weight: 400;
+    line-height: 1.5385;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: .1875rem;
+    box-shadow: 0 0 0 0 transparent;
+}
+
+.custom-file-input:lang(en)~.custom-file-label::after {
+    content: "Browse";
+}
+
+.logo {
+    height: 100px;
+    cursor: pointer;
+}
+
+md-switch.md-default-theme.md-checked:not([disabled]) .md-bar,
+md-switch.md-checked:not([disabled]) .md-bar {
+    background-color: #00bcd478!important;
+}
+
+md-switch.md-default-theme.md-checked:not([disabled]) .md-thumb,
+md-switch.md-checked:not([disabled]) .md-thumb {
+    background-color: #00bcd4!important;
+}
+
+md-checkbox.md-default-theme.md-checked .md-icon,
+md-checkbox.md-checked .md-icon {
+    background-color: #00bcd4!important;
+}
+
+md-radio-button.md-default-theme .md-on,
+md-radio-button .md-on {
+    background-color: rgb(0 188 212) !important;
+}
+
+md-radio-button.md-default-theme.md-checked .md-off,
+md-radio-button.md-checked .md-off {
+    border-color: rgb(0 188 212) !important;
+}
+
+md-radio-button.md-default-theme .md-on,
+md-radio-button .md-on {
+    background-color: rgb(0 188 212) !important;
+}
+
+.form-control::placeholder {
+    color: #ddd;
+}
+
+@media screen and (max-width: 767px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
