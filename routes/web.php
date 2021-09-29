@@ -77,6 +77,7 @@ Route::post('bookings/payment/add', 'BookingsController@addTransaction')->middle
 Route::post('bookings/transfer/search', 'BookingsController@searchForTransfer')->middleware('permission:can-edit-booking');
 Route::post('bookings/transfer/request', 'BookingsController@requestForTransfer')->middleware('permission:can-edit-booking');
 Route::post('checkRoomAvailability', 'BookingsController@checkRoomAvailability')->middleware('permission:can-edit-booking');
+Route::post('search-customers', 'BookingsController@searchCustomers')->middleware('permission:can-add-booking');
 
 // FrontDesk
 Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-booking');

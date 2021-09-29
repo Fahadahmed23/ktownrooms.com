@@ -2713,4 +2713,75 @@ class BookingsController extends Controller
         ]);
     }
     }
+
+    protected function searchCustomers(Request $request)
+    {
+        try
+        {
+            $customers = Customer::select("id", "FirstName", "LastName", "Email", "CNIC", "Phone")
+            ->where("IsActive", 1);
+
+            if (!empty($request->email))
+            {
+                $customers->where("email", "like", "%$request->email%");
+            }
+            else if (!empty($request->cnic))
+            {
+                $customers->where("CNIC", "like", "%$request->cnic%");
+            }
+            else if (!empty($request->phoneNo))
+            {
+                $customers->where("Phone", "like", "%$request->phoneNo%");
+            }
+            else
+            {
+                $customers->where("email", "like", "time()");
+            }
+
+            $customers->orderBy("created_at", "desc");
+
+            $totalCustomers = $customers->count();
+            $customers = $customers->get();
+
+            if ($totalCustomers > 0)
+            {
+                $statusCode = 200;
+
+                $message = "Customers found successfully!";
+
+                $result = [
+                    "totalCustomers" => $totalCustomers,
+                    "customers" => $customers
+                ];
+            }
+            else
+            {
+                $statusCode = 404;
+
+                $message = "Customer not found!";
+
+                $result = [
+                    "totalCustomers" => 0,
+                    "customers" => []
+                ];
+            }
+        }
+        catch (Exception $ex)
+        {
+            $statusCode = 500;
+
+            $message = "Something wen't wrong";
+
+            $result = [
+                "totalCustomers" => 0,
+                "customers" => []
+            ];
+        }
+
+        return response()->json([
+            "statusCode" => $statusCode,
+            "message" => $message,
+            "result" => $result
+        ]);
+    }
 }
