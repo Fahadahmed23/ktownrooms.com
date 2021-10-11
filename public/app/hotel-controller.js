@@ -264,6 +264,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.formType = "save";
         window.scrollTop();
         $("#addNewHotel").show('slow');
+        
 
         $scope.hotel = {
             has_tax: 0,
