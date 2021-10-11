@@ -13,7 +13,6 @@
     height: 22px;
     text-align: center;
 }
-
 .addi_charges input{
     margin-top: 5px;
     padding: 5px;
@@ -21,7 +20,6 @@
     height: 25px;
     border: 1px solid rgb(158 158 158) !important
 }
-
 
 /* Chrome, Safari, Edge, Opera */
 .categorycounter input::-webkit-outer-spin-button,
@@ -252,10 +250,8 @@
 
                             {{-- </div> --}}
 
-
-  
-                            
                         </fieldset>
+
                         <fieldset class="mt-2">
                             <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light"><i class="icon-city mr-2"></i>
                                 Tax Information
@@ -303,7 +299,6 @@
                                 </div>
 
                                 
-        
                                 <div class="col-md-6">
                                     <label class="col-form-label">Agreement End Date <span class="text-danger">*</span> </label>
                                     <div class="input-group">
@@ -426,7 +421,62 @@
                                 </div>
                               </div>
                         </div>
-                    </div>      
+
+                        <fieldset class="mt-3">    
+                                <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
+                                    <i class="fa fa-users mr-2"></i>
+                                    Hotel Categories
+                                </legend> 
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="col-form-label">Hotel Categories <span class="text-danger">*</span></label>
+                                        <md-select name="hotelcateogry_id" md-no-asterisk required class="m-0" ng-model="hotel.hotelcateogry_id" placeholder="Select a Hotel Category">
+                                            <md-option ng-repeat="hotel_category in hotel_categories" ng-value="hotel_category.id">[[hotel_category.name]]</md-option>
+                                        </md-select>
+                                        <div ng-messages="hotelForm.hotelcateogry_id.$error" ng-if='hotelForm.hotelcateogry_id.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                            <div class="text-danger" ng-message="required">Hotel Cateogory is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </fieldset>
+                        <fieldset class="mt-3">    
+                                <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
+                                    <i class="fa fa-users mr-2"></i>
+                                    Co-Branding
+                                </legend> 
+                                <div class="row">
+                                    <div class="col-md-4">        
+                                        <label class="col-form-label">Co-Branding</label>
+                                        <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.has_cobranding" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
+                                        <input type="hidden" name="cobranding" ng-model="hotel.cobranding"  ng-value="hotel.has_cobranding"/>
+                                    </div>
+                                </div>
+                        </fieldset>
+                        <fieldset class="mt-3" ng-if="hotel.has_cobranding == 1">    
+                                <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
+                                    <i class="fa fa-users mr-2"></i>
+                                    Software Fees & Percentage Ammount in percentage
+                                </legend> 
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="col-form-label">Software Fees <span class="text-danger">*</span></label>
+                                        <input type="number" name="software_fees"  ng-model="hotel.software_fees" ng-min="0" ng-max="100" class="form-control" required>
+                                        <div ng-messages="hotelForm.software_fees.$error" ng-if='hotelForm.software_fees.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                            <div class="text-danger" ng-message="required">Software Fees is required</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">        
+                                        <label class="col-form-label">Percentage Ammount <span class="text-danger">*</span></label>
+                                        <input type="number" name="percentage_amount"  ng-model="hotel.percentage_amount" ng-min="0" ng-max="100" class="form-control" required>
+                                        <div ng-messages="hotelForm.percentage_amount.$error" ng-if='hotelForm.percentage_amount.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                            <div class="text-danger" ng-message="required">Percentage Amount is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </fieldset>  
+                    </div>   
+
                     <div class="col-md-6">
                          <!-- HotelContact list -->
                          <div class="card">
@@ -654,4 +704,3 @@
             // hiddenSuffix: '_submit',
         })
 </script>
-

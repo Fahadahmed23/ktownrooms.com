@@ -11,9 +11,7 @@ class Hotel extends Model
     use SoftDeletes;
 
     protected $table = "hotels";
-    
     public $timestamps = true;
-
     protected $appends = 
     [
     'RoomCount',
@@ -59,8 +57,27 @@ class Hotel extends Model
         return $this->hasMany(HotelContact::class);
     }
 
-    public function city () {
+    public function city() {
         return $this->belongsTo(City::class, 'city_id', 'id');
+    }
+
+    
+    /*
+    public function hotel_category () {
+        return $this->belongsTo(HotelCategory::class, 'hotel_category_id', 'id');
+    }
+    **/
+
+    
+    public function hotel_cobrandings() {
+        return $this->hasMany(HotelCobranding::class, 'hotel_id','id');   
+    }
+    
+
+    public function hotel_categories()
+    {
+
+        return $this->belongsToMany(HotelCategories::class, 'hotel_category','hotel_id','hotel_category_id');
     }
 
     public function hotelroomcategories()

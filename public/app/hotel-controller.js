@@ -4,6 +4,10 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
     $scope.partners = {};
     $scope.hotels = [];
     $scope.hotel = {};
+
+    // Hotel Categories
+    $scope.hotel_categories = {};
+  
     // $scope.hotel_contacts = [];
     $scope.contact_types = {};
     // $scope.hotelcategories = [];
@@ -63,11 +67,15 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
                 $scope.partners = response.partners;
                 $scope.partners = response.partners;
                 $scope.room_categories = response.room_categories;
+                $scope.hotel_categories = response.hotel_categories;
                 $scope.tax_rates = response.tax_rates;
                 $scope.check_in_rules = response.check_in_rules;
                 $scope.check_out_rules = response.check_out_rules;
                 $scope.default_rule = response.default_rule;
                 // console.log($scope.room_categories);
+
+                //console.log('Hotel Categories');
+                //console.log($scope.hotel_categories);
 
 
             })
@@ -259,6 +267,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
         $scope.hotel = {
             has_tax: 0,
+            has_cobranding: 0,
             contacts: [],
             checkout: {},
             checkin: {},

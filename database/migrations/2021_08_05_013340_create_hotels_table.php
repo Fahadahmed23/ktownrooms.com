@@ -23,6 +23,7 @@ class CreateHotelsTable extends Migration {
 			$table->integer('city_id')->index('city_id');
 			$table->integer('company_id')->index('company_id');
 			$table->integer('partner_id')->nullable();
+			// $table->integer('hotel_category_id')->nullable();
 			$table->string('partnerPrice', 25)->nullable();
 			$table->string('Rating', 25)->nullable();
 			$table->string('Description')->nullable();

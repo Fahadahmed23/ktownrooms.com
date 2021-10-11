@@ -20,6 +20,10 @@ use App\Models\CinCoutRule;
 use App\Models\DefaultRule;
 use App\Models\HotelCinCoutRule;
 use App\Models\HotelRoomCategory;
+use App\Models\HotelCategory;
+use App\Models\HotelCategories;
+use App\Models\HotelCobranding;
+
 use App\Models\PartnerRequest;
 use App\Models\RoomCategory;
 use App\Models\TaxRate;
@@ -104,6 +108,7 @@ class HotelController extends Controller
         $hotel_contacts = HotelContact::all();
         $contact_types = ContactType::all();
         $room_categories = RoomCategory::all();
+        $hotel_categories = HotelCategory::all();
         $tax_rates=TaxRate::whereNull('deleted_at')->get();
         $check_in_rules=CinCoutRule::where('rule_type', 'early_check_in')->get();
         $check_out_rules=CinCoutRule::where('rule_type', 'late_check_out')->get();
@@ -128,6 +133,7 @@ class HotelController extends Controller
             'contact_types' => $contact_types,
             'partners'=>$partners,
             'room_categories'=>$room_categories,
+            'hotel_categories'=>$hotel_categories,
             'tax_rates'=>$tax_rates,
             'check_in_rules'=>$check_in_rules,
             'check_out_rules'=>$check_out_rules,
