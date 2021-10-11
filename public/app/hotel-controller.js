@@ -265,7 +265,6 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         window.scrollTop();
         $("#addNewHotel").show('slow');
         
-
         $scope.hotel = {
             has_tax: 0,
             has_cobranding: 0,
