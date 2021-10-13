@@ -297,6 +297,25 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
     }
 
     $scope.saveHotel = function() {
+
+        /*
+        console.log('Hotel Category');
+        console.log($scope.hotel.hotelcateogry_id);
+        console.log('Hotel Cobranding');
+        console.log($scope.hotel.has_cobranding);
+        console.log('Hotel Software Fees');
+        console.log($scope.hotel.software_fees);
+        console.log('Hotel Percentage Ammount');
+        console.log($scope.hotel.percentage_amount);
+    
+        console.log('Fahad Ahmed ZIndabad and He is a great programmer');
+        return;
+
+        **/
+
+        //console.log('hahah you want to save');
+        //return;
+
         $scope.hotelForm.$submitted = true;
         if (!$scope.hotelForm.$valid) {
             window.scrollTop();
@@ -311,6 +330,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
                 hotel_accounts: $scope.hotel.hotel_accounts,
             }, false)
             .then(function(response) {
+                console.log(response);
                 if (response.success) {
                     // if ($scope.formType == "save") {
                     //     $scope.hotels.push(response.hotel);
@@ -367,6 +387,9 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.hotelForm.$setUntouched();
 
         $scope.hotel = angular.copy(h);
+
+        console.log('Hotel Info');
+        console.log($scope.hotel);
         // $scope.hotel_gl_accounts = $scope.hotel_gl_accounts;
         $scope.formType = "edit";
         window.scrollTop();
