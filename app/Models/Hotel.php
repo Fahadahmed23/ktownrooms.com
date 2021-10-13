@@ -70,7 +70,8 @@ class Hotel extends Model
 
     
     public function hotel_cobrandings() {
-        return $this->hasMany(HotelCobranding::class, 'hotel_id','id');   
+        //return $this->hasMany(HotelCobranding::class, 'hotel_id','id');   
+        return $this->hasMany(HotelCobranding::class);   
     }
     
 

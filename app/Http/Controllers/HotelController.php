@@ -98,6 +98,20 @@ class HotelController extends Controller
         return null;
      }
 
+    public function testHotel()
+    {
+        $hotels = Hotel::with(['city','contacts.contact_type', 'checkin', 'checkout','hotel_cobrandings','hotel_categories'])->get();
+        echo "<pre>";
+        print_r($hotels);
+        /*
+        echo "<pre>";
+        return response()->json([
+            'hotels' => $hotels,
+        ]);
+        **/
+    
+    }
+
     public function getData()
     {
         $companies = Company::all();

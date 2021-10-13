@@ -388,6 +388,12 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
         $scope.hotel = angular.copy(h);
 
+        // Arman Bhai
+        $scope.hotel.has_cobranding = 1;
+        $scope.hotel.cat = 2;
+        $scope.hotel.softwarefees = 2;
+        $scope.hotel.percentageamount = 2;
+
         console.log('Hotel Info');
         console.log($scope.hotel);
         // $scope.hotel_gl_accounts = $scope.hotel_gl_accounts;

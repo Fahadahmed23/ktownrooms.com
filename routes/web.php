@@ -357,7 +357,7 @@ Route::post('hotel/deleteHotel', 'HotelController@deleteHotel')->middleware('per
 Route::post('hotel/deleteContact', 'HotelController@deleteContact')->middleware('permission:can-delete-hotel');
 Route::post('hotel/saveHotel', 'HotelController@saveHotel')->middleware('permission:can-add-hotel');
 Route::post('hotel/saveContact', 'HotelController@saveContact')->middleware('permission:can-add-hotel');
-
+Route::get('hotel/testing', 'HotelController@testHotel')->middleware('permission:can-add-hotel');
 
 Route::post('hotel/get_account_gl_hotel_mappings', 'HotelController@get_account_gl_hotel_mappings')->middleware('permission:can-add-hotel');
 Route::post('hotel/saveHotelGlAccountMapping', 'HotelController@saveHotelGlAccountMapping');
