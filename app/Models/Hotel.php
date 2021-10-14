@@ -77,7 +77,7 @@ class Hotel extends Model
 
     public function hotel_categories()
     {
-        return $this->belongsToMany(HotelCategories::class, 'hotel_category','hotel_id','hotel_category_id')->withTimestamps();
+        return $this->belongsToMany(HotelCategories::class, 'hotel_category','hotel_id','hotel_category_id')->withPivot('created_at as pcreated_at')->withTimestamps();
     }
 
     public function hotelroomcategories()

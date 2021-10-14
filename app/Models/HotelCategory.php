@@ -10,6 +10,7 @@ class HotelCategory extends Model
 {
     use SoftDeletes;
     protected $table = 'hotel_category';
+    public $timestamps = true;
 
     /*
     public function hotels() {

@@ -118,7 +118,28 @@ class HotelController extends Controller
         $cities = City::all();
         $partners = PartnerRequest::all();
         //$hotels = Hotel::with(['city','contacts.contact_type', 'checkin', 'checkout'])->get();
-        $hotels = Hotel::with(['city','contacts.contact_type', 'checkin', 'checkout','hotel_cobrandings','hotel_categories'])->get();
+        //$hotels = Hotel::with(['city','contacts.contact_type', 'checkin', 'checkout','hotel_cobrandings','hotel_categories'])->get();
+        /*
+        $hotels = Hotel::with(['city','contacts.contact_type', 'checkin', 'checkout','hotel_cobrandings' => function($q){
+            $q->select('id','hotel_id','status','software_fee','percentage_amount')->latest()->first();
+        },'hotel_categories' => function($r){
+            $r->select('id','name','status');
+        }])->get();
+        **/
+
+        $hotels = Hotel::with(['city','contacts.contact_type', 'checkin', 'checkout','hotel_cobrandings' => function($q){
+                $q->select('id','hotel_id','status','software_fee','percentage_amount')->latest()->first();
+            }])->with(['hotel_categories' => function($rl){
+
+               $rl->select('hotel_categories.id','hotel_categories.name','hotel_categories.status','hotel_category.created_at');
+               //$rl->latest('hotel_category.created_at');
+               $rl->orderBy('hotel_category.created_at','Desc');
+               //$rl->orderBy('hotel_category.created_at','ASC');
+               $rl->limit(1); 
+               //$r->select('hotel_categories.*');
+
+            }])->get();
+
         $hotel_gl_accounts = AccountGeneralLedger::all();
         $hotel_contacts = HotelContact::all();
         $contact_types = ContactType::all();
