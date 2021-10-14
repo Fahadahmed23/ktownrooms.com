@@ -1382,6 +1382,7 @@ $(document).on({
         applyMask()
         
         $('.flex-fill a[data-action="reload"]').click(function() {
+            // console.log('abcd');
             //$('.sidebar-content .btn:eq(1)').click();
             if ($(this).prev().hasClass('rotate-180'))
                 $(this).prev().click();
