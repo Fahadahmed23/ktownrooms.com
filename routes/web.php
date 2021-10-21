@@ -315,6 +315,8 @@ Route::post('locale/deleteCity', 'LocaleController@deleteCity')->middleware('per
 Route::post('locale/saveCountry', 'LocaleController@storeCountry')->middleware('permission:can-add-locale');
 Route::post('locale/saveState', 'LocaleController@storeState')->middleware('permission:can-add-locale');
 Route::post('locale/saveCity', 'LocaleController@storeCity')->middleware('permission:can-add-locale');
+Route::post('locale/saveHotelCategory', 'LocaleController@storeHotelCategory')->middleware('permission:can-add-locale');
+Route::post('locale/deleteHotelCategory', 'LocaleController@deleteHotelCategory')->middleware('permission:can-delete-locale');
 
 // service new routes
 Route::get('ndepartments', 'DepartmentController@index')->middleware('permission:can-view-department');

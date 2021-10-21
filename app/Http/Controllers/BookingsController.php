@@ -754,14 +754,26 @@ class BookingsController extends Controller
             ]);
         }
 
-        DB::beginTransaction();
+        //DB::beginTransaction();
 
         // try {
-            $booking_ids = $this->createBooking();
+
             
+
+            $booking_ids = $this->createBooking();
             $this->createInvoice($booking_ids);
+
+            //var_dump('Booking');
+            //var_dump($booking);
+            // var_dump('Invoice');
+            // var_dump($this->invoice->save());
+            //var_dump('sadsa');
+            //return;
+
             $this->allocateRooms($booking_ids);
             $this->addOccupants($booking_ids);
+
+            
 
             $booking = Booking::find($booking_ids[0]);
 
@@ -776,9 +788,23 @@ class BookingsController extends Controller
                     $this->createEarlyCheckIn($booking, $early_checkin_charges);
                 }
             }
-            
+
+            //var_dump('Booking');
+            //var_dump($booking);
+            //var_dump('Invoice');
+            //var_dump($this->invoice->save());
+            //var_dump('sadsa');
+            //return;
+
+        
             $this->invoice->save();
+
+            //var_dump($booking);
+            //return;
+            
             $booking = Booking::where('id', '=', $booking_ids[0])->first();
+
+            
 
             if (!empty($this->invoice_detail)) {
                 $this->invoice_detail->booking_no = $booking->booking_no;
@@ -791,6 +817,7 @@ class BookingsController extends Controller
 
             // Send Email
             $booking = Booking::with(['customer', 'rooms', 'rooms.category', 'invoice', 'promotion','tax_rate', 'invoice.payment_mode'])->where('id', '=', $booking_ids[0])->first();
+            
             
             $subject = "Booking Email";
             // dd($booking->customer->Email);
@@ -822,7 +849,7 @@ class BookingsController extends Controller
             // $booking_notification->send();
 
             // TODO: sms notification to both customer and admin
-            DB::commit();
+            //DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -1027,11 +1054,15 @@ class BookingsController extends Controller
 
     private function createInvoice($booking_ids) {
 
+       
         // check whether there is a discount request
         if ($this->booking['invoice']['discount_amount'] > 0 || !Auth::user()->can('can-edit-discount-request')) {
-            $user_can_discount = Auth::user()->roles()->where('has_discount_priviledge', 1)->count() > 0 ? true : false;
 
+
+            $user_can_discount = Auth::user()->roles()->where('has_discount_priviledge', 1)->count() > 0 ? true : false;
+            
             if ($user_can_discount) {
+                
                 // check allowed amount
                 $allowed_amount = Auth::user()->max_allowed_discount;
 
@@ -1046,11 +1077,12 @@ class BookingsController extends Controller
         }
 
         $invoiceData = $this->booking['invoice'];
-
         $this->calculateTotalAmount();
 
         if ($this->new_booking) {
+            
             $invoice = new BookingInvoice();
+            
         } else {
             if(isset($this->booking['is_third_party']) && $this->booking['is_third_party']){
                 $invoice = new BookingInvoice();
@@ -1069,6 +1101,7 @@ class BookingsController extends Controller
         
         $invoice->net_total = $this->booking['invoice']['net_total'];
 
+        
         // dd($invoice);
         // $invoice->payment_mode_id = $this->booking['payTyp']['id'];
         // $invoice->payment_mode_name = $this->booking['payTyp']['PaymentMode'];
@@ -1083,7 +1116,7 @@ class BookingsController extends Controller
         $invoice->customer_nationality = isset($this->booking['nationality'])? $this->booking['nationality'] : "";
         // $invoice->customer_nationality = isset($this->booking['nationality'])? $this->booking['nationality'] : "";
 
-
+       
         // tax details
         if ($this->new_booking){
             if ($this->booking['tax_rate_id'] == 0) {
@@ -1099,6 +1132,8 @@ class BookingsController extends Controller
             }
         }
 
+       
+
         // dd($invoiceData);
         if (!empty($invoiceData['per_night'])){
             if ($invoiceData['per_night'] == 1) {
@@ -1106,6 +1141,8 @@ class BookingsController extends Controller
                 $invoice->discount_per_night = $invoiceData['discount_per_night'];
             }
         }
+
+        
         
         // promo details
         // if (!empty($this->booking['promo']['id'])) {
@@ -1145,6 +1182,8 @@ class BookingsController extends Controller
         $nights = $nights > 0 ? $nights : 1;
         $invoice->nights = $nights;
 
+        
+
         // if ($invoiceData['paid'] == 1 && ($invoice->payment_mode_id == 2)) {
         //     $invoice->payment_mode_details = $this->booking['cheque_no'];
         // } 
@@ -1159,6 +1198,7 @@ class BookingsController extends Controller
         }
 
         $invoice->paid = $invoiceData['paid'];
+
         
         if ($invoiceData['paid'] == 1 && $this->new_booking) {
             // create transaction log entry
@@ -1198,11 +1238,13 @@ class BookingsController extends Controller
             $invoice->corporate_client_id = $client->id;
             $invoice->corporate_client_name = $client->FullName;
         }
+
+        
         
         $invoice->created_by = Auth::id();
-        
+
         $this->invoice = $invoice;
-        // $invoice->save();
+        //$invoice->save();
     }
 
     private function calculateTotalAmount () {
@@ -1394,6 +1436,18 @@ class BookingsController extends Controller
         // $booking->booking_no = date('Y-m-d');
         $booking->booking_title = "";
         $booking->status = $this->booking['status'];
+
+        /*
+        $data = $this->booking['customer'];
+        $customer_FirstName = $data['FirstName'];
+        $customer_LastName = isset($data['LastName']) ? $data['LastName'] : "";
+        $customer_Email = isset($data['Email']) ? $data['Email'] : "";
+        $customer_Phone = $data['Phone'];
+        $customer_is_cnic = isset($data['is_cnic'])? $data['is_cnic']:"";
+        $customer_CNIC = isset($data['CNIC'])? $data['CNIC'] : "";
+        $customer_iso = isset($data['iso'])? $data['iso'] : "";
+        $customer_nationality = isset($data['nationality'])? $data['nationality'] : "";
+        **/
 
         $booking->customer_id = $this->createCustomer();
         $booking->agent_id = $this->createAgent()?? null;

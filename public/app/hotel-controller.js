@@ -409,8 +409,8 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         if ($scope.hotel.hotel_categories[0] != undefined) {
             
             console.log('Hotel Category Id');
-            $scope.hotel.category_id = $scope.hotel.hotel_categories[0].id;
-            console.log($scope.hotel.category_id);
+            $scope.hotel.hotelcateogry_id = $scope.hotel.hotel_categories[0].id;
+            console.log($scope.hotel.hotelcateogry_id);
             
         }
     
@@ -418,6 +418,10 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
             
             console.log('Hotel cobranding status');
             $scope.hotel.has_cobranding = $scope.hotel.hotel_cobrandings[0].status;
+            $scope.hotel.has_cobranding = parseInt($scope.hotel.has_cobranding); 
+            //$scope.hotel.has_cobranding = 1;
+            //console.log('Hotel cobranding status type');
+            //console.log(typeof $scope.hotel.has_cobranding);
             console.log($scope.hotel.has_cobranding);
 
             console.log('Hotel software fee');
@@ -429,8 +433,11 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
             console.log($scope.hotel.percentage_amount);
     
         }
-        
 
+        console.log('Hotel Info 2');
+        console.log($scope.hotel);
+
+       
         // $scope.hotel_gl_accounts = $scope.hotel_gl_accounts;
         $scope.formType = "edit";
         window.scrollTop();

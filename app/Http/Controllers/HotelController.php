@@ -183,7 +183,6 @@ class HotelController extends Controller
             //  dd($request->all());
                 \DB::beginTransaction();
 
-                
                 try {
                
                     $startdate= $request->hotel['AgreStartDate'];

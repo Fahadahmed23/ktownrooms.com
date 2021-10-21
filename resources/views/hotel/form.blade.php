@@ -450,6 +450,7 @@
                                         <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.has_cobranding" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
                                         <input type="hidden" name="cobranding" ng-model="hotel.cobranding"  ng-value="hotel.has_cobranding"/>
                                     </div>
+                                    
                                 </div>
                         </fieldset>
                         <fieldset class="mt-3" ng-if="hotel.has_cobranding == 1">    
@@ -460,7 +461,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label class="col-form-label">Software Fees <span class="text-danger">*</span></label>
-                                        <input type="number" name="software_fees"  ng-model="hotel.software_fees" ng-min="0" ng-max="100" class="form-control" required>
+                                        <input type="text" name="software_fees"  ng-model="hotel.software_fees" ng-min="0" ng-max="100" class="form-control" required>
                                         <div ng-messages="hotelForm.software_fees.$error" ng-if='hotelForm.software_fees.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                             <div class="text-danger" ng-message="required">Software Fees is required</div>
                                         </div>
@@ -468,7 +469,7 @@
 
                                     <div class="col-md-6">        
                                         <label class="col-form-label">Percentage Ammount <span class="text-danger">*</span></label>
-                                        <input type="number" name="percentage_amount"  ng-model="hotel.percentage_amount" ng-min="0" ng-max="100" class="form-control" required>
+                                        <input type="text" name="percentage_amount"  ng-model="hotel.percentage_amount" ng-min="0" ng-max="100" class="form-control" required>
                                         <div ng-messages="hotelForm.percentage_amount.$error" ng-if='hotelForm.percentage_amount.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                             <div class="text-danger" ng-message="required">Percentage Amount is required</div>
                                         </div>

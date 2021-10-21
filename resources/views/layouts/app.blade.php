@@ -12,72 +12,72 @@
     <!-- Global stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
         type="text/css">
-    <link href="{{asset('public/global_assets/css/icons/icomoon/styles.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{asset('public/global_assets/css/icons/material/styles.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{asset('public/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{asset('public/assets/css/bootstrap_limitless.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{asset('public/assets/css/layout.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{asset('public/assets/css/components.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{asset('public/assets/css/colors.min.css')}}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{asset('public/assets/css/toastr.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/css/slick.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/css/slick-theme.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/css/rescalendar.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/css/angular-material.min.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/css/intlTelInput.css')}}">
+    <link href="{{asset('global_assets/css/icons/icomoon/styles.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('global_assets/css/icons/material/styles.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/css/bootstrap_limitless.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/css/layout.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/css/components.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/css/colors.min.css')}}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/toastr.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/slick.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/slick-theme.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/rescalendar.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/angular-material.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/intlTelInput.css')}}">
     <!-- mystyle css -->
-    <link href="{{asset('public/assets/css/styles.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/css/styles.css')}}" rel="stylesheet" type="text/css">
     <!-- /global stylesheets -->
 
     <!-- Core JS files -->
-    <script src="{{asset('public/global_assets/js/main/jquery.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/main/jquery.min.js')}}"></script>
 
-    <script src="{{asset('public/global_assets/js/main/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/loaders/blockui.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/ui/ripple.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/notifications/bootbox.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/main/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/loaders/blockui.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/ui/ripple.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/notifications/bootbox.min.js')}}"></script>
     <!-- /core JS files -->
 
     <!-- Theme JS files -->
     <!-- Theme JS files -->
-    <script src="{{asset('public/global_assets/js/plugins/tables/datatables/datatables.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/forms/selects/select2.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/forms/validation/validate.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/notifications/pnotify.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/forms/selects/bootstrap_multiselect.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/ui/moment/moment.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/pickers/daterangepicker.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/pickers/anytime.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/pickers/pickadate/picker.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/pickers/pickadate/picker.date.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/pickers/pickadate/picker.time.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/pickers/pickadate/legacy.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/notifications/jgrowl.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/tables/datatables/datatables.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/forms/selects/select2.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/forms/validation/validate.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/notifications/pnotify.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/forms/selects/bootstrap_multiselect.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/ui/moment/moment.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/pickers/daterangepicker.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/pickers/anytime.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/pickers/pickadate/picker.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/pickers/pickadate/picker.date.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/pickers/pickadate/picker.time.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/pickers/pickadate/legacy.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/notifications/jgrowl.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/extensions/jquery_ui/interactions.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/extensions/jquery_ui/interactions.min.js')}}"></script>
 
 
-    <script src="{{asset('public/global_assets/js/plugins/ui/fullcalendar/core/main.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/ui/fullcalendar/daygrid/main.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/ui/fullcalendar/timegrid/main.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/ui/fullcalendar/list/main.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/ui/fullcalendar/interaction/main.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/ui/fullcalendar/core/main.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/ui/fullcalendar/daygrid/main.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/ui/fullcalendar/timegrid/main.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/ui/fullcalendar/list/main.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/ui/fullcalendar/interaction/main.min.js')}}"></script>
 
-    <script src="{{asset('public/global_assets/js/plugins/visualization/d3/d3.min.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/plugins/visualization/d3/d3_tooltip.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/visualization/d3/d3.min.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/visualization/d3/d3_tooltip.js')}}"></script>
 
 
     <script src="https://kit.fontawesome.com/ff383a412e.js" crossorigin="anonymous"></script>
     <script src="{{asset('assets/js/app.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/demo_pages/datatables_advanced.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/demo_pages/picker_date.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/demo_pages/form_checkboxes_radios.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/demo_pages/invoice_template.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/demo_pages/form_floating_labels.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/demo_pages/form_validation.js')}}"></script>
-    <script src="{{asset('public/global_assets/js/demo_pages/components_popups.js')}}"></script>
-    {{-- <script src="{{asset('public/global_assets/js/demo_pages/widgets_stats.js')}}"></script> --}}
+    <script src="{{asset('global_assets/js/demo_pages/datatables_advanced.js')}}"></script>
+    <script src="{{asset('global_assets/js/demo_pages/picker_date.js')}}"></script>
+    <script src="{{asset('global_assets/js/demo_pages/form_checkboxes_radios.js')}}"></script>
+    <script src="{{asset('global_assets/js/demo_pages/invoice_template.js')}}"></script>
+    <script src="{{asset('global_assets/js/demo_pages/form_floating_labels.js')}}"></script>
+    <script src="{{asset('global_assets/js/demo_pages/form_validation.js')}}"></script>
+    <script src="{{asset('global_assets/js/demo_pages/components_popups.js')}}"></script>
+    {{-- <script src="{{asset('global_assets/js/demo_pages/widgets_stats.js')}}"></script> --}}
 
     {{-- <script src="https://d3js.org/d3.v4.js"></script> --}}
 
@@ -89,30 +89,30 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script src="{{asset('public/global_assets/js/plugins/pickers/color/spectrum.js')}}"></script>
-    {{-- <script src="{{asset('public/global_assets/js/plugins/forms/styling/switchery.min.js')}}"></script> --}}
-    <script src="{{asset('public/global_assets/js/demo_pages/picker_color.js')}}"></script>
+    <script src="{{asset('global_assets/js/plugins/pickers/color/spectrum.js')}}"></script>
+    {{-- <script src="{{asset('global_assets/js/plugins/forms/styling/switchery.min.js')}}"></script> --}}
+    <script src="{{asset('global_assets/js/demo_pages/picker_color.js')}}"></script>
     <!-- /theme JS files -->
 
-    <script src="{{asset('public/assets/js/jquery.mask.min.js')}}"></script>
-    <script src="{{asset('public/assets/js/toastr.js')}}"></script>
-    <script src="{{asset('public/assets/js/slick.js')}}"></script>
-    <script src="{{asset('public/assets/js/intlTelInput.js')}}"></script>
-    <script src="{{asset('public/assets/js/utils.js')}}"></script>
-    <script src="{{asset('public/assets/js/rescalendar.js')}}"></script>
-    <script src="{{asset('public/assets/js/angular/angular.min.js')}}"></script>
-    <script src="{{asset('public/assets/js/angular/angular-animate.min.js')}}"></script>
-    <script src="{{asset('public/assets/js/angular/angular-aria.min.js')}}"></script>
-    <script src="{{asset('public/assets/js/angular/angular-messages.min.js')}}"></script>
-    <script src="{{asset('public/assets/js/angular-datatables.min.js')}}"></script>
-    <script src="{{asset('public/assets/js/angular-sanitize.min.js')}}"></script>
-    <script src="{{asset('public/assets/js/angular-material.min.js')}}"></script>
+    <script src="{{asset('assets/js/jquery.mask.min.js')}}"></script>
+    <script src="{{asset('assets/js/toastr.js')}}"></script>
+    <script src="{{asset('assets/js/slick.js')}}"></script>
+    <script src="{{asset('assets/js/intlTelInput.js')}}"></script>
+    <script src="{{asset('assets/js/utils.js')}}"></script>
+    <script src="{{asset('assets/js/rescalendar.js')}}"></script>
+    <script src="{{asset('assets/js/angular/angular.min.js')}}"></script>
+    <script src="{{asset('assets/js/angular/angular-animate.min.js')}}"></script>
+    <script src="{{asset('assets/js/angular/angular-aria.min.js')}}"></script>
+    <script src="{{asset('assets/js/angular/angular-messages.min.js')}}"></script>
+    <script src="{{asset('assets/js/angular-datatables.min.js')}}"></script>
+    <script src="{{asset('assets/js/angular-sanitize.min.js')}}"></script>
+    <script src="{{asset('assets/js/angular-material.min.js')}}"></script>
     <script type="text/javascript"
         src="https://cdn.rawgit.com/AlphaGit/ng-pattern-restrict/master/src/ng-pattern-restrict.min.js"></script>
-    <script src="{{asset('public/assets/js/angular-pagination.js')}}"></script>
-    <script src="{{asset('public/app/app.js')}}"></script>
+    <script src="{{asset('assets/js/angular-pagination.js')}}"></script>
+    <script src="{{asset('app/app.js')}}"></script>
 
-    <script src="{{asset('public/global_assets/js/demo_pages/form_multiselect.js')}}"></script>
+    <script src="{{asset('global_assets/js/demo_pages/form_multiselect.js')}}"></script>
 
     @yield('scripts')
 
