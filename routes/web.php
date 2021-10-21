@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('student', StudentController::class);
 // Route::resource('company', 'CompanyController');
 // Route::resource('companies', 'CompaniesController');
+// fahad ahmed
 
 // Route::group(['middleware' => ['activity']], function () {
 Route::get('/', function () {
