@@ -223,9 +223,8 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
                 if ($scope.formType == "save") {
                     $scope.hotel_categories.push(response.hotel);
                 } else {
-                    $scope.hotel_categories = $scope.hotelcategory.map((c) => c.id == response.hotel.id ? response.hotel : c);
+                    $scope.hotel_categories = $scope.hotel_categories.map((c) => c.id == response.hotel.id ? response.hotel : c);
                 }
-
 
                 $('#hotelcategory_form').modal('hide');
             }

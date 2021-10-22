@@ -18,7 +18,7 @@
 						<div class="form-group row">		                         
                             <div class="col-lg-6">
                                 <label>Hotel Category Name <span class="text-danger">*</span> </label>
-                                <input aria-invalid="true" name="name" required  ng-model="hotelcategory.name" type="text" placeholder="Franchise Hotel" class="form-control alphabets" maxlength="15">
+                                <input aria-invalid="true" name="name" required  ng-model="hotelcategory.name" type="text" placeholder="Franchise Hotel" class="form-control alphabets" maxlength="30">
                             
                                 <div ng-messages="hotelcategoryForm.name.$error" ng-if='hotelcategoryForm.CountryName.$touched || hotelcategoryForm.$submitted' ng-cloak style="color:#e9322d;">
                                     <div class="text-danger" ng-message="required">Country Name is required</div>

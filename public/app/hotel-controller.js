@@ -426,10 +426,12 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
             console.log('Hotel software fee');
             $scope.hotel.software_fees = $scope.hotel.hotel_cobrandings[0].software_fee;
+            $scope.hotel.software_fees = parseInt($scope.hotel.software_fees);
             console.log($scope.hotel.software_fees);
 
             console.log('Hotel percentage amount');
             $scope.hotel.percentage_amount = $scope.hotel.hotel_cobrandings[0].percentage_amount;
+            $scope.hotel.percentage_amount = parseInt($scope.hotel.percentage_amount);
             console.log($scope.hotel.percentage_amount);
     
         }
