@@ -7,7 +7,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
     // Hotel Categories
     $scope.hotel_categories = {};
-  
+
     // $scope.hotel_contacts = [];
     $scope.contact_types = {};
     // $scope.hotelcategories = [];
@@ -55,7 +55,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         }
         return time.join(''); // return adjusted time or original string
     }
-
+    //GitHub Branch S2
     $scope.init = function() {
         $scope.ajaxPost('hotel/get', {}, true)
             .then(function(response) {
@@ -297,6 +297,25 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
     }
 
     $scope.saveHotel = function() {
+
+        /*
+        console.log('Hotel Category');
+        console.log($scope.hotel.hotelcateogry_id);
+        console.log('Hotel Cobranding');
+        console.log($scope.hotel.has_cobranding);
+        console.log('Hotel Software Fees');
+        console.log($scope.hotel.software_fees);
+        console.log('Hotel Percentage Ammount');
+        console.log($scope.hotel.percentage_amount);
+
+        console.log('Fahad Ahmed ZIndabad and He is a great programmer');
+        return;
+
+        **/
+
+        //console.log('hahah you want to save');
+        //return;
+
         $scope.hotelForm.$submitted = true;
         if (!$scope.hotelForm.$valid) {
             window.scrollTop();
@@ -311,6 +330,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
                 hotel_accounts: $scope.hotel.hotel_accounts,
             }, false)
             .then(function(response) {
+                console.log(response);
                 if (response.success) {
                     // if ($scope.formType == "save") {
                     //     $scope.hotels.push(response.hotel);
@@ -367,11 +387,66 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.hotelForm.$setUntouched();
 
         $scope.hotel = angular.copy(h);
+
+        // Arman Bhai
+        //$scope.hotel.has_cobranding = 1;
+        //$scope.hotel.softwarefees = 2;
+        //$scope.hotel.percentageamount = 2;
+
+        $scope.hotel.has_cobranding = 0;
+        $scope.hotel.software_fees = 0;
+        $scope.hotel.percentage_amount = 0;
+
+
+
+        console.log('Hotel Info');
+        console.log($scope.hotel);
+
+        //console.log('Hotel Categories');
+        //console.log($scope.hotel.hotel_categories);
+        //console.log($scope.hotel.hotel_categories[0]);
+
+        if ($scope.hotel.hotel_categories[0] != undefined) {
+
+            console.log('Hotel Category Id');
+            $scope.hotel.hotelcateogry_id = $scope.hotel.hotel_categories[0].id;
+            console.log($scope.hotel.hotelcateogry_id);
+
+        }
+        //sample comment
+        //sample comment
+        //sample comment
+        if ($scope.hotel.hotel_cobrandings[0] != undefined) {
+
+            console.log('Hotel cobranding status');
+            $scope.hotel.has_cobranding = $scope.hotel.hotel_cobrandings[0].status;
+            $scope.hotel.has_cobranding = parseInt($scope.hotel.has_cobranding);
+            //$scope.hotel.has_cobranding = 1;
+            //console.log('Hotel cobranding status type');
+            //console.log(typeof $scope.hotel.has_cobranding);
+            console.log($scope.hotel.has_cobranding);
+
+            console.log('Hotel software fee');
+            $scope.hotel.software_fees = $scope.hotel.hotel_cobrandings[0].software_fee;
+            $scope.hotel.software_fees = parseInt($scope.hotel.software_fees);
+            console.log($scope.hotel.software_fees);
+
+            console.log('Hotel percentage amount');
+            $scope.hotel.percentage_amount = $scope.hotel.hotel_cobrandings[0].percentage_amount;
+            $scope.hotel.percentage_amount = parseInt($scope.hotel.percentage_amount);
+            console.log($scope.hotel.percentage_amount);
+
+        }
+
+        console.log('Hotel Info 2');
+        console.log($scope.hotel);
+
+
         // $scope.hotel_gl_accounts = $scope.hotel_gl_accounts;
         $scope.formType = "edit";
         window.scrollTop();
         $("#addNewHotel").show('slow')
-        console.log($scope.hotel);
+
         // console.log($scope.hotel_gl_accounts);
 
         $scope.hotel.checkin_time = $scope.default_rule.checkin_time
@@ -405,8 +480,8 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
             }, true)
             .then(function(response) {
                 console.log('here');
-
                 console.log(response);
+
                 if (response.success) {
                     $scope.hotel_gl_accounts = response.hotel_gl_accounts_map;
                     $scope.hotel.hotel_accounts = [];
