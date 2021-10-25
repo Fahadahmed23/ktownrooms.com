@@ -7,7 +7,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
     // Hotel Categories
     $scope.hotel_categories = {};
-  
+
     // $scope.hotel_contacts = [];
     $scope.contact_types = {};
     // $scope.hotelcategories = [];
@@ -55,7 +55,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         }
         return time.join(''); // return adjusted time or original string
     }
-
+    //GitHub Branch S2
     $scope.init = function() {
         $scope.ajaxPost('hotel/get', {}, true)
             .then(function(response) {
@@ -397,7 +397,6 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.hotel.software_fees = 0;
         $scope.hotel.percentage_amount = 0;
 
-   
 
         console.log('Hotel Info');
         console.log($scope.hotel);

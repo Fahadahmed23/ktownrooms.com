@@ -452,6 +452,7 @@
                                         <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.has_cobranding" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
                                         <input type="hidden" name="cobranding" ng-model="hotel.cobranding"  ng-value="hotel.has_cobranding"/>
                                     </div>
+
                                 </div>
                         </fieldset>
                         <fieldset class="mt-3" ng-if="hotel.has_cobranding == 1">

@@ -717,7 +717,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         //change for search filter
         // $scope.start_date = moment($scope.nBooking.start_date).format("MM/DD/YYYY");
         // $scope.end_date = moment($scope.nBooking.end_date).format("MM/DD/YYYY");
-        
+
         $scope.sdTemp = moment($scope.nBooking.start_date).format("MM/DD/YYYY");
         $scope.edTemp = moment($scope.nBooking.end_date).format("MM/DD/YYYY");
 
@@ -811,7 +811,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             }
         }
 
-    
+
         $scope.nBooking.start_date = $scope.nBooking.BookingFrom;
         $scope.nBooking.end_date = $scope.nBooking.BookingTo;
 
@@ -916,8 +916,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         //     $scope.start_date = m;
         if (moment($scope.sdTemp).diff(moment(m)) > 0)
             $scope.sdTemp = m;
-            // $scope.sdTemp = m;
-        
+        // $scope.sdTemp = m;
+
     }
 
     $scope.renderCheckInDate = function() {
@@ -2926,7 +2926,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         })
     }
 
-    //dropdown for booking status in search by bookings 
+    //dropdown for booking status in search by bookings
     $scope.booking_statuses = [
         'All',
         'Cancelled',
@@ -3867,21 +3867,99 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.getBooKingServiceCount = function() {
 
-        if ($scope.user.is_frontdesk) {
-            $.get('get_booking_services_count').done(function(response) {
-                $rootScope.booking_services_count = response.booking_services_count;
-                console.log($rootScope.booking_services.length);
+            if ($scope.user.is_frontdesk) {
+                $.get('get_booking_services_count').done(function(response) {
+                    $rootScope.booking_services_count = response.booking_services_count;
+                    console.log($rootScope.booking_services.length);
 
-                if ($rootScope.booking_services.length != $rootScope.booking_services_count) {
-                    if ($rootScope.booking_services.length < $rootScope.booking_services_count) {
-                        $rootScope.new_service_available = true;
-                        toastr.success("New Service is added!");
+                    if ($rootScope.booking_services.length != $rootScope.booking_services_count) {
+                        if ($rootScope.booking_services.length < $rootScope.booking_services_count) {
+                            $rootScope.new_service_available = true;
+                            toastr.success("New Service is added!");
+                        }
+                        $scope.getBookingServices();
                     }
-                    $scope.getBookingServices();
-                }
-            })
+                })
+            }
         }
+        //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
+    $scope.GetCustomerByemail = function(e) {
+        //debugger;
+        $scope.ajaxPost('search-customers', {
+            email: e,
+
+        }, ).then(function(response) {
+            $scope.CustomerCount = response.result.totalCustomers
+            $scope.CustomerList = response.result.customers;
+            //alert("Arman");
+
+        }).catch(function(ex) {
+            console.log(ex);
+        });
     }
+
+    $scope.GetCustomerByemail = function(e) {
+        //debugger;
+        $scope.ajaxPost('search-customers', {
+            email: e,
+
+        }, ).then(function(response) {
+            $scope.CustomerCount = response.result.totalCustomers
+            $scope.CustomerList = response.result.customers;
+            //alert("Arman");
+
+        }).catch(function(ex) {
+            console.log(ex);
+        });
+    }
+    $scope.GetCustomerBycnic = function(e) {
+       // debugger;
+        $scope.ajaxPost('search-customers', {
+            cnic: e,
+
+        }, ).then(function(response) {
+            $scope.CustomerCount = response.result.totalCustomers
+            $scope.CustomerList = response.result.customers;
+            //alert("Arman")
+
+        }).catch(function(ex) {
+            console.log(ex);
+        });
+    }
+
+    $scope.GetCustomerByPhone = function(e) {
+        //debugger;
+        $scope.ajaxPost('search-customers', {
+            phoneNo: e,
+
+        }, ).then(function(response) {
+            $scope.CustomerCount = response.result.totalCustomers
+            $scope.CustomerList = response.result.customers;
+            //alert("Arman")
+
+        }).catch(function(ex) {
+            console.log(ex);
+        });
+    }
+
+    $scope.GetCustomerById = function(e) {
+
+        var cus = CustomerList.filter(x => x.id == e);
+
+        $scope.nBooking.customer.CNIC = cus.CNIC;
+        $scope.nBooking.customer.FirstName = cus.FirstName;
+        $scope.nBooking.customer.LastName = cus.LastName;
+        $scope.nBooking.customer.Phone = cus.Phone;
+        $scope.nBooking.customer.Email = cus.Email;
+
+
+    }
+
+
+    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
+
+
+
 
     $interval($scope.getBooKingServiceCount, 5000);
 
