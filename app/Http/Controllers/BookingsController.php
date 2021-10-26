@@ -410,6 +410,25 @@ class BookingsController extends Controller
             for ($i=0; $i<count($rooms) && $j<count($room_schedule); $i++) {
                 // dd($rooms[$i]->is_available);
                 // dd($rooms[$i]);
+                
+                // Mr Optimist
+                if(isset($room_schedule[$j]->booking->customer_id) && $room_schedule[$j]->booking->customer_id > 0 ){
+                    $customer_book_count = Customer::withCount('bookings')->where('id', '=',$room_schedule[$j]->booking->customer_id)->first();
+                    if (!empty($customer_book_count)) {
+
+                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 0 ){
+                            $is_klc = 'yes';
+                        }
+                        else{
+                            $is_klc = 'no'; 
+                        }
+                    }
+                    else{
+                        $is_klc = 'no';
+                    }
+                }
+                    
+                    
                 if ($rooms[$i]->is_available == '0') {
                     $rooms[$i]->st = [
                         'name' => 'Not Available',
@@ -432,6 +451,7 @@ class BookingsController extends Controller
                             'cursor'=>'no-cursor',
                             'show_menu' => $show_menu,
                             'is_checkedout' => $is_checkedout,
+                            'is_klc' => $is_klc,
                         ];
     
                     } else {

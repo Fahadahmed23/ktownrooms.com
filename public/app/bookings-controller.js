@@ -3956,7 +3956,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
 
-    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
+    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
 
 
 
