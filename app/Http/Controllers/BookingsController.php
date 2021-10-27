@@ -2821,7 +2821,8 @@ class BookingsController extends Controller
             {
                 $statusCode = 200;
 
-                $message = "Customers found successfully!";
+                $message[] = "Customers found successfully!";
+                $msgType = "success";
 
                 $result = [
                     "totalCustomers" => $totalCustomers,
@@ -2832,7 +2833,8 @@ class BookingsController extends Controller
             {
                 $statusCode = 404;
 
-                $message = "Customer not found!";
+                $message[] = "Customer not found!";
+                $msgType = "failure";
 
                 $result = [
                     "totalCustomers" => 0,
@@ -2844,7 +2846,8 @@ class BookingsController extends Controller
         {
             $statusCode = 500;
 
-            $message = "Something wen't wrong";
+            $message[] = "Something wen't wrong";
+            $msgType = "failure";
 
             $result = [
                 "totalCustomers" => 0,
@@ -2855,6 +2858,7 @@ class BookingsController extends Controller
         return response()->json([
             "statusCode" => $statusCode,
             "message" => $message,
+            "msgtype" => $msgType,
             "result" => $result
         ]);
     }
