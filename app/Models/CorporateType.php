@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CorporateType extends Model
 {
-    //
+    use SoftDeletes;
+    protected $table = 'corporate_types';
 }
