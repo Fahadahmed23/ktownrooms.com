@@ -774,7 +774,7 @@ class BookingsController extends Controller
             ]);
         }
 
-        //DB::beginTransaction();
+        DB::beginTransaction();
 
         // try {
 
@@ -869,7 +869,7 @@ class BookingsController extends Controller
             // $booking_notification->send();
 
             // TODO: sms notification to both customer and admin
-            //DB::commit();
+            DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -879,7 +879,7 @@ class BookingsController extends Controller
                 'lockdown' => $this->lockdown
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         // } catch (\Exception $e) {
-        //     DB::rollback();
+        //    DB::rollback();
 
         //     return response()->json([
         //         'success' => false,

@@ -13,4 +13,3 @@ npm-debug.log
 yarn-error.log
 .env
 /public/error_log
-/resources/views/auth/login.blade.php
