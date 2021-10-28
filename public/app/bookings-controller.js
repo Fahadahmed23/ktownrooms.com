@@ -3883,83 +3883,77 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             }
         }
         //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
-    $scope.GetCustomerByemail = function(e) {
-        //debugger;
-        $scope.ajaxPost('search-customers', {
-            email: e,
 
-        }, ).then(function(response) {
-            $scope.CustomerCount = response.result.totalCustomers
-            $scope.CustomerList = response.result.customers;
-            //alert("Arman");
+    $scope.GetCustomerByemail = function(e) { //Serch and get user information from db by email
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                email: e,
 
-        }).catch(function(ex) {
-            console.log(ex);
-        });
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
     }
 
-    $scope.GetCustomerByemail = function(e) {
-        //debugger;
-        $scope.ajaxPost('search-customers', {
-            email: e,
+    $scope.GetCustomerBycnic = function(e) { //Serch and get user information from db by cnic
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                cnic: e,
 
-        }, ).then(function(response) {
-            $scope.CustomerCount = response.result.totalCustomers
-            $scope.CustomerList = response.result.customers;
-            //alert("Arman");
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
 
-        }).catch(function(ex) {
-            console.log(ex);
-        });
-    }
-    $scope.GetCustomerBycnic = function(e) {
-       // debugger;
-        $scope.ajaxPost('search-customers', {
-            cnic: e,
-
-        }, ).then(function(response) {
-            $scope.CustomerCount = response.result.totalCustomers
-            $scope.CustomerList = response.result.customers;
-            //alert("Arman")
-
-        }).catch(function(ex) {
-            console.log(ex);
-        });
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
     }
 
-    $scope.GetCustomerByPhone = function(e) {
-        //debugger;
-        $scope.ajaxPost('search-customers', {
-            phoneNo: e,
+    $scope.GetCustomerByPhone = function(e) { //Serch and get user information from db by phone
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                phoneNo: e,
 
-        }, ).then(function(response) {
-            $scope.CustomerCount = response.result.totalCustomers
-            $scope.CustomerList = response.result.customers;
-            //alert("Arman")
-
-        }).catch(function(ex) {
-            console.log(ex);
-        });
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
     }
 
-    $scope.GetCustomerById = function(e) {
+    $scope.GetCustomerById = function(e) { //customer search results list
+        var cus = $scope.CustomerList.filter(x => x.id == e);
 
-        var cus = CustomerList.filter(x => x.id == e);
-
-        $scope.nBooking.customer.CNIC = cus.CNIC;
-        $scope.nBooking.customer.FirstName = cus.FirstName;
-        $scope.nBooking.customer.LastName = cus.LastName;
-        $scope.nBooking.customer.Phone = cus.Phone;
-        $scope.nBooking.customer.Email = cus.Email;
-
+        $scope.nBooking.customer.CNIC = cus[0].CNIC;
+        $scope.nBooking.customer.FirstName = cus[0].FirstName;
+        $scope.nBooking.customer.LastName = cus[0].LastName;
+        $scope.nBooking.customer.Phone = cus[0].Phone;
+        $scope.nBooking.customer.Email = cus[0].Email;
 
     }
 
-
-    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
-
-
-
+    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
 
     $interval($scope.getBooKingServiceCount, 5000);
 
