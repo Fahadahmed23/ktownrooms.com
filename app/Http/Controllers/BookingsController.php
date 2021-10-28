@@ -879,7 +879,7 @@ class BookingsController extends Controller
                 'lockdown' => $this->lockdown
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         // } catch (\Exception $e) {
-        //    DB::rollback();
+        //     DB::rollback();
 
         //     return response()->json([
         //         'success' => false,
