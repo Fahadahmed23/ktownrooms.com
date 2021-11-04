@@ -110,6 +110,8 @@ class BookingsController extends Controller
         $clients = CorporateClient::get(['id', 'FullName']);
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
+        // Mr Optimist | 29 Oct 2021 
+        $corporate_types = CorporateType::get();
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
         // dd($nationalities);
@@ -234,6 +236,7 @@ class BookingsController extends Controller
             'paymenttypes'=> $paymenttypes,
             'taxrates'=> $taxrates,
             'is_frontdesk' => $this->is_frontdesk,
+            'corporate_types' => $corporate_types,
             'user' => $user
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
@@ -421,7 +424,7 @@ class BookingsController extends Controller
                     $customer_book_count = Customer::withCount('bookings')->where('id', '=',$room_schedule[$j]->booking->customer_id)->first();
                     if (!empty($customer_book_count)) {
 
-                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 0 ){
+                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 1 ){
                             $is_klc = 'yes';
                         }
                         else{
@@ -824,7 +827,7 @@ class BookingsController extends Controller
             // For time being , it is commented
             $this->invoice->save();
 
-           
+            //return;
             
             $booking = Booking::where('id', '=', $booking_ids[0])->first();
 
@@ -1272,6 +1275,9 @@ class BookingsController extends Controller
         
         
         $invoice->created_by = Auth::id();
+
+        //var_dump($invoice);
+        //return;
 
         $this->invoice = $invoice;
         //$invoice->save();

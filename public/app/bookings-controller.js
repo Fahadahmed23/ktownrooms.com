@@ -1708,6 +1708,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.user = response.user;
                 $scope.clients = response.clients;
                 $scope.channels = response.channels;
+                // Mr Optimist | 29 Oct 2021
+                $scope.corporate_types = response.corporate_types;
                 $scope.nationalities = response.nationalities;
                 $scope.user_discount_limit = $scope.user.max_allowed_discount;
 
@@ -2913,6 +2915,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             $scope.taxrates = response.taxrates;
             $scope.clients = response.clients;
             $scope.channels = response.channels;
+            // Mr Optimist | 28 Oct 2021
             $scope.corporate_types = response.corporate_types;
             $scope.nationalities = response.nationalities;
             $scope.user = response.user;
