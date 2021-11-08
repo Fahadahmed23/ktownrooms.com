@@ -2442,7 +2442,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             })
         }
     }
-    //$interval($scope.third_part_booking_count, 5000);
+    $interval($scope.third_part_booking_count, 5000);
 
 
 
@@ -3962,7 +3962,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
 
-    //$interval($scope.getBooKingServiceCount, 5000);
+    $interval($scope.getBooKingServiceCount, 5000);
 
     $rootScope.showNotifications = function() {
         $rootScope.new_service_available = false;
