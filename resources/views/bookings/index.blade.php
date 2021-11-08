@@ -16,7 +16,7 @@
         @include('bookings.form')
         @include('bookings.invoice')
         @include('bookings.invoice_new')
-        
+        @include('bookings.show_customer_list')
         @include('bookings.addOccupantsModal') 
         @include('bookings.add_partial_pay')
         @include('bookings.addBulkOccupants')    
