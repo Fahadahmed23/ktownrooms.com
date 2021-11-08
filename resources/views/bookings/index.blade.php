@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script src="public/app/bookings-controller.js"></script>
-    <script src="public/app/housekeeping-controller.js"></script>
+    <script src="app/bookings-controller.js"></script>
+    <script src="app/housekeeping-controller.js"></script>
 @endsection
 
 
