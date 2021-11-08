@@ -2442,7 +2442,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             })
         }
     }
-    $interval($scope.third_part_booking_count, 5000);
+    //$interval($scope.third_part_booking_count, 5000);
 
 
 
