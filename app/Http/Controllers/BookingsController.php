@@ -78,7 +78,7 @@ class BookingsController extends Controller
         if ($this->userIsFrontDesk()) {
             abort(403);
         }
-        
+
         return view('bookings.index', [
             'breadcrumb' => $this->module_name
         ]);
@@ -114,7 +114,7 @@ class BookingsController extends Controller
         // dd($nationalities);
 
 
-        
+
         $bookings = Booking::leftJoin('customers', 'bookings.customer_id', '=', 'customers.id')
                             ->leftJoin('hotels', 'bookings.hotel_id', '=', 'hotels.id')
                             ->leftJoin('booking_invoices', 'bookings.id', '=', 'booking_invoices.booking_id')
@@ -246,7 +246,7 @@ class BookingsController extends Controller
         $clients = CorporateClient::get(['id', 'FullName']);
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
-        
+
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
         if ($this->userIsFrontDesk()) {
@@ -306,11 +306,11 @@ class BookingsController extends Controller
         if (count($promotion) > 0) {
             $success = true;
             $msgtype = 'success';
-            $message = ['Promo Applied'];   
+            $message = ['Promo Applied'];
         } else {
             $success = false;
             $msgtype = 'error';
-            $message = ['Promo Not Found'];   
+            $message = ['Promo Not Found'];
         }
 
         return response()->json([
@@ -354,7 +354,7 @@ class BookingsController extends Controller
                     'end_date.required' => 'Please select a Check-Out Date',
                     'end_date.after_or_equal' => 'Check-out Date must be equal or greater than Check-in Date'
                 ]);
-            } 
+            }
 
             $rooms = Room::with(['hotel', 'category', 'hotel_room_category' => function($query) use ($h) {
                 $query->where('hotel_id', $h);
@@ -410,6 +410,25 @@ class BookingsController extends Controller
             for ($i=0; $i<count($rooms) && $j<count($room_schedule); $i++) {
                 // dd($rooms[$i]->is_available);
                 // dd($rooms[$i]);
+
+                // Mr Optimist
+                if(isset($room_schedule[$j]->booking->customer_id) && $room_schedule[$j]->booking->customer_id > 0 ){
+                    $customer_book_count = Customer::withCount('bookings')->where('id', '=',$room_schedule[$j]->booking->customer_id)->first();
+                    if (!empty($customer_book_count)) {
+
+                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 0 ){
+                            $is_klc = 'yes';
+                        }
+                        else{
+                            $is_klc = 'no';
+                        }
+                    }
+                    else{
+                        $is_klc = 'no';
+                    }
+                }
+
+
                 if ($rooms[$i]->is_available == '0') {
                     $rooms[$i]->st = [
                         'name' => 'Not Available',
@@ -420,10 +439,10 @@ class BookingsController extends Controller
                         'is_checkedout' => $is_checkedout,
                     ];
                 }
-    
+
                 else if ($rooms[$i]->id == $room_schedule[$j]->room_id) {
                     $show_menu = true;
-    
+
                     if ($room_schedule[$j]->booking->status == 'CheckedIn') {
                         $rooms[$i]->st = [
                             'name' => 'Booked',
@@ -432,8 +451,9 @@ class BookingsController extends Controller
                             'cursor'=>'no-cursor',
                             'show_menu' => $show_menu,
                             'is_checkedout' => $is_checkedout,
+                            'is_klc' => $is_klc,
                         ];
-    
+
                     } else {
                         // dd($room_schedule[$j]->booking->status, $room_schedule[$j]->booking->is_central_booking);
                         if($room_schedule[$j]->booking->status == 'Pending' && $room_schedule[$j]->booking->is_central_booking == '1'){
@@ -464,13 +484,13 @@ class BookingsController extends Controller
                     $rooms[$i]->customer_name = $room_schedule[$j]->booking->customer->getName();
                     $rooms[$i]->outstanding_balance = (isset($room_schedule[$j]->booking->invoice) ? $room_schedule[$j]->booking->invoice->net_total : 0) - (isset($room_schedule[$j]->booking->invoice) ? $room_schedule[$j]->booking->invoice->payment_amount : 0) ;
                     $rooms[$i]->booking_id = $room_schedule[$j]->booking_id;
-    
+
                     // if ($room_schedule[$j]->booking->status == 'CheckedIn') {
                     //     $rooms[$i]->checkin_date =date('d/m/Y H:i a', strtotime('+12 hours', strtotime($room_schedule[$j]->booking->checkin_time)));
                     // } else {
                     //     $rooms[$i]->checkin_date = date_format(date_create($room_schedule[$j]->booking->BookingFrom), 'd/m/Y H:i a');
                     // }
-    
+
                     // $rooms[$i]->checkout_date = date_format(date_create($room_schedule[$j]->booking->BookingTo), 'd/m/Y');
 
                     // dd($room_schedule[$j]->booking->checkin_time);
@@ -480,15 +500,15 @@ class BookingsController extends Controller
                         $rooms[$i]->checkin_date =date('d/m/Y',  strtotime($room_schedule[$j]->booking->BookingFrom));
                     }
                     $rooms[$i]->checkout_date =date('d/m/Y',  strtotime($room_schedule[$j]->booking->BookingTo));
-    
+
                     $room_booking = BookingRoom::where('booking_id', $room_schedule[$j]->booking_id)->where('room_id', $room_schedule[$j]->room_id)->first();
-    
+
                     // dd($room_booking);
-    
+
                     $rooms[$i]->onbooking_rate = $room_booking->room_charges_onbooking;
-                    
+
                     $rooms[$i]->num_occupants = $room_schedule[$j]->booking->no_occupants;
-    
+
                     $j++;
                 }
             }
@@ -501,17 +521,17 @@ class BookingsController extends Controller
                 $searchBookings = Booking::leftJoin('customers', 'bookings.customer_id', '=', 'customers.id')->leftJoin('hotels', 'bookings.hotel_id', '=', 'hotels.id')->leftJoin('booking_room', 'bookings.id', '=', 'booking_room.booking_id');
             }
 
-           
+
             if (!empty(request()->bookingNo)) {
                 $searchBookings->where('bookings.booking_no', strtoupper(request()->bookingNo));
             }
 
-            
+
             if (!empty(request()->bookingStatus)) {
                 if(request()->bookingStatus != 'All')
                     $searchBookings->where('bookings.status', request()->bookingStatus);
             }
-    
+
             if (!empty(request()->customerName)) {
                 $c = request()->customerName;
                 // DB::enableQueryLog();
@@ -546,7 +566,7 @@ class BookingsController extends Controller
                         ->distinct()
                         ->get(['booking_id', 'room_id', 'id']);
 
-            
+
             // dd($room_schedule);
             if(count($room_schedule) < 1){
                 return response()->json([
@@ -565,7 +585,7 @@ class BookingsController extends Controller
 
                 $rooms[] = $room;
 
-                
+
                 // dd($room_schedule[$i]->booking->status);
                 $show_menu = true;
                 $is_checkedout = false;
@@ -579,7 +599,7 @@ class BookingsController extends Controller
                         'is_checkedout' => $is_checkedout,
                     ];
 
-                } 
+                }
                 else if ($room_schedule[$i]->booking->status == 'CheckedOut') {
                     $room->st = [
                         'name' => 'Checked Out',
@@ -634,7 +654,7 @@ class BookingsController extends Controller
                 } else {
                     $room->checkin_date =date('d/m/Y',  strtotime($room_schedule[$i]->booking->BookingFrom));
                 }
-                
+
                 $room->checkout_date =date('d/m/Y',  strtotime($room_schedule[$i]->booking->BookingTo));
 
                 $room_booking = BookingRoom::where('booking_id', $room_schedule[$i]->booking_id)->where('room_id', $room_schedule[$i]->room_id)->first();
@@ -642,12 +662,12 @@ class BookingsController extends Controller
                 // dd($room_booking);
 
                 $room->onbooking_rate = $room_booking->room_charges_onbooking ?? 0;
-                
+
                 $room->num_occupants = $room_schedule[$i]->booking->no_occupants;
                 // dd($room);
 
 
-                
+
             }
             $room_ids = [];
             foreach($rooms as $i => $room) {
@@ -656,7 +676,7 @@ class BookingsController extends Controller
 
         }
 
-        
+
         // dd($rooms);
         if ($this->userIsFrontDesk()) {
             $reserved = RoomSchedule::whereIn('room_id', $room_ids)->whereNull('deleted_at')->where(function($query) {
@@ -685,9 +705,9 @@ class BookingsController extends Controller
         }
         $cancelled = 'NAN';
         if($request->start_date && $request->end_date){
-            $cancelled = $this->getCancelledBookingsCount($request->start_date, $request->end_date);   
+            $cancelled = $this->getCancelledBookingsCount($request->start_date, $request->end_date);
         }
-        
+
         // get hotel cin_cout rules
         $hotel = Hotel::with(['checkin', 'checkout'])->find($request->hotel);
 
@@ -709,7 +729,7 @@ class BookingsController extends Controller
         if (!empty($customer)) {
             $msg = 'Customer Found';
             $msgtype = 'success';
-            
+
             return response()->json([
                 'success' => true,
                 'message' => $msg,
@@ -721,7 +741,7 @@ class BookingsController extends Controller
             $msgtype = 'error';
         }*/
 
-        
+
    }
     /**
      * Store a newly created resource in storage.
@@ -732,9 +752,9 @@ class BookingsController extends Controller
     public function store(AddBookingRequest $request)
     {
         $this->booking = $request->booking;
-        
+
         $this->new_booking = $request->formType == "create";
-        
+
         // dd($this->new_booking);
         if ($this->new_booking){
             if (!$this->roomsAreAvailable()) {
@@ -754,14 +774,26 @@ class BookingsController extends Controller
             ]);
         }
 
-        DB::beginTransaction();
+        //DB::beginTransaction();
 
         // try {
+
+
+
             $booking_ids = $this->createBooking();
-            
             $this->createInvoice($booking_ids);
+
+            //var_dump('Booking');
+            //var_dump($booking);
+            // var_dump('Invoice');
+            // var_dump($this->invoice->save());
+            //var_dump('sadsa');
+            //return;
+
             $this->allocateRooms($booking_ids);
             $this->addOccupants($booking_ids);
+
+
 
             $booking = Booking::find($booking_ids[0]);
 
@@ -769,32 +801,47 @@ class BookingsController extends Controller
                 // if ($this->new_booking)
                 //     $booking->sendConfirmationSms();
                 $booking->sendPortalLink();
-               
+
                 $early_checkin_charges = $this->earlyCheckIn($booking->hotel_id);
 
                 if ($early_checkin_charges) {
                     $this->createEarlyCheckIn($booking, $early_checkin_charges);
                 }
             }
-            
+
+            //var_dump('Booking');
+            //var_dump($booking);
+            //var_dump('Invoice');
+            //var_dump($this->invoice->save());
+            //var_dump('sadsa');
+            //return;
+
+
             $this->invoice->save();
+
+            //var_dump($booking);
+            //return;
+
             $booking = Booking::where('id', '=', $booking_ids[0])->first();
+
+
 
             if (!empty($this->invoice_detail)) {
                 $this->invoice_detail->booking_no = $booking->booking_no;
                 $this->invoice_detail->save();
             }
-            
+
             if ($this->p != $booking->status && $booking->status == 'Confirmed') {
                 $booking->sendConfirmationSms();
             }
 
             // Send Email
             $booking = Booking::with(['customer', 'rooms', 'rooms.category', 'invoice', 'promotion','tax_rate', 'invoice.payment_mode'])->where('id', '=', $booking_ids[0])->first();
-            
+
+
             $subject = "Booking Email";
             // dd($booking->customer->Email);
-            
+
             if (!empty($booking->customer->Email)) {
                 if ($booking->status == 'Confirmed' || $booking->status == 'CheckedIn'){
                     Mail::to($booking->customer->Email)->send(new BookingEmail($booking,$subject));
@@ -816,13 +863,13 @@ class BookingsController extends Controller
                                 'tax_rates.Tax', 'tax_rates.TaxValue'
                             ]);
 
-            
+
             // new booking notification
             // $booking_notification = new BookingNotification();
             // $booking_notification->send();
 
             // TODO: sms notification to both customer and admin
-            DB::commit();
+            //DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -841,7 +888,7 @@ class BookingsController extends Controller
         //         'lockdown' => $this->lockdown
         //     ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         // }
-        
+
     }
 
     private function statusIsOk() {
@@ -892,11 +939,11 @@ class BookingsController extends Controller
 
     private function lateCheckout($hotel_id) {
         $charges = 0;
-        
+
         $checkout_rules = HotelCinCoutRule::where('rule_type', 'late_check_out')->where('hotel_id', $hotel_id)->get();
 
         if (!empty($checkout_rules)) {
-            
+
 
             foreach ($checkout_rules as $cout) {
                 if ($this->liesBetween($cout->start_time, $cout->end_time)) {
@@ -912,7 +959,7 @@ class BookingsController extends Controller
     private function liesBetween($start_time, $end_time) {
         $start_time = Carbon::createFromFormat('H:i:s', $start_time, env('APP_TIMEZONE'));
         $end_time = Carbon::createFromFormat('H:i:s', $end_time, env('APP_TIMEZONE'));
-        
+
         if ($start_time->gt($end_time)) {
             $end_time->addDays(1);
         }
@@ -932,7 +979,7 @@ class BookingsController extends Controller
         $invoice_detail->amount = $charges;
 
         $invoice_detail->save();
-        
+
         $invoice = BookingInvoice::where('booking_id', $booking->id)->first();
         $invoice->net_total += $charges;
         $invoice->save();
@@ -948,11 +995,11 @@ class BookingsController extends Controller
         $invoice_detail->amount = $charges;
 
         $invoice_detail->save();
-        
+
     }
 
     private function addOccupants($booking_ids)
-    { 
+    {
         if ($this->new_booking) {
             $data = $this->booking['customer'];
             $b =new BookingOccupant();
@@ -964,7 +1011,7 @@ class BookingsController extends Controller
         } else {
             BookingOccupant::where('booking_id', $this->booking['id'])->delete();
         }
-        
+
 
         if(!empty($this->booking['booking_occupants'])){
             foreach ($this->booking['booking_occupants'] as $bo) {
@@ -981,7 +1028,7 @@ class BookingsController extends Controller
             }
         }
     }
-    
+
     private function allocateRooms($booking_ids) {
         // if rooms are available
         $rooms = $this->booking['rooms'];
@@ -1027,11 +1074,15 @@ class BookingsController extends Controller
 
     private function createInvoice($booking_ids) {
 
+
         // check whether there is a discount request
         if ($this->booking['invoice']['discount_amount'] > 0 || !Auth::user()->can('can-edit-discount-request')) {
+
+
             $user_can_discount = Auth::user()->roles()->where('has_discount_priviledge', 1)->count() > 0 ? true : false;
 
             if ($user_can_discount) {
+
                 // check allowed amount
                 $allowed_amount = Auth::user()->max_allowed_discount;
 
@@ -1046,11 +1097,12 @@ class BookingsController extends Controller
         }
 
         $invoiceData = $this->booking['invoice'];
-
         $this->calculateTotalAmount();
 
         if ($this->new_booking) {
+
             $invoice = new BookingInvoice();
+
         } else {
             if(isset($this->booking['is_third_party']) && $this->booking['is_third_party']){
                 $invoice = new BookingInvoice();
@@ -1060,14 +1112,15 @@ class BookingsController extends Controller
                 $invoice = BookingInvoice::find($this->booking['invoice']['id']);
             }
         }
-        
-        
+
+
         $invoice->booking_id = $booking_ids[0];
         $invoice->customer_id = $booking_ids[1];
         $invoice->total = $this->booking['invoice']['total'];
         $invoice->discount_amount = $this->booking['invoice']['discount_amount'];
-        
+
         $invoice->net_total = $this->booking['invoice']['net_total'];
+
 
         // dd($invoice);
         // $invoice->payment_mode_id = $this->booking['payTyp']['id'];
@@ -1099,6 +1152,8 @@ class BookingsController extends Controller
             }
         }
 
+
+
         // dd($invoiceData);
         if (!empty($invoiceData['per_night'])){
             if ($invoiceData['per_night'] == 1) {
@@ -1106,7 +1161,9 @@ class BookingsController extends Controller
                 $invoice->discount_per_night = $invoiceData['discount_per_night'];
             }
         }
-        
+
+
+
         // promo details
         // if (!empty($this->booking['promo']['id'])) {
         //     $invoice->promo_id = $this->booking['promo']['id'];
@@ -1123,7 +1180,7 @@ class BookingsController extends Controller
 
         $invoice->num_occupants = $o;
         $invoice->num_rooms = count($this->booking['rooms']);
-        
+
         // hotel
         $invoice->hotel_name = Hotel::where('id', $this->booking['hotel_id'])->value('HotelName');
         $invoice->hotel_id = $this->booking['hotel_id'];
@@ -1145,10 +1202,12 @@ class BookingsController extends Controller
         $nights = $nights > 0 ? $nights : 1;
         $invoice->nights = $nights;
 
+
+
         // if ($invoiceData['paid'] == 1 && ($invoice->payment_mode_id == 2)) {
         //     $invoice->payment_mode_details = $this->booking['cheque_no'];
-        // } 
-        
+        // }
+
         $invoice->payment_date = date('Y-m-d');
         // if ($this->booking['status'] == 'CheckedIn') {
         //     $invoiceData['paid'] == 1;
@@ -1159,7 +1218,8 @@ class BookingsController extends Controller
         }
 
         $invoice->paid = $invoiceData['paid'];
-        
+
+
         if ($invoiceData['paid'] == 1 && $this->new_booking) {
             // create transaction log entry
             $invoice->paid = 1;
@@ -1181,7 +1241,7 @@ class BookingsController extends Controller
         // $invoice->payment_amount = $invoiceData['paid'] == 1 ? $invoiceData['net_total'] : 0;
 
         $invoice->is_corporate = $invoiceData['is_corporate'];
-        
+
         if ($invoiceData['is_corporate'] == 1) {
             // find the corporate client by name
             $client = CorporateClient::where('FullName', 'LIKE', "%".$invoiceData['corporate_client_name']."%")->first();
@@ -1198,11 +1258,13 @@ class BookingsController extends Controller
             $invoice->corporate_client_id = $client->id;
             $invoice->corporate_client_name = $client->FullName;
         }
-        
+
+
+
         $invoice->created_by = Auth::id();
-        
+
         $this->invoice = $invoice;
-        // $invoice->save();
+        //$invoice->save();
     }
 
     private function calculateTotalAmount () {
@@ -1239,7 +1301,7 @@ class BookingsController extends Controller
 
         // apply tax
         $this->booking['invoice']['tax_charges'] = $this->booking['invoice']['net_total'] * ($this->booking['invoice']['tax_rate'] / 100.0);
-        
+
         // add service charges
         if (!empty($this->booking['services'])) {
             foreach ($this->booking['services'] as $service) {
@@ -1290,11 +1352,11 @@ class BookingsController extends Controller
                 return $this->booking['agent']['id'];
             }
         }
-      
+
     }
 
     private function createCustomer() {
-        
+
         $customer = null;
 
         $data = $this->booking['customer'];
@@ -1367,7 +1429,7 @@ class BookingsController extends Controller
             $discount_request->requested_amount = $this->booking['invoice']['discount_amount'];
             $discount_request->allowed_discount = Auth::user()->max_allowed_discount;
             $discount_request->status = "Pending";
-    
+
             $discount_request->save();
 
             // make status pending
@@ -1394,6 +1456,18 @@ class BookingsController extends Controller
         // $booking->booking_no = date('Y-m-d');
         $booking->booking_title = "";
         $booking->status = $this->booking['status'];
+
+        /*
+        $data = $this->booking['customer'];
+        $customer_FirstName = $data['FirstName'];
+        $customer_LastName = isset($data['LastName']) ? $data['LastName'] : "";
+        $customer_Email = isset($data['Email']) ? $data['Email'] : "";
+        $customer_Phone = $data['Phone'];
+        $customer_is_cnic = isset($data['is_cnic'])? $data['is_cnic']:"";
+        $customer_CNIC = isset($data['CNIC'])? $data['CNIC'] : "";
+        $customer_iso = isset($data['iso'])? $data['iso'] : "";
+        $customer_nationality = isset($data['nationality'])? $data['nationality'] : "";
+        **/
 
         $booking->customer_id = $this->createCustomer();
         $booking->agent_id = $this->createAgent()?? null;
@@ -1437,7 +1511,7 @@ class BookingsController extends Controller
         // dd($booking);
         $booking->save();
 
-        
+
         // save booking no
         // $last_booking = Booking::orderBy('id', 'desc')->first();
 
@@ -1448,7 +1522,7 @@ class BookingsController extends Controller
         // }
 
         // $booking->save();
-        
+
         return [$booking->id, $booking->customer_id];
     }
 
@@ -1572,7 +1646,7 @@ class BookingsController extends Controller
 
             if ($invoice->payment_mode_id == 2 || $invoice->payment_mode_id ==3) {
                 $invoice->payment_mode_details = $this->booking['cheque_no'];
-            } 
+            }
 
             $invoice->payment_date = date('Y-m-d');
             $invoice->payment_amount = $invoiceData['net_total'];
@@ -1584,7 +1658,7 @@ class BookingsController extends Controller
 
             // delete from room_schedule
             RoomSchedule::where('booking_id', '=', $booking->id)->delete();
-            
+
             // add to room schedule
             foreach ($rooms as $room) {
                 $r = new RoomSchedule();
@@ -1607,7 +1681,7 @@ class BookingsController extends Controller
             BookingOccupant::where('booking_id', '=', $booking->id)->delete();
 
             $this->addOccupants([$booking->id]);
-            
+
 
             DB::commit();
             $booking  = Booking::with(['booking_occupants','hotel','customer', 'rooms', 'rooms.category','rooms.hotel', 'invoice', 'promotion','tax_rate','invoice.payment_mode'])->where('id', '=', $booking->id)->first();
@@ -1644,7 +1718,7 @@ class BookingsController extends Controller
     private function sendInvoice($id)
     {
         $booking = Booking::with(['hotel','customer', 'rooms', 'rooms.hotel_room_category', 'rooms.category','rooms.hotel', 'invoice', 'promotion','tax_rate','invoice.payment_mode'])->where('id', '=', $id)->first();
-     
+
         $subject = "Thank You for booking at KTown Rooms & Homes (Booking No. ".$booking->booking_no.")";
 
         // return view('mails.invoice', ['booking' => $booking, 'in_words' => CurrencyHelper::numberTowords($booking->invoice->net_total)]);
@@ -1652,7 +1726,7 @@ class BookingsController extends Controller
     }
 
     public function cancelBooking(Request $request, $id) {
-        
+
         // deallocate rooms
         $booking = Booking::where('id', '=', $id)->first();
 
@@ -1741,11 +1815,11 @@ class BookingsController extends Controller
         try {
             // dd($request->booking['invoice']);
             // $pInfo = $request->booking['payment_info'];
-            
+
             $booking = Booking::find($request->booking['id']);
-    
+
             $booking->status = 'CheckedOut';
-            
+
             $rooms = RoomSchedule::where('booking_id', $booking->id)->update([
                 'status' => 0
             ]);
@@ -1759,24 +1833,24 @@ class BookingsController extends Controller
                     //     $booking->is_bed_dead = 1;
                         // create new transaction log
                         // $transaction_log = new TransactionLog();
-                
+
                         // $transaction_log->booking_id = $request->booking['id'];
-                        
+
                         // $transaction_log->amount = $pInfo['amount'];
                         // $transaction_log->payment_type_id = $pInfo['payment_mode']['id'];
                         // $transaction_log->payment_type_name = $pInfo['payment_mode']['PaymentMode'];
                         // if ($pInfo['payment_mode']['PaymentMode'] == 'Cheque') {
                         //     $transaction_log->payment_details = $pInfo['payment_details'];
                         // }
-    
+
                         // $transaction_log->created_by = Auth::id();
                         // $transaction_log->save();
-    
+
                         // $invoice->payment_amount += $pInfo['amount'];
                     // }
                 }
             }
-            
+
             $booking->BookingTo = date('Y-m-d');
             $booking->save();
             $invoice->save();
@@ -1788,7 +1862,7 @@ class BookingsController extends Controller
             if ($late_checkout_charges) {
                 $this->createLateCheckout($booking, $late_checkout_charges);
             }
-            
+
             // refund
             if (!empty($request->booking['invoice']['refund'])) {
                 $this->createRefundDetail($booking, $request->booking['invoice']['refund']);
@@ -1846,7 +1920,7 @@ class BookingsController extends Controller
         $n = $request->status;
 
         $booking->status = $request->status;
-        
+
         // Booking::where('id', $request->id)->update([
         //     'status' => $request->status
         // ]);
@@ -1936,7 +2010,7 @@ class BookingsController extends Controller
         }, 'rooms', 'rooms.hotel_room_category', 'rooms.category','rooms.hotel', 'invoice', 'invoice_details', 'promotion','tax_rate','invoice.payment_mode', 'status_history'])->find($id);
 
         // $invoice_detail = InvoiceDetail::all();
-        
+
         return $booking;
     }
 
@@ -1973,7 +2047,7 @@ class BookingsController extends Controller
         $data = $request->all();
 
         $booking = Booking::find($data['id']);
-        
+
         // TODO: get booking_rooms from server for confirmation
 
         $bookdate = date_create(date('Y-m-d', strtotime($booking->BookingTo)));
@@ -2084,9 +2158,9 @@ class BookingsController extends Controller
 
                     if ($invoice->tax_rate_id > 0) {
                         $invoice->tax_charges = $net_total * ($invoice->tax_rate / 100);
-                        
+
                         $invoice->net_total = $net_total;
-                        
+
                         $invoice->net_total += $invoice->tax_charges; // dd($invoice->net_total);
                     } else {
                         $invoice->net_total = $net_total;
@@ -2129,7 +2203,7 @@ class BookingsController extends Controller
             $room_ids[] = $room->id;
             if ($room->is_available == 0) {
                 return false;
-            } 
+            }
         }
 
         $data = [];
@@ -2155,8 +2229,8 @@ class BookingsController extends Controller
                         ->orderBy('room_id', 'asc')
                         ->distinct()
                         ->get(['room_id', 'booking_id']);
-        
-        
+
+
         // dd($room_schedule);
         if (!$this->new_booking) {
             foreach ($room_schedule as $index => $rs) {
@@ -2177,7 +2251,7 @@ class BookingsController extends Controller
 
         try {
             $transaction_log = new TransactionLog();
-            
+
             $transaction_log->booking_id = $request->booking_id;
             $transaction_log->amount = $request->payment_amount;
             $transaction_log->payment_type_id = $request->payment_type_id;
@@ -2284,9 +2358,9 @@ class BookingsController extends Controller
         if (count($room_schedule) == 0) {
             return $hotel_rooms;
         }
-        
+
         // Step 4: exclude these rooms
-        $i=0; $j=0; 
+        $i=0; $j=0;
         for (; $i < count($hotel_rooms) && $j < count($hotel_rooms);) {
             if ($hotel_rooms[$i]->id == $room_schedule[$j]->id) {
                 unset($hotel_rooms[$i]);
@@ -2419,7 +2493,7 @@ class BookingsController extends Controller
     }
 
     public function getCancelledBookingsCount($start_date,$end_date)
-    {   
+    {
         return Booking::where(function($query) use ($start_date, $end_date) {
             $query->where([
                 ['BookingFrom', '>=', $start_date],
@@ -2442,9 +2516,9 @@ class BookingsController extends Controller
         if($slug){
 
             $bm = BookingMapping::where('type', $type)->where('source',$slug)->first();
-            // $booking_mapping_id = 
+            // $booking_mapping_id =
             // dd($bm);
-            
+
         }
 
         if($bm || $statusId){
@@ -2465,7 +2539,7 @@ class BookingsController extends Controller
             'status'=> $status,
         ]);
         return $bmp ? $bm : null;
-        
+
         // $bookingId;
     }
 
@@ -2477,7 +2551,7 @@ class BookingsController extends Controller
     //     if($category_name){
 
     //         $bm = BookingMapping::where('type', 'roomcategory')->where('source',$category_name)->first();
-    //         // $booking_mapping_id = 
+    //         // $booking_mapping_id =
     //         // dd($bm);
     //         if($bm){
     //             $status = 1;
@@ -2490,7 +2564,7 @@ class BookingsController extends Controller
     //         ]);
     //     }
     //     return $bmp ? $bm : null;
-        
+
     //     // $bookingId;
     // }
 
@@ -2500,16 +2574,16 @@ class BookingsController extends Controller
 
         // $data = json_decode($request->all());
         // return true;
-        
+
         //entry in third_party_booking table
-        
+
         // dd($request->all());
         $bookingRequest = $request->bookingRequest ?? null;
         $sessionRequest = $request->sessionRequest ?? null;
         $bookingData = $request->bookingData ?? null;
         $hotelData = $request->hotelData ?? null;
         // return response()->json(['hotelData' =>$hotelData, 'bookingRequest'=> $bookingRequest]);
-        $this->booking = $bookingRequest;                
+        $this->booking = $bookingRequest;
         $this->new_booking = true;
         $this->booking['rooms'] = [];
         $this->booking['start_date'] = isset($sessionRequest['HotelCheckInDate']) ? $sessionRequest['HotelCheckInDate'] : null;
@@ -2522,7 +2596,7 @@ class BookingsController extends Controller
         $this->booking['special_request'] = null;
 
         $no_of_occupants = 0;
-        
+
         $a = $this->bookingMapStatus($bookingData['BookingID'], 'hotel', $hotelData['SlugId']);
         // return response()->json($a);
         if(isset($bookingRequest['NoOfRooms'])){
@@ -2539,9 +2613,9 @@ class BookingsController extends Controller
                     if($a){
 
                         $room = Room::where('hotel_id', $a->destination)->first();
-                        
+
                         $this->booking['tax_rate_id'] = $room->tax_rate_id;
-                        $this->booking['hotel_id'] = $a->destination;   
+                        $this->booking['hotel_id'] = $a->destination;
                     }
                 }
             }
@@ -2623,22 +2697,22 @@ class BookingsController extends Controller
                     $raa = $this->roomsAreAvailable();
                     // return response()->json($raa);
                     // dd($raa);
-                    
+
                     if($raa){
                         // $this->bookingMapStatus($bookingData['BookingID'], 'roomavailability', null, 1);
 
                         // dd($this);
                         $this->allocateRooms($booking_ids);
                         $partialExist++;
-                    } 
+                    }
 
                     // if()
                     // check if hotel map completes
-                    
+
                     // dd($a);
                     // if($a){
                     // }
-            
+
                 }
             }
         }
@@ -2664,8 +2738,8 @@ class BookingsController extends Controller
 
     }
 
-    
-    
+
+
     public function get_third_party_bookings()
     {
         $third_party_bookings = Booking::where('is_third_party', 1)->get();
@@ -2697,7 +2771,7 @@ class BookingsController extends Controller
                 'booking_services' => $booking_services,
             ]);
         }
-       
+
     }
 
     public function getBooKingServiceCount()
@@ -2747,7 +2821,8 @@ class BookingsController extends Controller
             {
                 $statusCode = 200;
 
-                $message = "Customers found successfully!";
+                $message[] = "Customers found successfully!";
+                $msgType = "success";
 
                 $result = [
                     "totalCustomers" => $totalCustomers,
@@ -2758,7 +2833,8 @@ class BookingsController extends Controller
             {
                 $statusCode = 404;
 
-                $message = "Customer not found!";
+                $message[] = "Customer not found!";
+                $msgType = "failure";
 
                 $result = [
                     "totalCustomers" => 0,
@@ -2770,7 +2846,8 @@ class BookingsController extends Controller
         {
             $statusCode = 500;
 
-            $message = "Something wen't wrong";
+            $message[] = "Something wen't wrong";
+            $msgType = "failure";
 
             $result = [
                 "totalCustomers" => 0,
@@ -2781,6 +2858,7 @@ class BookingsController extends Controller
         return response()->json([
             "statusCode" => $statusCode,
             "message" => $message,
+            "msgtype" => $msgType,
             "result" => $result
         ]);
     }
