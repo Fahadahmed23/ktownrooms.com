@@ -579,6 +579,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-group row" ng-show="nBooking.invoice.is_corporate == '1'">
+                                            <label class="col-md-4 col-form-label">Corporate Type </label>
+                                            <div class="col-md-8">
+                                                <md-select md-no-asterisk name="corporate_type" class="m-0" ng-model="nBooking.invoice.corporate_type" placeholder="Select a Corporate Type" required>
+                                                    <md-option ng-repeat="corporate_type in corporate_types" ng-value="corporate_type.id">[[corporate_type.name]]</md-option>
+                                                </md-select>
+
+                                                <div ng-messages="myForm.corporate_type.$error" ng-if='myForm.corporate_type.$touched || myForm.$submitted' ng-cloak style="color:#e9322d;">
+                                                    <div class="text-danger" ng-message="required">Corporate Type is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
 
 
                                         <div class="form-group row">

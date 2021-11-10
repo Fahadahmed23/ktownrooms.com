@@ -11,8 +11,7 @@ class HotelCategories extends Model
     use SoftDeletes;
     protected $table = 'hotel_categories';
 
-    public function hotels()
-    {
+    public function hotels() {
        
         return $this->belongsToMany(Hotel::class, 'hotel_category','hotel_category_id','hotel_id');
     }

@@ -39,6 +39,7 @@ use App\Models\BookingMappingStatus;
 use App\Models\BookingThirdParty;
 use App\Models\BookingThirdPartyDetail;
 use App\Models\Channel;
+use App\Models\CorporateType;
 use App\Models\HotelRoomCategory;
 use App\Models\InvoiceDetail;
 use App\Models\RoomCategory;
@@ -109,6 +110,8 @@ class BookingsController extends Controller
         $clients = CorporateClient::get(['id', 'FullName']);
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
+        // Mr Optimist | 29 Oct 2021
+        $corporate_types = CorporateType::get();
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
         // dd($nationalities);
@@ -233,6 +236,7 @@ class BookingsController extends Controller
             'paymenttypes'=> $paymenttypes,
             'taxrates'=> $taxrates,
             'is_frontdesk' => $this->is_frontdesk,
+            'corporate_types' => $corporate_types,
             'user' => $user
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
@@ -246,6 +250,9 @@ class BookingsController extends Controller
         $clients = CorporateClient::get(['id', 'FullName']);
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
+
+        // Mr Optimist | 28 Oct 2021
+        $corporate_types = CorporateType::get();
 
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
@@ -293,6 +300,7 @@ class BookingsController extends Controller
             'user' => $user,
             'greeting_message' => $greeting_message,
             'greeting_description' => $greeting_description,
+            'corporate_types' => $corporate_types,
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
 
@@ -416,7 +424,7 @@ class BookingsController extends Controller
                     $customer_book_count = Customer::withCount('bookings')->where('id', '=',$room_schedule[$j]->booking->customer_id)->first();
                     if (!empty($customer_book_count)) {
 
-                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 0 ){
+                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 1 ){
                             $is_klc = 'yes';
                         }
                         else{
@@ -778,8 +786,6 @@ class BookingsController extends Controller
 
         // try {
 
-
-
             $booking_ids = $this->createBooking();
             $this->createInvoice($booking_ids);
 
@@ -805,6 +811,7 @@ class BookingsController extends Controller
                 $early_checkin_charges = $this->earlyCheckIn($booking->hotel_id);
 
                 if ($early_checkin_charges) {
+
                     $this->createEarlyCheckIn($booking, $early_checkin_charges);
                 }
             }
@@ -816,10 +823,10 @@ class BookingsController extends Controller
             //var_dump('sadsa');
             //return;
 
-
+            // Mr optimist
+            // For time being , it is commented
             $this->invoice->save();
 
-            //var_dump($booking);
             //return;
 
             $booking = Booking::where('id', '=', $booking_ids[0])->first();
@@ -878,6 +885,7 @@ class BookingsController extends Controller
                 'booking' => $booking,
                 'lockdown' => $this->lockdown
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
         // } catch (\Exception $e) {
         //     DB::rollback();
 
@@ -1242,6 +1250,11 @@ class BookingsController extends Controller
 
         $invoice->is_corporate = $invoiceData['is_corporate'];
 
+        // Mr Optimist | 28 Oct 2021
+        if($invoice->is_corporate == 1) {
+            $invoice->corporate_type = $invoiceData['corporate_type'];
+        }
+
         if ($invoiceData['is_corporate'] == 1) {
             // find the corporate client by name
             $client = CorporateClient::where('FullName', 'LIKE', "%".$invoiceData['corporate_client_name']."%")->first();
@@ -1262,6 +1275,9 @@ class BookingsController extends Controller
 
 
         $invoice->created_by = Auth::id();
+
+        //var_dump($invoice);
+        //return;
 
         $this->invoice = $invoice;
         //$invoice->save();

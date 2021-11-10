@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('student', StudentController::class);
 // Route::resource('company', 'CompanyController');
 // Route::resource('companies', 'CompaniesController');
+// fahad ahmed
 
 // Route::group(['middleware' => ['activity']], function () {
 Route::get('/', function () {
@@ -315,6 +316,8 @@ Route::post('locale/deleteCity', 'LocaleController@deleteCity')->middleware('per
 Route::post('locale/saveCountry', 'LocaleController@storeCountry')->middleware('permission:can-add-locale');
 Route::post('locale/saveState', 'LocaleController@storeState')->middleware('permission:can-add-locale');
 Route::post('locale/saveCity', 'LocaleController@storeCity')->middleware('permission:can-add-locale');
+Route::post('locale/saveHotelCategory', 'LocaleController@storeHotelCategory')->middleware('permission:can-add-locale');
+Route::post('locale/deleteHotelCategory', 'LocaleController@deleteHotelCategory')->middleware('permission:can-delete-locale');
 
 // service new routes
 Route::get('ndepartments', 'DepartmentController@index')->middleware('permission:can-view-department');
@@ -357,7 +360,7 @@ Route::post('hotel/deleteHotel', 'HotelController@deleteHotel')->middleware('per
 Route::post('hotel/deleteContact', 'HotelController@deleteContact')->middleware('permission:can-delete-hotel');
 Route::post('hotel/saveHotel', 'HotelController@saveHotel')->middleware('permission:can-add-hotel');
 Route::post('hotel/saveContact', 'HotelController@saveContact')->middleware('permission:can-add-hotel');
-
+Route::get('hotel/testing', 'HotelController@testHotel')->middleware('permission:can-add-hotel');
 
 Route::post('hotel/get_account_gl_hotel_mappings', 'HotelController@get_account_gl_hotel_mappings')->middleware('permission:can-add-hotel');
 Route::post('hotel/saveHotelGlAccountMapping', 'HotelController@saveHotelGlAccountMapping');
