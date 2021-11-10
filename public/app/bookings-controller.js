@@ -1117,6 +1117,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.saveForm = function() {
+
         //change for search filter
         // $scope.nBooking.start_date = moment($scope.start_date, "MM/DD/YYYY").format("YYYY/MM/DD");
         // $scope.nBooking.end_date = moment($scope.end_date, "MM/DD/YYYY").format("YYYY/MM/DD");
@@ -1133,7 +1134,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.ajaxPost(url, { 'booking': $scope.nBooking, 'formType': $scope.formType }, false).then(function(response) {
             if (response.success) {
                 if ($scope.user.is_frontdesk) {
+
                     $('#invoiceBox').modal('hide');
+
                 }
 
                 if (response.lockdown) {
@@ -1147,6 +1150,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     // show toaster for discount request
                     $scope.showLockdownMessage();
                     return;
+
                 }
 
                 response.booking.BookingDate = new Date(response.booking.BookingDate);
@@ -1155,19 +1159,25 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     $scope.bookings.push(response.booking);
                     if (!$scope.user.is_frontdesk)
                         $scope.getBookings();
+
                 } else {
                     // $scope.bookings = $scope.bookings.map((booking) => booking.id == response.booking.id ? response.booking : booking)
                     $scope.init();
+
                     // $scope.$apply();
                 }
 
                 $scope.afterSaveOrEdit();
+                $('#invoiceBox').modal('hide');
             }
 
 
         }).catch(function(e) {
+
             console.log(e)
-                // $scope.nBooking.customer.Phone = $scope.nBooking.customer.ph;
+            $('#invoiceBox').modal('hide');
+
+            // $scope.nBooking.customer.Phone = $scope.nBooking.customer.ph;
         })
     }
 
@@ -3950,7 +3960,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.nBooking.customer.LastName = cus[0].LastName;
         $scope.nBooking.customer.Phone = cus[0].Phone;
         $scope.nBooking.customer.Email = cus[0].Email;
-
+        $('#showcustomerList').modal('hide');
     }
 
     //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
