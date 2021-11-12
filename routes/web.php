@@ -88,6 +88,7 @@ Route::post('bookings/transfer/search', 'BookingsController@searchForTransfer')-
 Route::post('bookings/transfer/request', 'BookingsController@requestForTransfer')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
 Route::post('checkRoomAvailability', 'BookingsController@checkRoomAvailability')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
 Route::post('send_sms', 'BookingsController@sendSms')->middleware('permission:can-send-sms-booking||can-send-sms-frontdesk-booking');
+Route::post('search-customers', 'BookingsController@searchCustomers')->middleware('permission:can-add-booking');
 // FrontDesk
 Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-frontdesk-booking');
 // Route::get('bookings/find/{id}', 'BookingsController@show')->middleware('permission:can-add-booking');

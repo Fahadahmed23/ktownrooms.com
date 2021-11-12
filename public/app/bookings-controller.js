@@ -529,6 +529,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.checkCustAvl = function(s) {
+
+      
         if (s == 'e') {
             if (!$scope.myForm.Email.$valid) {
                 return;
@@ -548,6 +550,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
             // check whether the customer CNIC is unique or not
             if ($scope.nBooking.booking_occupants.length > 0) {
+
                 found = $scope.nBooking.booking_occupants.find((o) => o.CNIC == $scope.nBooking.customer.CNIC);
 
                 if (found) {
@@ -1738,6 +1741,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.nBooking.channel = 'Walk-In';
         $scope.nBooking.invoice.is_corporate = 0;
 
+        // Mr Optimist | 28 Oct 2021
+        $scope.nBooking.invoice.corporate_type = 0;
+
         $scope.enableControls();
         $scope.inBooking = true;
 
@@ -1774,6 +1780,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.user = response.user;
                 $scope.clients = response.clients;
                 $scope.channels = response.channels;
+                // Mr Optimist | 29 Oct 2021
+                $scope.corporate_types = response.corporate_types;
                 $scope.nationalities = response.nationalities;
                 $scope.user_discount_limit = $scope.user.max_allowed_discount;
 
@@ -3002,6 +3010,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             $scope.taxrates = response.taxrates;
             $scope.clients = response.clients;
             $scope.channels = response.channels;
+            // Mr Optimist | 28 Oct 2021
+            $scope.corporate_types = response.corporate_types;
             $scope.nationalities = response.nationalities;
             $scope.user = response.user;
             $scope.records = response;
@@ -4044,6 +4054,80 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             })
         }
     }
+
+    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
+
+    $scope.GetCustomerByemail = function(e) { //Serch and get user information from db by email
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                email: e,
+
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
+    }
+
+    $scope.GetCustomerBycnic = function(e) { //Serch and get user information from db by cnic
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                cnic: e,
+
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
+    }
+
+    $scope.GetCustomerByPhone = function(e) { //Serch and get user information from db by phone
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                phoneNo: e,
+
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
+    }
+
+    $scope.GetCustomerById = function(e) { //customer search results list
+        var cus = $scope.CustomerList.filter(x => x.id == e);
+
+        $scope.nBooking.customer.CNIC = cus[0].CNIC;
+        $scope.nBooking.customer.FirstName = cus[0].FirstName;
+        $scope.nBooking.customer.LastName = cus[0].LastName;
+        $scope.nBooking.customer.Phone = cus[0].Phone;
+        $scope.nBooking.customer.Email = cus[0].Email;
+        $('#showcustomerList').modal('hide');
+    }
+    //comment yes yes kt-old
+
+    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
 
     $interval($scope.getBooKingServiceCount, 5000);
 

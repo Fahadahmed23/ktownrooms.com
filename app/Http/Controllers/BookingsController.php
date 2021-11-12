@@ -39,6 +39,7 @@ use App\Models\BookingMappingStatus;
 use App\Models\BookingThirdParty;
 use App\Models\BookingThirdPartyDetail;
 use App\Models\Channel;
+use App\Models\CorporateType;
 use App\Models\HotelRoomCategory;
 use App\Models\InvoiceDetail;
 use App\Models\RoomCategory;
@@ -116,6 +117,8 @@ class BookingsController extends Controller
         $clients = CorporateClient::get(['id', 'FullName']);
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
+        // Mr Optimist | 29 Oct 2021
+        $corporate_types = CorporateType::get();
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
         // dd($nationalities);
@@ -252,6 +255,7 @@ class BookingsController extends Controller
             'paymenttypes'=> $paymenttypes,
             'taxrates'=> $taxrates,
             'is_frontdesk' => $this->is_frontdesk,
+            'corporate_types' => $corporate_types,
             'user' => $user
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
@@ -271,6 +275,9 @@ class BookingsController extends Controller
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
         
+        // Mr Optimist | 28 Oct 2021
+        $corporate_types = CorporateType::get();
+
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
      
@@ -321,6 +328,7 @@ class BookingsController extends Controller
             'user' => $user,
             'greeting_message' => $greeting_message,
             'greeting_description' => $greeting_description,
+            'corporate_types' => $corporate_types,
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
 
@@ -3207,6 +3215,80 @@ class BookingsController extends Controller
                 'booking_services_count' => $booking_services_count,
             ]);
         }
+    }
+    protected function searchCustomers(Request $request)
+    {
+        try
+        {
+            $customers = Customer::select("id", "FirstName", "LastName", "Email", "CNIC", "Phone")
+            ->where("IsActive", 1);
+
+            if (!empty($request->email))
+            {
+                $customers->where("email", "like", "%$request->email%");
+            }
+            else if (!empty($request->cnic))
+            {
+                $customers->where("CNIC", "like", "%$request->cnic%");
+            }
+            else if (!empty($request->phoneNo))
+            {
+                $customers->where("Phone", "like", "%$request->phoneNo%");
+            }
+            else
+            {
+                $customers->where("email", "like", "time()");
+            }
+
+            $customers->orderBy("created_at", "desc");
+
+            $totalCustomers = $customers->count();
+            $customers = $customers->get();
+
+            if ($totalCustomers > 0)
+            {
+                $statusCode = 200;
+
+                $message[] = "Customers found successfully!";
+                $msgType = "success";
+
+                $result = [
+                    "totalCustomers" => $totalCustomers,
+                    "customers" => $customers
+                ];
+            }
+            else
+            {
+                $statusCode = 404;
+
+                $message[] = "Customer not found!";
+                $msgType = "failure";
+
+                $result = [
+                    "totalCustomers" => 0,
+                    "customers" => []
+                ];
+            }
+        }
+        catch (Exception $ex)
+        {
+            $statusCode = 500;
+
+            $message[] = "Something wen't wrong";
+            $msgType = "failure";
+
+            $result = [
+                "totalCustomers" => 0,
+                "customers" => []
+            ];
+        }
+
+        return response()->json([
+            "statusCode" => $statusCode,
+            "message" => $message,
+            "msgtype" => $msgType,
+            "result" => $result
+        ]);
     }
     protected function formatCellNumber($no) {
         return str_replace(['-', '(', ')', '+'], '', $no);

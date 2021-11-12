@@ -16,7 +16,7 @@
         @include('bookings.stays_modal')
         {{-- @include('bookings.customer_modal') --}}
         @include('bookings.invoice')
-        
+        @include('bookings.show_customer_list')
         @include('bookings.addOccupantsModal')
         @include('bookings.room_transfer_modal')
     </div>
