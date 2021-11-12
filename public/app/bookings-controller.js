@@ -4108,3 +4108,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 
 })
+
+// comment kt-new 
+
