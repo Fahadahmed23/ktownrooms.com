@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\Room;
 use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
@@ -33,40 +34,51 @@ class TaskManagementController extends Controller
 
     public function getTasks(Request $request)
     {
-        
+        // dd($request->all());
         $user = Auth::user();
         $taskDate= Carbon::now()->format('Y-m-d');
         $timespan= 'today';
-        $operator = '=';
         if (!empty($request['date'])) {
             $timespan = $request['date'];
         }
-        if ($timespan == 'today') {
-            $operator = '=';
-        } else if ($timespan == 'previous') {
-            $operator = '<';
+        $tasks = Task::whereNull('deleted_at');
+      
+        if(auth()->user()->hasRole('Admin')){
+            $isSelectHotel = true;
+            $isSelectDepartment = true;
         }
-        // dd($timespan, $user);
-        $tasks = Task::where('hotel_id', $user->hotel_id);
-        if($user->name == 'Super Admin' || $user->name == 'Supervisor' ){
-            $user_is_admin = true;
-            if (!empty($request['department_id'])) {
-                $tasks= $tasks->where('department_id',$request['department_id']);
+        else{
+            $isSelectHotel = false;
+            if(empty(auth()->user()->department_id)){
+                $isSelectDepartment = true;
+                $tasks = $tasks->whereIn('hotel_id', $user->HotelIds);
             }
             else{
-                $tasks = $tasks->where('created_at', 'like', $taskDate.'%');
+                $isSelectDepartment = false;
+                $tasks = $tasks->whereIn('hotel_id', $user->HotelIds)->where('department_id',$user->department_id);
             }
-        } 
-        else{
-            // if(empty($user->department_id)) {
-            //     $tasks = $tasks;
-            // } else {
-            //     $tasks = $tasks->where('department_id', $user->department_id);
-            // }
-            $user_is_admin = false;
         }
-        // dd($tasks->get(), $user, $timespan, $request->all());
-       $tasks=  $tasks->with(['task_history' ,'booking_service:id,times,icon_class,created_at'])->whereDate('created_at', $operator, $taskDate)->get();
+        if(!empty($request['filters']) )
+        {
+            if (!empty($request['filters']['hotel_id']) && $isSelectHotel) {
+                $tasks = $tasks->where('hotel_id',$request['filters']['hotel_id']);
+            }
+            if (!empty($request['filters']['department_id']) && $isSelectDepartment) {
+                $tasks = $tasks->where('department_id',$request['filters']['department_id']);
+            }
+            if (!empty($request['filters']['service_title'])) {
+                $tasks = $tasks->where('service','like',$request['filters']['service_title'].'%');
+            }
+        }
+        if($timespan == 'today'){
+            $tasks = $tasks->where('created_at', 'like' , $taskDate.'%');
+        }
+        else if($timespan == 'previous') {
+            $tasks->whereDate('created_at', '<', $taskDate);
+        }
+        
+        $tasks = $tasks->with(['task_history' ,'booking_service:id,times,icon_class,created_at'])->get();
+
         // for counts a/c to task status
         $counts['todo'] = $tasks->filter(
             function($request){ 
@@ -86,19 +98,22 @@ class TaskManagementController extends Controller
         return response()->json([
             'tasks' => $tasks,
             'counts'=>$counts,
-            'user_is_admin'=>$user_is_admin,
+            'isSelectHotel'=>$isSelectHotel,
+            'isSelectDepartment'=>$isSelectDepartment
+            // 'user_is_admin'=>$user_is_admin,
         ]);
-
-        // dd($request->all());
-        // $tasks = User::with(['department.tasks'])->where('id', Auth::id())->first();
-        
     }
 
-    public function getDepartments()
+    public function getddData()
     {
         $departments = Department::all();
+        $hotels = auth()->user()->user_hotels()->get();
+        // dd($hotels->toArray(['id']));
+        // $rooms = Room::get(['id','room_title','hotel_id']);
         return response()->json([
-            'departments'=> $departments
+            'departments'=> $departments,
+            'hotels'=>$hotels,
+            // 'rooms'=>$rooms
         ]);
     }
 

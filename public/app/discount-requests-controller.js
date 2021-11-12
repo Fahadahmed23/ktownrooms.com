@@ -9,8 +9,9 @@ app.controller('discountrequestsCtrl', function($scope, DTColumnDefBuilder, DTOp
     $scope.filterDate = "";
     $scope.filterStatus = "";
     $scope.filterPriority = "";
+    $scope.my_request = false;
 
-    $scope.statusName = "All";
+    $scope.statusName = "Pending";
     $scope.priorityName = "All";
     $scope.dateText = "All";
 
@@ -18,12 +19,19 @@ app.controller('discountrequestsCtrl', function($scope, DTColumnDefBuilder, DTOp
     $scope.sorting_type = "desc";
 
     // pagination
-    $scope.perPage = 5;
+    $scope.perPage = 9;
     $scope.currentPage = 1;
     $scope.TotalRecords = 0;
     $scope.pagination = [{ page: 1 }];
     $scope.first_time = true;
     $scope.pageSort = {};
+    
+    // statuses
+    $scope.discount_request_statuses = [
+        {id: 1, DiscountRequestStatus: "Approved"},
+        {id: 2, DiscountRequestStatus: "Declined"},
+        {id: 3, DiscountRequestStatus: "Pending"}
+    ];
 
     // date-wise grouping
     $scope.current_dates = [];
@@ -48,6 +56,17 @@ app.controller('discountrequestsCtrl', function($scope, DTColumnDefBuilder, DTOp
 
         $scope.loadDateDropdown();
         $scope.pageSort = angular.copy($scope.pagination);
+
+        $scope.pathname = window.location.pathname;
+        console.log($scope.pathname);
+        if ($scope.pathname == '/my_requests') {
+            $scope.my_request = true;
+            $scope.statusName = "All";
+        } else {
+            $scope.my_request = false;
+            $scope.statusName = "Pending";
+        }
+        
         $scope.getDiscountRequests();
     }
 
@@ -84,15 +103,28 @@ app.controller('discountrequestsCtrl', function($scope, DTColumnDefBuilder, DTOp
         let request_data = {
             page: $scope.pagination[0].page,
             perPage: $scope.perPage,
+            filters: {
+                date_filter: $scope.filterDate,
+                status_filter: $scope.filterStatus,
+                }
+                ,
             sorting: $scope.sorting_type
         };
+        // $scope.pathname = window.location.pathname;
+        // console.log($scope.pathname);
+        // if ($scope.pathname == '/my_requests') {
+        //     $scope.my_request = true;
+        //     $scope.statusName = "All";
+        // } else {
+        //     $scope.my_request = false;
+        //     $scope.statusName = "Pending";
+        // }
 
         $scope.ajaxGet('getDiscountRequests', request_data, true)
             .then(function(response) {
                 $scope.discount_requests = response.discount_requests;
                 $scope.TotalRecords = response.totalRecords;
                 $scope.user = response.user;
-
                 $scope.groupDiscountRequests();
 
                 for (let i = 0; i < $scope.discount_requests.length; i++) {
@@ -102,6 +134,12 @@ app.controller('discountrequestsCtrl', function($scope, DTColumnDefBuilder, DTOp
                 setTimeout(() => {
                     $('[data-popup="popover"]').popover();
                 }, 1500);
+                // if($scope.user.name == 'Super Admin' ){
+                //     $scope.statusName = "Pending";
+                // }else{
+                //      $scope.statusName = "All";
+                // }
+
             }).catch(function(e) {
                 console.log(e)
             })
@@ -145,6 +183,14 @@ app.controller('discountrequestsCtrl', function($scope, DTColumnDefBuilder, DTOp
         $scope.getDiscountRequests();
     }
 
+    $scope.filterByStatus = function(s) {
+        // $scope.filterStatus = s == '' ? '' : s.id;
+        $scope.filterStatus = s == '' ? 'All' : s.DiscountRequestStatus;
+        $scope.statusName = s == '' ? 'All' : s.DiscountRequestStatus;
+
+        $scope.getDiscountRequests();
+    }
+
     $scope.showInvoice = function(b) {
         $scope.ajaxGet('bookings/find/' + b, {}, true)
             .then(function(response) {
@@ -179,19 +225,25 @@ app.controller('discountrequestsCtrl', function($scope, DTColumnDefBuilder, DTOp
             inputType: 'text',
             minlength: 50,
             callback: function(result) {
-                if (result) {
+                if (result) 
+                {
                     $scope.ajaxPost('discountrequest/setStatus', {
                         discount_request_id: d,
                         status: s,
                         supervisor_comments: result,
                     }, false).then(function(response) {
                         if (response.success) {
-                            $scope.getDiscountRequests();
+                            let item = '#ds_card' + response.discount_request.id;
+                           
+                            $(item).hide("slow", function (){ 
+                                $scope.getDiscountRequests();
+                            });
                         }
                     }).catch(function(e) {
                         console.log(e);
                     })
                 }
+                
             }
         });
     }

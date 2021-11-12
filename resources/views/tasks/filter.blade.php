@@ -15,10 +15,32 @@
 
            <div class="card-body">
             <form class="mt-4" >
-                    <label>Select Department</label>
-                    <md-select ng-disabled="!user_is_admin" ng-change="getFilterTasks(filter.department_id)" md-no-asterisk name="department_id" class="m-0" ng-model="filter.department_id" placeholder="Select Department">
-                        <md-option ng-repeat="d in departments" ng-value="d.id">[[d.Department]]</md-option>
-                    </md-select>
+
+                <div ng-show="isSelectHotel" class="floating-label">
+                    <div class="floating-label">
+                        <md-select ng-hide="" ng-model="filters.hotel_id" placeholder="Hotels">
+                            <md-option ng-repeat="h in hotels" ng-value="[[h.id]]">[[h.HotelName]]</md-option>
+                        </md-select>
+                    </div>
+                </div>
+
+                <div ng-show="isSelectDepartment" class="floating-label">
+                    <div class="floating-label">
+                        <md-select ng-hide="" ng-model="filters.department_id" placeholder="Departments">
+                            <md-option ng-repeat="d in departments" ng-value="[[d.id]]">[[d.Department]]</md-option>
+                        </md-select>
+                    </div>
+                </div>
+                <div class="floating-label">
+                    <input ng-model="filters.service_title" type="text" class="form-control" maxlength="50" placeholder=" ">
+                    <span class="highlight"></span>
+                    <label>Service Title</label>
+                </div>
+
+                <div class="float-right">
+                    <button class="btn btn-default" ng-click="filterData(filters, 'clear')" type="reset">Reset</button>
+                    <button type="button" class="btn btn-primary" ng-click="filterData(filters)">Filter</button>
+                </div>
             </form>
 
 

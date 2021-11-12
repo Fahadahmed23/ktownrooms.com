@@ -15,6 +15,32 @@
     .cancel_service_reason_input {
     border: 1px solid #cccaca !important;
     }   
+
+    .service-detail div {
+    display: inline;
+    }
+    .tool-tip-list-item {
+    padding-left: 0;
+    list-style: none;
+    }
+    .desktop-text-right {
+    text-align: right;
+    }
+    @media only screen and (max-width: 767px){
+    .b-service-pills {
+        text-align: center !important;
+    }
+    .service-action-btn {
+    margin: 5px 0;
+    }
+    .desktop-text-right {
+    text-align: center;
+    }
+    .service-detail-colpse{
+        text-align: left;
+    }
+    }
+    
 </style>
 <div id="showRequest_Complains" class="modal fade" tabindex="-1">
 	<div class="modal-dialog modal-lg modal-dialog-centered">
@@ -41,34 +67,38 @@
                     <div class="tab-pane fade" id="mycomplain-tab">
                         <div class="card-body p-0" style="height: 400px;overflow: auto;">
                             <div class="row" >
-                                <div class="col-lg-6" ng-repeat="complain in cutomers_complains">
-                                    <div ng-class="getStatusClass(complain.status.ComplainStatus)" class="card border-left-3 border-left-danger rounded-left-0" style="min-height: 180px;">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <p class="mb-0"><strong>Complain Code: </strong>[[complain.complain_code]]</p>
-                                                    <p class="mb-0"><strong>Subject: </strong>[[complain.subject]]</p>
-                                                    <p ng-if="complain.message" class="mb-0 px-0 "><strong>Complain: </strong></p>
-                                                    <p class="mb-0 px-0" style="height: 50px;overflow: auto;">[[complain.message]]</p>
+                                <div class="col-md-12" ng-repeat="complain in cutomers_complains">
+                                    <div ng-class="getStatusClass(complain.status.ComplainStatus)" class="card b-service-pills border-left-3 p-2 rounded-left-0">
+                                        <div class="row m-0 bg-light p-2">
+                                            <div class="service-detail col-md-7">
+                                                <div class="complain-title">
+                                                    <a href="#collap-[[complain.id]]" data-toggle="collapse"><span><b>[[complain.complain_code]]</b></span></a>
+                                                </div> 
+                                                | 
+                                                <div class="comlain-subject">
+                                                    <span><b>Sub: [[complain.subject]]</b></span>
+                                                </div>
+                                                |
+                                                <div class="complain-date">
+                                                    <span><b>Date: [[complain.ComplainTime | date]]</b></span>
                                                 </div>
                                             </div>
-                                        </div>
-                    
-                                        <div class="card-footer d-sm-flex justify-content-sm-between align-items-sm-center">
-                                            <span>
-                                                <span class="mr-1">
-                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                </span>
-                                                Complain Time :
-                                                <span class="font-weight-semibold">[[complain.ComplainTime | date]]</span>
-                                            </span>
-                                            <ul class="list-inline list-inline-condensed mb-0 mt-2 mt-sm-0">
-                                                                    
-                                                <li class="list-inline-item" >Status:
-                                                    <a href="javascript:void(0)" ng-class="complain.status.style_class" class="text-default badge" data-toggle="dropdown">[[complain.status.ComplainStatus]]</a>    
-                                                </li> 
-                                            
-                                            </ul>
+
+                                            <div class="col-md-5 desktop-text-right">
+                                                <div class="service-status">
+                                                    <span><b>Status: </b><a href="javascript:void(0)" ng-class="complain.status.style_class" class="text-default badge" data-toggle="dropdown">[[complain.status.ComplainStatus]]</a></span>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="col-md-12">
+                                                <div class="collapse service-detail-colpse  mt-2 border-top" id="collap-[[complain.id]]">
+                                                    <div class="mt-1">
+                                                        <ul class='tool-tip-list-item '>
+                                                            <li><span><b>Complain </b>: [[complain.message]]</span></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -77,101 +107,96 @@
                     </div>
 
                     <div class="tab-pane fade" id="myrequest-tab">
-                        <div class="card-body p-0">
                             <div class="card-body p-0" style="height: 400px;overflow: auto;">
                                 <div class="row" >
                                     <div class="col-md-12" ng-repeat="request in booking_service">
-                                        <div ng-class="getBserBorder(request.status)" class="card border-left-3  rounded-left-0">
-                                            <div class="card-header border-bottom">
-                                                <div class="row">
-                                                    <div class="col-md-6 mt-2">
-                                                        <span class="title-service">
-                                                            <strong><span class="service-img-col mr-2"><img src="[[request.icon_class]]" class="img-thumbnail img-fluid" alt=""></span> <span>[[request.service_name]]</span></strong>
-                                                        </span>
+                                        <div ng-class="getBserBorder(request.status)" class="card b-service-pills border-left-3 p-2 rounded-left-0">
+                                            <div class="row m-0 bg-light p-2">
+                                                <div class="service-detail col-md-7">
+                                                    <div class="title-service ">
+                                                       <a href="#collapse-[[request.id]]" data-toggle="collapse"><span><b>[[request.service_name]]</b></span></a>
+                                                    </div> 
+                                                    | 
+                                                    <div class="service-times">
+                                                        <span><b>Qty: [[request.times]]</b></span>
                                                     </div>
-                                                    <div class="col-md-6 text-right">
-                                                        <div class="col-md-12">
-                                                            <i class="icon-info22" data-placement="right" data-popup="popover" title="Service Detail" data-trigger="hover" data-html="true"
+                                                    |
+                                                    <div class="service-charges">
+                                                        <span><b>Charges: [[request.amount | currency]]</b></span>
+                                                    </div>
+                                                    |
+                                                    <div class="service-date">
+                                                        <span><b>Date: [[request.created_at | date]]</b></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="[[request.status=='completed' || request.status=='cancelled' ||  request.status=='rejected'? 'col-md-5' : 'col-md-3']] desktop-text-right">
+                                                    <div class="service-status">
+                                                        <span><b>Status: </b> <span ng-class="getBserviceStatus(request.status)" class="badge">[[request.status]] <i ng-class="getBserIcon(request.status)" class="fa-1x ml-1"></i></span></span>
+                                                    </div>
+                                                </div>
+
+                                                <div ng-hide="user_frontdesk || request.status == 'completed '" class="ser-cancel-btn col-md-2 text-center actionbtnservice">
+                                                    <div class="service-action-btn">
+                                                            <a href="javascript:void(0)" ng-show="request.status == 'awaiting'" type="button" class="service_cancel_btn text-danger" data-popup="popover" title="Cancel Reason" data-html="true" 
+                                                                data-content="
+                                                                <div class='row mt-2'> 
+                                                                    <div class='col-md-12'>
+                                                                        <input id='cancel_service_reason_input' type='text' class='form-control cancel_service_reason_input'>
+                                                                    </div>
+                                                                </div>
+                                                                <div class='row my-2'> 
+                                                                    <div class='col-md-12'>
+                                                                        <button data-id=[[request.id]] class='btn btn-info cancl_btn' type='button'> Yes</button>
+                                                                        <button type='button' class='btn btn-danger close-popover'>No</button>
+                                                                    </div>
+                                                                </div>    
+                                                                "><i class="icon-close2 ml-2"></i>
+                                                            </a>
+                                                    </div>
+                                                </div>
+
+                                                <div ng-show="user_frontdesk || request.status == 'completed '" class="ser-scpt-rjct-btn col-md-2 text-center actionbtnservice">
+                                                    <a href="javascript:void(0)" ng-show="request.status == 'awaiting'" ng-click="acceptRejectBookingService(request.id , 'accepted')" class="text-success" data-placement="top" data-popup="popover" data-trigger="hover" data-content="Accept Service" data-original-title="" title=""><i class="icon-check ml-1"></i></a>
+                                                    <a href="javascript:void(0)" ng-show="request.status == 'awaiting'" ng-click="acceptRejectBookingService(request.id, 'rejected')" class="text-danger"  data-placement="top" data-popup="popover" data-trigger="hover" data-content="Reject Service" data-original-title="" title=""><i class="icon-close2 ml-1"></i></a>
+                                                    <a href="javascript:void(0)" ng-show="request.status == 'accepted'" type="button" class="btn btn-danger service_cancel_btn" data-popup="popover" title="Cancel Reason" data-html="true" 
                                                             data-content="
-                                                            <ul class='tool-tip-list-item'>
-                                                                <li><span>Department : [[request.department_name]]</span></li>
-                                                                <li><span>Hotel : [[request.room.HotelName]]</span></li>
-                                                                <li><span>Start Time : <span class='ml-1'><i class='fa fa-clock' aria-hidden='true'></i></span> [[request.start_time]]</span></li>
-                                                                <li><span>End Time : <span class='ml-1'><i class='fa fa-clock' aria-hidden='true'></i></span> [[request.end_time]]</span></li>
-                                                                <li><span>Serving Time : <span class='ml-1'><i class='fa fa-clock' aria-hidden='true'></i></span> [[request.serving_time]]</span></li>
-                                                                <li><span>Request Time : <span class='mx-1'><i class='fa fa-calendar' aria-hidden='true'></i></span><span class='font-weight-semibold'>[[request.created_at | date]]</span> </span></li>
-                                                                <li><span>Room: [[request.room.room_title]]</span></li>
-                                                                <li><span>Room Category : </span><span class='badge text-white' style='background-color:[[request.room.category.Color]]'>[[request.room.RoomCategory]]</span></li>
-                                                            </ul>" data-original-title="Popover title">
-                                                            </i>
-                                                        </div>
-                                                        <div class="col-md-12 ">
-                                                            <p class="mb-0"><strong>Charges: </strong>[[request.service_charges | currency]]</p>
-                                                        </div>
-                                                        <div class="col-md-12 ">
-                                                            <p class="mb-0"><strong>Status: </strong> <span ng-class="getBserviceStatus(request.status)" class="badge">[[request.status]] <i ng-class="getBserIcon(request.status)" class="fa-1x ml-1"></i></span></p>
-                                                        </div>
+                                                            <div class='row mt-2'> 
+                                                                <div class='col-md-12'>
+                                                                    <input id='cancel_service_reason_input' type='text' class='form-control cancel_service_reason_input'>
+                                                                </div>
+                                                            </div>
+                                                            <div class='row my-2'> 
+                                                                <div class='col-md-12'>
+                                                                    <button data-id=[[request.id]] class='btn btn-info cancl_btn' type='button'> Yes</button>
+                                                                    <button type='button' class='btn btn-danger close-popover'>No</button>
+                                                                </div>
+                                                            </div>    
+                                                            "><i class="icon-close2 ml-2"></i>
+                                                    </a>
+                                                </div>
 
-                                                        <div class="col-md-12" ng-if="request.cancel_reason">
-                                                            <p class="mb-0"><strong>Reason: </strong> <span>[[request.cancel_reason]]</span></p>
+                                               
+                                                <div class="col-md-12">
+                                                    <div class="collapse service-detail-colpse  mt-2 border-top" id="collapse-[[request.id]]">
+                                                        <div class="mt-1">
+                                                            <ul class='tool-tip-list-item '>
+                                                                <li><span><b>Room </b>: [[request.room.room_title]] (Room# [[request.room.RoomNumber]])</span></li>
+                                                                <li><span><b>Room Category</b>: </span>[[request.room.RoomCategory]]</li>
+                                                                <li><span><b>Hotel </b>: [[request.room.HotelName]]</span></li>
+                                                                <li><span><b>Department </b>: [[request.department_name]]</span></li>
+                                                            
+                                                            </ul>
                                                         </div>
-                                                        
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="card-footer">
-                                                <div class="row">
-                                                    <div class="col-md-12 text-right">
-                                                        <div ng-show="user_frontdesk" class="ser-scpt-rjct-btn">
-                                                            <button ng-show="request.status == 'awaiting'" ng-click="acceptRejectBookingService(request.id , 'accepted')" class="btn btn-success">Accept <i class="icon-check ml-1"></i></button>
-                                                            <button ng-show="request.status == 'awaiting'" ng-click="acceptRejectBookingService(request.id, 'rejected')" class="btn btn-danger">Reject <i class="icon-close2 ml-1"></i></button>
-                                                            <button  ng-show="request.status == 'accepted'" type="button" class="btn btn-danger service_cancel_btn" data-popup="popover" title="Cancel Reason" data-html="true" 
-                                                                data-content="
-                                                                    <div class='row mt-2'> 
-                                                                        <div class='col-md-12'>
-                                                                            <input id='cancel_service_reason_input' type='text' class='form-control cancel_service_reason_input'>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class='row my-2'> 
-                                                                        <div class='col-md-12'>
-                                                                            <button data-id=[[request.id]] class='btn btn-info cancl_btn' type='button'> Yes</button>
-                                                                            <button type='button' class='btn btn-danger close-popover'>No</button>
-                                                                        </div>
-                                                                    </div>    
-                                                                    ">Cancel <i class="icon-close2 ml-2"></i>
-                                                            </button>
-                                                        </div>
-
-
-                                                        <div ng-hide="user_frontdesk" class="ser-cancel-btn">
-                                                            <button  ng-show="request.status == 'awaiting'" type="button" class="btn btn-danger service_cancel_btn" data-popup="popover" title="Cancel Reason" data-html="true" 
-                                                                data-content="
-                                                                    <div class='row mt-2'> 
-                                                                        <div class='col-md-12'>
-                                                                            <input id='cancel_service_reason_input' type='text' class='form-control cancel_service_reason_input'>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class='row my-2'> 
-                                                                        <div class='col-md-12'>
-                                                                            <button data-id=[[request.id]] class='btn btn-info cancl_btn' type='button'> Yes</button>
-                                                                            <button type='button' class='btn btn-danger close-popover'>No</button>
-                                                                        </div>
-                                                                    </div>    
-                                                                    ">Cancel <i class="icon-close2 ml-2"></i>
-                                                            </button>
-                                                        </div>
-                                                
-                                                                                                                 
-                                                    </div>
-                                                </div>
-                                            </div>
-
+                                            
                                         </div>
+
                                     </div>
                                 </div>                           
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>

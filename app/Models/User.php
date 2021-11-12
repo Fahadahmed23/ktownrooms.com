@@ -9,6 +9,7 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
 {
+    
     use Notifiable;
     
     use EntrustUserTrait;
@@ -29,9 +30,15 @@ class User extends Authenticatable
         'first_login'
     ];
 
-    protected $appends = 
-    [
-    'HotelName',
+    // protected $appends = 
+    // [
+    // 'HotelName',
+    // 'hotel_ids'
+    // ];
+
+    protected $appends = [
+        'HotelIds',
+        'HotelNames',
     ];
 
     /**
@@ -47,6 +54,49 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+
+    public function getHotelIdsAttribute()
+    {
+        return $this->hotels->pluck(['hotel_id']);
+    }
+    public function getHotelNamesAttribute()
+    {
+
+         return $this->allHotels()->pluck('HotelName')->toArray();
+    }
+
+    public function allHotels(){
+        return $this->belongsToMany(Hotel::class,'user_hotels');
+    }
+
+    public function hotels()
+    {
+        return $this->hasMany(UserHotel::class);
+    }
+
+    public function user_permissions()
+    {
+        return $this->roles()->with('permissions')->get();
+    }
+
+    public function self_manipulated(){
+        return $this->roles()->where(function($query){
+            $query->where('roles.self_manipulated_entries', 1);
+        })->count() > 0;
+    }
+    public function user_hotels(){
+        if($this->hasRole('Admin')){
+            return Hotel::whereNull('deleted_at');
+        }
+        else{
+            // if($this->self_manipulated()){
+            //     return Hotel::where('created_by',$this->id);
+            // }else{
+                return Hotel::whereIn('id',$this->HotelIds);
+            // }
+        }
     }
 
     public function addresses() {

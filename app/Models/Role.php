@@ -7,6 +7,7 @@ use Zizaco\Entrust\EntrustRole;
 class Role extends EntrustRole
 {
     use BaseModelTrait;
+   
 
 	public function __construct()
     {
@@ -17,4 +18,9 @@ class Role extends EntrustRole
     {
         return $this->belongsToMany(Permission::class, 'permission_role', 'role_id', 'permission_id');
     }
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'role_user');
+    }
+    
 }

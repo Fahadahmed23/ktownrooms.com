@@ -4,6 +4,7 @@ app.controller('generalledgersCtrl', function($scope, DTColumnDefBuilder, DTOpti
     $scope.general_ledgers = [];
     $scope.general_ledger = {};
     $scope.formType = "";
+    $scope.selectall = true;
     $scope.errors = [];
 
     $scope.posting_types = [
@@ -97,8 +98,16 @@ app.controller('generalledgersCtrl', function($scope, DTColumnDefBuilder, DTOpti
     }
 
 
+    $scope.filterData = function(searchFields) {
+        $scope.filters = angular.copy(searchFields);
+
+        $scope.getGeneralLedgers($scope.filters);
+    }
+
     $scope.getGeneralLedgers = function() {
-        $scope.ajaxGet('getGeneralLedgers', {}, true)
+        $scope.ajaxPost('getGeneralLedgers', {
+                filters: $scope.filters,
+            }, true)
             .then(function(response) {
                 $scope.general_ledgers = response.general_ledgers;
                 $scope.filtered_general_ledgers = angular.copy($scope.general_ledgers);

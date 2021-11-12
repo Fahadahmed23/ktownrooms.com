@@ -80,33 +80,6 @@
 							<div class="form-group row">
 							
 								<div class="col-lg-6">
-									<label class="col-lg-6 col-form-label">City <span class="text-danger">*</span></label>
-									<md-select name="city" md-no-asterisk required class="m-0" ng-model="user.city_id" placeholder="Select your city">
-										<md-option ng-repeat="city in cities" ng-value="city.id">[[city.CityName]]</md-option>
-									</md-select>
-									<div ng-messages="myForm.city.$error" ng-if="myForm.city.$touched || myForm.$submitted">
-										<div class="text-danger" ng-message="required">City is required</div>
-									</div>
-								</div>
-
-								<div class="col-lg-6">
-									<label class="col-lg-6 col-form-label">Hotel <span class="text-danger">*</span></label>
-									<md-select name="hotel" md-no-asterisk required class="m-0" ng-model="user.hotel_id" placeholder="Select your hotel">
-										<md-option ng-repeat="hotel in hotels | filter: {city_id:user.city_id}" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
-									</md-select>
-									<div ng-messages="myForm.hotel.$error" ng-if="myForm.hotel.$touched || myForm.$submitted">
-										<div class="text-danger" ng-message="required">Hotel is required</div>
-									</div>
-								</div>
-
-								<div class="col-lg-6">
-									<label class="col-lg-6 col-form-label">Department </label>
-									<md-select name="department" md-no-asterisk class="m-0" ng-model="user.department_id" placeholder="Select your Department">
-										<md-option ng-repeat="department in departments" ng-value="department.id">[[department.Department]]</md-option>
-									</md-select>
-								</div>
-
-								<div class="col-lg-6">
 									<label class="col-lg-6 col-form-label">Role <span class="text-danger">*</span></label>
 									<md-select ng-change="changeRole()" name="user_role" md-no-asterisk required class="m-0" ng-model="user.roles[0]" placeholder="Select your Role">
 										<md-option ng-repeat="role in roles" ng-value="role.id">[[role.display_name]]</md-option>
@@ -114,7 +87,54 @@
 									<div ng-messages="myForm.user_role.$error" ng-if="myForm.user_role.$touched || myForm.$submitted">
 										<div class="text-danger" ng-message="required">Role is required</div>
 									</div>
-								</div>	
+								</div>
+								<div class="col-lg-6">
+										<label class="col-lg-6 col-form-label">City <span class="text-danger">*</span></label>
+									
+
+
+										<md-select name="city" md-no-asterisk required class="m-0" ng-model="user.city_id" placeholder="Select your city">
+											<md-option ng-repeat="city in cities" ng-value="city.id">[[city.CityName]]</md-option>
+										</md-select>
+										<div ng-messages="myForm.city.$error" ng-if="myForm.city.$touched || myForm.$submitted">
+											<div class="text-danger" ng-message="required">City is required</div>
+										</div>
+								</div>
+								
+								<div class="col-lg-6">
+										<label class="col-lg-6 col-form-label">Hotel <span class="text-danger">*</span></label>
+										<md-select  ng-if="multiple_hotels == '1'" multiple name="hotel" md-no-asterisk required class="m-0" ng-model="user.hotel_id" placeholder="Select your hotel">
+											<md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
+										</md-select>
+
+										<md-select  ng-if="multiple_hotels == '0'"  name="hotel" md-no-asterisk required class="m-0" ng-model="user.hotel_id" placeholder="Select your hotel">
+											<md-option ng-repeat="hotel in hotels | filter: {city_id:user.city_id}" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
+										</md-select>
+
+										<div ng-messages="myForm.hotel.$error" ng-if="myForm.hotel.$touched || myForm.$submitted">
+											<div class="text-danger" ng-message="required">Hotel is required</div>
+										</div>
+								</div>
+
+								<div class="col-lg-3">
+									<label class="col-lg-6 col-form-label">Department </label>
+									<md-select ng-disabled="user.all_department == '1'" name="department" md-no-asterisk class="m-0" ng-model="user.department_id" placeholder="[[user.all_department=='1'?'All Departments':'Select Department']]">
+										<md-option ng-repeat="department in departments" ng-value="department.id">[[department.Department]]</md-option>
+									</md-select>
+								</div>
+								<div class="col-lg-3 mt-3">
+									<md-switch ng-true-value="'1'" ng-false-value="'0'" ng-model="user.all_department" style="display:inline">All Department</md-switch>
+								</div>
+
+								{{-- <div class="col-lg-6">
+									<label class="col-lg-6 col-form-label">Role <span class="text-danger">*</span></label>
+									<md-select ng-change="changeRole()" name="user_role" md-no-asterisk required class="m-0" ng-model="user.roles[0]" placeholder="Select your Role">
+										<md-option ng-repeat="role in roles" ng-value="role.id">[[role.display_name]]</md-option>
+									</md-select>
+									<div ng-messages="myForm.user_role.$error" ng-if="myForm.user_role.$touched || myForm.$submitted">
+										<div class="text-danger" ng-message="required">Role is required</div>
+									</div>
+								</div>	 --}}
 								<div class="col-lg-6" ng-if="discount_priviledge == '1'">
 									<label class="col-lg-6 col-form-label">Maximum Discount Allowed <span class="text-danger">*</span></label>
 									<input data-type="currency" currency class="form-control" ng-model="user.max_allowed_discount" name="discount" ng-required="discount_priviledge == '1'">

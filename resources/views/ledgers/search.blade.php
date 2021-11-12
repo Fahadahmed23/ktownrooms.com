@@ -99,9 +99,27 @@
                         </div>
                     </div>        
                 </div>
+
+                <div class="col-md-12 mt-2" ng-show="is_admin">
+                    <div class="row">
+                        <div class="col-md-4 text-right">
+                            <label class="mt-2">Account Gl's</label>
+                        </div>
+                        <div class="col-md-4">
+                            <md-select md-no-asterisk ng-change="checkAccGl()" name="account_gls" class="m-0" ng-model="ledger.selected_ids" placeholder="Select Account Gls" multiple>
+                                <md-button layout-fill value="all" class="select" ng-click="selectAllGls()">[[keyword]]</md-button>
+                                <md-button layout-fill value="all" class="deselect" style="display: none;" ng-click="deselectAllGls()">[[keyword]]</md-button>
+                                <md-option ng-repeat="agl in account_gls track by $index" ng-value="agl.id">[[agl.title]] - ([[agl.account_gl_code]])</md-option>
+                            </md-select>
+                            {{-- <div ng-messages="trailBalanceForm.hotel_id.$error" ng-if='trailBalanceForm.hotel_id.$touched || trailBalanceForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required">Hotel is requiured</div>
+                            </div> --}}
+                        </div>
+                    </div>        
+                </div>
                 
                 
-                <div class="col-md-12 mt-2">
+                {{-- <div class="col-md-12 mt-2">
                     <div class="row">
                         <div class="col-md-3 offset-3" >
                     
@@ -147,7 +165,7 @@
                         </div>
                     
                     </div>
-                </div>
+                </div> --}}
 
 
 

@@ -36,11 +36,9 @@
                         <label>Customer Name </label> 
                     </div>
                     
-                    <div class="floating-label"> 
-                        <input ng-model="searchBookingAttributes.Hotel" type="text" class="form-control alphabets" placeholder=" ">
-                        <span class="highlight"></span>
-                        <label>Hotel Name</label>
-                    </div>
+                    <md-select name="hotel" class="m-0" ng-model="searchBookingAttributes.Hotel" placeholder="Select a Hotel">
+                        <md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
+                    </md-select>
 
                     <div class="floating-label">    
                         <input ng-model="searchBookingAttributes.Phone" type="text" class="form-control phone_us" placeholder=" ">
@@ -54,23 +52,74 @@
                         <label>Status</label>
                     </div> --}}
 
-                    <div class="floating-label"> 
+                    <!-- <div class="floating-label"> 
                         <input ng-model="searchBookingAttributes.BookingDate" type="text" class="form-control date_format" placeholder=" ">
                         <span class="highlight"></span>
                         <label>Booking Date</label>
+                    </div> -->
+                    <div class="floating-label">
+                        <div class="input-group">
+                        <input type="text" placeholder=" " ng-model="searchBookingAttributes.BookingDate" class=" form-control pickadate">
+                            <span class="input-group-append">
+                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                            </span>
+                            <label>Booking Date</label>
+                        </div>
                     </div>
+                    
 
-                    <div class="floating-label"> 
+                    <!-- <div class="floating-label"> 
                         <input ng-model="searchBookingAttributes.CheckIn" type="text" class="form-control date_format" placeholder=" ">
                         <span class="highlight"></span>
                         <label>Check-In Date</label>
+                    </div> -->
+                    <div class="floating-label">
+                        <div class="input-group">
+                            <input type="text" placeholder=" " ng-model="searchBookingAttributes.CheckIn" class=" form-control pickadate">
+                            <span class="input-group-append">
+                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                            </span>
+                            <label>Check-In Date</label>
+                        </div>
                     </div>
 
-                    <div class="floating-label"> 
+                    <div class="floating-label">
+                        <div class="input-group">
+                            <input type="text" placeholder=" " ng-model="searchBookingAttributes.CheckOut" class=" form-control pickadate">
+                            <span class="input-group-append">
+                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                            </span>
+                            <label>Check-Out Date</label>
+                        </div>
+                    </div>
+
+                    <!-- BookingFrom and BookingTo Range -->
+
+                    <div class="floating-label">
+                        <div class="input-group">
+                            <input type="text" placeholder=" " ng-model="searchBookingAttributes.BookedFrom" class=" form-control pickadate">
+                            <span class="input-group-append">
+                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                            </span>
+                            <label>Booking From</label>
+                        </div>
+                    </div>
+
+                    <div class="floating-label">
+                        <div class="input-group">
+                            <input type="text" placeholder=" " ng-model="searchBookingAttributes.BookedTo" class=" form-control pickadate">
+                            <span class="input-group-append">
+                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                            </span>
+                            <label>Booking To</label>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="floating-label"> 
                         <input ng-model="searchBookingAttributes.CheckOut" type="text" class="form-control date_format" placeholder=" ">
                         <span class="highlight"></span>
                         <label>Check-Out Date</label>
-                    </div>
+                    </div> -->
 
                     <div class="floating-label"> 
                         <input ng-model="searchBookingAttributes.Occupants" type="text" class="form-control num2" placeholder=" ">

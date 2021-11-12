@@ -62,10 +62,14 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
             $scope.greetMessage = 'Good Evening';
         }
 
+        $scope.urlparam = window.location.search.substring(1);
+        console.log($scope.urlparam);
+
         $scope.code = angular.copy(c);
         $scope.ajaxGet('getCustomer/' + $scope.code, {}, true)
             .then(function(response) {
                 $scope.booking = response.booking;
+                $scope.checkInTime = response.checkInTime;
                 $scope.departments = response.departments;
                 $scope.services = response.services;
                 $scope.cutomers_complains = response.cutomers_complains;
@@ -89,6 +93,12 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
 
                     $('#addNewServiceRequest').modal('show');
                 }
+
+                if($scope.urlparam == 'success')
+                    toastr.success('Payment has been recieved');
+                else if ($scope.urlparam == 'failure')
+                    toastr.error('Payment has been failed');
+
             }).catch(function(e) {
                 console.log(e);
             })
@@ -109,6 +119,42 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
 
     $scope.hideComplainModal = function() {
         $('#addNewComplain').modal('hide');
+    }
+
+    $scope.blinqPayment = function(booking_id, invoice, payment_via) {
+
+        let balance_payable = invoice.net_total - invoice.payment_amount;
+        // console.log(balance_payable);
+        let payment_type = 'BLINQ_VM';
+        if(payment_via == 'Account')
+            payment_type = 'BLINQ_ACC';
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: '/blinqPayment',
+            data: { booking_id: booking_id, balance_payable: balance_payable },
+            success: function(response) {
+                console.log(response);
+                if (response.success) {
+                    $('#payment_via').val(payment_type);
+                    $('#order_id').val(response.blinq_data.InvoiceNumber);
+                    $('#return_url').val('https://partners.ktownrooms.com/order-confirmation/'+response.blinq_data.InvoiceNumber);
+                    $('#paymentcode').val(response.blinq_data.PaymentCode);
+                    $('#encrypted_form_data').val(response.encrypted_form_data);
+
+                    document.getElementById("blinqPayment").submit();
+                } else {
+                    toastr.error(response.message);
+                }
+            }
+        });
+
+
     }
 
 
@@ -133,6 +179,7 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
                     // $("#c_form_tab").removeClass('active show');
                     response.complain.ComplainTime = new Date(response.complain.ComplainTime);
                     $scope.cutomers_complains.push(response.complain);
+                    $scope.hideComplainModal();
                 }
             })
             .catch(function(e) {
@@ -207,26 +254,32 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
                 room_id: $scope.service_request.room_id
             }, true)
             .then(function(response) {
-                $scope.department_services = response.department_services;
-                console.log($scope.department_services);
+                if (response.success) {
+                    $scope.department_services = response.department_services;
+                    console.log($scope.department_services);
 
-                for (let i = 0; i < $scope.department_services.length; i++) {
-                    if ($scope.department_services[i].ServingTime >= 60) {
-                        $scope.department_services[i].ServingTime = (parseInt($scope.department_services[i].ServingTime) / 60).toFixed(2) + ' Hrs';
-                    } else {
-                        $scope.department_services[i].ServingTime = $scope.department_services[i].ServingTime + ' Mins';
+                    for (let i = 0; i < $scope.department_services.length; i++) {
+                        if ($scope.department_services[i].ServingTime >= 60) {
+                            $scope.department_services[i].ServingTime = (parseInt($scope.department_services[i].ServingTime) / 60).toFixed(2) + ' Hrs';
+                        } else {
+                            $scope.department_services[i].ServingTime = $scope.department_services[i].ServingTime + ' Mins';
+                        }
+                        // console.log($scope.servingTime);
                     }
-                    // console.log($scope.servingTime);
+
+
+                    // enable disable services()
+                    $scope.enableDisableServices();
+
+                    // $scope.service_request.requested_services = [];
+
+                    // allowed services in that room
+                    // $scope.calculateInclusiveExclusive();
+
+                } else {
+                    toastr.error("you are not allowed to avail this before checkin");
                 }
 
-
-                // enable disable services()
-                $scope.enableDisableServices();
-
-                // $scope.service_request.requested_services = [];
-
-                // allowed services in that room
-                // $scope.calculateInclusiveExclusive();
             }).catch(function(e) {
                 console.log(e);
             })
@@ -249,7 +302,7 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
             let service_in_room = current_room[0].services.filter((sv) => s.id == sv.id);
 
             if (start_time._isValid || end_time._isValid) {
-                if (current_time.isBetween(start_time, end_time)) {
+                if (current_time.isBetween(start_time, end_time) || s.is_24hrs == '1') {
                     s.enable = true;
                 } else {
                     s.enable = false;
@@ -327,6 +380,12 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
 
             return s;
         });
+    }
+
+    $scope.addNotQuantitativeService = function(s) {
+        s.times = 1;
+        $scope.addService(s);
+        $('.services-tab-pane').removeClass('col-md-12').addClass('col-md-8');
     }
 
     $scope.incrementTimes = function(s) {

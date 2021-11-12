@@ -21,9 +21,9 @@ class PurchaseOrder extends Model
         return $this->details()->count();
     }
     public function getHotelNameAttribute(){
-        return $this->hotel->HotelName;
+        return $this->hotel->HotelName ?? null;
     }
     public function getVendorNameAttribute(){
-        return $this->vendor->Name;
+        return $this->vendor->Name ?? null;
     }
 }

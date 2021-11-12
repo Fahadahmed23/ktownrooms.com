@@ -1,7 +1,9 @@
 app.controller('accountlookupsCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder) {
     // variables
-    $scope.account_types = {};
+    $scope.account_types = [];
     $scope.account_type = {};
+
+    $scope.account_heads = [];
 
     $scope.account_sub_types = {};
     $scope.account_sub_type = {}
@@ -44,6 +46,7 @@ app.controller('accountlookupsCtrl', function($scope, DTColumnDefBuilder, DTOpti
 
                 // for dropdown
                 $scope.companies = response.companies;
+                $scope.account_heads = response.account_heads;
                 console.log(response);
             })
             .catch(function(e) {
@@ -200,6 +203,7 @@ app.controller('accountlookupsCtrl', function($scope, DTColumnDefBuilder, DTOpti
 
         $scope.formType = "save";
         $scope.voucher_type = {};
+        $scope.voucher_type.is_configured = '0';
         $("#voucherTypeModal").modal('show');
     }
 
@@ -227,6 +231,10 @@ app.controller('accountlookupsCtrl', function($scope, DTColumnDefBuilder, DTOpti
 
         $scope.formType = "edit";
         $scope.voucher_type = angular.copy(vt);
+        if ($scope.voucher_type.is_configured == '1') {
+            $scope.voucher_type.credit_account_type_id = $scope.account_heads.filter((ah) => ah.id == $scope.voucher_type.credit_gl_id)[0].account_type_id;
+            $scope.voucher_type.debit_account_type_id = $scope.account_heads.filter((ah) => ah.id == $scope.voucher_type.debit_gl_id)[0].account_type_id;
+        }
         console.log($scope.voucher_type);
 
         $('#voucherTypeModal').modal('show');

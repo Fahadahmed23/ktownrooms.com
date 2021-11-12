@@ -24,6 +24,38 @@ app.controller('ledgerCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
 
     DragAndDrop.init($scope);
 
+    $scope.selectAllGls = function(){
+        for (let i = 0; i < $scope.account_gls.length; i++) {
+            $scope.ledger.selected_ids.push($scope.account_gls[i].id);
+        }
+        $scope.keyword = "Deselect All";
+        $('.select').css('display', 'none');
+        $('.deselect').css('display', 'block');
+
+    }
+    $scope.deselectAllGls = function(){
+        for (let i = 0; i < $scope.account_gls.length; i++) {
+            $scope.ledger.selected_ids = [];
+        }
+        $scope.keyword = "Select All";
+        $('.deselect').css('display', 'none');
+        $('.select').css('display', 'block');
+    }
+    $scope.keyword = 'Select All';
+    $scope.checkAccGl = function(){
+        if($scope.ledger.selected_ids){
+            if($scope.ledger.selected_ids.length == $scope.account_gls.length){
+                $scope.keyword = "Deselect All";
+                $('.select').css('display', 'none');
+                $('.deselect').css('display', 'block');
+            } else {
+                $scope.keyword = 'Select All';
+                $('.deselect').css('display', 'none');
+                $('.select').css('display', 'block');
+            }
+        }
+        console.log($scope.ledger.selected_ids);
+    }
 
     $scope.getGeneralLedgers = function() {
         $scope.ajaxGet('getAccountGL', {}, true)

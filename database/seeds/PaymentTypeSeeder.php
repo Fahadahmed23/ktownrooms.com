@@ -21,5 +21,8 @@ class PaymentTypeSeeder extends Seeder
         PaymentType::create([
             'PaymentMode' => 'Credit Card',
         ]);
+        PaymentType::create([
+            'PaymentMode' => 'Account',
+        ]);
     }
 }

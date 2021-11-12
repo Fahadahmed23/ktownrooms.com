@@ -45,13 +45,17 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script>
+    var myAllBookingChart = null;
     function loadAllBookingsGraph(labels, datasets){
+        if(myAllBookingChart!=null){
+            myAllBookingChart.destroy();
+        }
         const data = {
             labels: labels,
             datasets: datasets
         }
         var ctx = document.getElementById('allBookingChart').getContext('2d');
-        var myChart = new Chart(ctx, {
+        myAllBookingChart = new Chart(ctx, {
             type: 'bar',
             data: data,
             options: {
@@ -65,14 +69,17 @@
             }
         });
     }
-    
+    var myPieChart = null;
     function loadChannelBookingsGraph(labels, datasets){
+        if(myPieChart!=null){
+            myPieChart.destroy();
+        }
         const data2 = {
             labels: labels,
             datasets: datasets
         };
         var ctx2 = document.getElementById('channelChart').getContext('2d');
-        var myChart = new Chart(ctx2, {
+        myPieChart = new Chart(ctx2, {
             type: 'doughnut',
             data: data2,
             options: {
@@ -104,9 +111,10 @@
             console.log(data);
             // Demo dataset
             var dataset = [
-                { name: 'Cancelled', count: data.bookingCancelledCount },
-                { name: 'Pending', count: data.bookingPendingCount },
-                { name: 'Confirmed', count: data.bookingApprovedCount }
+                { name: 'Occupied', count: data.rooms_occupied },
+                { name: 'Reserved', count: data.rooms_reserved },
+                { name: 'Available', count: data.rooms_available },
+                { name: 'Blocked', count: data.rooms_blocked }
             ];
 
             // Main variables
@@ -122,7 +130,7 @@
 
             // Colors
             var color = d3.scale.ordinal()
-                .range(['#EF5350', '#29b6f6', '#66BB6A']);
+                .range(['#66BB6A', '#ea883f', '#29b6f6', '#EF5350']);
 
 
             // Create chart
@@ -173,7 +181,7 @@
             var arcTween = function(transition, newAngle) {
                 transition.attrTween("d", function(d) {
                     var interpolate = d3.interpolate(d.endAngle, newAngle);
-                    var interpolateCount = d3.interpolate(0, (data.bookingCount));
+                    var interpolateCount = d3.interpolate(0, (data.rooms_count));
                     return function(t) {
                         d.endAngle = interpolate(t);
                         middleCount.text(d3.format(",d")(Math.floor(interpolateCount(t))));

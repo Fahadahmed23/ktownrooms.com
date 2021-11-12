@@ -73,7 +73,7 @@
                     </fieldset>
 				</div>
 				<div class="modal-footer">
-					 <button type="button" ng-click="saveContact()" class="btn btn-success"><i class=" mr-2 icon-floppy-disk mr-2"></i>[[hotel.id?'Update':'Add']]</button>
+					 <button type="button" ng-click="pushContact()" class="btn btn-success"><i class=" mr-2 icon-floppy-disk mr-2"></i>Add Contact</button>
                 </div>
             </form>
 		</div>

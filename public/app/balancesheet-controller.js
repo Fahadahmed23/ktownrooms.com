@@ -4,6 +4,7 @@ app.controller('balanceSheetCtrl', function($scope, DTColumnDefBuilder, DTOption
     $scope.balance_sheets = [];
     $scope.formType = "";
     $scope.errors = [];
+    $scope.zero_records = 0;
     // datatables
     $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers')
         .withDOM("<'row m-0'<'col-sm-12'tr>>" +
@@ -15,27 +16,56 @@ app.controller('balanceSheetCtrl', function($scope, DTColumnDefBuilder, DTOption
 
     // functions
     $scope.init = function() {
-        $scope.getFiscalYears();
+        $scope.getLevels_FiscalYear();
+    }
+    $scope.selectAllHotels = function(){
+        for (let i = 0; i < $scope.hotels.length; i++) {
+            $scope.balance_sheet.hotel_id.push($scope.hotels[i].id);
+        }
     }
 
-    $scope.getFiscalYears = function() {
-        $scope.ajaxGet('getFiscalYears', {}, true)
+    $scope.getLevels_FiscalYear = function() {
+        $scope.ajaxGet('levels_fiscalyears', {}, true)
             .then(function(response) {
-                // console.log(response);
-                $scope.fiscal_years = response.fiscalyears;
+                $scope.levels = response.levels;
+                $scope.fiscal_years = response.fiscal_years;
                 $scope.hotels = response.hotels;
-                $scope.balance_sheet.hotel_id = response.current_user_hotel_id;
+                // $scope.balance_sheet.hotel_id = response.current_user_hotel_id;
                 $scope.is_admin = response.is_admin;
-                // $scope.income_statement.fiscal_year = response.fiscal_year;
-
             })
             .catch(function(e) {
                 console.log(e);
             })
     }
 
-    $scope.balance_sheet = function() {
+    // $scope.getFiscalYears = function() {
+    //     $scope.ajaxGet('getFiscalYears', {}, true)
+    //         .then(function(response) {
+    //             // console.log(response);
+    //             $scope.fiscal_years = response.fiscalyears;
+    //             $scope.hotels = response.hotels;
+    //             $scope.balance_sheet.hotel_id = response.current_user_hotel_id;
+    //             $scope.is_admin = response.is_admin;
+    //             // $scope.income_statement.fiscal_year = response.fiscal_year;
 
+    //         })
+    //         .catch(function(e) {
+    //             console.log(e);
+    //         })
+    // }
+
+
+    $scope.hideZeroValue = function(val){
+        console.log(val);
+        if(val == 1){
+            $scope.balance_sheets = $scope.balance_sheets.filter((bs) => bs.Total != 0);
+        }
+        else{
+            $scope.balanceSheet();
+        }
+    }
+    $scope.balanceSheet = function() {
+        
         $scope.balanceSheetForm.$submitted = true;
         if (!$scope.balanceSheetForm.$valid) {
             return;
@@ -48,6 +78,7 @@ app.controller('balanceSheetCtrl', function($scope, DTColumnDefBuilder, DTOption
 
 
         $scope.ajaxPost('get_balance_sheet', {
+                level: $scope.income_statement.level_no,
                 start_date: $scope.balance_sheet.start_date,
                 end_date: $scope.balance_sheet.end_date,
                 fiscal_year: $scope.balance_sheet.fiscal_year,
@@ -57,22 +88,41 @@ app.controller('balanceSheetCtrl', function($scope, DTColumnDefBuilder, DTOption
                 console.log(response.balance_sheets);
                 $scope.balance_sheets = response.balance_sheets;
                 $scope.total_equity = response.total_equity;
+                $scope.zero_records = 0;
+                
             })
             .catch(function(e) {
                 console.log(e)
             })
+            
     }
-    $scope.getLevel = function(lvl) {
+    $scope.getLevel = function(lvl, order) {
         switch (lvl) {
-            case 2:
+            case 1:
                 return 'pl-0';
+            case 2:
+                if (order == 2)
+                    return 'pl-lg-2';
+                else
+                    return 'pl-lg-1';
+                // return 'pl-2';
             case 3:
-                return 'pl-20';
+                return 'pl-lg-3';
             case 4:
-                return 'pl-40';
+                return 'pl-lg-4';
             case 5:
-                return 'pl-60';
+                return 'pl-lg-5';
         }
+        // switch (lvl) {
+        //     case 2:
+        //         return 'pl-0';
+        //     case 3:
+        //         return 'pl-20';
+        //     case 4:
+        //         return 'pl-40';
+        //     case 5:
+        //         return 'pl-60';
+        // }
     }
 
     $scope.download_pdf = function() {
@@ -84,6 +134,7 @@ app.controller('balanceSheetCtrl', function($scope, DTColumnDefBuilder, DTOption
         $scope.balance_sheet.account_gl_ids = [...new Set($scope.balance_sheet.selected_ids)];
 
         $scope.ajaxPost('balance_sheet_pdf', {
+                level: $scope.income_statement.level_no,
                 start_date: $scope.balance_sheet.start_date,
                 end_date: $scope.balance_sheet.end_date,
                 fiscal_year: $scope.balance_sheet.fiscal_year,

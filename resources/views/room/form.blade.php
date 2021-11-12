@@ -178,7 +178,7 @@ input#selectimage {
 
                 <div class="col-md-3"> 
                  <label class="col-lg-6 col-form-label">Hotel <span class="text-danger">*</span></label>
-                  <md-select ng-disabled="!is_admin"  md-no-asterisk ng-change="getHotelId(room.hotel_id)" name="hotel_id" class="m-0" ng-model="room.hotel_id" placeholder="Select a Hotel" required>
+                  <md-select md-no-asterisk ng-change="getHotelId(room.hotel_id)" name="hotel_id" class="m-0" ng-model="room.hotel_id" placeholder="Select a Hotel" required>
                     <md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
                   </md-select>
 

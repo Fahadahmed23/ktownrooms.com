@@ -1,6 +1,15 @@
 app.controller('bookingsCalendarCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder) {
     $scope.hotel = [];
-
+    //dropdown for booking status in search by bookings 
+    $scope.booking_statuses = [
+        'Cancelled',
+        'Pending',
+        'Confirmed',
+        'CheckedIn',
+        'CheckedOut',
+    ]
+    // $scope.filters=[];
+    $scope.filters = {};
     // datatables
     $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers')
         .withDOM("<'row'<'col-sm-12'tr>>" +
@@ -14,14 +23,38 @@ app.controller('bookingsCalendarCtrl', function($scope, DTColumnDefBuilder, DTOp
         $scope.getData();
     }
 
+    $scope.filterBooking = function(){
+        $scope.getData();
+    }
+    $scope.resetFilters = function(){
+        $scope.filters = {};
+        $scope.getData();
+    }
+    $scope.selectAllHotels = function(){
+        for (let i = 0; i < $scope.hotels.length; i++) {
+            $scope.filters.hotel_id.push($scope.hotels[i].id);
+        }
+    }
+    $scope.selectAllStatus = function(){
+        $scope.filters.booking_status = $scope.booking_statuses;
+    }
+    
     $scope.getData = function(date) {
-        $scope.ajaxPost('get_bookings_calendar', {
-                date: date,
-            }, true)
+        let data = {
+            date: date,
+            filters: $scope.filters 
+        }
+        $scope.ajaxPost('get_bookings_calendar', data, true)
             .then(function(response) {
                 $scope.max_count = response.max_count;
                 $scope.bookings = response.bookings;
                 $scope.booking_counts = response.booking_counts;
+                $scope.hotels = response.hotels;
+                $scope.hotel_count = response.hotel_count;
+                // if ($scope.hotels.length == 1) {
+                //     $scope.filters.hotel_id = $scope.hotels[0].id;
+                // }
+
                 // console.log($scope.booking_counts);
                 var keys = Object.keys($scope.booking_counts);
                 $scope.events = [];

@@ -23,7 +23,7 @@
                 <div class="collapse show" id="demo1" style="">
                   <div class="row row m-0 p-2 bg-light">
                     <div class="col-md-6"> 
-                      <div  ng-hide="!is_admin" class="form-group">
+                      <div class="form-group">
                         <label class="col-lg-6 col-form-label">Hotel</label>
                         <md-select md-no-asterisk name="hotel_id" class="m-0" ng-model="purchase_order.hotel_id" placeholder="Select a Hotel" required>
                           <md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
@@ -55,10 +55,8 @@
 
                       <div class="form-group">
                         <label class="col-lg-6 col-form-label">Status</label>
-                        <md-select name="Status" class="m-0" ng-model="purchase_order.Status" placeholder="Pending" disabled>
-                          <md-option value="Pending" ng-selected="true">Pending</md-option>
-                          <md-option value="Approved">Approved</md-option>
-                          <md-option value="Rejected">Rejected</md-option>
+                        <md-select name="Status" class="m-0" ng-model="purchase_order.Status" placeholder="Approved" disabled>
+                          <md-option value="Approved" ng-selected="true">Approved</md-option>
                         </md-select>
                       </div>
                     </div>

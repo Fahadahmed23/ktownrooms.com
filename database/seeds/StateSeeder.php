@@ -18,11 +18,11 @@ class StateSeeder extends Seeder
             'country_id' => '1',
             'Abbreviation' => 'SIN',
         ]);
-        State::create([
-            'id' => '2',
-            'StateName' => 'Islamabad',
-            'country_id' => '1',
-            'Abbreviation' => 'ISL',
-        ]);
+        // State::create([
+        //     'id' => '2',
+        //     'StateName' => 'Islamabad',
+        //     'country_id' => '1',
+        //     'Abbreviation' => 'ISL',
+        // ]);
     }
 }

@@ -88,10 +88,11 @@ class HotelBookingServicesController extends Controller
 
     public function acceptRejectBookingService(Request $request)
     {   
+        $user = Auth::user();
         $bs = BookingService::find($request->service_id);
-
         if ($bs->status == 'awaiting') {
             $bs->status = $request->action;
+            $bs->apr_rej_by = $user->id;
             $bs->save();
             return response()->json([
                 'success' => true,

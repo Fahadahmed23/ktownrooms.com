@@ -28,5 +28,9 @@ class AccountAutoPostingTypeSeeder extends Seeder
             'title' => 'booking extended',
             'is_active' => '1',
         ]);
+        AccountAutoPostingType::create([
+            'title' => 'refund',
+            'is_active' => '1',
+        ]);
     }
 }

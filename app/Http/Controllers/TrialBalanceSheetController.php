@@ -39,8 +39,14 @@ class TrialBalanceSheetController extends Controller
     public function TrialBalanceSheet(Request $request)
     {
         // dd($request->start_date);
+        $level = $request->level;
+        $start_date = $request->start_date ?? NULL;
+        $end_date = $request->end_date ?? NULL;
+        $fiscal_year = $request->fiscal_year;
+        // $hotel_id = $request->hotel_id ?? NULL;
+        $hotel_id = isset($request->hotel_id) ?implode(",", $request->hotel_id) : '';
 
-        $account_heads  = DB::select('call gettrialbalance(?,?,?,?,?)',array($request->level,$request->fiscal_year, $request->start_date , $request->end_date, $request->hotel_id));
+        $account_heads  = DB::select('call gettrialbalance(?,?,?,?,?)',array($level, $fiscal_year,$start_date, $end_date, $hotel_id));
         return response()->json([
             'account_heads'=>$account_heads,
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
@@ -51,7 +57,7 @@ class TrialBalanceSheetController extends Controller
     {
         $levels = AccountLevel::all();
         $fiscal_years = AccountFiscalYearMaster::all();
-        $hotels = Hotel::all();
+        $hotels = auth()->user()->user_hotels();
         $is_admin = true;
         $current_user_hotel_id = null;
         if (!auth()->user()->hasRole('Admin')) {
@@ -61,7 +67,7 @@ class TrialBalanceSheetController extends Controller
         return response()->json([
             'fiscal_years'=>$fiscal_years,
             'levels'=>$levels,
-            'hotels'=>$hotels,
+            'hotels'=>$hotels->get(),
             'is_admin'=> $is_admin,
             'current_user_hotel_id'=> $current_user_hotel_id,
         ]);
@@ -69,7 +75,14 @@ class TrialBalanceSheetController extends Controller
 
     public function tb_pdfview(Request $request)
     {
-        $account_heads  = DB::select('call gettrialbalance(?,?,?,?,?)',array($request->level,$request->fiscal_year, $request->start_date , $request->end_date, $request->hotel_id));
+        $level = $request->level;
+        $start_date = $request->start_date ?? NULL;
+        $end_date = $request->end_date ?? NULL;
+        $fiscal_year = $request->fiscal_year;
+        // $hotel_id = $request->hotel_id ?? NULL;
+        $hotel_id = isset($request->hotel_id) ?implode(",", $request->hotel_id) : '';
+
+        $account_heads  = DB::select('call gettrialbalance(?,?,?,?,?)',array($level, $fiscal_year,$start_date, $end_date, $hotel_id));
         $totalDebit = 0;
         $totalCredit = 0;
         foreach ($account_heads as $key => $value) {

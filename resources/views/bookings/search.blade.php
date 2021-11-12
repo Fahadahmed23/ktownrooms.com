@@ -132,12 +132,12 @@
                     <form name="bookingFrm" action="javascript:void(0)" style="display:flex; width:100%" confirm-on-exit>
                         <div class="col-md-10 row">
         
-                            <div class="col-md-3" ng-hide="user.is_frontdesk">
+                            <div class="col-md-3" >
                                 <!-- Select All option -->
                                 <div class="form-group">
                                     <label>Select <span class="font-weight-semibold">City</span><span class="text-danger"> * </span></label>
         
-                                    <md-select ng-change="changeCity()" md-no-asterisk ng-disabled="formType=='edit'" name="city" class="m-0" ng-model="nBooking.city_id" placeholder="Select a City" required>
+                                    <md-select ng-change="changeCity()" md-no-asterisk ng-disabled="formType=='edit'" name="city" class="m-0" ng-model="nBooking.city_id" ng-disabled="cities.length==1" placeholder="Select a City" required>
                                         <md-option ng-repeat="city in cities" ng-value="city.id">[[city.CityName]]</md-option>
                                     </md-select>
                                     <div ng-messages="bookingFrm.city.$error" ng-if='bookingFrm.city.$touched || bookingFrm.$submitted' ng-cloak style="color:#e9322d;">
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
         
-                            <div class="col-md-3" ng-show="user.is_frontdesk">
+                            {{-- <div class="col-md-3" ng-show="user.is_frontdesk">
                                 <div class="form-group" style="display: inline-grid">
                                     <label>City: </label>
                                     <input type="text" class="form-control" readonly disabled ng-value="cities[0].CityName">
@@ -158,14 +158,15 @@
                                     <label>Hotel: </label>
                                     <input type="text" class="form-control" readonly disabled ng-value="hotels[0].HotelName">
                                 </div>
-                            </div>
+                            </div> --}}
         
-                            <div class="col-md-3" ng-hide="user.is_frontdesk">
+                            <div class="col-md-3" >
                                 <!-- Select All option -->
                                 <div class="form-group">
                                     <label>Select <span class="font-weight-semibold">Hotel</span><span class="text-danger"> * </span></label>
                                     <md-select md-no-asterisk ng-disabled="formType=='edit'" name="hotel" class="m-0" ng-model="nBooking.hotel" placeholder="Select a Hotel" required ng-change="changeHotel()">
                                         <md-option ng-repeat="hotel in filteredHotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
+                                        {{-- <md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option> --}}
                                     </md-select>
         
                                     <div ng-messages="bookingFrm.hotel.$error" ng-if='bookingFrm.hotel.$touched || bookingFrm.$submitted' ng-cloak style="color:#e9322d;">
@@ -276,8 +277,6 @@
                                 </div>
                             </div>
     
-        
-        
                             <div class="col-md-3">
                                 <!-- Select All option -->
                                 <div class="form-group">
@@ -305,15 +304,14 @@
                             </div>
     
                             <div class="col-md-3">
-                                <label class="">Customer CNIC</label>
+                                <label class="">CNIC/Passport</label>
                                 <div class="input-group">
-                                    <input name="customer_cnic" ng-model="customer_cnic" type="text" placeholder="42000-0000000-0" class="form-control">
+                                    <input name="customer_cnic" ng-model="customer_cnic" type="text" placeholder="42000-0000000-0" class="form-control" maxlength="25">
                                     <div ng-messages="bookingFrmNew.customer_cnic.$error" ng-if='bookingFrmNew.customer_cnic.$touched || bookingFrmNew.$submitted' ng-cloak style="color:#e9322d;">
                                         <div class="text-danger" ng-message="required">Check-out Date is required</div>
                                     </div>
                                 </div>
                             </div>
-        
         
                         </div>
                     </div>

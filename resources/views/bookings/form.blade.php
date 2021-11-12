@@ -1,6 +1,6 @@
 <style>
 .scrolbx::-webkit-scrollbar-thumb {
-      background: #9a9a9a;
+      background: #9a9a9a;  
 }
 .scrolbx::-webkit-scrollbar {
     width: 3px;
@@ -58,13 +58,13 @@
         {{-- <div class="card"> --}}
             <div ng-if="nBooking.is_third_party" class="pt-0 mx-2">
                 <div class="card pt-0">
-                    <div class="row m-0">
+                    <div class="row m-0"> 
                         <div class="col-md-8">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="customer_information">
                                         <div class="title px-2 border-bottom bg-light py-1">
-                                            <h6 class="mb-0"> <i class="icon-user mr-1"></i> Customer Information</h6>
+                                            <h6 class="mb-0"> <i class="icon-user mr-1"></i> Customer Information</h6>    
                                         </div>
                                         <div class="p-2 detail">
                                             <div class="customer-name">
@@ -72,26 +72,26 @@
                                             </div>
                                             <div class="customer-phone">
                                                 <span class="font-weight-bold">Phone: </span><span>[[nBooking.booking_third_party.phone]]</span>
-                                            </div>
+                                            </div>    
                                             <div class="customer-email">
                                                 <span class="font-weight-bold">Email: </span><span>[[nBooking.booking_third_party.email]]</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> 
                                 </div>
                                 <div class="col-md-9">
                                     <div class="title px-2 border-bottom bg-light py-1">
-                                        <h6 class="mb-0"> <i class="icon-calendar2 mr-1"></i> Third Party Booking Information</h6>
+                                        <h6 class="mb-0"> <i class="icon-calendar2 mr-1"></i> Third Party Booking Information</h6>    
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="booking_information">
-
+                                                
                                                 <div class="pt-2 px-2 detail">
                                                     <div class="booking-number">
                                                         <span class="font-weight-bold"> Booking #: </span><span>[[nBooking.booking_third_party.booking_no]]</span><span ng-class="getStatusClass(nBooking.status)" class="badge ml-2"> [[nBooking.status]]</span>
                                                     </div>
-
+                
                                                     <div class="booking-hotel">
                                                         <span class="font-weight-bold"> Hotel : </span><span>[[nBooking.booking_third_party.hotel_name]] </span>
                                                     </div>
@@ -103,12 +103,12 @@
                                                     <div class="booking-total-occupants">
                                                         <span class="font-weight-bold"> Total Occupants : </span><span>[[nBooking.booking_third_party.no_occupants]] </span>
                                                     </div>
-
+                
                                                     <div class="booking-total-cost">
                                                         <span class="font-weight-bold"> Total Amount : </span><span>[[nBooking.booking_third_party.total_cost | currency]] </span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> 
                                         </div>
                                         <div class="col-md-4">
                                             <div class="booking_information">
@@ -118,25 +118,31 @@
                                                     </div>
                                                     <div class="checkin-date">
                                                         <span class="font-weight-bold">Booking Date: </span><span>[[nBooking.booking_third_party.booking_date | date]]</span>
-                                                    </div>
-
+                                                    </div> 
+        
                                                     <div class="checkin-date">
                                                         <span class="font-weight-bold">Check-In: </span><span>[[nBooking.booking_third_party.booking_from | date]]</span>
-                                                    </div>
+                                                    </div>    
                                                     <div class="checkout-date">
                                                         <span class="font-weight-bold">Check-Out: </span><span>[[nBooking.booking_third_party.booking_to  |date]]</span>
                                                     </div>
+                                                    <div class="payment-mode">	
+                                                        <span class="font-weight-bold">Pay With: </span><span>[[nBooking.booking_third_party.payment_mode ]]</span>	
+                                                    </div>	
+                                                    <div class="payment-status">	
+                                                        <span class="font-weight-bold">Payment Status: </span><span>[[nBooking.booking_third_party.payment_status ? 'PAID' : 'UNPAID']]</span>	
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </div> 
                                         </div>
                                     </div>
-
+                                   
                                 </div>
                                 <div class="col-md-12">
                                     <div class="title px-2 border-bottom bg-light py-1">
-                                        <h6 class="mb-0"><i class="icon-city mr-1"></i> Rooms Information</h6>
+                                        <h6 class="mb-0"><i class="icon-city mr-1"></i> Rooms Information</h6>    
                                     </div>
-
+        
                                     <div class="row m-0 py-2">
                                         <div class="col-md-4" ng-repeat="detail in nBooking.booking_third_party.details">
                                             <div class="card border-left-3 border-left-warning">
@@ -158,19 +164,19 @@
                                                         <div class="col-md-6 text-right">
                                                             <span class="text-uppercase font-size-xs badge badge-warning text-white">[[detail.room_type_name?detail.room_type_name:'Room Deluxe']]</span>
                                                         </div>
-
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>  
                                     </div>
-
+        
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="title px-2 border-bottom bg-light py-1">
-                                <h6 class="mb-0">Mapping Status</h6>
+                                <h6 class="mb-0">Mapping Status</h6>    
                             </div>
                             <div class="maping-information maping-status-list">
                                     <ul class="pl-2 pt-2">
@@ -186,7 +192,7 @@
                 </div>
             </div>
         {{-- </div> --}}
-
+        
 
 
 
@@ -213,12 +219,12 @@
                                         <th>Selling Price </th>
                                         <th>Cost of Rooms</th>
                                         <th>Occupants</th>
-
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="detail in nBooking.booking_third_party.details" >
-
+                                       
                                         <td>[[detail.no_of_rooms]]</td>
                                         <td>[[detail.selling_price]]</td>
                                         <td>[[detail.cost_of_rooms]]</td>
@@ -230,7 +236,7 @@
                     </div>
                 </div>
             </div>
-
+           
 
 
             <div  class="col-md-3">
@@ -290,7 +296,7 @@
                                             data-content="Allowed Occupants: [[nBook.hotel_room_category.allowed]]
                                             <br>Maximum Allowed Occupants: [[nBook.hotel_room_category.max_allowed]]
                                             <br>Additional Guest Rate: [[nBook.hotel_room_category.additional_guest_charges]]"
-                                            data-original-title="Popover title"><i class="fa fa-info-circle"></i></span>
+                                            data-original-title="Popover title"><i class="fa fa-info-circle"></i></span>                                   
                                         </td>
                                         <td>[[nBook.hotel_room_category.CategoryName]]</td>
                                         {{-- <td>[[nBook.RoomCharges | currency]]</td> --}}
@@ -321,7 +327,7 @@
                             <div class="list-icons">
                                 <span>
                                 <a class="list-icons-item rm-add" ng-click="showOccupantsModal()"><i class="icon-plus22 mr-2"></i>Add</a>
-                                </span>
+                                </span>   
                             </div>
                         </div>
                     </div>
@@ -335,12 +341,12 @@
                                         <div class="text-muted" ng-if="nOccupant.CNIC && nOccupant.CNIC.length > 0">CNIC# [[nOccupant.CNIC]]</div>
                                         <div class="text-muted" ng-if="nOccupant.Passport && nOccupant.Passport.length > 0">Passport# [[nOccupant.Passport]]</div>
                                     </div>
-
+                                    
                                     <a ng-show="formType=='create'" href="" class="list-icons-item" ng-click="showOccupantsModalEdit(nOccupant, true);" title="Edit Occupant"><i class="icon-pencil6"></i></a>
                                     <a ng-show="formType=='create'" href="" class="list-icons-item px-3" data-popup="tooltip" title="" ng-click="removeOccupant(nOccupant);" data-trigger="hover" data-original-title="Remove"><i class="icon-cross2"></i></a>
                                 </li>
                             </div>
-
+                        
                         </ul>
                     </div>
                 </div>
@@ -354,7 +360,7 @@
                         <div class="header-elements">
                             <div class="list-icons">
                                 <a value="[[nBooking.booking_no || nBooking.status=='CheckedIn']]" ng-hide="nBooking.booking_no && nBooking.status=='CheckedIn'" class="list-icons-item rm-add" ng-click="showStayModal()"><i class="icon-pencil5 mr-2"></i></a>
-
+                                
                                 </span>
                             </div>
                         </div>
@@ -362,21 +368,21 @@
                     <div class="card-body" style="height: 185px; overflow-y: scroll;">
                         <div class="input-group">
                             <label for="" class="col-md-12">Night's: <span class="">[[nights]]</span></label>
-
+                            
                         </div>
 
                         <div class="input-group">
-                            <label for="" class="col-md-12">Check-In: <span class="">[[start_date | date]]</span></label>
+                            <label for="" class="col-md-12">Check-In: <span class="">[[sdTemp | date]]</span></label>
                         </div>
 
                         <div class="input-group">
-                            <label for="" class="col-md-12">Check-Out: <span class="">[[end_date | date]]</span></label>
+                            <label for="" class="col-md-12">Check-Out: <span class="">[[edTemp | date]]</span></label>
                         </div>
                     </div>
                     {{-- <div class="card-body mx-2 scrolbx" style="height: 185px; overflow-y: scroll;">
                         <ul id="mediaList" class="media-list" style="">
                             <div class="">
-                                    <li class="media m-0 py-2" >
+                                    <li class="media m-0 py-2" > 
                                     <div class="media-body mt-2">
                                         <div class="media-title font-weight-semibold d-flex">
                                             <label class="col-md-3">Night(s):</label>
@@ -393,20 +399,20 @@
                                                     <input ng-change="changeCheckInDate()" type="text" name="start_date" placeholder="MM/DD/YYYY" ng-model="start_date" id="startdate" class="form-control pickadate" required>
                                                     <span class="" style=" margin: 0;border-left: 1px solid #eee;">
                                                         <span class="btn btn-info " style="padding: 0;"> check availibilty <i ng-click="checkRoomsAvailability" class="icon-redo2"></i>
-
+                                                       
                                                         </span>
                                                     </span>
                                                 </div>
                                         </div>
                                         <div class="media-title font-weight-semibold mt-2">
-                                           <label class="col-md-3">Checkout:</label>
+                                           <label class="col-md-3">Checkout:</label> 
                                             <div class="col-md-12">[[nBooking.end_date | date]]</div>
                                         </div>
                                     </div>
                                 </li>
                             </div>
-
-                        </ul>
+                        
+                        </ul>   
                     </div> --}}
                 </div>
             </div>
@@ -429,7 +435,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row">         
                                     <label class="col-md-4 col-form-label">Last Name <span class="text-danger" ng-if="nBooking.status == 'CheckedIn'">*</span></label>
                                     <div class="col-md-8">
                                         <input aria-invalid="true" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.LastName" name="LastName" placeholder="Enter Last Name" value="" class="form-control alphabets" maxlength="20">
@@ -438,13 +444,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row">  
                                     <label class="col-md-4 col-form-label">Email <span class="text-danger" ng-if="nBooking.status == 'CheckedIn'">*</span></label>
                                     <div class="col-md-8">
 
                                         <div class="input-group" style="">
                                             {{-- <input ng-change="checkCustAvl('e')" ng-required="nBooking.status == 'CheckedIn'" type="email" ng-model="nBooking.customer.Email" name="Email" placeholder="Email" value="" class="form-control email_mask" maxlength="50" style="background: none;"> --}}
-                                            <input ng-required="nBooking.status == 'CheckedIn'" type="email" ng-model="nBooking.customer.Email" ng-change="GetCustomerByemail(nBooking.customer.Email)" ng-model-options="{debounce:1000}" name="Email" placeholder="Email" value="" class="form-control email_mask" maxlength="50" style="background: none;">
+                                            <input ng-required="nBooking.status == 'CheckedIn'" type="email" ng-model="nBooking.customer.Email" name="Email" placeholder="Email" value="" class="form-control email_mask" maxlength="50" style="background: none;">                                           
                                             <span class="" style="margin: 0;">
                                                 <span ng-click="checkCustAvl('e')" class="customerfindbtn btn " style="padding: 0; background:#eee;" data-placement="top" data-popup="popover" title="Find Customer by Email" data-trigger="hover" data-html="true"
                                                 data-content="Please enter valid email address & click on the search icon." data-original-title="Popover title"><i class="icon-search4"></i>
@@ -462,7 +468,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-4 col-form-label">Phone <span class="text-danger">*</span></label>
                                     <div class="col-md-8">
-                                        <input aria-invalid="true" required type="tel" ng-model="nBooking.customer.Phone" name="Phone" ng-change="GetCustomerByPhone(nBooking.customer.Phone)" ng-model-options="{debounce:1000}"  value="" id="phone_int" class="form-control phone_int">
+                                        <input aria-invalid="true" required type="tel" ng-model="nBooking.customer.Phone" name="Phone"  value="" id="phone_int" class="form-control phone_int">
                                         <div ng-messages="myForm.Phone.$error" ng-if="myForm.Phone.$touched || myForm.$submitted">
                                                 <div class="text-danger" ng-message="required">Phone is required</div>
                                                 {{-- <div class="text-danger" ng-message="pattern">Please enter Phone in correct format (e.g., 0323-8228708)</div> --}}
@@ -478,8 +484,7 @@
                                     <div class="col-md-8">
                                         <div class="input-group" style="">
                                             {{-- <input ng-change="checkCustAvl('c')" aria-invalid="true" pattern="[\d]{5}-[\d]{7}-[\d]{1}" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.CNIC" name="CNIC" placeholder="42101-099099-152" value="" class="form-control cnic" > --}}
-                                            <input aria-invalid="true" ng-pattern="cnicPattern(nBooking.customer.is_cnic)" ng-class="getcustomer(nBooking.customer.is_cnic)" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.CNIC" ng-model-options="{debounce:1000}" name="CNIC" placeholder="[[nBooking.customer.is_cnic == '0'?'PK123456789':'42201-6562366-3']]" value="" class="form-control" style="background:none;" ng-change="GetCustomerBycnic(nBooking.customer.CNIC)">
-
+                                            <input aria-invalid="true" ng-pattern="cnicPattern(nBooking.customer.is_cnic)" ng-class="getcustomer(nBooking.customer.is_cnic)" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.CNIC" name="CNIC" placeholder="[[nBooking.customer.is_cnic == '0'?'PK123456789':'42201-6562366-3']]" value="" class="form-control" style="background:none;">
                                             <span class="" style=" margin: 0">
                                                 <span ng-click="checkCustAvl('c')" class="customerfindbtn btn" style="padding: 0; background:#eee;" data-placement="top" data-popup="popover" title="Find Customer by CNIC" data-trigger="hover" data-html="true"
                                                 data-content="Please enter valid cnic & click on the search icon." data-original-title="Popover title"><i class="icon-search4"></i>
@@ -491,7 +496,7 @@
                                             <div class="text-danger" ng-message="pattern">Please enter [[nBooking.customer.is_cnic == '0'?'Passport':'Cnic']] in correct format (e.g., [[nBooking.customer.is_cnic == '0'?'PK123456789':'42201-6562366-3']])</div>
                                         </div>
                                     </div>
-
+                                
                                     <!--IsForeigner check-->
                                     <div class="col-md-12 mt-1">
                                         <md-switch ng-model="nBooking.customer.is_cnic" ng-true-value="1" ng-false-value="0" style="display:block;float:right">
@@ -507,7 +512,7 @@
                                         {{-- <input aria-invalid="true" type="text" ng-model="nBooking.customer.nationality" name="nationality" placeholder="Pakistani" maxlength="50" value="" class="form-control alphabets"> --}}
                                     </div>
                                 </div>
-
+                            
                             </fieldset>
                         </div>
                         @include('bookings.customer_card')
@@ -531,7 +536,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group row" ng-hide="nBooking.is_cental_booking">
+                                        <div class="form-group row" ng-hide="nBooking.is_cental_booking">           
                                             <label class="col-md-4 col-form-label">Channel </label>
                                             <div class="col-md-8">
                                                 <md-select ng-change="getBookingChannel(nBooking.channel)"  name="booking_channel" md-no-asterisk ng-required class="m-0" ng-model="nBooking.channel" placeholder=" " >
@@ -543,8 +548,8 @@
                                             </div>
                                         </div>
 
-                                        <div ng-if="additionalInfo" class="form-group row m-0 pb-2">
-                                            <legend class="font-weight-semibold  col-md-12  p-2 mb-1"> <i class="icon-vcard mr-2"></i> Agent Information</legend>
+                                        <div ng-if="additionalInfo" class="form-group row m-0 pb-2">          
+                                            <legend class="font-weight-semibold  col-md-12  p-2 mb-1"> <i class="icon-vcard mr-2"></i> Agent Information</legend> 
                                             <label class="col-md-4 col-form-label">Agent Name</label>
                                             <div class="col-md-8">
                                                 <input aria-invalid="true" required type="text" ng-model="nBooking.agent.name" name="name" placeholder="Enter Name" value="" class="form-control alphabets" maxlength="20" >
@@ -563,7 +568,7 @@
                                         </div>
 
 
-                                        <div class="form-group row">
+                                        <div class="form-group row"> 
                                             <label class="col-md-4 col-form-label">Corporate Booking</label>
                                                 <div class="col-md-1 mt-1">
                                                     <md-switch ng-model="nBooking.invoice.is_corporate" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
@@ -576,18 +581,6 @@
                                                 </md-select> -->
                                                 <div ng-messages="myForm.corporate_client.$error">
                                                     <div class="text-danger" ng-message="required">Please enter Client Name</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row" ng-show="nBooking.invoice.is_corporate == '1'">
-                                            <label class="col-md-4 col-form-label">Corporate Type </label>
-                                            <div class="col-md-8">
-                                                <md-select md-no-asterisk name="corporate_type" class="m-0" ng-model="nBooking.invoice.corporate_type" placeholder="Select a Corporate Type" required>
-                                                    <md-option ng-repeat="corporate_type in corporate_types" ng-value="corporate_type.id">[[corporate_type.name]]</md-option>
-                                                </md-select>
-
-                                                <div ng-messages="myForm.corporate_type.$error" ng-if='myForm.corporate_type.$touched || myForm.$submitted' ng-cloak style="color:#e9322d;">
-                                                    <div class="text-danger" ng-message="required">Corporate Type is required</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -607,9 +600,23 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label">Origin</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="nBooking.origin" type="text" name="" placeholder="Origin" value="" class="form-control alphabets" maxlength="100">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label">Additional Comments</label>
+                                            <div class="col-lg-8">
+                                                <textarea class="form-control" name="additional_comments" ng-model="nBooking.additional_comments" placeholder="Any additional comments"></textarea>
+                                            </div>
+                                        </div>
 
 
-                                    </div>
+
+                                    </div> 
 
                                     <div class="col-md-6">
                                         <div class="form-group row">
@@ -636,26 +643,36 @@
                                             <label class="col-lg-4 col-form-label">Discount:</label>
                                             <div class="col-lg-8">
                                                 <input id="discount_amount" ng-disabled="discount_disabled||lockdown" ng-class="getDiscountClass(nBooking.invoice.discount_amount)" ng-change="calculateTotalAmount()" data-type="currency" length="5" currency ng-model="discount_amount" type="text" name="" placeholder="1,000" value="" class="form-control">
-
+                                            
                                                 <span ng-show="nBooking.discount_request.status=='Approved'||nBooking.discount_request.status=='Declined'" class="badge badge-[[nBooking.discount_request.status=='Approved'?'success':'danger']]" id="#danger" style="position: absolute; top: 5px; right: 0;" data-popup="popover" data-trigger="hover" data-html="true"
                                                     data-content="[[nBooking.discount_request.status]] By: [[nBooking.discount_request.supervisor.name]]">[[nBooking.discount_request.status]]</span>
-
+                                            
                                                     <span ng-show="nBooking.discount_request.status=='Pending'" class="badge badge-primary" id="#danger" style="position: absolute; top: 5px; right: 0;">[[nBooking.discount_request.status]]</span>
-
+                                                
                                                 <div class="text-info" ng-show="nBooking.invoice.per_night == 1"><span>Your Total Discount for [[nights]] night's ([[discount_amount | currency]] x [[nights]] ) </span>: <span> <b id="perNight_discount"> [[nBooking.invoice.discount_amount |currency ]]</b></span></div>
-
+                                                
                                                 <div class="text-danger" ng-show="nBooking.invoice.discount_amount > user_discount_limit">Discount exceeds allowed limit ([[user_discount_limit | currency]])</div>
                                             </div>
                                         </div>
 
-                                        <div class="form-group row">
+                                        <div class="form-group row" ng-show="discount_amount>0">
+                                            <label class="col-lg-4 col-form-label">Reason of discount:</label>
+                                            <div class="col-lg-8">
+                                                <textarea ng-required="discount_amount>0" type="text" name="discount_reason" class="form-control" ng-model="nBooking.discount_reason"></textarea>
+                                                <div ng-messages="myForm.discount_reason.$error" ng-if="myForm.discount_reason.$touched || myForm.$submitted">
+                                                    <div class="text-danger" ng-message="required">Discount Reason is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">    
                                             <label class="col-md-4 col-form-label">Sub Total:</label>
                                             <div class="col-md-8">
                                                 <input length="5" ng-value="nBooking.invoice.total - nBooking.invoice.discount_amount" type="text" readonly name="" placeholder="" class="form-control">
                                             </div>
                                         </div>
 
-                                        <div ng-show="nBooking.invoice.early_checkin_charges > 0" class="form-group row">
+                                        <div ng-show="nBooking.invoice.early_checkin_charges > 0" class="form-group row">    
                                             <label class="col-md-4 col-form-label">Early Check-In Charges:</label>
                                             <div class="col-md-8">
                                                 <input length="5" ng-value="nBooking.invoice.early_checkin_charges" type="text" readonly name="" placeholder="" class="form-control">
@@ -663,7 +680,7 @@
                                         </div>
 
                                         <div class="form-group row" ng-if="nBooking.tax_rate_id > 0">
-                                            <label class="col-md-4 col-form-label">Tax: ([[nBooking.tax_rate.Tax]] [[nBooking.tax_rate.TaxValue]] %)</label>
+                                            <label class="col-md-4 col-form-label">Tax: ([[nBooking.tax_rate.Tax]] [[nBooking.tax_rate.TaxValue]] %)</label> 
                                             <div class="col-md-8">
                                                 <input readonly data-type="currency" length="5" currency type="text" ng-model="nBooking.invoice.tax_charges" placeholder="Tax" class="form-control">
                                             </div>
@@ -707,11 +724,11 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2" ng-show="!user.is_supervisor">
+                    <div class="col-md-2">
                         <div class="card p-3">
                              <fieldset class="">
                                 <legend class="font-weight-semibold"> <i class="icon-cash4 mr-2"></i> Payment Information</legend>
-                                <div class="form-group row" ng-hide="formType=='edit'">
+                                <div class="form-group row" ng-hide="formType=='edit'"> 
                                     <label class="col-md-8 col-form-label">Add Payment</label>
                                     <div class="col-md-2 mt-1">
                                         <md-switch ng-disabled="formType=='edit'" ng-model="is_partial" ng-change="changePartialPayment(is_partial)" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
@@ -726,7 +743,7 @@
                                     </div>
                                 </div>
                             </fieldset>
-                        </div>
+                        </div>    
 
                         <div class="card zig-zag-top card-collapsed" style="background: #f5f5f5 !important;border: none;box-shadow: 0 0;">
                             <div class="card-header bg-white header-elements-inline" style="background: #f5f5f5 !important;">
@@ -755,7 +772,7 @@
                                             </md-radio-button>
                                         </md-radio-group>
                                     </div>
-
+                                        
                                 </div>
                                 <div class="form-group row" ng-show="nBooking.invoice.paid==1">
                                         <label class="col-lg-4 col-form-label">Payment Type</label>
@@ -765,7 +782,7 @@
                                         </md-select>
                                         </div>
                                 </div>
-
+        
                                 <div class="form-group row" ng-if="nBooking.invoice.paid==1 && nBooking.payTyp.id==2">
                                     <div class="col-lg-12 chequerow">
                                         <div class="row">
@@ -776,14 +793,14 @@
                                         </div>
                                     </div>
                                 </div> -->
-
+                            
                     </div>
                 </div>
-
+    
                 <div class="text-right">
                     <button type="button" ng-click="user.is_frontdesk?loadFrontdesk():hideBookForm()" class="btn btn-outline-danger bkng-cncl"><i class="icon-close2 mr-1"></i> Close</button>
                     <button class="btn btn-info" ng-show="can_extend" ng-click="adminExtend()"><i class="icon-calendar mr-1"></i> Booking Extend</button>
-                    <button ng-show="formType!='create'" type="button" ng-click="viewPOS(nBooking)" class="btn btn-warning"><i class="icon-clipboard3  mr-1"></i>POS Receipt</button>
+                    <button ng-show="formType!='create'" type="button" ng-click="viewPOS(nBooking)" class="btn btn-warning"><i class="icon-clipboard3  mr-1"></i>POS Receipt</button> 
                     <button ng-disabled="lockdown" ng-hide="can_checkout" type="button" ng-click="showInvoice(nBooking)" class="btn btn-primary bkng-cnfrm"><i class="icon-paperplane mr-1"></i> [[nBooking.status=='Cancelled'?'Cancel':'Book']]</button>
                     <button ng-if="can_checkout" type="button" ng-click="viewPOS(nBooking, 'checkout')" class="btn btn-primary bkng-cnfrm"><i class="icon-paperplane mr-1"></i> CheckOut</button>
                 </div>

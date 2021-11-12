@@ -143,46 +143,82 @@
         </ol>
     <?php } ?>
         <div class="paddingDiv">
-            <div class="logoContainer">
-                <div style="">
-                    <img class="logo" src="{{ url('images/logo.png') }}" />
+
+            <div class="row" style="width:100%;float:left;">
+            
+                <div class="logoContainer" style="width:50%; float:left;">
+                    <!-- <div style="">
+                        <img class="logo" src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" />
+                    </div> -->
+                    @php
+                        $img = \App\Models\DefaultRule::first()->picture;
+                        $default_rule = \App\Models\DefaultRule::first();
+                    @endphp
+                    @if($img)
+                        <img class="logo"  src="{{$img}}" alt="" style="width: 75%;">
+                    @else 
+                        <img class="logo"  src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="">
+                    @endif
+                </div>
+                @if(isset($booking->hotel->mailimage))
+                    <div class="logoContainer" style="width:50%; float:left;">
+                        <div style="">
+                            <img class="logo" src="{{$booking->hotel->mailimage}}" />
+                        </div>
+                    </div>
+                @endif
+            
+            </div>
+            <div class="row" style="width:100%;float:left;">
+
+                <div class="addressDiv" style="width:50%; float:left;">
+                    <h5 style="font-size: 22px;margin: 4px 0;">Head Office</h5>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td class="variableWidth"><b style="font-size: 15px;">Address:</b></td>
+                            <td>{{$default_rule->address}}</td>
+                        </tr>
+                        <tr>
+                            <td><b style="font-size: 15px;">Phone No:</b></td>
+                            <td>{{$default_rule->phone}}</td>
+                        </tr>
+                        <tr>
+                            <td><b style="font-size: 15px;">Website:</b></td>
+                            <td>{{$default_rule->website}}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="addressDiv" style="width:50%; float:left;">
+                <h5 style="font-size: 22px;margin: 4px 0;">Hotel Detail</h5>
+                    <table class="table" style="border: none !important; width: 100%;">
+                        <tr style="border: none !important;">
+                            <td class="hotelName">
+                                <b style="">Hotel Name:</b>
+                            </td>
+                            <td>
+                                {{ $booking->hotel->HotelName }}
+                            </td>
+                        </tr> 
+                        <tr>   
+                            <td class="hotelName">
+                                <b style="">Hotel Address:</b>
+                            </td>
+                            <td>
+                                {{$booking->hotel->Address}}
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-            <div class="addressDiv">
-                <h3 style="font-size: 28px;margin: 4px 0;">Head Office</h3>
-                <table style="width: 100%;">
-                    <tr>
-                        <td class="variableWidth"><b style="font-size: 15px;">Address:</b></td>
-                        <td>73C Jami Commercial Phase VII DHA Karachi</td>
-                    </tr>
-                    <tr>
-                        <td><b style="font-size: 15px;">Phone No:</b></td>
-                        <td>(92)-311-1222418</td>
-                    </tr>
-                    <tr>
-                        <td><b style="font-size: 15px;">Website:</b></td>
-                        <td>www.ktownrooms.com</td>
-                    </tr>
-                </table>
-            </div>
         </div>
-        <!--<hr style="border-color: #ea873a; margin-top: 1rem;margin-bottom: 1rem; border-top: 1px solid rgb(0 0 0 / 0%);clear:both" />-->
-        <div class="" style="">
+        <div class="">
             <div class="">
-                <table class="table" style="border: none !important; width: 100%;">
-                    <tr style="border: none !important;">
-                        <td class="hotelName"><b style="width: 100px; display: inline-block;font-size: 15px;">Hotel Name:</b> {{ $booking->hotel->HotelName }}<br><b style="width: 100px; display: inline-block;font-size: 15px;">Hotel Address:</b>{{$booking->hotel->Address}}
-                        </td>
-                        <td style="border: none !important;font-size:11px;width: 50%;">
-                            <!--<div style="background: #ea873a;color: #fff;padding: 12px;margin: 10px !important;">Help Line No.: (92)-311-1222418</div>-->
-                        </td>
-                    </tr>
-                </table>
                 <div class="">
                     <a href="{{$booking->hotel->address}}" target="_blank">
                     <img  src="{{ url('public/uploads/website/maps') . '/' . str_replace(' ','%20',$booking->hotel->address)}}" alt="" style="width: 100%;max-width: 100%;object-fit: unset"></a>
                 </div>
-                <hr style="border-color: #ea873a;" />
+                {{-- <hr style="border-color: #ea873a;" /> --}}
                 <table class="table " style="border-collapse: collapse; width: 100%;">
                     <tr>
                         <td class="" style="width: 25%;border: 1px solid #ddd; text-align: center;border-collapse: collapse; padding: 5px; ">Booking #</td>
@@ -315,7 +351,7 @@
                 @if ($booking->status == 'CheckedIn')
                 <div class="ComplainViewbtn">
                     <p style="margin: 10px 0 0;">For any complain or to request a service. Click on the button below!</p>
-                    <a href="{{url('customerservices') . '/' . encrypt($booking->booking_no)}}" style="border: none;background: #4caf50;padding: 5px 10px;color: #fff;cursor: pointer;font-weight: 400;margin: 5px 0;text-decoration: none;display: inline-block;">
+                    <a href="{{url('cportal') . '/' . $booking->booking_code}}" style="border: none;background: #4caf50;padding: 5px 10px;color: #fff;cursor: pointer;font-weight: 400;margin: 5px 0;text-decoration: none;display: inline-block;">
                         Customer Portal
                     </a>
                 </div>

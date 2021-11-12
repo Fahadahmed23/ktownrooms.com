@@ -16,14 +16,14 @@
         @include('bookings.stays_modal')
         {{-- @include('bookings.customer_modal') --}}
         @include('bookings.invoice')
-        @include('bookings.show_customer_list')
+        
         @include('bookings.addOccupantsModal')
         @include('bookings.room_transfer_modal')
     </div>
-</div>
+</div>        
 
 <div ng-controller="housekeepingCtrl">
     @include('housekeeping.services')
-</div>
+</div>  
 
 @endsection

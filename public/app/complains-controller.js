@@ -18,7 +18,7 @@ app.controller('complainsCtrl', function($scope, DTColumnDefBuilder, DTOptionsBu
     $scope.sorting_type = "desc";
 
     // pagination
-    $scope.perPage = 5;
+    $scope.perPage = 10;
     $scope.currentPage = 1;
     $scope.TotalRecords = 0;
     $scope.pagination = [{ page: 1 }];
@@ -117,7 +117,12 @@ app.controller('complainsCtrl', function($scope, DTColumnDefBuilder, DTOptionsBu
                 $scope.TotalRecords = response.totalRecords;
 
                 $scope.complains = $scope.complains.map(function(c) {
-                    c.ResolveTime = moment(c.ResolveTime).format('MM/DD/YYYY hh:mm A');
+                    c.ResolveTime = moment(c.ResolveT).format('MM/DD/YYYY hh:mm A');
+
+                    return c;
+                });
+                $scope.complains = $scope.complains.map(function(c) {
+                    c.ComplainTime = moment(c.ComplainT).format('MM/DD/YYYY hh:mm A');
 
                     return c;
                 });

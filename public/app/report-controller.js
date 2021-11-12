@@ -136,6 +136,23 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         // console.log($scope.urlParams);
         // console.log(report);
         // return;
+        if (report.criteria != "[]") {
+            $scope.searchGroups = eval(report.criteria);
+            angular.forEach($scope.searchGroups, function(searchGroup) {
+                angular.forEach(searchGroup, function(value, option) {
+                    if (value['column'] == null) {
+                        return;
+                    }
+                    if (value['column']['type'] == 'number' || value['column']['type'] == 'float' || value['column']['type'] == 'amount' || value['column']['type'] == 'int') {
+                        searchGroup[option]['value'] = parseFloat(searchGroup[option]['value']);
+                    } else {
+                        searchGroup[option]['value'] = searchGroup[option]['value'];
+                    }
+                })
+            })
+
+            report.criteria = angular.toJson($scope.searchGroups);
+        }
 
         localStorage.setItem("selectedColumns" + report.report_name, report.columns);
         localStorage.setItem("searchGroups" + report.report_name, report.criteria);
@@ -147,10 +164,10 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
 
             if (previous_url) {
 
-                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&report=" + report.report_name + "&previous_url=My%20Reports";
+                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&_period_=Year&report=" + report.report_name + "&previous_url=My%20Reports";
             } else {
 
-                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&report=" + report.report_name;
+                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&_period_=Year&report=" + report.report_name;
             }
         }
 
@@ -169,7 +186,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         if (report.grouped_columns)
             localStorage.setItem("groupedColumns" + report.report_name, report.grouped_columns);
         //localStorage.setItem("groupedColumns" + $scope.reportName, angular.toJson($scope.groupedColumns));//JSON.stringify($scope.selectedColumns) );
-        window.location.href = "criteria?module=" + report.module.name + "&title=" + report.name + "&report=" + report.report_name;
+        window.location.href = "criteria?module=" + report.module.name + "&title=" + report.name + "&_period_=Year&report=" + report.report_name;
         // window.location.href = "report?module=" + report.module.name + "&report=" + report.report_name;
 
     }
@@ -589,19 +606,30 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         //console.log($scope.groupedColumns);
         //$('#EditGroupedColumns').modal('hide');
     }
-
+    $scope.proceed = true;
     $scope.loadCriteria = function() {
+        $scope.proceed = true;
         angular.forEach($scope.searchGroups, function(searchGroup) {
             angular.forEach(searchGroup, function(value, option) {
+                if (value['column'] == null || value['operator'] == null || value['value'] == null || value['value'] === '') {
+                    $scope.proceed = false;
+                    return;
+                }
+
+
                 if (value['column']['type'] == 'number' || value['column']['type'] == 'float' || value['column']['type'] == 'amount' || value['column']['type'] == 'int') {
-                    searchGroup[0]['value'] = parseFloat(searchGroup[0]['value']);
+                    searchGroup[option]['value'] = parseFloat(searchGroup[option]['value']);
+                } else {
+                    searchGroup[option]['value'] = searchGroup[option]['value'];
                 }
             })
+            if ($scope.proceed == false)
+                return;
         })
 
         //   console.log($scope.searchGroups);
-
-        localStorage.setItem("searchGroups" + $scope.reportName, JSON.stringify($scope.searchGroups));
+        if ($scope.proceed)
+            localStorage.setItem("searchGroups" + $scope.reportName, JSON.stringify($scope.searchGroups));
         $('#EditCriteria').modal('hide');
     }
 
@@ -630,7 +658,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
 
         if (document.referrer && (document.referrer.includes('criteria?') || document.referrer.includes('reports'))) {
             defaultConfig = 0; //use custom configuration
-        } else if (localStorage.getItem("searchGroups" + $scope.reportName) != null && $scope.params.d != 1 && !document.referrer.includes('dashboard')) {
+        } else if (localStorage.getItem("searchGroups" + $scope.reportName) != null && $scope.params.d != 1 && !document.referrer.includes('/dashboard/')) {
             defaultConfig = 0; //use custom configuration
         }
         if (defaultConfig == 0) {
@@ -885,10 +913,12 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         $scope.ajaxPost('shareReportConfig', $scope.shareReportForm).then(function(response) {
 
             if (!response.errors) {
-                $scope.shareReportForm = {};
-                $scope.getModules();
-                //toastr.success('Report Configuration saved successfully!.');
-                $('#shareReport').modal('hide');
+                if (response.success) {
+                    $scope.shareReportForm = {};
+                    $scope.getModules();
+                    //toastr.success('Report Configuration saved successfully!.');
+                    $('#shareReport').modal('hide');
+                }
             }
 
         })
@@ -947,16 +977,49 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             const col = $scope.reportCols[index];
             if (col.Alias == key) {
                 if (col.Type == "amount") {
-                    value = "<span class='float-right'>" + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR', minimumFractionDigits: 2 }).format(value) + "</span>";
-                    value = value.replace('PKR', 'Rs. ');
+                    if (value == "-")
+                        value = 0;
+                    value = "<span class='float-right'>" + new Intl.NumberFormat('en-PK', {
+                        style: 'currency',
+                        currency: 'PKR',
+                        currencyDisplay: 'narrowSymbol',
+                        minimumFractionDigits: 2
+                    }).format(value) + "</span>";
 
                 } else if (col.Type == "number") {
-                    value = new Intl.NumberFormat().format(value);
+                    if (value == "-")
+                        value = 0;
+
+                    const formatter = new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    });
+
+                    const fraction = new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 0,
+                    });
+
+
+                    // let number = 4.1;
+                    if (value % 1 == 0)
+                        number_format = fraction.format(value);
+                    else
+                        number_format = formatter.format(value);
+
+                    // value = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(value);
+                    value = "<span class='float-right'>" + number_format + "</span>";
+
+                } else if (col.Type == "int" || col.Type == "float" || col.Type == "custom") {
+
+                    value = "<span class='float-right'>" + value + "</span>";
                 } else if (col.Type == "date") {
                     if (!value) return '-';
+                    if (value == "-") return '-';
                     //console.log($scope.params);
-                    if ($scope.params._period_ && ($scope.params._period_ == 'Month' || $scope.params._period_ == 'Quarter'))
-                        return value; //no change
+                    if (col.isPeriod != undefined) {
+                        if ($scope.params._period_ && ($scope.params._period_ == 'Month' || $scope.params._period_ == 'Quarter' || $scope.params._period_ == 'Year'))
+                            return value; //no change
+                    }
 
                     value = moment(value).format("MM/DD/YYYY");
                     // value1 = new Date(value);
@@ -965,6 +1028,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                 } else if (col.Type == "time") {
 
                     if (!value) return '-';
+                    if (value == "-") return '-';
                     //console.log(col.Type);
                     if ($scope.params._period_ && ($scope.params._period_ == 'Month' || $scope.params._period_ == 'Quarter'))
                         return value; //no change
@@ -1068,6 +1132,25 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.run = function(navLink) {
         $scope.refresh();
         $scope.loadCriteria();
+        if ($scope.selectedColumnsP.length < 1) {
+            toastr.error('Select at least one column to run report.');
+            return;
+        }
+        if (!$scope.proceed) {
+            toastr.error("Populate empty criteria fields before run report!");
+            return;
+        }
+        let count = 0;
+        $scope.selectedColumns.forEach(element => {
+            if (element.Type == 'number' || element.Type == 'amount')
+                count++;
+        });
+        // $scope.selectedColumns.filter(x=>x.Aggregation !=undefined && x.Aggregation !="").length == 0
+        if (count > $scope.selectedColumns.filter(x => x.Aggregation != undefined && x.Type != 'date' && x.Aggregation != "").length && $scope.groupedColumnsP.length > 0) {
+            toastr.error("Aggregation must be applied when group column is selected!");
+            return;
+        }
+
         $scope.saveSelectedCols();
         $scope.saveGroupedCols();
         params = urlService.getUrlParams();

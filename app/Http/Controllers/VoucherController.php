@@ -7,6 +7,7 @@ use App\Models\AccountGeneralLedger;
 use App\Models\VoucherDetail;
 use App\Models\VoucherMaster;
 use App\Models\VoucherType;
+use App\Models\AccountType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -37,18 +38,53 @@ class VoucherController extends Controller
      */
     public function getVouchers()
     {
-        $vouchers = VoucherMaster::with('voucher_details')->get();
+        $user = Auth::user();
+
+        $vouchers = VoucherMaster::with('voucher_details');
+
+        if (!auth()->user()->hasRole('Admin')) {
+            $vouchers = $vouchers->whereIn('hotel_id',$user->HotelIds);
+            if($user->self_manipulated()){
+                $vouchers = $vouchers->where('CreatedBy',$user->id);
+            }else{
+                $vouchers = $vouchers->whereIn('hotel_id', $user->HotelIds);
+            }
+        }
         // for dropdown
+        $hotels = auth()->user()->user_hotels();
+        $account_types = AccountType::get(['id','title']);
         $voucher_types = VoucherType::all();
         $account_heads = AccountGeneralLedger::where('account_level_id' , 5)->where('is_active' , 1)->get();
         $fiscal_years = AccountFiscalYearMaster::all();
         return response()->json([
-            'vouchers'=> $vouchers,
+            'hotels'=>$hotels->get(),
+            'account_types'=>$account_types,
+            'vouchers'=> $vouchers->get(),
             'voucher_types'=> $voucher_types,
             'account_heads'=>$account_heads,
             'fiscal_years'=>$fiscal_years,
         ]);
 
+    }
+    public function isConfiguredVoucher($v){
+
+        $vt = VoucherType::where('id',request()->voucher_type_id)->first(['debit_gl_id','credit_gl_id']);
+        // for debit entry 
+        $vd = new VoucherDetail();
+        $vd->voucher_master_id = $v->id;
+        $vd->dr_amount = request()->is_configured_amount;
+        $vd->cr_amount = 0;
+        $vd->account_gl_id = $vt->debit_gl_id;
+        $vd->created_by = Auth::id();
+        $vd->save();
+        // for debit entry 
+        $vd = new VoucherDetail();
+        $vd->voucher_master_id = $v->id;
+        $vd->cr_amount =  request()->is_configured_amount;
+        $vd->dr_amount = 0;
+        $vd->account_gl_id = $vt->credit_gl_id;
+        $vd->created_by = Auth::id();
+        $vd->save();
     }
 
     /**
@@ -59,14 +95,13 @@ class VoucherController extends Controller
      */
     public function store(Request $request)
     { 
-        //   dd($request->all());
-
     \DB::beginTransaction();
     try 
     {
         $v = new VoucherMaster();
         $v->voucher_type_id = $request['voucher_type_id'];
         $v->fiscal_year_master_id = $request['fiscal_year_master_id'];
+        $v->hotel_id = $request['hotel_id'];
         // $v->current_fiscal_year = $request['current_fiscal_year'];
         // $v->voucher_no = $request['voucher_no'];
         $v->date = $request['date'];
@@ -75,6 +110,9 @@ class VoucherController extends Controller
         $v->post_user_id = Auth::id();
         $v->post = "posted";
         $v->save();
+        if ($request['is_configured']) {
+             $this->isConfiguredVoucher($v);
+        }
     
         if (!empty($request['voucher_details'])){
             foreach($request['voucher_details'] as $d){
@@ -102,10 +140,11 @@ class VoucherController extends Controller
             'voucher' => $v
         ]);
     }
+      $v = VoucherMaster::find($v->id);
        
         return response()->json([
             'success' => true,
-            'message' => ["Voucher '$request->voucher_no' created successfully."],
+            'message' => ["$v->voucher_no of $v->VoucherTypeName posted successfully."],
             'msgtype' => 'success',
             'voucher' => $v
         ]);
@@ -127,6 +166,7 @@ class VoucherController extends Controller
 
             $v->voucher_type_id = $request['voucher_type_id'];
             $v->fiscal_year_master_id = $request['fiscal_year_master_id'];
+            $v->hotel_id = $request['hotel_id'];
             // $v->current_fiscal_year = $request['current_fiscal_year'];
             // $v->voucher_no = $request['voucher_no'];
             $v->date = $request['date'];
@@ -145,6 +185,7 @@ class VoucherController extends Controller
                     $vd->narration = isset($d['narration']) ? $d['narration'] : '';
                     $vd->dr_amount = $d['dr_amount'];
                     $vd->cr_amount = $d['cr_amount'];
+                    $vd->created_by = Auth::id();
                     $vd->updated_by = Auth::id();
                     $vd->save();
                 }
@@ -163,9 +204,10 @@ class VoucherController extends Controller
              ]);
          }
             
+         $v = VoucherMaster::find($v->id);
              return response()->json([
                  'success' => true,
-                 'message' => ["Voucher '$request->voucher_no' updated successfully."],
+                 'message' => ["$v->voucher_no of $v->VoucherTypeName posted successfully."],
                  'msgtype' => 'success',
                  'voucher' => $v
              ]);
@@ -217,6 +259,7 @@ class VoucherController extends Controller
         $vd->narration = isset($request->voucher_detail['narration']) ? $request->voucher_detail['narration'] : '';
         $vd->dr_amount = isset($request->voucher_detail['dr_amount']) ? $request->voucher_detail['dr_amount'] : '0';
         $vd->cr_amount = isset($request->voucher_detail['cr_amount']) ? $request->voucher_detail['cr_amount'] : '0';
+        $vd->created_by = Auth::id();
         $vd->save();
 
 

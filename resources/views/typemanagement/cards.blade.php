@@ -90,7 +90,7 @@
                     </div>    
                     <div id="sTypeAdd" class="list-group-item" style="display: none;">
                        <form id="STypeForm" class="form-validate-jquery frm" confirm-on-exit ng-submit="saveSType()"> 
-                            <input required ng-model="servicetype.ServiceType" type="text" class="form-control alphabets" maxlength="15" placeholder="Enter Service Type"> 
+                            <input required ng-model="servicetype.ServiceType" type="text" class="form-control" maxlength="150" placeholder="Enter Service Type"> 
                             <span class="formactionbtnspan">
                                 <button type="submit" class="badge bg-success formactionbtn "><i class="fa fa-save" style="color: white"></i></button>
                                 <button type="button" ng-click="closeStypebtn()" class="badge bg-danger formactionbtn"><i class="fa fa-close" style="color: white"></i></button>

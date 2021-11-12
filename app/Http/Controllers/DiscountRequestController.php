@@ -18,19 +18,24 @@ class DiscountRequestController extends Controller
 
     public function index()
     {
+        if(!auth()->user()->hasRole('Admin')){
+            $module_name = 'My Requests';
+        }
+        else{
+            $module_name = 'Discount Request View';
+        }
         return view ('discount_requests.index', [
-            'breadcrumb' => $this->module_name
+            'breadcrumb' => $module_name
         ]);
     }
 
 
     public function getDiscountRequests(Request $request)
     {
+        $user = Auth::user();
         $inputs = $request->all();
-        // dd($inputs);
-        $user = [
-            'is_frontdesk' => false
-        ];
+
+        $filters = json_decode($request->filters);
 
         $discount_requests = DiscountRequest::with([
                 'booking:id,booking_no',
@@ -38,20 +43,32 @@ class DiscountRequestController extends Controller
                 'requester:id,name',
                 'supervisor:id,name',
         ]);
-
-        if (Auth::user()->roles()->where('name', 'Frontdesk')->count() > 0) {
-            $discount_requests = $discount_requests->where('requester_id', Auth::id());
-            $user['is_frontdesk'] = true;
-        } else if(!auth()->user()->hasRole('Admin')) { 
-            // dd(Auth::user()->hotel_id);
-            $discount_requests = $discount_requests->where('hotel_id', Auth::user()->hotel_id);
-        } else {
-            $discount_requests = $discount_requests->where('status','Pending');
-        }
         
+        if ($filters->date_filter != '') {
+            $discount_requests = $discount_requests->where('created_at', '>=', $filters->date_filter . ' 00:00:00');
+        }
+        if ($filters->status_filter != '') {
+            if($filters->status_filter != 'All'){
+                $discount_requests = $discount_requests->where('status', $filters->status_filter);
+            }   
+        }
+
+        
+        if(!auth()->user()->hasRole('Admin')) { 
+            $discount_requests = $discount_requests->whereIn('hotel_id', $user->HotelIds);
+        }
+        else{
+            if(empty($filters->status_filter) && empty($filters->date_filter)){
+                $discount_requests = $discount_requests->where('status','Pending');
+            }
+        }
+
         $count = $discount_requests->count();
 
-        $discount_requests = $discount_requests->skip($inputs['page'] * $inputs['perPage'] - $inputs['perPage'])->take($inputs['page'] * $inputs['perPage'])->orderBy('created_at', $request->sorting);
+        $discount_requests = $discount_requests
+        ->skip($inputs['page'] * $inputs['perPage'] - $inputs['perPage'])
+        ->take($inputs['perPage'])
+        ->orderBy('created_at', $request->sorting);
 
         return response()->json([
             'success' => true,
@@ -78,7 +95,8 @@ class DiscountRequestController extends Controller
         return response()->json([
             'success' => true,
             'message' => ['Status Changed Successfully'],
-            'msgtype' => 'success'
+            'msgtype' => 'success',
+            'discount_request'=>$discount_request
         ]);
     }
 

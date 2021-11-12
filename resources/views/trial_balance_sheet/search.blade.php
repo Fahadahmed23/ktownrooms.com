@@ -35,8 +35,12 @@
                             <label class="mt-2">Hotel </label>
                         </div>
                         <div class="col-md-4">
-                            <md-select md-no-asterisk  name="hotel_id" class="m-0" ng-model="trial_balance.hotel_id" placeholder="Select a Hotel ">
+                            <md-select md-no-asterisk  name="hotel_id" class="m-0" ng-model="trial_balance.hotel_id" placeholder="Select a Hotel " multiple>
+                                <md-select-header>
+                                    <input ng-model="search_hotels"  class="_md-text w-100 border px-3 py-2" placeholder="Search Hotels"  onkeydown="event.stopPropagation()">
+                                </md-select-header>
                                 <md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
+                                <md-button class="border-top" layout-fill value="all" ng-click="selectAllHotels()">Select All</md-button>
                             </md-select>
                             {{-- <div ng-messages="trailBalanceForm.hotel_id.$error" ng-if='trailBalanceForm.hotel_id.$touched || trailBalanceForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required">Hotel is requiured</div>

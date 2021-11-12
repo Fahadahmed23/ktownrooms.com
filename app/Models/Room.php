@@ -48,7 +48,7 @@ class Room extends Model
     }
 
     public function hotel_room_category() {
-        return $this->belongsTo(HotelRoomCategory::class, 'room_category_id', 'room_category_id');//->where('hotel_id', $this->hotel_id);
+        return $this->belongsTo(HotelRoomCategory::class, 'room_category_id', 'room_category_id')->where('hotel_id', $this->hotel->id);
     }
 
     public function facilities() {

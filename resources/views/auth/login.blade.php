@@ -82,14 +82,23 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="col-md-3">
-											<img src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="" srcset="">
+						@php
+							$default_rule =  \App\Models\DefaultRule::first();
+							$img = $default_rule->picture;
+							$name = $default_rule->name;
+							@endphp
+							@if($img)
+							<img class="logo-icon img-fluid"  src="{{$img}}" alt="">
+							@else 
+							<img class="img-fluid" src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="" srcset="">
+							@endif
 						</div>
 					</div>
 				</div>
 				<div class="row" style="margin-top: 10%;">
 				<div class="col-md-6" style="text-align: right">
 					
-					<h1 style="font-size: 45px;line-height: 55px;font-weight: 800;">Come to <span style="color: #ea863b;">Ktown Rooms</span><br> & Experience Hospitality Beyond Borders!</h1>
+					<h1 style="font-size: 45px;line-height: 55px;font-weight: 800;">Welcome to <span style="color: #ea863b;">{{$name ?? 'Ktown Rooms'}}</span><br> & Experience Hospitality Beyond Borders!</h1>
 					<h3 style="font-weight: 400;">Affordability. Standardization. Predictability. Classification.</h3>
 				</div>
 				<div class="col-md-4">

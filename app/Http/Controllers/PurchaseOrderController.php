@@ -31,25 +31,31 @@ class PurchaseOrderController extends Controller
     {
 
         $qry = PurchaseOrder::with(['details.inventory'])->orderBy('id', 'ASC');
-        $hotels = Hotel::orderBy('HotelName', 'ASC')->get();
+        // $hotels = Hotel::orderBy('HotelName', 'ASC')->get();
+        $hotels = auth()->user()->user_hotels();
         $vendors = Vendor::orderBy('Name', 'ASC')->get();
         $inventories = Inventory::orderBy('Title', 'ASC')->get();
 
 
         $user = Auth::user();
-        if (auth()->user()->hasRole('Admin')) {
-            $purchase_orders = $qry->get();
+        if (!auth()->user()->hasRole('Admin')) 
+        {
+            if($user->self_manipulated()){
+                $purchase_orders = $qry->where('created_by',$user->id);
+            }else{
+                $purchase_orders = $qry->whereIn('hotel_id', $user->HotelIds);
+            }
+            $is_admin = false;
+        }
+        else{
             $is_admin = true;
-            }
-            else{
-                $purchase_orders = $qry->where('hotel_id', auth()->user()->hotel->id)->get();
-                $is_admin = false;
-            }
+        }
+        $purchase_orders = $qry->get();
         return response()->json([
             'user'=>$user,
             'is_admin'=>$is_admin,
             'purchase_orders'=> $purchase_orders,
-            'hotels'=> $hotels,
+            'hotels'=> $hotels->get(),
             'inventories'=> $inventories,
             'vendors'=> $vendors,
         ]);
@@ -72,6 +78,7 @@ class PurchaseOrderController extends Controller
             $po->Status = $request->purchase_order['Status'];
             $po->PurchaseOrderNumber = Hotel::where('id',$request->purchase_order['hotel_id'])->pluck('Code')[0].'-PO-'.$request->purchase_order['purchase_date']; 
             $po->gTotal = $request->purchase_order['gTotal'];
+            $po->created_by = Auth::id();
             $po->save();
 
 
@@ -83,6 +90,7 @@ class PurchaseOrderController extends Controller
                 $pod->Quantity = $p['Quantity'];
                 $pod->Rate = $p['Rate'];
                 $pod->Total = ($p['Rate']) * ($p['Quantity']);
+                $pod->created_by = Auth::id();
                 $pod->save();
             }
             $po = PurchaseOrder::where('id', '=', $po->id)->first();
@@ -115,6 +123,7 @@ class PurchaseOrderController extends Controller
         $po->Status = $request->purchase_order['Status'];
         $po->PurchaseOrderNumber = Hotel::where('id',$request->purchase_order['hotel_id'])->pluck('Code')[0].'-PO-'.$request->purchase_order['purchase_date']; 
         $po->gTotal = $request->purchase_order['gTotal'];
+        $po->updated_by = Auth::id();
         $po->save();
         
         PurchaseOrderDetail::where('purchase_order_id',$id)->delete();
@@ -127,6 +136,7 @@ class PurchaseOrderController extends Controller
             $pod->Quantity = $p['Quantity'];
             $pod->Rate = $p['Rate'];
             $pod->Total = ($p['Rate']) * ($p['Quantity']);
+            $pod->updated_by = Auth::id();
             $pod->save();
         }
         $po = PurchaseOrder::where('id', '=', $po->id)->first();

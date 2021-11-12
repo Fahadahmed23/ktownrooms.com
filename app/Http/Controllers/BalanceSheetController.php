@@ -36,32 +36,43 @@ class BalanceSheetController extends Controller
      */
     public function get_balance_sheet(Request $request)
     {
-        $start_date = $request->start_date ?? '';
-        $end_date = $request->end_date ?? '';
-        $fiscal_year = $request->fiscal_year ?? '';
-        $hotel_id = $request->hotel_id ?? '';
+        $level = $request->level;
+        $start_date = $request->start_date ?? NULL;
+        $end_date = $request->end_date ?? NULL;
+        $fiscal_year = $request->fiscal_year;
+        // $hotel_id = $request->hotel_id ?? NULL;
 
-        $balance_sheets  = DB::select('call GetBalanceSheet(?,?,?,?)',array($fiscal_year,$start_date, $end_date, $hotel_id));
-        $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?)',array($fiscal_year,$start_date, $end_date, $hotel_id));
+        $hotel_id = isset($request->hotel_id) ?implode(",", $request->hotel_id) : '';
+        // dd($hotel_id);
+
+        $balance_sheets  = DB::select('call GetBalanceSheet(?,?,?,?,?)',array($level, $fiscal_year,$start_date, $end_date, $hotel_id));
+        // $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?,?)',array(1,$fiscal_year,$start_date, $end_date, $hotel_id));
         
         $net = 0;
         $net_array = array_filter($balance_sheets, function ($event)  {
             return $event->AccountTitle == 'Total Equity';
         });
         $array_key = array_keys($net_array);
-        $net = $net_array[$array_key[0]]->Net; 
+        $net = $net_array[$array_key[0]]->Total; 
+
+        $total_liability = 0;
+        $liability_array = array_filter($balance_sheets, function ($event)  {
+            return $event->AccountTitle == 'Total Liabilities';
+        });
+        $array_key = array_keys($liability_array);
+        $total_liability = $liability_array[$array_key[0]]->Total; 
 
         // dd($net);
 
         $total = 0;
-        $total_array = array_filter($income_statements, function ($event)  {
+        $total_array = array_filter($balance_sheets, function ($event)  {
             return $event->AccountTitle == 'Net Income';
         });
         $array_key = array_keys($total_array);
         $total = $total_array[$array_key[0]]->Total; 
 
         $total_equity = 0;
-        $total_equity = floatval($total) + floatval($net);
+        $total_equity = floatval($total) + floatval($net) + floatval($total_liability);
 
         // dd($total_equity);
         // forea
@@ -76,33 +87,42 @@ class BalanceSheetController extends Controller
     public function balance_sheet_pdf(Request $request)
     {
 
-        // dd($request->all());
-        $start_date = $request->start_date ?? '';
-        $end_date = $request->end_date ?? '';
-        $fiscal_year = $request->fiscal_year ?? '';
-        $hotel_id = $request->hotel_id ?? '';
+        $level = $request->level;
+        $start_date = $request->start_date ?? NULL;
+        $end_date = $request->end_date ?? NULL;
+        $fiscal_year = $request->fiscal_year;
+        // $hotel_id = $request->hotel_id ?? NULL;
+        $hotel_id = isset($request->hotel_id) ?implode(",", $request->hotel_id) : '';
 
-        $balance_sheets  = DB::select('call GetBalanceSheet(?,?,?,?)',array($fiscal_year,$start_date, $end_date, $hotel_id));
-        $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?)',array($fiscal_year,$start_date, $end_date, $hotel_id));
+        $balance_sheets  = DB::select('call GetBalanceSheet(?,?,?,?,?)',array($level, $fiscal_year,$start_date, $end_date, $hotel_id));
+        // $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?,?)',array(1,$fiscal_year,$start_date, $end_date, $hotel_id));
         
         $net = 0;
         $net_array = array_filter($balance_sheets, function ($event)  {
             return $event->AccountTitle == 'Total Equity';
         });
         $array_key = array_keys($net_array);
-        $net = $net_array[$array_key[0]]->Net; 
+        $net = $net_array[$array_key[0]]->Total; 
+
+        $total_liability = 0;
+        $liability_array = array_filter($balance_sheets, function ($event)  {
+            return $event->AccountTitle == 'Total Liabilities';
+        });
+        $array_key = array_keys($liability_array);
+        $total_liability = $liability_array[$array_key[0]]->Total; 
+
 
         // dd($net);
 
         $total = 0;
-        $total_array = array_filter($income_statements, function ($event)  {
+        $total_array = array_filter($balance_sheets, function ($event)  {
             return $event->AccountTitle == 'Net Income';
         });
         $array_key = array_keys($total_array);
         $total = $total_array[$array_key[0]]->Total; 
 
         $total_equity = 0;
-        $total_equity = floatval($total) + floatval($net);
+        $total_equity = floatval($total) + floatval($net) + floatval($total_liability);
 
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);

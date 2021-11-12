@@ -35,9 +35,9 @@
 </style>
 <!--POS Card-->
 <div id="printThis">
-    <div id="posDetail" class="modal" tabindex="-1" >
+    <div id="posDetail" class="modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-sm  modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content" >
                 @include('bookings.receipt_booking_angular')
             </div>
         </div>

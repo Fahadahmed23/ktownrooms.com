@@ -26,6 +26,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     $scope.taxrates = [];
     $scope.selectedRoom = {};
     $scope.bookOccupant = {};
+    $scope.sms = {};
     $scope.inBooking = true;
     $scope.promo_applied = false;
     $scope.occu_form_type = "";
@@ -96,13 +97,15 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         { Name: 'booking_no', Alias: 'Booking #', isSort: true, isShow: true },
         { Name: 'FullName', Alias: 'Customer', isSort: true, isShow: true },
         { Name: 'HotelName', Alias: 'Hotel', isSort: true, isShow: true },
+        { Name: 'RoomNumber', Alias: 'Room #', isSort: true, isShow: true },
         // { Name: 'Phone', Alias: 'Phone' , isSort: true},
         { Name: 'status', Alias: 'Status', isSort: true, isShow: true },
         { Name: 'bookings.created_at', Alias: 'Booking Date', isSort: true, isShow: true },
         // { Name: 'status_date', SName: 'status_datef', Alias: 'Check-In Date', isSort: true},
         { Name: 'BookingFrom', Alias: 'Check-In Date', isSort: true, isShow: true },
         { Name: 'BookingTo', Alias: 'Check-Out Date', isSort: true, isShow: true },
-        { Name: 'num_occupants', Alias: 'Occupants', Type: "number", isSort: true, isShow: true },
+        // { Name: 'num_occupants', Alias: 'Occupants', Type: "number", isSort: true, isShow: true },
+        { Name: 'created_by', Alias: 'Booked By', isSort: true, isShow: true },
         // { Name: 'bookings.created_at', Alias: 'Created At', isSort: "true", isShow: false },
         { Name: 'action', Alias: 'Action', isSort: false, isShow: true },
     ]
@@ -219,8 +222,24 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }
         $scope.calculateTotalAmount();
     }
+    $scope.getCheckoutDiscount = function(c_discount) {
+        if (c_discount >= 1) {
+            $scope.checkout_discount_remarks = true;
+        }
+        $scope.calculateTotalAmount(true);
+        if (moment((new Date()).toISOString().split('T')[0], 'YYYY-MM-DD').diff(moment($scope.sdTemp, "MM/DD/YYYY")) > 0) {
+            $scope.check_cout_rules($scope.Invoice, true);
+        }
+        $scope.applycheckOutDiscount($scope.nBooking.invoice);
+    }
 
+    $scope.showcheckoutDiscountForm = function() {
+        $("#addCheckoutDiscount").show('slow');
+    }
+    $scope.hidecheckoutDiscountForm = function() {
+        $("#addCheckoutDiscount").hide();
 
+    }
     $scope.calculateTotalAmount = function() {
         let a = 0; // amount
         let s = moment($scope.sdTemp, "MM/DD/YYYY"); // start date in moment instance
@@ -242,7 +261,16 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
             a = 0;
-            a += n * ($scope.nBooking.rooms[i].RoomCharges < parseInt($scope.nBooking.rooms[i].room_charges_onbooking) ? parseInt($scope.nBooking.rooms[i].room_charges_onbooking) : $scope.nBooking.rooms[i].RoomCharges);
+
+            if ($scope.formType == 'edit' && $scope.nBooking['is_third_party']) {
+                a = n * $scope.nBooking.rooms[i].RoomCharges;
+            } else if ($scope.formType == 'edit') {
+                a = n * $scope.nBooking.rooms[i].pivot.room_charges;
+            } else {
+                a += n * ($scope.nBooking.rooms[i].RoomCharges < parseInt($scope.nBooking.rooms[i].room_charges_onbooking) ? parseInt($scope.nBooking.rooms[i].room_charges_onbooking) : $scope.nBooking.rooms[i].RoomCharges);
+            }
+
+            // a += n * ($scope.nBooking.rooms[i].RoomCharges < parseInt($scope.nBooking.rooms[i].room_charges_onbooking) ? parseInt($scope.nBooking.rooms[i].room_charges_onbooking) : $scope.nBooking.rooms[i].RoomCharges);
 
             if ($scope.nBooking.rooms[i].occupants > $scope.nBooking.rooms[i].hotel_room_category.allowed) {
                 a += n * $scope.nBooking.rooms[i].hotel_room_category.additional_guest_charges * ($scope.nBooking.rooms[i].occupants - $scope.nBooking.rooms[i].hotel_room_category.allowed);
@@ -258,7 +286,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
         $scope.addServicesAmount();
 
-        $scope.nBooking.invoice.net_total = parseInt($scope.nBooking.invoice.net_total);
+        $scope.nBooking.invoice.net_total = Math.round($scope.nBooking.invoice.net_total);
         $scope.max_payment = $scope.nBooking.invoice.net_total;
 
         if (!$scope.nBooking.invoice_details) {
@@ -270,6 +298,21 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     break;
                 }
             }
+        }
+
+        // $scope.applycheckOutDiscount($scope.nBooking.invoice);
+
+    }
+
+    $scope.applycheckOutDiscount = function(invoice) {
+        // if (invoice.late_checkout_charges)
+        //      {invoice.net_total += invoice.late_checkout_charges;}
+        if (invoice.checkout_discount) {
+            let payable = invoice.net_total - invoice.payment_amount
+            if (invoice.checkout_discount > payable) {
+                invoice.checkout_discount = payable;
+            }
+            invoice.net_total -= parseInt(invoice.checkout_discount);
         }
     }
 
@@ -693,6 +736,11 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 }
             }
         }
+
+        // agent
+        if ($scope.nBooking.agent) {
+            $scope.getBookingChannel($scope.nBooking.channel)
+        }
     }
 
     $scope.showBooking = function() {
@@ -893,6 +941,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.changeStartDate = function() {
+        $scope.sdTemp = $scope.start_date;
         //change for search filter
         // let m = moment($scope.start_date).format('MM/DD/YYYY');
         let m = moment($scope.sdTemp).format('MM/DD/YYYY');
@@ -906,6 +955,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.changeEndDate = function() {
+        $scope.edTemp = $scope.end_date;
         //change for search filter
         // let m = moment($scope.end_date).format('MM/DD/YYYY');
         let m = moment($scope.edTemp).format('MM/DD/YYYY');
@@ -938,6 +988,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     }
 
                     $scope.nBooking = response.booking;
+                    $scope.default_rule_img = response.default_rule_img;
+                    $scope.default_rule = response.default_rule;
                     $scope.old_status = $scope.nBooking.status;
                     // if ($scope.toStatus == 'CheckedIn') {
                     //     $scope.nBooking.status = 'CheckedIn';
@@ -1067,7 +1119,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     $scope.paid_disabled = true && !$scope.user.is_supervisor;
                     $scope.nBooking.status = $scope.user.is_supervisor ? $scope.nBooking.status : "Pending";
                     $scope.status_disabled = true && !$scope.user.is_supervisor;
-                } else if (parseInt($scope.nBooking.invoice.discount_amount) > parseInt($scope.user.max_allowed_discount)) {
+                } else if (parseInt($scope.nBooking.invoice.discount_amount) > parseInt($scope.user.max_allowed_discount) && false) {
                     $scope.nBooking.invoice.paid = $scope.user.is_supervisor ? $scope.nBooking.invoice.paid : 0;
                     $scope.paid_disabled = true && !$scope.user.is_supervisor;
                     $scope.nBooking.status = $scope.user.is_supervisor ? $scope.nBooking.status : "Pending";
@@ -1117,7 +1169,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.saveForm = function() {
-
         //change for search filter
         // $scope.nBooking.start_date = moment($scope.start_date, "MM/DD/YYYY").format("YYYY/MM/DD");
         // $scope.nBooking.end_date = moment($scope.end_date, "MM/DD/YYYY").format("YYYY/MM/DD");
@@ -1131,12 +1182,20 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         let url = "bookings";
         // url += $scope.formType == "edit" ? "/" + $scope.nBooking.id : "";
 
-        $scope.ajaxPost(url, { 'booking': $scope.nBooking, 'formType': $scope.formType }, false).then(function(response) {
+        $scope.tempnBooking = angular.copy($scope.nBooking);
+        for (let i = 0; i < $scope.tempnBooking.rooms.length; i++) {
+            delete $scope.tempnBooking.rooms[i].facilities;
+            delete $scope.tempnBooking.rooms[i].category;
+            delete $scope.tempnBooking.rooms[i].hotel;
+            delete $scope.tempnBooking.rooms[i].room_category;
+            delete $scope.tempnBooking.rooms[i].tax_rate;
+            delete $scope.tempnBooking.rooms[i].st;
+        }
+
+        $scope.ajaxPost(url, { 'booking': $scope.tempnBooking, 'formType': $scope.formType }, false).then(function(response) {
             if (response.success) {
                 if ($scope.user.is_frontdesk) {
-
                     $('#invoiceBox').modal('hide');
-
                 }
 
                 if (response.lockdown) {
@@ -1150,7 +1209,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     // show toaster for discount request
                     $scope.showLockdownMessage();
                     return;
-
                 }
 
                 response.booking.BookingDate = new Date(response.booking.BookingDate);
@@ -1159,25 +1217,19 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     $scope.bookings.push(response.booking);
                     if (!$scope.user.is_frontdesk)
                         $scope.getBookings();
-
                 } else {
                     // $scope.bookings = $scope.bookings.map((booking) => booking.id == response.booking.id ? response.booking : booking)
                     $scope.init();
-
                     // $scope.$apply();
                 }
 
                 $scope.afterSaveOrEdit();
-                $('#invoiceBox').modal('hide');
             }
 
 
         }).catch(function(e) {
-
             console.log(e)
-            $('#invoiceBox').modal('hide');
-
-            // $scope.nBooking.customer.Phone = $scope.nBooking.customer.ph;
+                // $scope.nBooking.customer.Phone = $scope.nBooking.customer.ph;
         })
     }
 
@@ -1255,7 +1307,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }
     }
 
-    $scope.check_cout_rules = function(booking) {
+    $scope.check_cout_rules = function(booking, flag) {
         booking.invoice.checkout_charges = 0;
 
         for (let i = 0; i < $scope.checkout_rules.length; i++) {
@@ -1266,10 +1318,11 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.checkout_charges = $scope.checkout_rules[i].charges;
                 booking.invoice.late_checkout_charges = $scope.checkout_rules[i].charges;
                 booking.invoice.net_total += booking.invoice.late_checkout_charges;
-                toastr.error('You are checking out late. The check-out time was: ' + moment($scope.checkout_rules[i].threshold_time, "HH:mm:ss").format('hh:mm A') + '. Extra Charges of Rs. ' + $scope.checkout_charges + ' will be applied.', 'Warning', {
-                    "closeButton": true,
-                    "timeOut": 0
-                });
+                if (!flag)
+                    toastr.error('You are checking out late. The check-out time was: ' + moment($scope.checkout_rules[i].threshold_time, "HH:mm:ss").format('hh:mm A') + '. Extra Charges of Rs. ' + $scope.checkout_charges + ' will be applied.', 'Warning', {
+                        "closeButton": true,
+                        "timeOut": 0
+                    });
 
                 break;
             }
@@ -1426,6 +1479,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     $scope.checkin_rules = response.checkin_rules;
                     $scope.checkout_rules = response.checkout_rules;
 
+                    setTimeout(() => {
+                        $('[data-popup="popover"]').popover();
+                    }, 500);
                     // if ($scope.user.is_frontdesk) {
                     $scope.breakdown = response.breakdown;
                     // }
@@ -1502,6 +1558,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.rooms = response.rooms;
                 $scope.checkin_rules = response.checkin_rules;
                 $scope.checkout_rules = response.checkout_rules;
+                setTimeout(() => {
+                    $('[data-popup="popover"]').popover();
+                }, 1000);
 
                 // if ($scope.user.is_frontdesk) {
                 $scope.breakdown = response.breakdown;
@@ -1679,9 +1738,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.nBooking.channel = 'Walk-In';
         $scope.nBooking.invoice.is_corporate = 0;
 
-        // Mr Optimist | 28 Oct 2021
-        $scope.nBooking.invoice.corporate_type = 0;
-
         $scope.enableControls();
         $scope.inBooking = true;
 
@@ -1718,14 +1774,13 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.user = response.user;
                 $scope.clients = response.clients;
                 $scope.channels = response.channels;
-                // Mr Optimist | 29 Oct 2021
-                $scope.corporate_types = response.corporate_types;
                 $scope.nationalities = response.nationalities;
                 $scope.user_discount_limit = $scope.user.max_allowed_discount;
 
                 $scope.TotalRecords = response.totalRecords;
 
                 for (let i = 0; i < $scope.bookings.length; i++) {
+                    $scope.bookings[i].created_at = moment($scope.bookings[i].created_at).format('MM/DD/YYYY hh:mm A');
                     $scope.bookings[i].BookingDate = moment($scope.bookings[i].BookingDate).format('MM/DD/YYYY');
                     $scope.bookings[i].BookingFrom = moment($scope.bookings[i].BookingFrom).format('MM/DD/YYYY');
                     $scope.bookings[i].BookingTo = moment($scope.bookings[i].BookingTo).format('MM/DD/YYYY');
@@ -1826,7 +1881,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             $scope.hideFilter();
 
             $scope.bookingDetail.status_history = $scope.bookingDetail.status_history.map(function(h) {
-                h.status_date = moment(h.status_date).format('MM/DD/YYYY hh:mm:ss A');
+                h.status_date = moment(h.status_date).format('MM/DD/YYYY hh:mm A');
                 return h;
             })
         });
@@ -1902,6 +1957,10 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             if ($scope.statuses.indexOf('Confirmed') < 0) {
                 $scope.statuses.push('Confirmed');
             }
+        }
+
+        if (moment($scope.sdTemp, "MM/DD/YYYY").format("YYYY-MM-DD") == $scope.today && $scope.user.is_frontdesk && $scope.nBooking.status == undefined) {
+            $scope.nBooking.status = 'CheckedIn';
         }
 
         $scope.calculateTotalAmount();
@@ -2487,15 +2546,23 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         searchFields.pageSort = $scope.pageSort;
 
         if (searchFields.BookingDate && searchFields.BookingDate.trim().length > 1) {
-            var sBookingDate = moment(searchFields.BookingDate).format("YYYY-DD-MM");
+            var sBookingDate = moment(searchFields.BookingDate).format("YYYY-MM-DD");
         }
 
         if (searchFields.CheckIn && searchFields.CheckIn.trim().length > 1) {
-            var sCheckIn = moment(searchFields.CheckIn).format("YYYY-DD-MM");
+            var sCheckIn = moment(searchFields.CheckIn).format("YYYY-MM-DD");
         }
 
         if (searchFields.CheckOut && searchFields.CheckOut.trim().length > 1) {
-            var sCheckOut = moment(searchFields.CheckOut).format("YYYY-DD-MM");
+            var sCheckOut = moment(searchFields.CheckOut).format("YYYY-MM-DD");
+        }
+
+        if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
+            var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
+        }
+
+        if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
+            var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
         }
 
         // get all the parameters
@@ -2509,6 +2576,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             booking_date: sBookingDate,
             checkin_date: sCheckIn,
             checkout_date: sCheckOut,
+            booked_from: sBookedFrom,
+            booked_to: sBookedTo,
             occupants: searchFields.Occupants
         }, true).then(function(response) {
             console.log(response);
@@ -2538,6 +2607,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.changeHotel = function() {
         // find the select hotel
+
         $scope.hotel = $scope.hotels.filter((h) => h.id == $scope.nBooking.hotel);
         $scope.hotel = $scope.hotel[0];
         $scope.booking.hotel_id = $scope.hotel.id;
@@ -2566,7 +2636,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     // called in edit
     $scope.disableControls = function() {
         // 1. Status
-        $scope.status_disabled = $scope.nBooking.status == 'CheckedIn' || $scope.nBooking.status == 'CheckedOut' || ($scope.nBooking.discount_request && $scope.nBooking.discount_request.status == 'Pending');
+        $scope.status_disabled = $scope.nBooking.status == 'CheckedIn' || $scope.nBooking.status == 'CheckedOut' || ($scope.nBooking.discount_request && $scope.nBooking.discount_request.status == 'Pending' && false);
 
         // 2. Discount
         // $scope.discount_disabled = !$scope.user.can_give_discount || $scope.nBooking.invoice.discount_amount > 0 || $scope.nBooking.invoice.paid == 1 || !$scope.user.is_supervisor;
@@ -2591,7 +2661,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         // release rooms
         // check the user has paid or not
 
-        if ($scope.nBooking.invoice.paid == 0) {
+        if ($scope.nBooking.invoice.net_total > $scope.nBooking.invoice.payment_amount) {
             bootbox.dialog({
                 closeButton: false,
                 title: "Error",
@@ -2607,8 +2677,12 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             });
             return;
         }
+
+        $scope.nBooking.start_date = moment($scope.sdTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
+        $scope.nBooking.end_date = moment($scope.edTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
+
         $scope.tempBooking = angular.copy($scope.nBooking);
-        delete $scope.tempBooking.rooms;
+        // delete $scope.tempBooking.rooms;
         delete $scope.tempBooking.services;
         delete $scope.tempBooking.status_history;
         delete $scope.tempBooking.tax_rate;
@@ -2617,7 +2691,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
         let callback = function() {
             $scope.ajaxPost('bookings/checkout', {
-                booking: $scope.tempBooking
+                booking: $scope.tempBooking,
+                remarks: $scope.tempBooking.invoice.checkout_discount_remarks
             }, false).then(function(response) {
                 if (response.success) {
                     response.booking.BookingDate = moment(response.booking.BookingDate).format('MM/DD/YYYY');
@@ -2633,34 +2708,35 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             });
         };
 
+
+
         // update and checkout
         if ($scope.nBooking.invoice.refund) {
             // change for search filter
             // $scope.nBooking.start_date = moment($scope.start_date, "MM/DD/YYYY").format("YYYY/MM/DD");
             // $scope.nBooking.end_date = moment($scope.end_date, "MM/DD/YYYY").format("YYYY/MM/DD");
-            $scope.nBooking.start_date = moment($scope.sdTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
-            $scope.nBooking.end_date = moment($scope.edTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
+            // $scope.nBooking.start_date = moment($scope.sdTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
+            // $scope.nBooking.end_date = moment($scope.edTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
             $scope.nBooking.occupants = $scope.nBooking.no_occupants;
 
-            $scope.tempBooking2 = angular.copy($scope.nBooking);
-            delete $scope.tempBooking2.hotel;
-            delete $scope.tempBooking2.status_history;
-            delete $scope.tempBooking2.invoice_details;
-            delete $scope.tempBooking2.services;
-
-            $scope.ajaxPost('bookings', {
-                'booking': $scope.tempBooking2,
-                'formType': 'edit'
-            }, false).then(function(response) {
-                if (response.success) {
-                    callback();
-                }
-            }).catch(function(e) {
-                console.log(e);
-            })
-        } else {
-            callback();
+            //             $scope.tempBooking = angular.copy($scope.nBooking);
+            // delete $scope.tempBooking2.hotel;
+            // delete $scope.tempBooking2.status_history;
+            // delete $scope.tempBooking2.invoice_details;
+            // delete $scope.tempBooking2.services;
         }
+
+        $scope.ajaxPost('bookings', {
+            'booking': $scope.tempBooking,
+            'formType': 'edit',
+            'status': 'CheckedOut'
+        }, false).then(function(response) {
+            if (response.success) {
+                callback();
+            }
+        }).catch(function(e) {
+            console.log(e);
+        })
     }
 
     $scope.changeStatus = function(booking, status) {
@@ -2806,6 +2882,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.ajaxGet('bookings/find/' + b, {}, true)
             .then(function(response) {
                 $scope.Invoice = response.booking;
+                $scope.default_rule_img = response.default_rule_img;
+                $scope.default_rule = response.default_rule;
                 if ($scope.Invoice.invoice.discount_amount > 0) {
                     $scope.show_discount = true;
                 } else {
@@ -2900,7 +2978,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.loadFrontdesk = function() {
         $scope.show_early_checkin_notification = true;
-
         $scope.nBooking = {};
         $scope.toStatus = '';
         $scope.inPrint = false;
@@ -2925,8 +3002,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             $scope.taxrates = response.taxrates;
             $scope.clients = response.clients;
             $scope.channels = response.channels;
-            // Mr Optimist | 28 Oct 2021
-            $scope.corporate_types = response.corporate_types;
             $scope.nationalities = response.nationalities;
             $scope.user = response.user;
             $scope.records = response;
@@ -2935,6 +3010,20 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             if ($scope.user.is_frontdesk) {
                 $scope.newBooking();
                 $scope.ourRooms();
+
+                // waqasbhai code
+                $scope.changeCity();
+                // if (response.hotels.length == 1) {
+                //     console.log('one hotel');
+                //     $scope.nBooking.hotel = response.hotels[0].id;
+                // }
+                // if (response.cities.length == 1) {
+                //     console.log('one city');
+                //     $scope.nBooking.city_id = response.cities[0].id;
+                // }
+
+                $scope.nBooking.hotel = $scope.hotels[0].id;
+                $scope.changeHotel();
             } else {
 
             }
@@ -2943,7 +3032,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         })
     }
 
-    //dropdown for booking status in search by bookings
+    //dropdown for booking status in search by bookings 
     $scope.booking_statuses = [
         'All',
         'Cancelled',
@@ -3337,6 +3426,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.viewPOS = function(booking, action = 'view') {
+        $scope.hidecheckoutDiscountForm();
+        $scope.checkout_discount_remarks = false;
         $scope.current_timestamp = $scope.getCurrentTimestamp();
         $scope.Invoice = angular.copy(booking);
 
@@ -3400,6 +3491,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             }
         }
 
+        $scope.Invoice.invoice.checkout_discount = 0;
         $("#posDetail").modal('show');
     }
 
@@ -3446,6 +3538,45 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         })
     }
 
+
+    $scope.showStagingPay = function(b) {
+        $scope.paymentCleared = false;
+        $("#addpymntbtn").attr("disabled", false);
+        $("#showaddedAmount").hide('slow');
+        $("#checkoutbtn").hide('slow');
+        $("#invPrintBtn").hide('slow');
+        $scope.findBooking(b, function() {
+            $scope.addStagingPay();
+            if ($scope.formType == 'view') {
+                $scope.max_payment = $scope.fBooking.invoice.net_total - $scope.fBooking.invoice.payment_amount;
+                // if ($scope.max_payment == 0)
+                //     $scope.paymentCleared = true;
+            }
+        })
+    }
+
+    $scope.addStagingPay = function() {
+        $scope.partial_payment = 0;
+        $scope.partial_payment_typ = $scope.paymenttypes[0];
+        $scope.partial_payment_cheque = "";
+        $('.ppCheque').hide();
+
+
+        $scope.Invoice = $scope.fBooking;
+        $scope.checkout_in_process = false;
+
+        if ($scope.formType == 'view') {
+            $scope.max_payment = $scope.fBooking.invoice.net_total - $scope.fBooking.invoice.payment_amount;
+        }
+
+        $scope.is_partial = 0;
+        $scope.formType = 'view';
+        $scope.myForm.$setPristine();
+        $scope.myForm.$setUntouched();
+        $("#addStagingPay").modal('show');
+        document.getElementById('bookingForm').reset();
+    }
+
     $scope.addPartialPay = function() {
         $scope.partial_payment = 0;
         $scope.partial_payment_typ = $scope.paymenttypes[0];
@@ -3465,6 +3596,16 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.myForm.$setPristine();
         $scope.myForm.$setUntouched();
         $("#addPartialPay").modal('show');
+
+
+        $scope.invoice_no = "";
+        $scope.added_amount = "";
+        $("#invPrintBtn").hide();
+        $("#addpymntbtn").attr("disabled", false);
+        $("#showaddedAmount").hide();
+        $("#checkoutbtn").hide();
+
+
         document.getElementById('bookingForm').reset();
     }
     $scope.hidePartialPay = function() {
@@ -3475,6 +3616,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.ajaxGet('bookings/find/' + booking_id, {}, true).then(function(response) {
             if (response.success) {
                 $scope.fBooking = response.booking;
+                $scope.default_rule_img = response.default_rule_img;
+                $scope.default_rule = response.default_rule;
                 $scope.invoice_details = response.booking.invoice_details;
                 $scope.user.name = response.user.name;
                 $scope.old_status = $scope.fBooking.status;
@@ -3668,7 +3811,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }
 
         $scope.transfer_data.new_room = $scope.tranfer_to;
-        $scope.transfer_data.end_date = $scope.room_checkout_date;
+        $scope.transfer_data.end_date = moment($scope.room_checkout_date, "MM/DD/YYYY").format("YYYY-MM-DD");
 
         $scope.ajaxPost('bookings/transfer/request', $scope.transfer_data, false).then(function(response) {
             if (response.success) {
@@ -3705,9 +3848,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         if ($scope.nBooking['is_third_party']) {
 
             for (i = 0; i < $scope.nBooking.rooms.length; i++) {
-                let d = ($scope.nBooking.rooms[i].pivot.room_charges) - ($scope.nBooking.rooms[i].pivot.room_charges_onbooking);
+                let d = ($scope.nBooking.rooms[i].RoomCharges) - ($scope.nBooking.rooms[i].room_charges_onbooking);
                 if (d > 0) {
-                    charges_diff += ($scope.nBooking.rooms[i].pivot.room_charges) - ($scope.nBooking.rooms[i].pivot.room_charges_onbooking);
+                    charges_diff += ($scope.nBooking.rooms[i].RoomCharges) - ($scope.nBooking.rooms[i].room_charges_onbooking);
                 }
                 // charges_diff += ($scope.nBooking.rooms[i].pivot.room_charges) - ($scope.nBooking.rooms[i].pivot.room_charges_onbooking);
 
@@ -3807,6 +3950,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.changeCheckinDate = function() {
+        // $scope.sdTemp = $scope.start_date;
         //change for search filter
         // let m = moment($scope.start_date).format('MM/DD/YYYY');
         let m = moment($scope.sdTemp).format('MM/DD/YYYY');
@@ -3820,6 +3964,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.changeCheckoutDate = function() {
+        // $scope.sdTemp = $scope.end_date;
         //change for search filter
         // let m = moment($scope.end_date).format('MM/DD/YYYY');
         let m = moment($scope.edTemp).format('MM/DD/YYYY');
@@ -3884,99 +4029,81 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.getBooKingServiceCount = function() {
 
-            if ($scope.user.is_frontdesk) {
-                $.get('get_booking_services_count').done(function(response) {
-                    $rootScope.booking_services_count = response.booking_services_count;
-                    console.log($rootScope.booking_services.length);
+        if ($scope.user.is_frontdesk) {
+            $.get('get_booking_services_count').done(function(response) {
+                $rootScope.booking_services_count = response.booking_services_count;
+                console.log($rootScope.booking_services.length);
 
-                    if ($rootScope.booking_services.length != $rootScope.booking_services_count) {
-                        if ($rootScope.booking_services.length < $rootScope.booking_services_count) {
-                            $rootScope.new_service_available = true;
-                            toastr.success("New Service is added!");
-                        }
-                        $scope.getBookingServices();
+                if ($rootScope.booking_services.length != $rootScope.booking_services_count) {
+                    if ($rootScope.booking_services.length < $rootScope.booking_services_count) {
+                        $rootScope.new_service_available = true;
+                        toastr.success("New Service is added!");
                     }
-                })
-            }
-        }
-        //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
-
-    $scope.GetCustomerByemail = function(e) { //Serch and get user information from db by email
-        if(e!=="" && e!==null)
-        {
-            $scope.ajaxPost('search-customers', {
-                email: e,
-
-            }, ).then(function(response) {
-                $scope.CustomerCount = response.result.totalCustomers
-                $scope.CustomerList = response.result.customers;
-                if($scope.CustomerCount>0)
-                {
-                    $('#showcustomerList').modal();
+                    $scope.getBookingServices();
                 }
-            }).catch(function(ex) {
-                console.log(ex);
-            });
+            })
         }
     }
-
-    $scope.GetCustomerBycnic = function(e) { //Serch and get user information from db by cnic
-        if(e!=="" && e!==null)
-        {
-            $scope.ajaxPost('search-customers', {
-                cnic: e,
-
-            }, ).then(function(response) {
-                $scope.CustomerCount = response.result.totalCustomers
-                $scope.CustomerList = response.result.customers;
-                if($scope.CustomerCount>0)
-                {
-                    $('#showcustomerList').modal();
-                }
-
-            }).catch(function(ex) {
-                console.log(ex);
-            });
-        }
-    }
-
-    $scope.GetCustomerByPhone = function(e) { //Serch and get user information from db by phone
-        if(e!=="" && e!==null)
-        {
-            $scope.ajaxPost('search-customers', {
-                phoneNo: e,
-
-            }, ).then(function(response) {
-                $scope.CustomerCount = response.result.totalCustomers
-                $scope.CustomerList = response.result.customers;
-                if($scope.CustomerCount>0)
-                {
-                    $('#showcustomerList').modal();
-                }
-            }).catch(function(ex) {
-                console.log(ex);
-            });
-        }
-    }
-
-    $scope.GetCustomerById = function(e) { //customer search results list
-        var cus = $scope.CustomerList.filter(x => x.id == e);
-
-        $scope.nBooking.customer.CNIC = cus[0].CNIC;
-        $scope.nBooking.customer.FirstName = cus[0].FirstName;
-        $scope.nBooking.customer.LastName = cus[0].LastName;
-        $scope.nBooking.customer.Phone = cus[0].Phone;
-        $scope.nBooking.customer.Email = cus[0].Email;
-        $('#showcustomerList').modal('hide');
-    }
-    //comment yes yes kt-new
-
-    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
 
     $interval($scope.getBooKingServiceCount, 5000);
 
     $rootScope.showNotifications = function() {
         $rootScope.new_service_available = false;
+    }
+
+    $scope.editNumCustomer = function() {
+        $(".customer_num_label").hide();
+        $(".customer_num_input").show('slow');
+
+    }
+    $scope.getPortallink = function(code) {
+        console.log(code);
+        let base_url = window.location.origin;
+        let portal_link = base_url + "/cportal/" + code;
+        console.log(portal_link);
+
+        navigator.clipboard.writeText(portal_link).then(function() {
+            console.log('Async: Copying to clipboard was successful!');
+        }, function(err) {
+            console.error('Async: Could not copy text: ', err);
+        });
+
+
+    }
+
+    $scope.sendSMSmodal = function(b_id) {
+        console.log(b_id);
+        $scope.sendMessageForm.$setPristine();
+        $scope.sendMessageForm.$setUntouched();
+        $(".customer_num_label").show();
+        $(".customer_num_input").hide('slow');
+        $scope.sms = {};
+
+        $scope.findBooking(b_id, function() {
+            $scope.sms.booking_id = b_id;
+            $scope.sms.booking_no = $scope.fBooking.booking_no;
+            $scope.sms.customer_id = $scope.fBooking.customer.id;
+            $scope.sms.customer_num = $scope.fBooking.customer.Phone;
+            $("#smsModal").modal('show');
+            console.log($scope.sms);
+        });
+
+    }
+    $scope.sendSmS = function() {
+        $scope.sendMessageForm.$submitted = true;
+        if (!$scope.sendMessageForm.$valid) {
+            return;
+        }
+        $scope.ajaxPost('send_sms', {
+            'sms': $scope.sms
+        }, false).then(function(response) {
+            if (response.success) {
+                $("#smsModal").hide('slow')
+            }
+        }).catch(function(e) {
+            console.log(e);
+            return false;
+        });
     }
 
 

@@ -196,7 +196,7 @@ display: none;
 
 
 <!--Available Rooms-->
-<div id="rooms-available" class="show-rooms" style="none">
+<div id="rooms-available" class="show-rooms">
  <div class="row m-0" >
         <div class="room-container col-lg-12 p-0">
             <div class="card scrollStyle" style="width: 100%;padding: 15px 10px 0 10px;">
@@ -214,14 +214,18 @@ display: none;
                             <a href="javascript:void(0)" class="[[room.st.text_style]]">
                                 <div class="card-body" ng-click="room.st.name=='Open' && selectRoom(room)">
                                     <div class="row m-0">
+                                        <!-- this div is not in use will removejust place here for ui issue -->
                                         <div class="col-md-12 text-right" ng-show="room.st.show_menu && (room.st.name=='Reserved' || room.st.name=='Booked' || room.st.name=='Checked Out')">
-                                            <div class="list-icons ml-3">
+                                            <div class="list-icons ml-3 d-none">
                                                 <div class="dropdown">
                                                     <a href="#" class="list-icons-item dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
-                                                    <div class="dropdown-menu" style="background: #eee;font-family: monospace;">
+                                                    <div class="dropdown-menu d-none" style="background: #eee;font-family: monospace;">
                                                         <a ng-show="room.st.name!='Booked' && !room.st.is_checkedout" ng-click="changeRoomStatus(room.booking_id)" class="dropdown-item"><i class="icon-sync"></i> Change Booking Status</a>
                                                         <a ng-hide="room.st.is_checkedout" ng-click="showInvoiceDetails(room.booking_id)" class="dropdown-item d-none"><i class="icon-clipboard3"></i> Booking Invoice</a>
                                                         <a ng-hide="room.st.is_checkedout" ng-click="resendInvoice(room.booking_id)" class="dropdown-item"><i class="mi-send"></i> Re-send Email to Customer</a>
+                                                            @if (auth()->user()->can('can-send-sms-frontdesk-booking') || auth()->user()->can('can-send-sms-booking'))
+                                                                <a ng-show="room.st.name=='Booked'" ng-click="sendSMSmodal(room.booking_id)" class="dropdown-item"><i class="mi-send"></i>Send SMS</a>
+                                                            @endif
                                                         <a ng-click="showCustomer(room.booking_id)" class="dropdown-item"><i class="fa fa-user-tag"></i>Customer Detail</a>
                                                         <a ng-show="room.st.name=='Booked'" ng-click="showPartialPay(room.booking_id)" class="dropdown-item"><i class="icon-coin-dollar"></i>Add Payment</a>
                                                         <a ng-click="requestForService(room.id)" ng-if="room.st.name=='Booked'" class="dropdown-item"><i class="fas fa-concierge-bell"></i>Request For Services </a>
@@ -234,6 +238,7 @@ display: none;
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- this div is not in use will removejust place here for ui issue -->
                                         <div class="col-md-6">
                                             <div class="row py-1" ng-show="room.st.name=='Open' || room.st.name=='Not Available'">
                                                 <div class="col-lg-12">
@@ -253,7 +258,7 @@ display: none;
         
                                             <div class="row py-1" ng-show="room.st.name!='Open' && room.st.name!='Not Available'">
                                                 <div class="col-lg-12">
-                                                    Booking #: [[room.booking_no]]
+                                                    Booking #: [[room.booking_no]] <i ng-show="room.booking_code" ng-click="getPortallink(room.booking_code);" class="icon-clipboard4 ml-1 cursor-pointer" data-popup="popover" title="" data-trigger="focus" data-content="Copied to clipboard!" data-original-title=""></i>
                                                 </div>
                                                 <div class="col-lg-12">
                                                     Customer Name: [[room.customer_name]]
@@ -275,10 +280,30 @@ display: none;
                                         <div class="col-md-6">
                                             <div class="media-body text-right">
                                                 <span  class="text-uppercase font-size-xs badge text-white" style="background-color:[[room.category.Color]]">[[room.hotel_room_category.CategoryName]]</span>
+                                                <span ng-show="room.st.show_menu && (room.st.name=='Reserved' || room.st.name=='Booked' || room.st.name=='Checked Out')">
+                                                <span class="dropdown">
+                                                    <a href="#" class="list-icons-item dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                                                    <span class="dropdown-menu" style="background: #eee;font-family: monospace;">
+                                                        <a ng-show="room.st.name!='Booked' && !room.st.is_checkedout" ng-click="changeRoomStatus(room.booking_id)" class="dropdown-item"><i class="icon-sync"></i> Change Booking Status</a>
+                                                        <a ng-hide="room.st.is_checkedout" ng-click="showInvoiceDetails(room.booking_id)" class="dropdown-item d-none"><i class="icon-clipboard3"></i> Booking Invoice</a>
+                                                        <a ng-hide="room.st.is_checkedout" ng-click="resendInvoice(room.booking_id)" class="dropdown-item"><i class="mi-send"></i> Re-send Email to Customer</a>
+                                                            @if (auth()->user()->can('can-send-sms-frontdesk-booking') || auth()->user()->can('can-send-sms-booking'))
+                                                                <a ng-show="room.st.name=='Booked'" ng-click="sendSMSmodal(room.booking_id)" class="dropdown-item"><i class="mi-send"></i>Send SMS</a>
+                                                            @endif
+                                                        <a ng-click="showCustomer(room.booking_id)" class="dropdown-item"><i class="fa fa-user-tag"></i>Customer Detail</a>
+                                                        <a ng-show="room.st.name=='Booked'" ng-click="showPartialPay(room.booking_id)" class="dropdown-item"><i class="icon-coin-dollar"></i>Add Payment</a>
+                                                        <a ng-click="requestForService(room.id)" ng-if="room.st.name=='Booked'" class="dropdown-item"><i class="fas fa-concierge-bell"></i>Request For Services </a>
+                                                        <a ng-show="room.st.name=='Booked'" ng-click="checkOutExtend(room.id)" class="dropdown-item"><i class="fa fa-calendar"></i>Extend Booking </a>
+                                                        <a ng-click="bookingReceiptRedirect(room.booking_id)" class="dropdown-item"><i class=" fa fa-print"></i>Printable Invoice</a>
+                                                        <a ng-hide="room.st.is_checkedout" ng-if="room.st.name=='Booked'" ng-click="bookingReceipt(room.booking_id, 'checkout')" class="dropdown-item"><i class="fa fa-sign-out-alt"></i> Checkout</a>
+                                                        <a ng-hide="room.st.is_checkedout" ng-click="getRoomsForTransfer(room)" class="dropdown-item"><i class="icon-redo2"></i>Transfer Room</a>
+                                                        <a ng-show="room.st.name == 'Reserved' || room.st.name == 'Booked'" ng-click="editBooking(room.booking_id)" class="dropdown-item"><i class="list-icons-item edit-sec icon-pencil5"></i>Edit Booking</a>
+                                                    </span>
+                                                </span>    
+                                                </span>
                                                 <h3 class="mb-0">[[room.room_title]]</h3>
                                                 <div>Room# [[room.RoomNumber]]</div>
                                                  <span class="text-uppercase font-size-xs">[[room.st.name == "Reserved" && !room.st.show_menu ? 'Upcoming' : room.st.name ]]</span>
-                                                 <div ng-show="room.st.is_klc && (room.st.is_klc=='yes')">KLC</div>
                                             </div>
                                         </div>
                                     </div>
@@ -373,6 +398,7 @@ display: none;
 @include('bookings.status_change_modal')
 
 @include('bookings.checkout_extend_modal')
+@include('bookings.send_message_modal')  
 
 <!--POS Card-->
 @include('bookings.pos_booking_modal')

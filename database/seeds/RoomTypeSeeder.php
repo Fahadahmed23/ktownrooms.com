@@ -16,10 +16,16 @@ class RoomTypeSeeder extends Seeder
             'RoomType' => 'Premium',
         ]);
         RoomType::create([
-            'RoomType' => 'Elite',
+            'RoomType' => 'Budget',
         ]);
         RoomType::create([
-            'RoomType' => 'Classic',
+            'RoomType' => 'Quad Room',
+        ]);
+        RoomType::create([
+            'RoomType' => 'Deluxe Room',
+        ]);
+        RoomType::create([
+            'RoomType' => 'Family Hall',
         ]);
     }
 }

@@ -51,29 +51,56 @@ class ServicesController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function getServices()
+    public function getServices(Request $request)
     {
-
+        // dd($request->all());
         $user = Auth::user();
-       if (auth()->user()->hasRole('Admin')) {
-            $services = Service::join('service_types', 'services.service_type_id', '=', 'service_types.id')
-                                ->join('departments', 'services.department_id', '=', 'departments.id')
-                                ->where('services.deleted_at',Null)
-                                ->select('services.*' , 'departments.Department' , 'service_types.ServiceType')
-                                ->get();
-            $is_admin = true;
-        }
-        else{
-            $services = Service::join('service_types', 'services.service_type_id', '=', 'service_types.id')
-                                ->join('departments', 'services.department_id', '=', 'departments.id')
-                                ->where('services.deleted_at',Null)
-                                ->where('services.hotel_id', '=',$user->hotel_id)
-                                ->select('services.*' , 'departments.Department' , 'service_types.ServiceType')
-                                ->get();
-            $is_admin = false;
-        }
+        $services = Service::join('service_types', 'services.service_type_id', '=', 'service_types.id')
+                            ->join('departments', 'services.department_id', '=', 'departments.id')
+                            ->where('services.deleted_at',Null)
+                            ->select('services.*' , 'departments.Department' , 'service_types.ServiceType');
+            if (!auth()->user()->hasRole('Admin')) {
+                if($user->self_manipulated()){
+                    $services = $services->where('services.created_by',$user->id);
+                }else{
+                    $services = $services->whereIn('services.hotel_id',$user->HotelIds);
+                }
+                $is_admin = false;
+            }
+            else{
+                $is_admin = true;
+            }
+            // service filter code
+            if(!empty($request['filters']))
+            {
+                if (!empty($request['filters']['title'])) {
+                    $services = $services->where('Service','like',$request['filters']['title'].'%');
+                }
+                if (!empty($request['filters']['hotel_id'])) {
+                    $services = $services->where('hotel_id',$request['filters']['hotel_id']);
+                }
+                if (!empty($request['filters']['department_id'])) {
+                    $services = $services->where('department_id',$request['filters']['department_id']);
+                }
+                if (!empty($request['filters']['service_type_id'])) {
+                    $services = $services->where('service_type_id',$request['filters']['service_type_id']);
+                }
+                // if (!empty($request['filters']['title'])) {
+                //     $general_ledgers = $general_ledgers->where('title','like',$request['filters']['title'].'%');
+                // }
+    
+                // if (!empty($request['filters']['account_gl_code'])) {
+                //     $general_ledgers = $general_ledgers->where('account_gl_code','like',$request['filters']['account_gl_code'].'%');
+                // }
+            }
+
+
+
+
+        $services = $services->get();
         //for dropdown
-        $hotels = Hotel::all();
+        // $hotels = Hotel::all();
+        $hotels = auth()->user()->user_hotels()->get();
         $departments = Department::all();
         $servicetypes = ServiceType::all();
         $inventories = Inventory::all();
@@ -99,8 +126,13 @@ class ServicesController extends Controller
     {
 
         //  dd($request->all());
-         $start_time = date('H:i:s', strtotime( $request->service_start_time));
-         $end_time = date('H:i:s', strtotime( $request->service_end_time));
+        if ($request->is_24hrs == 1) {
+            $start_time = Null;
+            $end_time =Null;
+        }else{
+            $start_time = date('H:i:s', strtotime( $request->service_start_time));
+            $end_time = date('H:i:s', strtotime( $request->service_end_time));
+        }
         $serviceExists = Service::where('Service', $request->Service)->where('hotel_id', $request->hotel_id)->get();
         
         $service = new Service();
@@ -111,14 +143,19 @@ class ServicesController extends Controller
         $service->Service = $request->Service;
         $service->Charges = $request->Charges;
         $service->ServingTime = $request->ServingTime;
+        $service->is_24hrs = $request->is_24hrs;
+        if ($request->is_24hrs == 1) {
+            $service->service_start_time = Null;
+            $service->service_end_time =Null;
+        }
         $service->service_start_time = $start_time;
         $service->service_end_time = $end_time;
         $service->IsShowDelayAlert = $request->IsShowDelayAlert;
         $service->IsQuantitative = $request->IsQuantitative;
         $service->IsInventory = $request->IsInventory;
         $service->IconPath= $request->IconPath;
-        $service->CreationIP = "198";
-        $service->created_by = 1;
+        $service->CreationIP =  request()->ip();
+        $service->created_by = Auth::id();
         $service->CreatedByModule = "model";
         if(count($serviceExists) == 0)
         {
@@ -149,9 +186,13 @@ class ServicesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //  dd($request->all());
-        $start_time = date('H:i:s', strtotime( $request->service_start_time));
-        $end_time = date('H:i:s', strtotime( $request->service_end_time));
+        if ($request->is_24hrs == 1) {
+            $start_time = Null;
+            $end_time =Null;
+        }else{
+            $start_time = date('H:i:s', strtotime( $request->service_start_time));
+            $end_time = date('H:i:s', strtotime( $request->service_end_time));
+        }
         $service = Service::find($request->id);
         
         $service->service_type_id = $request->service_type_id;
@@ -161,15 +202,15 @@ class ServicesController extends Controller
         $service->Service = $request->Service;
         $service->Charges = $request->Charges;
         $service->ServingTime = $request->ServingTime;
+        $service->is_24hrs = $request->is_24hrs;
         $service->service_start_time = $start_time;
         $service->service_end_time = $end_time;
         $service->IsShowDelayAlert = $request->IsShowDelayAlert;
         $service->IsQuantitative = $request->IsQuantitative;
         $service->IsInventory = $request->IsInventory;
         $service->IconPath= $request->IconPath;
-        
         $service->UpdationIP = request()->ip();
-
+        $service->created_by = Auth::id();
         $service->save();
 
         return response()->json([

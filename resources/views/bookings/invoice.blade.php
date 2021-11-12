@@ -1,3 +1,9 @@
+<style>
+.logo.logo-img .defaultimg {
+    text-align: justify;
+    margin: 0;
+}
+</style>
 <div id="invoiceBox" class="modal fade" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -10,18 +16,21 @@
                 <div class="header" style="width: 100%;float: left;border-bottom: 1px solid #ea863b;">
                     <div class="headerRow" style="width: 100%;float: left;">
                         <div class="headerCol" style="width: 50%;float: left;">
-                            <div class="logo">
-                                <img src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="">
+                            <div class="logo logo-img">
+                                <div class="defaultimg " ng-if="default_rule_img">
+                                    <img src="[[default_rule_img]]" alt="ktown Rooms & Homes">
+                                </div>
+                                <div class="defaultimg" ng-if="!default_rule_img">
+                                    <img style="width:20% !important;" src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="">
+                                </div>
                             </div>
                         </div>
                         <div class="headerCol" style="width: 50%;float: left;">
                             <h4 style="margin: 0;">Head Office</h4>
                             <ul style="padding: 0;list-style: none; margin: 0;">
-                                <li> <b> Address :</b> <span>73C Jami Commercial Phase VII DHA Karachi
-                                </span></li>
-                                <li><b>Phone :</b><span>(92)-311-1222418
-                                </span></li>
-                                <li><b>Website:</b> <span><a href="https://www.ktownrooms.com" target="_blank">www.ktownrooms.com</a></span></li>
+                                <li> <b> Address :</b> <span> [[default_rule.address?default_rule.address:'73C Jami Commercial Phase VII DHA Karachi']]</span></li>
+                                <li><b>Phone :</b><span> [[default_rule.phone?default_rule.phone:'(92)-311-1222418']]</span></li>
+                                <li><b>Website:</b> <span><a href="[[default_rule.website]]" target="_blank">[[default_rule.website]] </a></span></li>
                             </ul>
                         </div>
                     </div>

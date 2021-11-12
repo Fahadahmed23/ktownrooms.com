@@ -67,9 +67,9 @@ app.controller('purchaseorderCtrl', function($scope, DTColumnDefBuilder, DTOptio
         $('#addNewPurchaseOrder').show('slow');
         $scope.purchase_order = {};
 
-        if (!$scope.is_admin) {
-            $scope.purchase_order.hotel_id = $scope.user.hotel_id;
-        }
+        // if (!$scope.is_admin) {
+        //     $scope.purchase_order.hotel_id = $scope.user.hotel_id;
+        // }
         $scope.details = [{
             inventory_id: '',
             Description: '',
@@ -77,7 +77,7 @@ app.controller('purchaseorderCtrl', function($scope, DTColumnDefBuilder, DTOptio
             Rate: 0,
             Total: 0,
         }];
-        $scope.purchase_order.Status = "Pending";
+        $scope.purchase_order.Status = "Approved";
         $("#demo2").removeClass('show');
     }
 

@@ -45,33 +45,18 @@ table th, table td{
             @foreach ($balance_sheets as $bs)
 
             <tr style="@if($bs->OrderNo == 0) background: #3f51b5; color:#fff; border:none; @endif">
-                <td style="padding:0px; @if ($bs->AccountLevel == 3) padding-left:20px !important; @elseif ($bs->AccountLevel == 4) padding-left:40px !important; @elseif ($bs->AccountLevel == 5) padding-left:60px !important;  @endif"><u style="@if($bs->AccountLevel == 5) text-decoration: none; font-weight: initial; @else font-style: italic; font-weight: 700; @endif">{{ $bs->AccountTitle }}</u></td>
-                @if($bs->OrderNo == 0)
-                <td></td>
-                <td></td>
-                <td></td>
-                @elseif ($bs->OrderNo == 1)
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Total</td>
-                @else
-                    @if($bs->AccountLevel == 5 )
-                        <td colspan="1">Rs.{{ number_format($bs->Debit, 2) }}</td>
-                        <td>Rs.{{ number_format($bs->Credit, 2) }}</td>
-                    @else
-                        @if($bs->AccountTitle == 'Total Equity' )
-                            <td colspan="2"></td>
-                            <td>Rs.{{ number_format($total_equity, 2) }}</td>
-                        @else
-                            @if($bs->OrderNo != 0 && $bs->OrderNo != 1)
-                            <td colspan="2"></td>
-                            <td>Rs.{{ number_format($bs->Net, 2) }}</td>
-                            @endif
-                        @endif
-                    @endif
-                @endif
+                {{-- <td style="padding:0px; @if ($bs->AccountLevel == 3) padding-left:20px !important; @elseif ($bs->AccountLevel == 4) padding-left:40px !important; @elseif ($bs->AccountLevel == 5) padding-left:60px !important;  @endif"><u style="@if($bs->AccountLevel == 5) text-decoration: none; font-weight: initial; @else font-weight: 700; @endif">{{ $bs->AccountTitle }}</u></td> --}}
+                <td style="padding:0px; @if($bs->AccountLevel == 1 && ($bs->OrderNo == 0 || $bs->OrderNo == 3)) padding-left:0px !important; @elseif ($bs->AccountLevel == 1) padding-left:5px !important; @elseif ($bs->AccountLevel == 2 && $bs->OrderNo != 2) padding-left:20px !important; @elseif ($bs->AccountLevel == 2 && $bs->OrderNo == 2) padding-left:32px !important; @elseif ($bs->AccountLevel == 3) padding-left:45px !important; @elseif ($bs->AccountLevel == 4) padding-left:65px !important; @elseif ($bs->AccountLevel == 5) padding-left:80px !important; @endif"><u style="@if($bs->AccountLevel == 5) text-decoration: none; font-weight: initial; @elseif($bs->OrderNo == 0) font-weight: 900; font-size:larger;@else font-weight: 700; @endif">{{ $bs->AccountTitle }}</u></td>
+                <td colspan="2"></td>
+                <td>Rs.{{ number_format($bs->Total, 2) }}</td>
+                
             </tr>
             
         @endforeach
+        @if(count($balance_sheets))
+            <td style="padding:0px; font-weight: 900; font-size:larger;"><u>TOTAL LIABILITIES & EQUITY</u></td>   
+            <td colspan="2"></td>   
+            <td >Rs.{{ number_format($total_equity, 2) }}</td>
+        @endif
         </tbody>
     </table>

@@ -3,8 +3,8 @@
         <h5 class="card-title" style="text-transform:capitalize;">Shift Handover</h5>
          <div class="header-elements">
             <div class="list-icons">
-                      <a class="list-icons-item" data-action="collapse"></a>
-              <a class="list-icons-item new-rec-close" ng-click="hideshiftHandOverSheet()"><i class="icon-cross2"></i></a>
+              {{-- <a class="list-icons-item new-rec-close" ng-click="hideshiftHandOverSheet()"><i class="icon-cross2"></i></a> --}}
+              <a class="list-icons-item" data-action="reload" ng-click="getShiftHandover()"></a>
             </div>
           </div>
     </div>

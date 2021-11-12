@@ -6,8 +6,8 @@
                 <th>Email</th>
                 <th>Phone No.</th> 
                 <th>Role</th>
-                <th>Hotel</th>
-                <th>Registeret at</th>
+                <th>Hotel(s)</th>
+                <th>Registered at</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -17,7 +17,7 @@
                 <td>[[user.email]]</td>
                 <td>[[user.phone_no]]</td>
                 <td>[[user.roles[0].name]]</td>
-                <td>[[user.HotelName]]</td>
+                <td>[[user.HotelNames.join(", ")]]</td>
                 <td>[[user.created_at|date]]</td>
                 <td>
                     <div class="align-self-center">
