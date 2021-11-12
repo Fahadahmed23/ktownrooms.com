@@ -334,7 +334,7 @@ class BookingsController extends Controller
         // dd($request->all());
         $h = $request->hotel;
         if($request->searchByBooking != "true"){
-
+            
             if ($request->formType=='create') {
                 $data = $request->validate([
                     'hotel' => 'required',
@@ -445,9 +445,9 @@ class BookingsController extends Controller
                         'cursor'=>'no-cursor',
                         'show_menu' => $show_menu,
                         'is_checkedout' => $is_checkedout,
+                        'is_klc' => $is_klc,
                     ];
                 }
-    
                 else if ($rooms[$i]->id == $room_schedule[$j]->room_id) {
                     $show_menu = true;
     
@@ -474,7 +474,8 @@ class BookingsController extends Controller
                             'cursor'=>'no-cursor',
                             'show_menu' => $show_menu,
                             'is_checkedout' => $is_checkedout,
-                            'is_confirmed' => $room_schedule[$j]->booking->status == 'Confirmed' ? '1' : '0'
+                            'is_confirmed' => $room_schedule[$j]->booking->status == 'Confirmed' ? '1' : '0',
+                            'is_klc' => $is_klc,
                         ];
                     }
                     $booking_no = $room_schedule[$j]->booking->booking_no;
