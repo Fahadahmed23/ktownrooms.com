@@ -3969,7 +3969,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.nBooking.customer.Email = cus[0].Email;
         $('#showcustomerList').modal('hide');
     }
-    //comment
+    //comment yes yes
 
     //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
 
