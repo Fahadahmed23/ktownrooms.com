@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use App\Models\HotelCategories;
 use App\Http\Requests\AddCountryRequest;
 class LocaleController extends Controller
 {
@@ -30,11 +31,13 @@ class LocaleController extends Controller
         $countries = Country::get(['id', 'CountryName', 'Abbreviation']);
         $states = State::get(['id', 'StateName', 'country_id', 'Abbreviation']);
         $cities = City::get(['id', 'CityName', 'country_id', 'state_id', 'Abbreviation']);
+        $hotel_categories = HotelCategories::get(['id', 'name', 'status']);
 
         return response()->json([
             'countries' => $countries,
             'states' => $states,
-            'cities' => $cities
+            'cities' => $cities,
+            'hotel_categories' => $hotel_categories
         ]);
     }
 
@@ -44,6 +47,21 @@ class LocaleController extends Controller
         $message = ["Country '$country->CountryName' deleted successfully!"];
 
         $country->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'msgtype' => 'success',
+            'id' => $request->id
+        ]);
+    }
+
+    public function deleteHotelCategory(Request $request) {
+        $hotel_category = HotelCategories::findOrFail($request->id);
+
+        $message = ["Hotel Category '$hotel_category->name' deleted successfully!"];
+
+        $hotel_category->delete();
 
         return response()->json([
             'success' => true,
@@ -123,6 +141,52 @@ class LocaleController extends Controller
         }
         
     }
+
+    /*
+    * Mr Optimist
+    * HotelCategories
+    **/
+    public function storeHotelCategory(Request $request)
+    {
+        
+        $hotelcategoryId = $request->hotelcategory['id'] ?? null;
+        $hotelcategoryExist = HotelCategories::where('name', $request->hotelcategory['name']) 
+        ->where('id', '!=', $hotelcategoryId) 
+        ->count();
+
+        // $countryExist = Country::where('CountryName' ,$request->country['CountryName'])->get();
+        if ($hotelcategoryExist == 0) {
+            if ($request->formType == "save") {
+                $hotel_category = new HotelCategories();
+                $hotel_category->created_by = Auth::id();
+            } else {
+                $hotel_category = HotelCategories::find($request->hotelcategory['id']);
+                $hotel_category->updated_by = Auth::id();
+            }
+    
+            $hotel_category->name = $request->hotelcategory['name'];
+            $hotel_category->status = $request->hotelcategory['status'];
+            
+            $hotel_category->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => ["$hotel_category->name added successfully"],
+                'msgtype' => 'success',
+                'hotel' => $hotel_category
+            ]);
+        }
+        else{
+            return response()->json([
+                'success' => false,
+                'message' => ["Hotel Category '".$request->hotelcategory['name']."' already exists."],
+                'msgtype' => 'error',
+               
+                ]);
+        }
+
+    }
+
 
     public function storeState(Request $request)
     {

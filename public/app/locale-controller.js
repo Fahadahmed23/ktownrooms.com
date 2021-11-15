@@ -2,10 +2,12 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
     $scope.countries = [];
     $scope.states = [];
     $scope.cities = [];
+    $scope.hotel_categories = [];
 
     $scope.country = {};
     $scope.state = {};
     $scope.city = {};
+    $scope.hotelcategory = {};
 
     $scope.formType = "save";
 
@@ -23,6 +25,7 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
             $scope.countries = response.countries;
             $scope.states = response.states;
             $scope.cities = response.cities;
+            $scope.hotel_categories = response.hotel_categories;
         }).catch(function(e) {
             console.log(e);
         });
@@ -47,6 +50,33 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
                     return;
                 $scope.ajaxPost('locale/deleteCountry', { id: c.id }, false).then(function(response) {
                     $scope.countries = $scope.countries.filter((c) => c.id != response.id);
+                }).catch(function(e) {
+                    console.log(e);
+                });
+            }
+        });
+
+    }
+
+    $scope.deleteHotelCategory = function(c) {
+        bootbox.confirm({
+            title: 'Confirm Deletion',
+            message: "Are you sure you want to Delete '" + c.name + "?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-link'
+                }
+            },
+            callback: function(result) {
+                if (!result)
+                    return;
+                $scope.ajaxPost('locale/deleteHotelCategory', { id: c.id }, false).then(function(response) {
+                    $scope.hotel_categories = $scope.hotel_categories.filter((c) => c.id != response.id);
                 }).catch(function(e) {
                     console.log(e);
                 });
@@ -117,6 +147,16 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
         $('#country_form').modal('show');
     }
 
+    $scope.addHotelCategory = function() {
+        $scope.hotelcategoryForm.$setPristine();
+        $scope.hotelcategoryForm.$setUntouched();
+
+        $scope.formType = "save";
+        $scope.hotelcategory = {};
+
+        $('#hotelcategory_form').modal('show');
+    }
+
     $scope.addState = function() {
         $scope.stateForm.$setPristine();
         $scope.stateForm.$setUntouched();
@@ -159,6 +199,35 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
 
 
                 $('#country_form').modal('hide');
+            }
+        }).catch(function(e) {
+            console.log(e);
+        });
+    }
+
+    $scope.saveHotelCategory = function() {
+
+    
+        // let f = $('#v_country');
+
+        // if (!f.valid()) {
+        //     return;
+        // }
+
+        $scope.hotelcategoryForm.$submitted = true;
+        if (!$scope.hotelcategoryForm.$valid) {
+            return;
+        }
+
+        $scope.ajaxPost('locale/saveHotelCategory', { hotelcategory: $scope.hotelcategory, formType: $scope.formType }, false).then(function(response) {
+            if (response.success == true) {
+                if ($scope.formType == "save") {
+                    $scope.hotel_categories.push(response.hotel);
+                } else {
+                    $scope.hotel_categories = $scope.hotel_categories.map((c) => c.id == response.hotel.id ? response.hotel : c);
+                }
+
+                $('#hotelcategory_form').modal('hide');
             }
         }).catch(function(e) {
             console.log(e);
@@ -235,6 +304,16 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
         $scope.country = angular.copy(c);
 
         $('#country_form').modal('show');
+    }
+
+    $scope.editHotelCategory = function(c) {
+        $scope.hotelcategoryForm.$setPristine();
+        $scope.hotelcategoryForm.$setUntouched();
+
+        $scope.formType = "edit";
+        $scope.hotelcategory = angular.copy(c);
+
+        $('#hotelcategory_form').modal('show');
     }
 
     $scope.editState = function(s) {

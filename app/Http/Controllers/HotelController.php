@@ -20,6 +20,12 @@ use App\Models\CinCoutRule;
 use App\Models\DefaultRule;
 use App\Models\HotelCinCoutRule;
 use App\Models\HotelRoomCategory;
+
+// Mr Optimist 15 Nov 2021
+use App\Models\HotelCategory;
+use App\Models\HotelCategories;
+use App\Models\HotelCobranding;
+
 use App\Models\PartnerRequest;
 use App\Models\Room;
 use App\Models\RoomCategory;
@@ -72,8 +78,20 @@ class HotelController extends Controller
                 $hotels = $hotels->whereIn('id', $user->HotelIds);
             }
         }
+
         return response()->json([
-            'hotels' => $hotels->with(['city:id,CityName'])->get(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','mailimage','mailimage','ZipCode','AgreStartDate','AgreEndDate','posimage', 'mapimage','mailimage'])
+            // 'hotels' => $hotels->with(['city:id,CityName'])->get(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','mailimage','mailimage','ZipCode','AgreStartDate','AgreEndDate','posimage', 'mapimage','mailimage'])
+            
+            'hotels' => $hotels->with(['city:id,CityName','hotel_cobrandings' => function($q){
+                $q->select('id','hotel_id','status','software_fee','percentage_amount')->latest()->first();
+            }])->with(['hotel_categories' => function($rl){
+                $rl->select('hotel_categories.id','hotel_categories.name','hotel_categories.status','hotel_category.created_at');
+                $rl->orderBy('hotel_category.created_at','Desc');
+                $rl->limit(1); 
+             }])->get()
+
+        
+        
         ]);
     }
     public function getData()
@@ -84,6 +102,8 @@ class HotelController extends Controller
         $partners = PartnerRequest::get(['id','FullName']);
         $contact_types = ContactType::get(['id','ContactType']);
         $room_categories = RoomCategory::get(['id','RoomCategory','AdditionalGuestCharges','AllowedOccupants','MaxAllowedOccupants','Color']);
+        // Mr Optimist 15 Nov 2021
+        $hotel_categories = HotelCategories::all();
         $tax_rates=TaxRate::whereNull('deleted_at')->get(['id','Tax','TaxValue']);
         $check_in_rules=CinCoutRule::where('rule_type', 'early_check_in')->get(['charges','start_time','end_time','rule_type']);
         $check_out_rules=CinCoutRule::where('rule_type', 'late_check_out')->get(['charges','start_time','end_time','rule_type']);
@@ -109,6 +129,7 @@ class HotelController extends Controller
             'contact_types' => $contact_types,
             'partners'=>$partners,
             'room_categories'=>$room_categories,
+            'hotel_categories'=>$hotel_categories,
             'tax_rates'=>$tax_rates,
             'check_in_rules'=>$check_in_rules,
             'check_out_rules'=>$check_out_rules,
@@ -201,9 +222,73 @@ class HotelController extends Controller
                 $hotel->updated_by = Auth::id();
 
                 $hotel->save();
+
+                 /**
+                 * Hotel Categories and Cobranding
+                 */
+
+                
+                if (!empty($request->hotel['hotelcateogry_id'])) { 
+
+                    $hotell = Hotel::findOrFail($hotel->id);
+                    //$hotell->hotel_categories()->attach($request->hotel['hotelcateogry_id']);
+                    
+                    $hotell->hotel_categories()->attach($request->hotel['hotelcateogry_id'],['created_by' => Auth::id(),'updated_by' => Auth::id() ]);
+                  
+                }
+                
+
+                if (!empty($request->hotel['has_cobranding'])) { 
+
+                    $has_cobranding = $request->hotel['has_cobranding'];
+                    
+                    $hotel_cobranding = new HotelCobranding();
+                    $hotel_cobranding->hotel_id = $hotel->id;
+                    $hotel_cobranding->status = $has_cobranding;
+                    $hotel_cobranding->software_fee	 =  !empty($request->hotel['software_fees']) ? $request->hotel['software_fees'] : 0;
+                    $hotel_cobranding->percentage_amount = !empty($request->hotel['percentage_amount']) ? $request->hotel['percentage_amount'] : 0;
+                    $hotel_cobranding->created_by= Auth::id();
+                    $hotel_cobranding->updated_by= Auth::id();
+                    $hotel_cobranding->save();
+                    
+                    
+                    
+                    /*
+                    $hotell = Hotel::findOrFail($hotel->id);
+                    $hotel_cobrandings = $hotell->hotel_cobrandings()->create([
+                        'hotel_id' => $hotel->id,
+                        'status' => $has_cobranding,
+                        'software_fee' => !empty($request->hotel['software_fees']) ? $request->hotel['software_fees'] : 0,
+                        'percentage_amount' => !empty($request->hotel['percentage_amount']) ? $request->hotel['percentage_amount'] : 0,
+                        'created_by' => Auth::id(),
+                        'updated_by' => Auth::id()
+                    ]);
+                    **/
+                
+                }
+
+
+                /*
                 $hotel = Hotel::with(['city:id,CityName'])->where('id', '=', $hotel->id)
                 ->first(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','posimage', 'mapimage','mailimage','ZipCode','AgreStartDate','AgreEndDate']);
+                **/
+            
+                $hotel = Hotel::with(['city:id,CityName','hotel_cobrandings' => function($q){
+                    $q->select('id','hotel_id','status','software_fee','percentage_amount')->latest()->first();
+                }])->with(['hotel_categories' => function($rl){
+    
+                   $rl->select('hotel_categories.id','hotel_categories.name','hotel_categories.status','hotel_category.created_at');
+                   //$rl->latest('hotel_category.created_at');
+                   $rl->orderBy('hotel_category.created_at','Desc');
+                   //$rl->orderBy('hotel_category.created_at','ASC');
+                   $rl->limit(1); 
+                   //$r->select('hotel_categories.*');
+    
+                }])->where('id', '=', $hotel->id)
+                ->first();
 
+            
+            
             } catch (\Exception $e) {
                 dd($e);
                 \DB::rollback();

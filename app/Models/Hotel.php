@@ -66,6 +66,18 @@ class Hotel extends Model
         return $this->belongsTo(City::class, 'city_id', 'id');
     }
 
+    // Mr Optimist 15 Nov 201 start
+    public function hotel_cobrandings() {
+        //return $this->hasMany(HotelCobranding::class, 'hotel_id','id');   
+        return $this->hasMany(HotelCobranding::class);   
+    }
+    public function hotel_categories()
+    {
+        return $this->belongsToMany(HotelCategories::class, 'hotel_category','hotel_id','hotel_category_id')->withPivot('created_at as pcreated_at')->withTimestamps();
+    }
+     // Mr Optimist 15 Nov 201 ends
+    
+
     public function hotelroomcategories()
     {
         return $this->hasMany(HotelRoomCategory::class, 'hotel_id','id');

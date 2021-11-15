@@ -76,6 +76,8 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
                 // $scope.hotels = response.hotels;
                 $scope.partners = response.partners;
                 $scope.room_categories = response.room_categories;
+                // Mr Optimist 15 Nov 2021
+                $scope.hotel_categories = response.hotel_categories;
                 $scope.tax_rates = response.tax_rates;
                 $scope.check_in_rules = response.check_in_rules;
                 $scope.check_out_rules = response.check_out_rules;
@@ -385,7 +387,31 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
                     delete response.hotel.TodayPendingBookingCount;
                     delete response.hotel.BookingCount;
                     delete response.hotel.RoomCount;
+
+                    $scope.hotel.has_cobranding = 0;
+                    $scope.hotel.software_fees = 0;
+                    $scope.hotel.percentage_amount = 0;
+                    
                     $scope.hotel = response.hotel;
+                    
+                    if ($scope.hotel.hotel_categories[0] != undefined) {            
+                        $scope.hotel.hotelcateogry_id = $scope.hotel.hotel_categories[0].id;
+                     
+                    }
+
+                    if ($scope.hotel.hotel_cobrandings[0] != undefined) {
+                        $scope.hotel.has_cobranding = $scope.hotel.hotel_cobrandings[0].status;
+                        $scope.hotel.has_cobranding = parseInt($scope.hotel.has_cobranding); 
+                        $scope.hotel.software_fees = $scope.hotel.hotel_cobrandings[0].software_fee;
+                        $scope.hotel.software_fees = parseInt($scope.hotel.software_fees);
+      
+                        $scope.hotel.percentage_amount = $scope.hotel.hotel_cobrandings[0].percentage_amount;
+                        $scope.hotel.percentage_amount = parseInt($scope.hotel.percentage_amount);
+                      
+                    }
+
+                    console.log('Hotel A');
+                    console.log($scope.hotel);
                     $scope.hotel_id = response.hotel_id
                     $("#addNewHotel").show('slow');
                 }
@@ -887,7 +913,41 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.hotelForm.$setPristine();
         $scope.hotelForm.$setUntouched();
 
+
+        $scope.hotel.has_cobranding = 0;
+        $scope.hotel.software_fees = 0;
+        $scope.hotel.percentage_amount = 0;
+
+
         $scope.hotel = angular.copy(h);
+
+        if ($scope.hotel.hotel_categories[0] != undefined) {            
+            //console.log('Hotel Category Id');
+            $scope.hotel.hotelcateogry_id = $scope.hotel.hotel_categories[0].id;
+            //console.log($scope.hotel.hotelcateogry_id);
+        }
+
+        if ($scope.hotel.hotel_cobrandings[0] != undefined) {
+            
+            //console.log('Hotel cobranding status');
+            $scope.hotel.has_cobranding = $scope.hotel.hotel_cobrandings[0].status;
+            $scope.hotel.has_cobranding = parseInt($scope.hotel.has_cobranding); 
+            //$scope.hotel.has_cobranding = 1;
+            //console.log('Hotel cobranding status type');
+            //console.log(typeof $scope.hotel.has_cobranding);
+            //console.log($scope.hotel.has_cobranding);
+
+            //console.log('Hotel software fee');
+            $scope.hotel.software_fees = $scope.hotel.hotel_cobrandings[0].software_fee;
+            $scope.hotel.software_fees = parseInt($scope.hotel.software_fees);
+            //console.log($scope.hotel.software_fees);
+
+            //console.log('Hotel percentage amount');
+            $scope.hotel.percentage_amount = $scope.hotel.hotel_cobrandings[0].percentage_amount;
+            $scope.hotel.percentage_amount = parseInt($scope.hotel.percentage_amount);
+            //console.log($scope.hotel.percentage_amount);
+        }
+    
         window.scrollTop();
         $("#addNewHotel").show('slow')
 
@@ -895,7 +955,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $(".hotel-navs-tabs #basic-info-btn").addClass("active show");
         $(".hotel-tabs .tab-pane").removeClass("active show");
         $(".hotel-tabs #basic_info").addClass("active show");
-        console.log($scope.hotel);
+        //console.log($scope.hotel);
         $scope.hotel_id = $scope.hotel.id;
         return;
 
