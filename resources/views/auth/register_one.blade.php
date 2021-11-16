@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Ktown Rooms | Register</title>
+	<title>Ktown Rooms | Login</title>
 
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
@@ -29,7 +29,7 @@
 	<script src="{{asset('global_assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
 
 	<script src="assets/js/app.js"></script>
-
+	<script src="{{asset('global_assets/js/demo_pages/login.js')}}"></script>
 	<!-- /theme JS files -->
 
 	<style>
@@ -105,7 +105,7 @@
 						<!-- Login card -->
 						 {{-- <div class="card"> --}}
 							
-							<form class="login-form" action="{{url('register')}}" method="POST" style="float: right;">
+							<form class="login-form" action="{{url('login')}}" method="POST" style="float: right;">
 								{{ csrf_field() }}
 									<div class="card mb-0">
 										@if ($errors->any())
@@ -123,14 +123,7 @@
 												<div class="toaster">
 													<div class="box"></div>
 												</div>
-												<h2 class="mb-0">REGISTER</h2>
-											</div>
-
-                                            <div class="floating-label"> 
-												{{-- <input ng-model="searchID" type="text" class="form-control" placeholder=" "> --}}
-												<input name="name" type="text" class="form-control" placeholder=" ">
-												<span class="highlight"></span>
-												<label>Name</label>
+												<h2 class="mb-0">LOGIN</h2>
 											</div>
 											
 											<div class="floating-label"> 
@@ -147,17 +140,57 @@
 												<span class="highlight"></span>
 												<label>Password</label>
 											</div>
-                                            <div class="floating-label"> 
-												{{-- <input ng-model="searchID" type="text" class="form-control" placeholder=" "> --}}
-												<input id="password-field-confirm" name="password_confirmation" type="password" class="form-control" placeholder=" ">
-												<span toggle="#password-field-confirm" class="fa fa-fw fa-eye field-icon toggle-password" style="right:5px"></span>
-												<span class="highlight"></span>
-												<label>Confirm Password</label>
-											</div>
 
-	            							<div class="form-group">
-												<button type="submit" class="btn btn-primary btn-block">Sign up <i class="icon-circle-right2 ml-2"></i></button>
+											
+
+											{{-- <div class="form-group form-group-feedback form-group-feedback-left">
+												<input name="email" type="email" class="form-control" placeholder="Email">
+												<div class="form-control-feedback" style="left:2px">
+													<i class="fas fa-envelope text-muted"></i>
+												</div>
+											</div> --}}
+				
+											{{-- <div class="form-group form-group-feedback form-group-feedback-left">
+												<input id="password-field" name="password" type="password" class="form-control" placeholder="Password">
+												<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password" style="right:5px"></span>
+												<div class="form-control-feedback" style="left:2px">
+													<i class="icon-lock2 text-muted"></i>
+												</div>
+											</div> --}}
+				
+											<div class="form-group d-flex align-items-center">
+												<div class="form-check mb-0">
+													<label class="form-check-label">
+														<input type="checkbox" name="remember" class="form-input-styled" data-fouc>
+														Remember
+													</label>
+												</div>
+				
+												<a href="password/reset" class="ml-auto">Forgot password?</a>
 											</div>
+				
+											<div class="form-group">
+												<button type="submit" class="btn btn-primary btn-block">Sign in <i class="icon-circle-right2 ml-2"></i></button>
+											</div>
+				
+											<!-- <div class="form-group text-center text-muted content-divider">
+												<span class="px-2">or sign in with</span>
+											</div>
+				
+											<div class="form-group text-center">
+												<button type="button" class="btn btn-outline bg-indigo border-indigo text-indigo btn-icon rounded-round border-2"><i class="icon-facebook"></i></button>
+												<button type="button" class="btn btn-outline bg-pink-300 border-pink-300 text-pink-300 btn-icon rounded-round border-2 ml-2"><i class="icon-dribbble3"></i></button>
+												<button type="button" class="btn btn-outline bg-slate-600 border-slate-600 text-slate-600 btn-icon rounded-round border-2 ml-2"><i class="icon-github"></i></button>
+												<button type="button" class="btn btn-outline bg-info border-info text-info btn-icon rounded-round border-2 ml-2"><i class="icon-twitter"></i></button>
+											</div>
+				
+											<div class="form-group text-center text-muted content-divider">
+												<span class="px-2">Don't have an account?</span>
+											</div>
+				
+											<div class="form-group">
+												<a href="#" class="btn btn-light btn-block">Sign up</a>
+											</div> -->
 				
 											<span class="form-text text-center text-muted">By continuing, you're confirming that you've read our <a href="https://www.ktownrooms.com/terms-conditions">Terms &amp; Conditions</a> and <a href="https://www.ktownrooms.com/web-privacy-policy">Privacy Policy</a></span>
 										</div>
