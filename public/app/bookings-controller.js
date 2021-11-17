@@ -530,7 +530,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.checkCustAvl = function(s) {
 
-      
+
         if (s == 'e') {
             if (!$scope.myForm.Email.$valid) {
                 return;
@@ -3042,7 +3042,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         })
     }
 
-    //dropdown for booking status in search by bookings 
+    //dropdown for booking status in search by bookings
     $scope.booking_statuses = [
         'All',
         'Cancelled',
@@ -4193,5 +4193,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 })
 
-// comment kt-new 
+// comment kt-new
+// comment kt-new-arman-test
 
