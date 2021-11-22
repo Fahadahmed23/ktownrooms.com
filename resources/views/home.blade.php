@@ -32,6 +32,8 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
+
+
                                 <tbody data-link="row" class="rowlink">
                                     <tr ng-repeat="user in customerbooking.clients" class="unread">
                                         <td>[[user.FullName]]</td>
