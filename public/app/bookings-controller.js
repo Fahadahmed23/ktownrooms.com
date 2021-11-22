@@ -2588,7 +2588,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             booked_to: sBookedTo,
             occupants: searchFields.Occupants
         }, true).then(function(response) {
-            console.log(response);
+            //console.log(response);
             if (response.success) {
                 $scope.bookings = response.bookings;
                 $scope.TotalRecords = response.totalRecords;
@@ -3440,6 +3440,33 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.checkout_discount_remarks = false;
         $scope.current_timestamp = $scope.getCurrentTimestamp();
         $scope.Invoice = angular.copy(booking);
+
+        console.log('All Bookings');
+        console.log($scope.Invoice);
+
+        $scope.Invoice.cservice_total = 0;
+       
+        
+        if ($scope.Invoice.is_corporate == 1) {
+
+            if ($scope.Invoice.invoice.corporate_type == 1) {
+                $scope.Invoice.invoice.corporate_type_name = 'Full Board';
+                $scope.Invoice.corporate_type_total = 0;
+            }
+            else if($scope.Invoice.invoice.corporate_type == 2){
+                $scope.Invoice.invoice.corporate_type_name = 'Half Board';
+                $scope.Invoice.corporate_type_total = $scope.Invoice.invoice.net_total/2;
+            }
+            else if($scope.Invoice.invoice.corporate_type == 3){
+                $scope.Invoice.invoice.corporate_type_name = 'Room Only';
+                // Calculate Service Total
+                for (i = 0; i < $scope.Invoice.services.length; i++) {
+                    $scope.Invoice.cservice_total += $scope.Invoice.services[i].amount;
+                }
+                $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
+            }
+        
+        }
 
         // console.log($scope.Invoice);
         if ($scope.Invoice.invoice.net_total > $scope.Invoice.invoice.payment_amount && $scope.Invoice.invoice.is_corporate == 0) {

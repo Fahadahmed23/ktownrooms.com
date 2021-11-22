@@ -297,12 +297,28 @@ font-size: 10px !important;
                     <br>
                     <span class="boldre">Date &amp; Time: </span>[[current_timestamp]]
                     <br>
-                    <span class="boldre">Customer: </span>[[Invoice.customer.FirstName+' '+Invoice.customer.LastName]]<br>
+                    <span class="boldre">Customer: </span>[[Invoice.customer.FirstName+' '+Invoice.customer.LastName]]</span><br>
+                    {{-- <span ng-show="Invoice.is_corporate == '1' && Invoice.is_corporate != null"  class="boldre">Booking Type: [[Invoice.invoice.corporate_type_name ]]</span><br ng-show="Invoice.is_corporate == '1'"> --}}
                     <div ng-if="invoice_detail.type == 'service'" class="boldre">Room: [[Invoice.rooms[0].room_title]] (Room# [[Invoice.rooms[0].RoomNumber]])</div>
                     <span ng-if="invoice_detail.invoice_no" class="boldre">Receipt No: </span>[[invoice_detail.invoice_no]]<br>
                     
                     <br>
                     <br>
+
+                    <table ng-show="Invoice.is_corporate == '1' && Invoice.is_corporate != null" class="receipt-orderlines">
+                        <tbody>
+                            <tr>
+                                <th>Booking Type</th>
+                                <td>[[Invoice.invoice.corporate_type_name ]]</td>
+                            </tr>
+                            <tr>
+                                <th>Customer to pay</th>
+                                <td>[[Invoice.corporate_type_total ]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br ng-show="Invoice.is_corporate == '1'">
+                    <br ng-show="Invoice.is_corporate == '1'">
 
                     <table ng-show="invoice_detail" class="receipt-orderlines invoice_detail_table">
                         <thead>
