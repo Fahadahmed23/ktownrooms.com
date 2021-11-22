@@ -12,7 +12,7 @@
             <div class="card">
                 @auth
                 <div class="card-header">Welcome {{ Auth::user()->name }}</div>
-[[customerbooking|json]]
+
                 <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
