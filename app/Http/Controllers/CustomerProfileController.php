@@ -51,9 +51,10 @@ use App\Models\SmsLog;
 use App\Models\Role;
 
 use App\Models\User;
-
+use stdClass;
 class CustomerProfileController extends Controller
 {
+    protected $lockdown = false;
 
     /**
      * Create a new controller instance.
@@ -98,27 +99,43 @@ class CustomerProfileController extends Controller
                 
                 $q1->where('Email', $user_email);
 
-            })->with(['rooms', 'rooms.category', 'invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
+            })->with(['hotel','rooms', 'rooms.category', 'invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
             ->orderBy('created_at', 'desc')->get();
+
+           
 
             if(!empty($bookings)){
 
                 $count = $bookings->count();
                 if($count > 0){
 
+                    $bookings_map = $bookings->map(function ($ex) {
+
+                        $obj = new stdClass();
+                        $obj->id = $ex->id;
+                        $obj->booking_no = $ex->booking_no ?? "";
+                        $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
+                        $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
+                        $obj->HotelName = $ex->hotel->HotelName ?? "";
+                        $obj->rooms = $ex->rooms->map(function ($room) {
+                            $obj['room_title'] = $room->room_title;
+                            $obj['RoomNumber'] = $room->RoomNumber;
+                            return $obj;
+                        });
+                       
+                        $obj->status = $ex->status ?? "";
+                        $obj->BookingDate = $ex->BookingDate ?? "";
+                        $obj->BookingFrom = $ex->BookingFrom ?? "";
+                        $obj->BookingTo = $ex->BookingTo ?? "";
+                        $obj->created_by = $ex->created_by ?? "";
+                        
+                        return $obj;
+                    });
+
                     return response()->json([
                         'success' => true,
-                        'nationalities'=>$nationalities,
-                        'cities' => $cities->get(['id', 'CityName']),
-                        'hotels' => $hotels->whereNull('deleted_at')->get(['id', 'HotelName', 'city_id', 'has_tax', 'tax_rate_id']),
-                        'clients' => $clients,
-                        'channels'=> $channels,
                         'totalRecords' => $count,
-                        'bookings' => $bookings,
-                        'paymenttypes'=> $paymenttypes,
-                        'taxrates'=> $taxrates,
-                        'corporate_types' => $corporate_types,
-                        'user' => $user
+                        'bookings' => $bookings_map,
                     ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
                 }
@@ -190,11 +207,11 @@ class CustomerProfileController extends Controller
             ->where('id',$booking_id)
             ->latest('updated_at')
             ->first();
-
+            
             if(!empty($bookings)){
                 $count = $bookings->count();
                 if($count > 0){
-
+                 
                     return response()->json([
                         'success' => true,
                         'nationalities'=>$nationalities,
@@ -233,6 +250,67 @@ class CustomerProfileController extends Controller
              return '/';
         }
 
+    }
+
+    public function show($id)
+    {
+        $booking = $this->getBooking($id);
+        $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
+        $default_rule_img = DefaultRule::first()->picture;
+        $default_rule = DefaultRule::first();
+        $msg = "";
+
+        if ($booking->discount_request) {
+            if ($booking->discount_request->status == 'Pending') {
+                $this->lockdown = true;
+                $msg = "Discount request has not been approved yet";
+            }
+
+            if ($booking->discount_request->status == 'Declined') {
+                $msg = "Discount request was declined";
+                $this->lockdown = false;
+            }
+        }
+
+        //echo "<pre>";
+        //var_dump($booking);
+        //echo "</pre>";
+        //die;
+
+        if (empty($booking)) {
+            return response()->json([
+                'success' => false,
+                'message' => ["Booking Not Found"],
+                'msgtype' => 'error',
+            ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+        } else {
+            return response()->json([
+                'success' => true,
+                'booking' => $booking,
+                'user' => [
+                    'name' => Auth::user()->name
+                ],
+                'default_rule_img'=>$default_rule_img,
+                'default_rule'=>$default_rule,
+                'lockdown' => $this->lockdown && false,
+                'invoice_details'=>$invoice_details,
+                'msg' => $msg
+            ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+        }
+    }
+
+    private function getBooking($id) {
+        $booking = Booking::with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){
+            $q->withCount('bookings');
+        }, 'rooms', 'rooms.category','rooms.hotel', 'invoice', 'invoice_details', 'promotion','tax_rate','invoice.payment_mode', 'status_history'])->find($id);
+        
+        foreach ($booking->rooms as $r) {
+            $r->hotel_room_category = $r->hotel_room_category;
+        }
+
+        // $invoice_detail = InvoiceDetail::all();
+        
+        return $booking;
     }
     
 }
