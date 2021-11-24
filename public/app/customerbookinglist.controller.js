@@ -4,16 +4,16 @@ app.controller('bookinglistcltr', function($scope, DTColumnDefBuilder, DTOptions
 
 
     $scope.init = function() {
-        debugger;
+        // debugger;
         $scope.user;
         $scope.getUsers();
     }
 
     $scope.getCustomerProfileBooking = function() {
-        debugger;
+        // debugger;
         $scope.ajaxGet('customer_profile_bookings', {}, true)
             .then(function(response) {
-                debugger;
+                // debugger;
                 $scope.customerbooking = response.bookings;
             })
             .catch(function(e) {
