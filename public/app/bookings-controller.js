@@ -3681,6 +3681,31 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.findBooking(booking_id, function() {
             // $scope.invoice_details = $scope.invoice_details;
             $scope.Invoice = $scope.fBooking;
+
+            // Mr Optimist 23 Nov 2021
+            $scope.Invoice.cservice_total = 0;
+            if ($scope.Invoice.is_corporate == 1) {
+
+                if ($scope.Invoice.invoice.corporate_type == 1) {
+                    $scope.Invoice.invoice.corporate_type_name = 'Full Board';
+                    $scope.Invoice.corporate_type_total = 0;
+                }
+                else if($scope.Invoice.invoice.corporate_type == 2){
+                    $scope.Invoice.invoice.corporate_type_name = 'Half Board';
+                    $scope.Invoice.corporate_type_total = $scope.Invoice.invoice.net_total/2;
+                }
+                else if($scope.Invoice.invoice.corporate_type == 3){
+                    $scope.Invoice.invoice.corporate_type_name = 'Room Only';
+                    // Calculate Service Total
+                    for (i = 0; i < $scope.Invoice.services.length; i++) {
+                        $scope.Invoice.cservice_total += $scope.Invoice.services[i].amount;
+                    }
+                    $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
+                }
+                    
+            }
+            
+           
             $scope.Invoice.service_total = 0;
             // Calculate Service Total
             for (i = 0; i < $scope.Invoice.services.length; i++) {
