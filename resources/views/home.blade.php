@@ -6,7 +6,6 @@
 
 
 <div class="container-fluid mt-2" ng-controller='bookinglistcltr'>
-    [[2+6]]
     <div class="row justify-content-center" ng-init="getCustomerProfileBooking()">
         <div class="col-md-12">
             <div class="card">
@@ -22,7 +21,6 @@
                                 <thead>
                                     <tr>
                                         <th>Client Name</th>
-
                                         <th>Phone No.</th>
                                         <th>Cnic</th>
                                         <th>Email</th>
@@ -41,7 +39,7 @@
                                         <td>[[user.customer_cnic]]</td>
                                         <td>[[user.customer_email]]</td>
                                         <td>[[user.customer_phone]]</td>
-                                        <td>Booking status</td>
+                                        <td>[[user.booking_status]]</td>
                                         <td>[[user.checkout_date|date]]</td>
                                         <td>
                                             <div class="align-self-center">
