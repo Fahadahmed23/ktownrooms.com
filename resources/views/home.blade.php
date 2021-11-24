@@ -20,34 +20,40 @@
                             <table id="dTable" class="table table-user table-striped hover display datatable-basic" datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs">
                                 <thead>
                                     <tr>
-                                        <th>Client Name</th>
-                                        <th>Phone No.</th>
-                                        <th>Cnic</th>
-                                        <th>Email</th>
-                                        <th>Hotel Name</th>
-                                        <th>Booking Status</th>
+                                        <th>Customer Name</th>
+                                        <th>Hotal Name</th>
+                                        <th>Room Title</th>
+                                        <th>Room Number</th>
+
+                                        <th>Booking From</th>
+                                        <th>Booking To</th>
+                                        <th>Status</th>
                                         <th>Booking Date</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
 
 
                                 <tbody data-link="row" class="rowlink">
-                                    <tr ng-repeat="user in customerbooking.clients" class="unread">
-                                        <td>[[user.FullName]]</td>
-                                        <td>[[user.customer_last_name]]</td>
-                                        <td>[[user.customer_cnic]]</td>
-                                        <td>[[user.customer_email]]</td>
-                                        <td>[[user.customer_phone]]</td>
-                                        <td>[[user.booking_status]]</td>
-                                        <td>[[user.checkout_date|date]]</td>
+                                    <tr ng-repeat="user in customerbooking" class="unread">
+                                        <td>[[user.customer_first_name]] - [[user.customer_last_name]] </td>
+
+                                        <td>[[user.HotelName]]</td>
+                                        <td>[[user.rooms[0].room_title]]</td>
+                                        <td>[[user.rooms[0].RoomNumber]]</td>
+
+                                        <td>[[user.BookingFrom|date]]</td>
+                                        <td>[[user.BookingTo|date]]</td>
+                                        <td>[[user.status]]</td>
+                                        <td>[[user.BookingDate|date]]</td>
+
+{{--
                                         <td>
                                             <div class="align-self-center">
                                                 <div class="list-icons list-icons-extended">
                                                     <a id="edit-company" ng-click="editUser(user)" class="list-icons-item text-info edit-info" data-popup="tooltip" title="Edit Detail" data-trigger="hover"><i class="icon-pencil5"></i></a>
                                                 </div>
                                             </div>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 </tbody>
                             </table>

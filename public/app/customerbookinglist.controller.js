@@ -14,7 +14,7 @@ app.controller('bookinglistcltr', function($scope, DTColumnDefBuilder, DTOptions
         $scope.ajaxGet('customer_profile_bookings', {}, true)
             .then(function(response) {
                 debugger;
-                $scope.customerbooking = response;
+                $scope.customerbooking = response.bookings;
             })
             .catch(function(e) {
                 console.log(e);
