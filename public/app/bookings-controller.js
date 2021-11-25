@@ -3729,10 +3729,10 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
         $scope.invoice_detail = angular.copy(inv);
         $scope.corporate_type_exists = false;
-        console.log('Get Invoice Details');
-        console.log($scope.invoice_detail);
+        //console.log('Get Invoice Details');
+        //console.log($scope.invoice_detail);
         $scope.urlparam = window.location.search.substring(1);
-        console.log($scope.urlparam);
+        //console.log($scope.urlparam);
         
 
     }
