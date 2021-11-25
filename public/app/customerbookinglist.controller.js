@@ -1,4 +1,4 @@
-app.controller('bookinglistcltr', function($scope, DTColumnDefBuilder, DTOptionsBuilder) {
+app.controller('bookinglistcltr', function($scope, $rootScope, DTColumnDefBuilder, DTOptionsBuilder, $filter, $interval, urlService) {
 
     $scope.user = {};
 
@@ -21,5 +21,19 @@ app.controller('bookinglistcltr', function($scope, DTColumnDefBuilder, DTOptions
             })
     }
 
+
+    $scope.GetBookingDetails=function(e)
+    {
+        debugger;
+        $scope.ajaxGet('customer_single_profile_booking/'+e, {}, true)
+        .then(function(response) {
+             debugger;
+            $('#Customerbookingmodel').modal();
+            $scope.bookingDetails = response;
+        })
+        .catch(function(e) {
+            console.log(e);
+        })
+    }
 
 });

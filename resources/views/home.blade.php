@@ -4,8 +4,8 @@
 @endsection
 @section('content')
 
-
 <div class="container-fluid mt-2" ng-controller='bookinglistcltr'>
+
     <div class="row justify-content-center" ng-init="getCustomerProfileBooking()">
         <div class="col-md-12">
             <div class="card">
@@ -29,6 +29,7 @@
                                         <th>Booking To</th>
                                         <th>Status</th>
                                         <th>Booking Date</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
 
@@ -46,14 +47,14 @@
                                         <td>[[user.status]]</td>
                                         <td>[[user.BookingDate|date]]</td>
 
-{{--
+
                                         <td>
                                             <div class="align-self-center">
                                                 <div class="list-icons list-icons-extended">
-                                                    <a id="edit-company" ng-click="editUser(user)" class="list-icons-item text-info edit-info" data-popup="tooltip" title="Edit Detail" data-trigger="hover"><i class="icon-pencil5"></i></a>
+                                                    <a id="edit-company" ng-click="GetBookingDetails(user.id)" class="list-icons-item text-info edit-info" data-popup="tooltip" title="Edit Detail" data-trigger="hover"><i class="icon-pencil5"></i></a>
                                                 </div>
                                             </div>
-                                        </td> --}}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
