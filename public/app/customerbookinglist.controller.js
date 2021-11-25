@@ -24,12 +24,13 @@ app.controller('bookinglistcltr', function($scope, $rootScope, DTColumnDefBuilde
 
     $scope.GetBookingDetails=function(e)
     {
-        debugger;
+        // debugger;
         $scope.ajaxGet('customer_single_profile_booking/'+e, {}, true)
         .then(function(response) {
-             debugger;
-            $('#Customerbookingmodel').modal();
+            //  debugger;
+
             $scope.bookingDetails = response;
+            $('#Customerbookingmodel').modal();
         })
         .catch(function(e) {
             console.log(e);
