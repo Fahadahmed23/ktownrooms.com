@@ -229,16 +229,28 @@ font-size: 10px !important;
     <div class="row invoice-row">
 
         <ul id="invoice_btns_ul" class="invoice-list-ul">
-            <li class="inv_btn [[!invoice_detail?'active':'']]" style="margin-top: 20px;" ng-click="showMainReceipt()">
+            <li class="inv_btn [[!invoice_detail ?'active':'']]" style="margin-top: 20px;" ng-click="showMainReceipt()">
                 <div class="inv-detail">
                     <div class="iner-div"><strong>Main Receipt</strong></div>
                     <div class="iner-div"><strong>Booking No: </strong> <span>[[Invoice.booking_no]]</span></div>
                 </div>
             </li>
+
+            <div class="inv_heading" ng-show="Invoice.is_corporate == '1' && Invoice.is_corporate != null">
+                <h4>Corporate Type</h4>
+            </div>
+            <li class="inv_btn [[corporate_type_exists ?'active':'']]" ng-show="Invoice.is_corporate == '1' && Invoice.is_corporate != null" ng-click="getCorporateDetailReceipt()">
+                <div class="inv-detail">
+                    <div class="iner-div"><strong>Receipt No:</strong> <span>[[Invoice.booking_no]]-000</span></div>
+                    <div class="iner-div"> <strong>Type: </strong> <span>Corporate</span> </div>
+                    <div class="iner-div"><strong>Booking No: </strong> <span>[[Invoice.booking_no]]</span></div>
+                </div>
+            </li>
+            
             <div class="inv_heading">
             <h4>Invoices</h4>
             </div>
-            <li class="inv_btn [[inv.invoice_no==invoice_detail.invoice_no?'active':'']]" data-inv="[[inv.invoice_no]]" ng-repeat="inv in invoice_details" ng-click="getInvoiceDetailReceipt(inv)">
+            <li class="inv_btn [[inv.invoice_no==invoice_detail.invoice_no && !corporate_type_exists?'active':'']]" data-inv="[[inv.invoice_no]]" ng-repeat="inv in invoice_details" ng-click="getInvoiceDetailReceipt(inv)">
                 <div class="inv-detail">
                     <div class="iner-div"><strong>Receipt No:</strong> <span>[[inv.invoice_no]]</span></div>
                     <div class="iner-div"> <strong>Type: </strong> <span>[[inv.type | camelCase]]</span> </div>
@@ -305,8 +317,8 @@ font-size: 10px !important;
                     <br>
                     <br>
 
-                    <table ng-show="Invoice.is_corporate == '1' && Invoice.is_corporate != null" class="receipt-orderlines">
-                        <tbody>
+                    <table ng-show="invoice_detail Invoice.is_corporate == '1' && Invoice.is_corporate != null" class="receipt-orderlines corporate-type">
+                        <tbody ng-if="invoice_detail.type == 'corporate'">
                             <tr>
                                 <th>Booking Type</th>
                                 <td>[[Invoice.invoice.corporate_type_name ]]</td>
@@ -326,10 +338,10 @@ font-size: 10px !important;
                                 <th ng-if="invoice_detail.type == 'payment'">Payment</th>
                                 <th ng-if="invoice_detail.type == 'service'">Service</th>
                                 <th ng-if="invoice_detail.type == 'checkout discount'">Remarks</th>
-                                <th>Type</th>
+                                <th ng-if="invoice_detail.type != 'corporate'">Type</th>
                                 <th ng-if="invoice_detail.quantity">Quantity</th>
                                 <th ng-if="invoice_detail.rate" class="text-right" >Rate</th>
-                                <th>Total</th>
+                                <th ng-if="invoice_detail.type != 'corporate'">Total</th>
                                 {{-- <th ng-if="invoice_detail.type == 'payment'">Total</th>
                                 <th ng-if="invoice_detail.type == 'refund'|| invoice_detail.type == 'early checkin' || invoice_detail.type == 'late checkout' || invoice_detail.type == 'checkout '">Total</th> --}}
                             </tr>
@@ -339,7 +351,7 @@ font-size: 10px !important;
                                 <td ng-if="invoice_detail.type == 'payment'">Payment Received</td>
                                 <td ng-if="invoice_detail.type == 'service'" >[[invoice_detail.title]]</td>
                                 <td ng-if="invoice_detail.type == 'checkout discount'" >[[invoice_detail.title]]</td>
-                                <td>[[invoice_detail.type | camelCase]]</td>
+                                <td ng-if="invoice_detail.type != 'corporate'">[[invoice_detail.type | camelCase]]</td>
                                 <td ng-if="invoice_detail.quantity" class="text-center">[[invoice_detail.quantity]]</td>
                                 <td ng-if="invoice_detail.rate" class="text-right" >[[invoice_detail.rate | currency]]</td>
                                 <td>[[invoice_detail.amount | currency]]</td>
@@ -353,8 +365,20 @@ font-size: 10px !important;
                         <th>Total</th>
                         <td class="text-right">[[invoice_detail.amount | currency]]</td>
                     </table>
-
-
+                    
+                    <table ng-hide="invoice_detail" class="receipt-orderlines corporate-type">
+                        <tbody>
+                            <tr>
+                                <th>Booking Type</th>
+                                <td>[[Invoice.invoice.corporate_type_name ]]</td>
+                            </tr>
+                            <tr>
+                                <th>Customer to pay</th>
+                                <td>[[Invoice.corporate_type_total ]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
                     <table ng-hide="invoice_detail" class="receipt-orderlines">
                         
                                 <thead>
