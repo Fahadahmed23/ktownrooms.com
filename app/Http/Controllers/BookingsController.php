@@ -1378,6 +1378,11 @@ class BookingsController extends Controller
         // $invoice->payment_amount = $invoiceData['paid'] == 1 ? $invoiceData['net_total'] : 0;
 
         $invoice->is_corporate = $invoiceData['is_corporate'];
+
+        // Mr Optimist | 28 Oct 2021
+        if($invoice->is_corporate == 1) {
+            $invoice->corporate_type = $invoiceData['corporate_type'];
+        }
         
         if ($invoiceData['is_corporate'] == 1) {
             // find the corporate client by name
@@ -1403,7 +1408,8 @@ class BookingsController extends Controller
         if(!empty($this->booking['invoice']['checkout_discount'])){
             $invoice->checkout_discount = $this->booking['invoice']['checkout_discount'];
         }
-// dd($invoice);
+        
+        // dd($invoice);
         $this->invoice = $invoice;
         // $invoice->save();
     }
