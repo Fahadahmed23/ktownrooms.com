@@ -448,6 +448,23 @@ class BookingsController extends Controller
                     return $r->room_id == $rooms[$i]->id;
                 });
 
+                // Mr Optimist
+                if(isset($room_schedule[$i]->booking->customer_id) && $room_schedule[$i]->booking->customer_id > 0 ){
+                    $customer_book_count = Customer::withCount('bookings')->where('id', '=',$room_schedule[$i]->booking->customer_id)->first();
+                    if (!empty($customer_book_count)) {
+
+                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 1 ){
+                            $is_klc = 'yes';
+                        }
+                        else{
+                            $is_klc = 'no';
+                        }
+                    }
+                    else{
+                        $is_klc = 'no';
+                    }
+                }
+
                 if ($rooms[$i]->is_available == '0') {
                     $rooms[$i]->st = [
                         'name' => 'Not Available',
@@ -456,6 +473,7 @@ class BookingsController extends Controller
                         'cursor'=>'no-cursor',
                         'show_menu' => $show_menu,
                         'is_checkedout' => $is_checkedout,
+                        'is_klc' => $is_klc,
                     ];
                 }
 
@@ -471,6 +489,7 @@ class BookingsController extends Controller
                             'cursor'=>'no-cursor',
                             'show_menu' => $show_menu,
                             'is_checkedout' => $is_checkedout,
+                            'is_klc' => $is_klc,
                         ];
     
                     } else {
@@ -486,7 +505,8 @@ class BookingsController extends Controller
                             'show_menu' => $show_menu,
                             'is_checkedout' => $is_checkedout,
                             // 'is_confirmed' => $room_schedule[$j]->booking->status == 'Confirmed' ? '1' : '0'
-                            'is_confirmed' => $rs->booking->status == 'Confirmed' ? '1' : '0'
+                            'is_confirmed' => $rs->booking->status == 'Confirmed' ? '1' : '0',
+                            'is_klc' => $is_klc,
                         ];
                     }
                     // $booking_no = $room_schedule[$j]->booking->booking_no;
