@@ -3726,16 +3726,36 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 
     $scope.getInvoiceDetailReceipt = function(inv) {
+
         $scope.invoice_detail = angular.copy(inv);
-        console.log($scope.invoice_detail);
+        $scope.corporate_type_exists = false;
+        //console.log('Get Invoice Details');
+        //console.log($scope.invoice_detail);
         $scope.urlparam = window.location.search.substring(1);
-        console.log($scope.urlparam);
+        //console.log($scope.urlparam);
+        
 
     }
 
     $scope.showMainReceipt = function() {
         $scope.invoice_detail = false;
+        $scope.corporate_type_exists = false;
     }
+
+    $scope.getCorporateDetailReceipt = function() {
+
+       // $scope.invoice_detail = false;
+        $scope.corporate_type_exists = true;
+
+        $scope.invoice_detail = {
+            type: 'corporate',
+        };
+        $scope.urlparam = window.location.search.substring(1);
+
+        
+    }
+
+    
 
     $scope.changePartialPayment = function(p) {
         if (p == '1') {

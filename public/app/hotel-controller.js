@@ -325,6 +325,7 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
         $scope.hotel = {
             has_tax: 0,
+            has_cobranding: 0,
             // contacts: [],
             // checkout: {},
             // checkin: {},
@@ -913,13 +914,18 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.hotelForm.$setPristine();
         $scope.hotelForm.$setUntouched();
 
-
         $scope.hotel.has_cobranding = 0;
         $scope.hotel.software_fees = 0;
         $scope.hotel.percentage_amount = 0;
 
-
         $scope.hotel = angular.copy(h);
+
+
+        console.log('Edit Hotel');
+        console.log($scope.hotel);
+
+        
+
 
         if ($scope.hotel.hotel_categories[0] != undefined) {            
             //console.log('Hotel Category Id');

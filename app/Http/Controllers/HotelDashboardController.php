@@ -122,11 +122,13 @@ class HotelDashboardController extends Controller
         // Get Room Stats
         $today = date('Y-m-d');
 
+
         $rooms_count = Room::where('hotel_id', $hotel_id)->count();
         $rooms_occupied =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->where('status', 'CheckedIn')->where('BookingFrom', '<=', $today)->where('BookingTo', '>=', $today)->get()->sum('rooms_count'); 
         $rooms_reserved =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['Pending', 'Confirmed'])->where('BookingFrom', '<=', $today)->where('BookingTo', '>=', $today)->get()->sum('rooms_count');
         $rooms_blocked = Room::where('hotel_id', $hotel_id)->where('is_available', 0)->count();
         $rooms_available = $rooms_count - $rooms_occupied - $rooms_reserved - $rooms_blocked;
+
 
         if (auth()->user()->hasRole('Admin')) {
             $is_admin = true;
@@ -421,6 +423,8 @@ class HotelDashboardController extends Controller
             'rooms_available' => $rooms_available,
             'rooms_blocked' => $rooms_blocked,
             'hotels'=>$hotels,
+            'today_date'=>$today,
+            'todays_checkedin'=>$today,
             // 'hotel_id'=>$hotel_id
             //   'services'=>$services,
 

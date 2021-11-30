@@ -254,56 +254,83 @@ class CustomerProfileController extends Controller
 
     public function show($id)
     {
-        $booking = $this->getBooking($id);
-        $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
-        $default_rule_img = DefaultRule::first()->picture;
-        $default_rule = DefaultRule::first();
-        $msg = "";
 
-        if ($booking->discount_request) {
-            if ($booking->discount_request->status == 'Pending') {
-                $this->lockdown = true;
-                $msg = "Discount request has not been approved yet";
+        $user = Auth::user();
+        $user_email = $user->email;
+        if(!empty($user_email)) {
+
+            //$booking = $this->getBooking($id,$user_email);
+            $booking = Booking::whereHas('customer', function ($q1) use ($user_email) {
+                $q1->where('Email', $user_email);
+            })->with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){
+                $q->withCount('bookings');
+            }, 'rooms', 'rooms.category','rooms.hotel', 'invoice', 'invoice_details', 'promotion','tax_rate','invoice.payment_mode', 'status_history'])->find($id);
+            
+
+            if(!empty($booking)){
+
+                foreach ($booking->rooms as $r) {
+                    $r->hotel_room_category = $r->hotel_room_category;
+                }
+                $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
+                $default_rule_img = DefaultRule::first()->picture;
+                $default_rule = DefaultRule::first();
+                $msg = "";
+
+                if ($booking->discount_request) {
+                    if ($booking->discount_request->status == 'Pending') {
+                        $this->lockdown = true;
+                        $msg = "Discount request has not been approved yet";
+                    }
+        
+                    if ($booking->discount_request->status == 'Declined') {
+                        $msg = "Discount request was declined";
+                        $this->lockdown = false;
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'booking' => $booking,
+                    'user' => [
+                        'name' => Auth::user()->name
+                    ],
+                    'default_rule_img'=>$default_rule_img,
+                    'default_rule'=>$default_rule,
+                    'lockdown' => $this->lockdown && false,
+                    'invoice_details'=>$invoice_details,
+                    'msg' => $msg
+                ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
             }
+            else {
+                return response()->json([
+                    'success' => false,
+                    'message' => ["Booking Not Found"],
+                    'msgtype' => 'error',
+                ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
-            if ($booking->discount_request->status == 'Declined') {
-                $msg = "Discount request was declined";
-                $this->lockdown = false;
             }
         }
-
-        //echo "<pre>";
-        //var_dump($booking);
-        //echo "</pre>";
-        //die;
-
-        if (empty($booking)) {
-            return response()->json([
-                'success' => false,
-                'message' => ["Booking Not Found"],
-                'msgtype' => 'error',
-            ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-        } else {
-            return response()->json([
-                'success' => true,
-                'booking' => $booking,
-                'user' => [
-                    'name' => Auth::user()->name
-                ],
-                'default_rule_img'=>$default_rule_img,
-                'default_rule'=>$default_rule,
-                'lockdown' => $this->lockdown && false,
-                'invoice_details'=>$invoice_details,
-                'msg' => $msg
-            ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+        else {
+            return '/';
         }
     }
 
-    private function getBooking($id) {
-        $booking = Booking::with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){
+    private function getBooking($id,$user_email) {
+        $booking = Booking::whereHas('customer', function ($q1) use ($user_email) {
+                
+            $q1->where('Email', $user_email);
+
+        })->with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){
             $q->withCount('bookings');
         }, 'rooms', 'rooms.category','rooms.hotel', 'invoice', 'invoice_details', 'promotion','tax_rate','invoice.payment_mode', 'status_history'])->find($id);
         
+        echo "<pre>";
+        var_dump($booking);
+        echo "</pre>";
+        die;
+
         foreach ($booking->rooms as $r) {
             $r->hotel_room_category = $r->hotel_room_category;
         }
