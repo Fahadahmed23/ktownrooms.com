@@ -473,7 +473,7 @@ font-size: 10px !important;
                             <hr><span class="boldre">User: </span>[[user.name]]
                             <hr>
                             <div class="thnote" style="font-size: 14px;">Thankyou for choosing [[default_rule.name]]</div>
-                            <hr><span style="font-size: 12px;">Powered by Manhattan Datanet INC.</span>
+                            {{-- <hr><span style="font-size: 12px;">Powered by Manhattan Datanet INC.</span> --}}
                 </div>
         </div>
     </div>
