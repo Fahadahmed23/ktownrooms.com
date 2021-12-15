@@ -957,6 +957,33 @@ class BookingsController extends Controller
             // TODO: sms notification to both customer and admin
             DB::commit();
 
+            // Mr Optimist 14 Dec 2021
+
+            $data_to_ktown = array(
+                'FirstName' => $request->booking['customer']['FirstName'],
+                'LastName' => $request->booking['customer']['LastName'],
+                'Phone' => $request->booking['customer']['Phone'],
+                'Email' => $request->booking['customer']['Email']
+            );       
+            
+            $data_string = json_encode($data_to_ktown); 
+            $ch3 = curl_init('https://ktownrooms.com/inner-user-creation');                                                               
+            curl_setopt($ch3, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
+            curl_setopt($ch3, CURLOPT_POSTFIELDS,$data_string);                                                                  
+            curl_setopt($ch3, CURLOPT_RETURNTRANSFER, true);                                                                      
+            curl_setopt($ch3, CURLOPT_HTTPHEADER, array(                                                                          
+                'Content-Type: application/json',                                                                            
+                // 'Content-Length: ' . strlen($data_string)
+                )                                                                       
+            );
+
+            $resultt = curl_exec($ch3);           
+            curl_close($ch3);
+
+            // Mr Optimist 14 Dec 2021 Ends
+
+
+
             return response()->json([
                 'success' => true,
                 'message' => ["Booking ($booking->booking_no) has been confirmed. An email has been sent to the customer."],

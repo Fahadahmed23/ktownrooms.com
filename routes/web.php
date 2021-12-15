@@ -655,6 +655,9 @@ Route::post('calculate_voucher_amount', 'ShiftHandOverController@calculateAmount
 
 // Mr Optimist + Arman Bhai
 Route::get('customer_profile_bookings', 'CustomerProfileController@getCustomerBookings');
+Route::post('customer_bookings', 'CustomerProfileController@getCustomerBookingsAll');
+Route::post('external_customer_bookings', 'CustomerProfileController@getCustomerBooking');
+
 //Route::get('customer_single_profile_booking/{id}', 'CustomerProfileController@customerSingleProfileBooking');
 Route::get('customer_single_profile_booking/{id}', 'CustomerProfileController@show');
 

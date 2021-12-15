@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+
 // Models
 use App\Models\Booking;
 use App\Models\City;
@@ -63,7 +64,8 @@ class CustomerProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        
+        $this->middleware('auth')->except(['customer_bookings','external_customer_bookings']);
     }
 
     /**
@@ -91,6 +93,7 @@ class CustomerProfileController extends Controller
         //echo "<pre>";
         $user = Auth::user();
         $user_email = $user->email;
+        //$user_email = 'fahadahmedoptimist@gmail.com';
         if(!empty($user_email)) {
 
             
@@ -166,6 +169,97 @@ class CustomerProfileController extends Controller
         }
         
     }
+
+    public function getCustomerBookingsAll(Request $request){
+        
+        //$user_email = 'fahadahmedoptimist@gmail.com';
+        $user_email = $request->email ?? null;
+        
+        if(!empty($user_email)) {
+
+            
+            $bookings = Booking::whereHas('customer', function ($q1) use ($user_email) {
+                
+                $q1->where('Email', $user_email);
+    
+            })->with(['hotel','rooms', 'rooms.category', 'invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
+            ->orderBy('created_at', 'desc')->get();
+
+           
+
+            if(!empty($bookings)){
+
+                $count = $bookings->count();
+                if($count > 0){
+
+                    $bookings_map = $bookings->map(function ($ex) {
+
+                        $obj = new stdClass();
+                        $obj->id = $ex->id;
+                        $obj->booking_no = $ex->booking_no ?? "";
+                        $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
+                        $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
+                        $obj->HotelName = $ex->hotel->HotelName ?? "";
+                        $obj->rooms = $ex->rooms->map(function ($room) {
+                            $obj['room_title'] = $room->room_title;
+                            $obj['RoomNumber'] = $room->RoomNumber;
+                            return $obj;
+                        });
+                       
+                        $obj->status = $ex->status ?? "";
+                        $obj->BookingDate = $ex->BookingDate ?? "";
+                        $obj->BookingFrom = $ex->BookingFrom ?? "";
+                        $obj->BookingTo = $ex->BookingTo ?? "";
+                        $obj->created_by = $ex->created_by ?? "";
+                        
+                        return $obj;
+                    });
+
+                    return response()->json([
+                        'success' => true,
+                        'totalRecords' => $count,
+                        'bookings' => $bookings_map,
+                    ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
+                }
+                else {
+
+                    return response()->json([
+                        'success' => false,
+                        'totalRecords' => 0,
+                        'message' => ['No Bookings Found!'],
+                        'msgtype' => 'danger',
+                    ]);
+
+                } 
+
+            }
+            else {
+                 return response()->json([
+                        'success' => false,
+                        'totalRecords' => 0,
+                        'message' => ['No Bookings Found!'],
+                        'msgtype' => 'danger',
+                    ]);
+
+            }
+
+             
+        }
+        else {
+             return response()->json([
+                        'success' => false,
+                        'totalRecords' => 0,
+                        'message' => ['No Bookings Found!'],
+                        'msgtype' => 'danger',
+                    ]);
+        }
+
+        //return response()->json(['success'=> true, 'message'=>'Booking created successfully']);
+        //return 'partners ktwoe zindabad';
+
+    }
+     
 
 
     /**
@@ -251,6 +345,76 @@ class CustomerProfileController extends Controller
         }
 
     }
+
+    // External Booking
+    public function getCustomerBooking(Request $request)
+    {
+
+        $booking_id = $request->id ?? null;
+        $user_email = $request->email ?? null;
+    
+        if(!empty($user_email) && !empty($booking_id)) {
+
+            //$booking = $this->getBooking($id,$user_email);
+            $booking = Booking::whereHas('customer', function ($q1) use ($user_email) {
+                $q1->where('Email', $user_email);
+            })->with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){
+                $q->withCount('bookings');
+            }, 'rooms', 'rooms.category','rooms.hotel', 'invoice', 'invoice_details', 'promotion','tax_rate','invoice.payment_mode', 'status_history'])->find($booking_id);
+            
+
+            if(!empty($booking)){
+
+                foreach ($booking->rooms as $r) {
+                    $r->hotel_room_category = $r->hotel_room_category;
+                }
+                $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
+                $default_rule_img = DefaultRule::first()->picture;
+                $default_rule = DefaultRule::first();
+                $msg = "";
+
+                if ($booking->discount_request) {
+                    if ($booking->discount_request->status == 'Pending') {
+                        $this->lockdown = true;
+                        $msg = "Discount request has not been approved yet";
+                    }
+        
+                    if ($booking->discount_request->status == 'Declined') {
+                        $msg = "Discount request was declined";
+                        $this->lockdown = false;
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'booking' => $booking,
+                    'default_rule_img'=>$default_rule_img,
+                    'default_rule'=>$default_rule,
+                    'lockdown' => $this->lockdown && false,
+                    'invoice_details'=>$invoice_details,
+                    'msg' => $msg
+                ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
+            }
+            else {
+                return response()->json([
+                    'success' => false,
+                    'message' => ["Booking Not Found"],
+                    'msgtype' => 'error',
+                ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
+            }
+        }
+        else {
+            return response()->json([
+                'success' => false,
+                'message' => ["Booking Not Found"],
+                'msgtype' => 'error',
+            ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+        }
+    }
+
+   
 
     public function show($id)
     {

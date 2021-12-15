@@ -99,7 +99,9 @@
 
     function loadBookingStatistics(data, element, size) {
     
-    
+        console.log('Arman Ahmad');
+        console.log(data.total_checkedins_today);
+        console.log(data.total_checkedouts_today);
         // Pie with progress bar
         if (typeof d3 == 'undefined') {
             console.warn('Warning - d3.min.js is not loaded.');
@@ -114,7 +116,9 @@
                 { name: 'Occupied', count: data.rooms_occupied },
                 { name: 'Reserved', count: data.rooms_reserved },
                 { name: 'Available', count: data.rooms_available },
-                { name: 'Blocked', count: data.rooms_blocked }
+                { name: 'Blocked', count: data.rooms_blocked },
+                { name: 'CheckedIns Today', count: data.total_checkedins_today },
+                { name: 'CheckedOut Today', count: data.total_checkedouts_today },
             ];
 
             // Main variables
@@ -130,7 +134,7 @@
 
             // Colors
             var color = d3.scale.ordinal()
-                .range(['#66BB6A', '#ea883f', '#29b6f6', '#EF5350']);
+                .range(['#66BB6A', '#ea883f', '#29b6f6', '#EF5350','#BB8FCE','#1C2833']);
 
 
             // Create chart
