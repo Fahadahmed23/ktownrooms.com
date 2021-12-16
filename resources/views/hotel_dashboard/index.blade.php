@@ -96,7 +96,7 @@
     }
 
 
-
+    // Mr Optimist 16 Dec 2021
     function loadBookingStatistics(data, element, size) {
     
         console.log('Arman Ahmad');
@@ -117,8 +117,8 @@
                 { name: 'Reserved', count: data.rooms_reserved },
                 { name: 'Available', count: data.rooms_available },
                 { name: 'Blocked', count: data.rooms_blocked },
-                { name: 'CheckedIns Today', count: data.total_checkedins_today },
-                { name: 'CheckedOut Today', count: data.total_checkedouts_today },
+                { name: 'Todays Occupancy', count: data.total_checkedins_today },
+                { name: 'Same Day Checkouts', count: data.total_checkedouts_today },
             ];
 
             // Main variables
