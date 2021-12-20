@@ -91,6 +91,15 @@ Route::post('send_sms', 'BookingsController@sendSms')->middleware('permission:ca
 Route::post('search-customers', 'BookingsController@searchCustomers')->middleware('permission:can-add-booking');
 // FrontDesk
 Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-frontdesk-booking');
+
+/**
+ * Miscellaneous Amount
+ */
+//Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount');
+Route::post('deleteBookingsMiscellaneousAmount', 'BookingsController@deleteBookingsMiscellaneousAmount');
+Route::post('saveBookingsMiscellaneousAmount', 'BookingsController@saveBookingsMiscellaneousAmount');
+
 // Route::get('bookings/find/{id}', 'BookingsController@show')->middleware('permission:can-add-booking');
 // Route::get('getBookings','BookingsController@getBookings')->middleware('permission:can-view-booking');
 // Route::post('searchRooms', 'BookingsController@searchRooms')->middleware('permission:can-add-booking');

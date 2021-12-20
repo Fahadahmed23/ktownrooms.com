@@ -49,6 +49,8 @@ use App\Models\CronLog;
 use App\Models\DefaultRule;
 use App\Models\SmsLog;
 use App\Models\Role;
+use App\Models\BookingMiscellaneousAmount;
+
 class BookingsController extends Controller
 {
     protected $booking;
@@ -69,7 +71,7 @@ class BookingsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except(['third_party_booking', 'blinq_archive']);
+        $this->middleware('auth')->except(['third_party_booking','blinq_archive','getBookingsMiscellaneousAmount','deleteBookingsMiscellaneousAmount','saveBookingsMiscellaneousAmount']);
     }
     /**
      * Display base page for companies.
@@ -259,6 +261,79 @@ class BookingsController extends Controller
             'user' => $user
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
+
+
+    /**
+     * Mr Optimist
+     * Get Miscellaneous Amount
+     */
+    public function getBookingsMiscellaneousAmount(Request $request)
+    {
+
+        
+        $booking_id = !empty($request->booking_id) ? $request->booking_id : ''; 
+        $get_booking_miscellaneous_amounts = BookingMiscellaneousAmount::where('booking_id','=',$booking_id)->get();
+        return response()->json([
+            'success' => true,
+            'booking_miscellaneous_amounts' => $get_booking_miscellaneous_amounts,
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+    
+    
+    }
+    
+    public function deleteBookingsMiscellaneousAmount(Request $request) {
+
+        $booking_miscellaneous_amount = BookingMiscellaneousAmount::find($request->id);
+        if(isset($booking_miscellaneous_amount)) {
+            $message = ["'$booking_miscellaneous_amount->name' is deleted successfully!"];
+            $booking_miscellaneous_amount->delete();
+    
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'msgtype' => 'success',
+                'id' => $request->id
+            ]);
+        }
+        else {
+            $message = ["'$booking_miscellaneous_amount->name' is not deleted"];
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+                'msgtype' => 'danger',
+                'id' => $request->id
+            ]);
+        }
+
+       
+    }
+    
+    public function saveBookingsMiscellaneousAmount(Request $request)
+    {
+        
+        // $miscellaneousamount_id = $request->miscellaneousamount['id'] ?? null;
+        $miscellaneousamount_id = $request->id ?? null;
+
+        $miscellaneous_amount = BookingMiscellaneousAmount::find($miscellaneousamount_id);
+        
+        if(!isset($miscellaneous_amount)) {
+            $miscellaneous_amount = new BookingMiscellaneousAmount();  
+        }
+        $miscellaneous_amount->booking_id = $request->booking_id;
+        $miscellaneous_amount->name = $request->name;
+        $miscellaneous_amount->amount = $request->amount;
+        $miscellaneous_amount->is_complementary = $request->is_complementary;
+        $miscellaneous_amount->status = $request->status;
+        $miscellaneous_amount->save();
+        return response()->json([
+            'success' => true,
+            'message' => ["$miscellaneous_amount->name added successfully"],
+            'msgtype' => 'success',
+            'miscellaneous_amount' => $miscellaneous_amount
+        ]);
+        
+    }
+    
 
     public function getData() {
         // Get Cities
