@@ -304,6 +304,7 @@ display: none;
                                                 <h3 class="mb-0">[[room.room_title]]</h3>
                                                 <div>Room# [[room.RoomNumber]]</div>
                                                  <span class="text-uppercase font-size-xs">[[room.st.name == "Reserved" && !room.st.show_menu ? 'Upcoming' : room.st.name ]]</span>
+                                                 <div ng-show="room.st.is_klc && (room.st.is_klc=='yes')">KLC</div>
                                             </div>
                                         </div>
                                     </div>
