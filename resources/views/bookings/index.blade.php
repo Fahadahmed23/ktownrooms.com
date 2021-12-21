@@ -17,12 +17,13 @@
         @include('bookings.invoice')
         @include('bookings.invoice_new')
         @include('bookings.show_customer_list')
-        @include('bookings.addOccupantsModal') 
+        @include('bookings.addOccupantsModal')
         @include('bookings.add_partial_pay')
+        @include('bookings.add_misc_amount')
         {{-- @include('bookings.add_staging_pay') --}}
-        @include('bookings.addBulkOccupants')    
-        @include('bookings.checkout_extend_modal')  
-        @include('bookings.send_message_modal')  
+        @include('bookings.addBulkOccupants')
+        @include('bookings.checkout_extend_modal')
+        @include('bookings.send_message_modal')
 
         @include('bookings.customer_modal')
         @include('bookings.stays_modal')
@@ -35,22 +36,22 @@
         <!-- /left sidebar component -->
         <!-- datatable component -->
         {{-- <div class="flex-fill overflow-auto"> --}}
-            
-        <div class="flex-fill overflow-auto">    
+
+        <div class="flex-fill overflow-auto">
             {{--right booking detail box --}}
             @include('bookings.bookdetailRBox')
             {{--right booking detail box --}}
-            
+
             @include('bookings.table')
-            
+
         </div>
         <!-- /datatable component -->
 
-    </div>    
+    </div>
 </div>
 <div ng-controller="housekeepingCtrl">
     @include('housekeeping.services')
-</div>  
+</div>
 <!-- calendar view script -->
 {{-- <script>
 

@@ -6,17 +6,17 @@
     .btn-number[data-type='plus']:disabled {
         cursor: no-drop;
     }
-    
+
     .show-de,
     .hide-de {
         cursor: pointer;
     }
-    
+
     .see-more {
         position: relative;
         cursor: pointer;
     }
-    
+
     .selected-room {
         cursor: url(http://localhost:8000/global_assets/images/close.cur),pointer;
         width: 100%;
@@ -44,11 +44,11 @@
         align-items: center;
         cursor: no-drop;
     } */
-    
+
     .B-Confirm {
         cursor: pointer;
     }
-    
+
     /* .selected-room h1 {
         color: #fff;
         border: 2px solid #fff;
@@ -63,7 +63,7 @@
     /* background: #4caf50de; */
     width: 100%;
 }
-    
+
 .booked-room h1 {
     color: #ffffff;
     /* border: 2px solid #4caf50; */
@@ -85,7 +85,7 @@
         width: 0;
         margin-left: 50%;
     }
-    
+
     .arrow-up {
         width: 0;
         height: 0;
@@ -93,12 +93,12 @@
         border-right: 5px solid transparent;
         border-bottom: 5px solid black;
     }
-    
+
     .receipt {
         position: relative;
         background: #f5f5f5;
     }
-    
+
     .zig-zag-top:before {
         background: linear-gradient(-45deg, #f5f5f5 16px, red 16px, blue 16px, transparent 0), linear-gradient(45deg, #f5f5f5 16px, transparent 0);
         background-position: left top;
@@ -112,38 +112,38 @@
         bottom: 21px;
         left: 0;
     }
-    
+
     .gad-event-info {
         color: #000 !important;
         pointer-events: none;
     }
-    
+
     .gad-event-info .fc-content {
         white-space: inherit;
         color: #000;
     }
-    
+
     .gad-event-info .fc-content span {
         display: block;
     }
-    
+
     .cell-info {
         color: #000 !important;
         pointer-events: none;
     }
-    
+
     .col-form-label {
         padding-right: 0px;
     }
-    
+
     .filter {
         display: none !important;
     }
-    
+
     .media-list-linked {
         overflow-y: auto;
     }
-    
+
     .visitor-modal {
         max-height: 80vh;
         overflow-y: auto;
@@ -201,7 +201,7 @@ display: none;
                             <div id="room[[room.id]]" class="selected-room" >
                                 <h1><i class="icon-check mr-1 icon-2x"></i>Reserved</h1>
                             </div>
-                            
+
                             <a href="javascript:void(0)" class="[[room.st.text_style]]">
                                 <div class="card-body" >
                                     <div class="media mt-1">
@@ -301,7 +301,7 @@ display: none;
                                 </div>
                             </div>
                         </div>
-                        
+
                     </a>
                 </div>
 
@@ -313,7 +313,7 @@ display: none;
                         </button>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -342,6 +342,7 @@ display: none;
 <!--/POS Card-->
 
 @include('bookings.add_partial_pay')
+@include('bookings.add_misc_amount')
 
 
 
