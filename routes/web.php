@@ -91,6 +91,15 @@ Route::post('send_sms', 'BookingsController@sendSms')->middleware('permission:ca
 Route::post('search-customers', 'BookingsController@searchCustomers')->middleware('permission:can-add-booking');
 // FrontDesk
 Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-frontdesk-booking');
+
+/**
+ * Miscellaneous Amount
+ */
+//Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount');
+Route::post('deleteBookingsMiscellaneousAmount', 'BookingsController@deleteBookingsMiscellaneousAmount');
+Route::post('saveBookingsMiscellaneousAmount', 'BookingsController@saveBookingsMiscellaneousAmount');
+
 // Route::get('bookings/find/{id}', 'BookingsController@show')->middleware('permission:can-add-booking');
 // Route::get('getBookings','BookingsController@getBookings')->middleware('permission:can-view-booking');
 // Route::post('searchRooms', 'BookingsController@searchRooms')->middleware('permission:can-add-booking');
@@ -655,6 +664,9 @@ Route::post('calculate_voucher_amount', 'ShiftHandOverController@calculateAmount
 
 // Mr Optimist + Arman Bhai
 Route::get('customer_profile_bookings', 'CustomerProfileController@getCustomerBookings');
+Route::post('customer_bookings', 'CustomerProfileController@getCustomerBookingsAll');
+Route::post('external_customer_bookings', 'CustomerProfileController@getCustomerBooking');
+
 //Route::get('customer_single_profile_booking/{id}', 'CustomerProfileController@customerSingleProfileBooking');
 Route::get('customer_single_profile_booking/{id}', 'CustomerProfileController@show');
 

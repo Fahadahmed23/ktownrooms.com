@@ -10,17 +10,17 @@
     .btn-number[data-type='plus']:disabled {
         cursor: no-drop;
     }
-    
+
     .show-de,
     .hide-de {
         cursor: pointer;
     }
-    
+
     .see-more {
         position: relative;
         cursor: pointer;
     }
-    
+
     .selected-room {
         cursor: url(http://localhost:8000/global_assets/images/close.cur),pointer;
         width: 100%;
@@ -48,11 +48,11 @@
         align-items: center;
         cursor: no-drop;
     } */
-    
+
     .B-Confirm {
         cursor: pointer;
     }
-    
+
     /* .selected-room h1 {
         color: #fff;
         border: 2px solid #fff;
@@ -67,7 +67,7 @@
     /* background: #4caf50de; */
     width: 100%;
 }
-    
+
 .booked-room h1 {
     color: #ffffff;
     /* border: 2px solid #4caf50; */
@@ -89,7 +89,7 @@
         width: 0;
         margin-left: 50%;
     }
-    
+
     .arrow-up {
         width: 0;
         height: 0;
@@ -97,12 +97,12 @@
         border-right: 5px solid transparent;
         border-bottom: 5px solid black;
     }
-    
+
     .receipt {
         position: relative;
         background: #f5f5f5;
     }
-    
+
     .zig-zag-top:before {
         background: linear-gradient(-45deg, #f5f5f5 16px, red 16px, blue 16px, transparent 0), linear-gradient(45deg, #f5f5f5 16px, transparent 0);
         background-position: left top;
@@ -116,38 +116,38 @@
         bottom: 21px;
         left: 0;
     }
-    
+
     .gad-event-info {
         color: #000 !important;
         pointer-events: none;
     }
-    
+
     .gad-event-info .fc-content {
         white-space: inherit;
         color: #000;
     }
-    
+
     .gad-event-info .fc-content span {
         display: block;
     }
-    
+
     .cell-info {
         color: #000 !important;
         pointer-events: none;
     }
-    
+
     .col-form-label {
         padding-right: 0px;
     }
-    
+
     .filter {
         display: none !important;
     }
-    
+
     .media-list-linked {
         overflow-y: auto;
     }
-    
+
     .visitor-modal {
         max-height: 80vh;
         overflow-y: auto;
@@ -210,7 +210,7 @@ display: none;
                             <div id="room[[room.id]]" class="selected-room" ng-click="deselectRoom(room)">
                                 <h1><i class="icon-check mr-1 icon-2x"></i>Reserved</h1>
                             </div>
-                            
+
                             <a href="javascript:void(0)" class="[[room.st.text_style]]">
                                 <div class="card-body" ng-click="room.st.name=='Open' && selectRoom(room)">
                                     <div class="row m-0">
@@ -255,7 +255,7 @@ display: none;
                                                     Additional Guest Charges: [[room.hotel_room_category.additional_guest_charges | currency]] / Night
                                                 </div>
                                             </div>
-        
+
                                             <div class="row py-1" ng-show="room.st.name!='Open' && room.st.name!='Not Available'">
                                                 <div class="col-lg-12">
                                                     Booking #: [[room.booking_no]] <i ng-show="room.booking_code" ng-click="getPortallink(room.booking_code);" class="icon-clipboard4 ml-1 cursor-pointer" data-popup="popover" title="" data-trigger="focus" data-content="Copied to clipboard!" data-original-title=""></i>
@@ -292,6 +292,7 @@ display: none;
                                                             @endif
                                                         <a ng-click="showCustomer(room.booking_id)" class="dropdown-item"><i class="fa fa-user-tag"></i>Customer Detail</a>
                                                         <a ng-show="room.st.name=='Booked'" ng-click="showPartialPay(room.booking_id)" class="dropdown-item"><i class="icon-coin-dollar"></i>Add Payment</a>
+                                                        <a ng-show="room.st.name=='Booked'" ng-click="showmiscamount(room.booking_id)" class="dropdown-item"><i class="icon-coin-dollar"></i>Add Miscellaneous Amount</a>
                                                         <a ng-click="requestForService(room.id)" ng-if="room.st.name=='Booked'" class="dropdown-item"><i class="fas fa-concierge-bell"></i>Request For Services </a>
                                                         <a ng-show="room.st.name=='Booked'" ng-click="checkOutExtend(room.id)" class="dropdown-item"><i class="fa fa-calendar"></i>Extend Booking </a>
                                                         <a ng-click="bookingReceiptRedirect(room.booking_id)" class="dropdown-item"><i class=" fa fa-print"></i>Printable Invoice</a>
@@ -299,11 +300,12 @@ display: none;
                                                         <a ng-hide="room.st.is_checkedout" ng-click="getRoomsForTransfer(room)" class="dropdown-item"><i class="icon-redo2"></i>Transfer Room</a>
                                                         <a ng-show="room.st.name == 'Reserved' || room.st.name == 'Booked'" ng-click="editBooking(room.booking_id)" class="dropdown-item"><i class="list-icons-item edit-sec icon-pencil5"></i>Edit Booking</a>
                                                     </span>
-                                                </span>    
+                                                </span>
                                                 </span>
                                                 <h3 class="mb-0">[[room.room_title]]</h3>
                                                 <div>Room# [[room.RoomNumber]]</div>
                                                  <span class="text-uppercase font-size-xs">[[room.st.name == "Reserved" && !room.st.show_menu ? 'Upcoming' : room.st.name ]]</span>
+                                                 <div ng-show="room.st.is_klc && (room.st.is_klc=='yes')">KLC</div>
                                             </div>
                                         </div>
                                     </div>
@@ -338,7 +340,7 @@ display: none;
 
                                 {{-- <div class="col-md-6">
                                     <span>
-                                        <i class="icon-city mr-1"></i> 
+                                        <i class="icon-city mr-1"></i>
                                     </span>
                                     <span class="d-block mt-1"> <ul class="mb-0 p-0"><li><small>Category:</small> <small>[[room.RoomCategory]]</small></li></ul></span>
                                 </div>
@@ -363,7 +365,7 @@ display: none;
                                 </div>
                             </div>
                         </div>
-                        
+
                     </a>
                 </div>
 
@@ -375,7 +377,7 @@ display: none;
                         </button>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -398,13 +400,14 @@ display: none;
 @include('bookings.status_change_modal')
 
 @include('bookings.checkout_extend_modal')
-@include('bookings.send_message_modal')  
+@include('bookings.send_message_modal')
 
 <!--POS Card-->
 @include('bookings.pos_booking_modal')
 <!--/POS Card-->
 
 @include('bookings.add_partial_pay')
+@include('bookings.add_misc_amount')
 
 
 

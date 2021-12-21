@@ -34,6 +34,12 @@ class Booking extends Model
     public function booking_occupants() {
         return $this->hasMany(BookingOccupant::class);
     }
+
+    // Mr Optimist | 17 Dec 2021
+    public function booking_miscellaneous_amount() {
+        return $this->hasMany(BookingMiscellaneousAmount::class);
+    }
+
     public function rooms() {
         return $this->belongsToMany(Room::class)->where('booking_room.transferred', 0)->whereNull('booking_room.deleted_at')->withPivot('room_charges_onbooking','room_charges', 'allowed_occupants', 'occupants', 'max_allowed_occupants', 'room_title', 'additional_occupants', 'additional_guest_charges', 'additional_guest_rate');
     }

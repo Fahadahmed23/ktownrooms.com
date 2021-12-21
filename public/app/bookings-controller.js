@@ -3445,8 +3445,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         console.log($scope.Invoice);
 
         $scope.Invoice.cservice_total = 0;
-       
-        
+
+
         if ($scope.Invoice.is_corporate == 1) {
 
             if ($scope.Invoice.invoice.corporate_type == 1) {
@@ -3465,7 +3465,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 }
                 $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
             }
-        
+
         }
 
         // console.log($scope.Invoice);
@@ -3574,6 +3574,32 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             }
         })
     }
+
+
+    // Misc Amount Start - 22-Dec-21
+
+    $scope.showmiscamount = function(b) {
+        // $scope.paymentCleared = false;
+        $("#addpymntbtn").attr("disabled", false);
+        $("#showaddedAmount").hide('slow');
+        $("#checkoutbtn").hide('slow');
+        $("#invPrintBtn").hide('slow');
+        $scope.findBooking(b, function() {
+
+            $('#addmiscamount').modal();
+
+
+            // $scope.addmiscamount();
+            if ($scope.formType == 'view') {
+                $scope.max_payment = $scope.fBooking.invoice.net_total - $scope.fBooking.invoice.payment_amount;
+                // if ($scope.max_payment == 0)
+                //     $scope.paymentCleared = true;
+            }
+        })
+    }
+
+
+    // Misc Amount End - 22-Dec-21
 
 
     $scope.showStagingPay = function(b) {
@@ -3702,10 +3728,10 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     }
                     $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
                 }
-                    
+
             }
-            
-           
+
+
             $scope.Invoice.service_total = 0;
             // Calculate Service Total
             for (i = 0; i < $scope.Invoice.services.length; i++) {
@@ -3733,7 +3759,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         //console.log($scope.invoice_detail);
         $scope.urlparam = window.location.search.substring(1);
         //console.log($scope.urlparam);
-        
+
 
     }
 
@@ -3752,10 +3778,10 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         };
         $scope.urlparam = window.location.search.substring(1);
 
-        
+
     }
 
-    
+
 
     $scope.changePartialPayment = function(p) {
         if (p == '1') {
@@ -4266,5 +4292,4 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 })
 
 // comment kt-new
-// comment kt-new-arman-test
 

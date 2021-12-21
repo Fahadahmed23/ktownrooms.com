@@ -19,6 +19,7 @@
         @include('bookings.show_customer_list')
         @include('bookings.addOccupantsModal')
         @include('bookings.add_partial_pay')
+        @include('bookings.add_misc_amount')
         {{-- @include('bookings.add_staging_pay') --}}
         @include('bookings.addBulkOccupants')
         @include('bookings.checkout_extend_modal')
@@ -51,8 +52,6 @@
 <div ng-controller="housekeepingCtrl">
     @include('housekeeping.services')
 </div>
-
-
 <!-- calendar view script -->
 {{-- <script>
 

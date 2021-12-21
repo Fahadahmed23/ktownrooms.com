@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Room;
 use App\Models\Hotel;
+use DateTime;
 
 class HotelDashboardController extends Controller
 {
@@ -119,16 +120,135 @@ class HotelDashboardController extends Controller
             $hotel_id = $request['hotel_id'];
             $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
         }
+
+        date_default_timezone_set("Asia/Karachi");
+        
         // Get Room Stats
         $today = date('Y-m-d');
+        $todays_date = date('Y-m-d');
 
 
+       //$todays_date_time =  date("Y-m-d H:i:s");
+        $todays_date_time =  date("Y-m-d H:i");
+
+        //$todays_date_time = '2021-12-15 13:00';
+        
+        //$data_parameter = '2021-12-14 24:59:00';
+        //$data_parameter_two = '2021-12-05 08:39:45';
+
+        //var_dump('Todays date & time');
+        //var_dump($todays_date_time);
+
+       
+        $newDateTime = date('h:i:s A', strtotime($todays_date_time));
+        //var_dump('Todays date & time Am/Pm');
+        
+        //var_dump($newDateTime);
+        //var_dump('Check AM or PM');
+
+        
+        $total_checkedins_today = 0;
+        $total_checkedouts_today = 0;
+        
+        if(preg_match('/am$/i', $newDateTime)){
+
+            $previous_date =  date('Y-m-d', strtotime(' -1 day'));
+            //var_dump('Previous Date');
+            //var_dump($previous_date);
+        
+            $current_date_time = new DateTime($todays_date_time);
+            // G means 0 through 23
+            if(($current_date_time->format('G') < 6)){
+
+                $previous_date_new = $previous_date.' 06:01'; // from
+
+                $total_checkedins_today =   Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time', [$previous_date_new,$todays_date_time])->get()->sum('rooms_count'); 
+                $total_checkedouts_today =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time', [$previous_date_new,$todays_date_time])->get()->sum('rooms_count'); 
+                
+                //var_dump('Todays Rooms Occupied');
+                //var_dump($total_checkedins_today);
+
+                //var_dump('Todays Rooms Checkedouts');
+                //var_dump($total_checkedouts_today);
+            
+                // 2021-12-15 03:23
+                // 2021-12-14 06:00
+            }
+            else {
+
+                //var_dump('Greater than 6');
+
+                $previous_date_one = $previous_date.' 06:01';
+                //$previous_date_two = $previous_date.' 11:59';
+                $previous_date_two = $previous_date.' 23:59';
+
+                $total_checkedins_today =   Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time', [$previous_date_one,$previous_date_two])->get()->sum('rooms_count'); 
+                $total_checkedouts_today =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time', [$previous_date_one,$previous_date_two])->get()->sum('rooms_count'); 
+
+                
+                $today_date_one = $todays_date.' 00:00';
+                $today_date_two = $todays_date.' 06:00';
+
+                $total_checkedins_todayy = 0;
+                $total_checkedouts_todayy = 0;
+
+                $total_checkedins_todayy =   Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time', [$today_date_one,$today_date_two])->get()->sum('rooms_count');    
+                $total_checkedouts_todayy =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time', [$today_date_one,$today_date_two])->get()->sum('rooms_count'); 
+
+                
+                $total_checkedins_today = $total_checkedins_today+$total_checkedins_todayy;
+                $total_checkedouts_today = $total_checkedouts_today+$total_checkedouts_todayy;
+
+
+                // var_dump('Todays Rooms Occupied');
+                // var_dump($total_checkedins_today);
+
+                // var_dump('Todays Rooms Checkedouts');
+                // var_dump($total_checkedouts_today);
+                
+            }
+        
+        }
+        else {
+
+
+            $today_date_one = $todays_date.' 06:01';
+            $today_date_two = $todays_date_time;
+
+            
+            $total_checkedins_today =   Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time', [$today_date_one,$today_date_two])->get()->sum('rooms_count'); 
+            $total_checkedouts_today =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time', [$today_date_one,$today_date_two])->get()->sum('rooms_count'); 
+
+            
+            // var_dump('Todays Rooms Occupied');
+            // var_dump($total_checkedins_today);
+
+            // var_dump('Todays Rooms Checkedouts');
+            // var_dump($total_checkedouts_today);
+       
+        }
+
+        
+        //var_dump($total_checkedins_today);
+        //var_dump($total_checkedouts_today);
+     
+        // $deliverytime = new DateTime($todays_date_time);
+        // $hour = $deliverytime->format('H:i:s');
+
+        // var_dump('Todays time ');
+        // var_dump($hour);
+
+        // var_dump('Todays date');
+        // var_dump($todays_date);
+       
+        //die;
+
+    
         $rooms_count = Room::where('hotel_id', $hotel_id)->count();
         $rooms_occupied =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->where('status', 'CheckedIn')->where('BookingFrom', '<=', $today)->where('BookingTo', '>=', $today)->get()->sum('rooms_count'); 
         $rooms_reserved =  Booking::withCount('rooms')->where('hotel_id', $hotel_id)->whereIn('status', ['Pending', 'Confirmed'])->where('BookingFrom', '<=', $today)->where('BookingTo', '>=', $today)->get()->sum('rooms_count');
         $rooms_blocked = Room::where('hotel_id', $hotel_id)->where('is_available', 0)->count();
         $rooms_available = $rooms_count - $rooms_occupied - $rooms_reserved - $rooms_blocked;
-
 
         if (auth()->user()->hasRole('Admin')) {
             $is_admin = true;
@@ -209,13 +329,17 @@ class HotelDashboardController extends Controller
         $today_earning = round($today_earning,0);
 
         $temp = [];
-        foreach($currentMonthData['date'] as $key => $value) {
-            if(!array_key_exists($value, $temp)) {
-                $temp[$value] = 0;
+        
+        // Mr Optimist 02 Dec 2021
+        if(isset($currentMonthData['date'])) {
+            foreach($currentMonthData['date'] as $key => $value) {
+                if(!array_key_exists($value, $temp)) {
+                    $temp[$value] = 0;
+                }
+                $temp[$value] += $currentMonthData['value'][$key];
             }
-            $temp[$value] += $currentMonthData['value'][$key];
         }
-
+        
         $revenueMonthly = [];
         $revenueMonthly['date'] = array_keys($temp);
         $revenueMonthly['value'] = array_values($temp);
@@ -423,8 +547,9 @@ class HotelDashboardController extends Controller
             'rooms_available' => $rooms_available,
             'rooms_blocked' => $rooms_blocked,
             'hotels'=>$hotels,
-            'today_date'=>$today,
-            'todays_checkedin'=>$today,
+            'todays_date'=>$todays_date,
+            'total_checkedins_today'=>$total_checkedins_today,
+            'total_checkedouts_today'=>$total_checkedouts_today,
             // 'hotel_id'=>$hotel_id
             //   'services'=>$services,
 
