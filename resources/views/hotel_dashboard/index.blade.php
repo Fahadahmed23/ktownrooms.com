@@ -99,9 +99,10 @@
     // Mr Optimist 16 Dec 2021
     function loadBookingStatistics(data, element, size) {
     
-        console.log('Arman Ahmad');
-        console.log(data.total_checkedins_today);
-        console.log(data.total_checkedouts_today);
+        //console.log('Arman Ahmad');
+        //console.log(data.total_checkedins_today);
+        //console.log(data.total_checkedouts_today);
+
         // Pie with progress bar
         if (typeof d3 == 'undefined') {
             console.warn('Warning - d3.min.js is not loaded.');

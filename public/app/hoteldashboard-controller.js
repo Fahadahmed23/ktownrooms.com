@@ -143,8 +143,39 @@ app.controller('hotelDashboardCtrl', function($scope, DTColumnDefBuilder, DTOpti
                         $scope.discount_requests[i].created_at = moment($scope.discount_requests[i].created_at).format('MM/DD/YYYY');
                     }
                     var currentDate = moment().format("MMMM Do, YYYY");
-                    $scope.current_date = currentDate;
-    
+                    //$scope.current_date = currentDate;
+
+                    
+                    /**
+                    * Mr Optimist 29 Dec 2021
+                    * var check_am_pm = moment().format("a");
+                    * 
+                    */
+                    
+                    
+                    var format_time = 'hh:mm:ss';
+                    var time_current = moment(); // gives you current time. no format required.
+                    var time_check = moment(time_current,format_time);
+                    //var time_check = moment('12:01:00',format_time);
+                    beforeTime = moment('00:00:00', format_time);
+                    afterTime = moment('12:00:00', format_time);
+
+                    if (time_check.isBetween(beforeTime, afterTime)) {
+
+                        var oldDate = moment();
+                        console.log(oldDate);
+                        oldDate = oldDate.subtract(1, "days");
+                        oldDate = oldDate.format("MMMM Do, YYYY");
+                        $scope.current_date = oldDate;
+                        //console.log('is between');
+
+                    } else {
+
+                        $scope.current_date = currentDate;
+                        //console.log('is not between');
+                    }
+
+           
                     $scope.channelLabel = [];
                     $scope.channelData = [];
     
