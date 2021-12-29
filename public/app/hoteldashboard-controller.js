@@ -149,7 +149,7 @@ app.controller('hotelDashboardCtrl', function($scope, DTColumnDefBuilder, DTOpti
                     /**
                     * Mr Optimist 29 Dec 2021
                     * var check_am_pm = moment().format("a");
-                    * 
+                    * Mr 
                     */
                     
                     
