@@ -402,7 +402,7 @@ class PermissionSeeder extends Seeder
                 'url' => '/complains',
                 'view_name' => 'Complains',
                 'group' => '
-Complain Management',
+                Complain Management',
                 'is_active' => '1',
                 'created_at' => '2021-03-25 16:20:22',
                 'updated_at' => '2021-03-25 16:20:22',
@@ -591,8 +591,7 @@ Complain Management',
                 'description' => NULL,
                 'url' => '/complains',
                 'view_name' => 'Complains',
-                'group' => '
-Complain Management',
+                'group' => 'Complain Management',
                 'is_active' => '1',
                 'created_at' => '2021-03-31 18:18:52',
                 'updated_at' => '2021-03-31 18:18:52',

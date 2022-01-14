@@ -431,6 +431,16 @@ Route::get('getRoles', function () {
 });
 Route::post('shareReportConfig', 'ReportController@share_report_config')->middleware('permission:can-view-report');
 
+/**
+* Mr Optimist 12 Jan 2022
+* Reporting work 
+*/
+
+Route::get('get_guest_detail', 'ReportControllerTwo@get_guest_detail');
+
+
+
+
 // partners
 Route::get('partners', 'PartnersController@index')->middleware('permission:can-view-partner');
 Route::get('getPartners', 'PartnersController@getPartners');
