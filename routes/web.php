@@ -437,6 +437,8 @@ Route::post('shareReportConfig', 'ReportController@share_report_config')->middle
 */
 
 Route::get('get_guest_detail', 'ReportControllerTwo@get_guest_detail');
+Route::get('get_checkout_list', 'ReportControllerTwo@get_checkout_list');
+Route::get('get_inquirydetail_report', 'ReportControllerTwo@get_inquirydetail_report');
 
 
 

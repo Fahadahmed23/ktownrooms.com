@@ -38,7 +38,7 @@ class ReportControllerTwo extends Controller
 
  
 
- public function __construct()
+  public function __construct()
   {
     $this->middleware('auth');
   }
@@ -131,7 +131,239 @@ class ReportControllerTwo extends Controller
     ]);
 
 
+  
+  
+  }
+ 
+
+  public function get_checkout_list(Request $request) {
+
+    $user = User::find(Auth::user()->id);
+    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
+    $hotel_id = $hotels[0]->id;
+    $hotelName = $hotels[0]->HotelName;
+    if(!empty($request['hotel_id'])) {
+        $hotel_id = $request['hotel_id'];
+        $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
+    }
+    date_default_timezone_set("Asia/Karachi");
+
+    // Get Room Stats
+    $today = date('Y-m-d');
+    $todays_date = date('Y-m-d');
+
+
+
+    // $receiving_date = $request->receiving_date;
+    $receiving_date = '2022-01-14';
+    $next_date = date('Y-m-d', strtotime($receiving_date .' +1 day'));
+
+    $total_checkedins_today = 0;
+    $total_checkedouts_today = 0;
+
+
+    $get_checkout_list =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])
+        // ->where('BookingTo', '=', $receiving_date)
+        ->whereIn('BookingTo', [$receiving_date,$next_date])
+        ->get();
+        
+    $get_checkout_list = $get_checkout_list->map(function ($item) {
+        $obj = new stdClass();
+        $obj->booking_no = $item->booking_no;
+        $obj->customer_name = $item->customer['FirstName'].' '.$item->customer['LastName'];
+        $obj->rooms = $item->rooms->map(function ($room) {
+          return [
+            'RoomNumber' => $room->RoomNumber
+          ];
+        });
+        $obj->no_occupants = $item->no_occupants;
+        $obj->BookingFrom = $item->BookingFrom;
+        $obj->BookingTo = $item->BookingTo;
+        
+        //$obj->checkin_time = $item->checkin_time;
+        //$obj->checkout_time = $item->checkout_time;
+        
+        return $obj;
+    });
+
+    /*
+    $abcd = array(
+      'get_checkout_list' =>$get_checkout_list,
+      'hotelName' => $hotelName
+    );
+    
+    echo "<pre>";
+    var_dump($abcd);
+    echo "</pre>";
+    
+    **/
+
+    return response()->json([
+      'get_checkout_list' =>$get_checkout_list,
+      'hotelName' => $hotelName
+    
+    ]);
+
   }
 
+  public function get_inquirydetail_report(Request $request)
+  {
+        
+    $user = User::find(Auth::user()->id);
+    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
+    $hotel_id = $hotels[0]->id;
+    $hotelName = $hotels[0]->HotelName;
+    if(!empty($request['hotel_id'])){
+        $hotel_id = $request['hotel_id'];
+        $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
+    }
+
+    date_default_timezone_set("Asia/Karachi");
+    
+    // Get Room Stats
+    
+    //2022-01-18 03:01:15.000000
+    //$todays_date = date('Y-m-d');
+
+    $todays_date = date('Y-m-d',strtotime('2022-01-18'));
+
+
+    //$todays_date_time =  date("Y-m-d H:i");
+
+    $todays_date_time = date('Y-m-d H:i',strtotime('2022-01-18 07:30'));
+
+    
+    $newDateTime = date('h:i:s A', strtotime($todays_date_time));        
+    $total_checkedins_today = 0;
+    $total_checkedouts_today = 0;
+    
+    if(preg_match('/am$/i', $newDateTime)){
+
+      //$previous_date =  date('Y-m-d', strtotime(' -1 day'));
+
+      $previous_date = date('Y-m-d', strtotime('2022-01-18 -1 day'));
+
+      $current_date_time = new DateTime($todays_date_time);
+      // G means 0 through 23
+      if(($current_date_time->format('G') < 6)){
+
+        
+        $previous_date_new = $previous_date.' 06:01'; // from
+
+        $total_checkedins_today =   Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time',[$previous_date_new,$todays_date_time])->get(); 
+        $total_checkedouts_today =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time',[$previous_date_new,$todays_date_time])->get(); 
+    
+      
+      }
+      else {
+
+        var_dump('Greater than 6');
+
+       
+        $previous_date_one = $previous_date.' 06:01';
+        $previous_date_two = $previous_date.' 23:59';
+
+    
+        $total_checkedins_today =   Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time',[$previous_date_one,$previous_date_two])->get(); 
+        $total_checkedouts_today =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time',[$previous_date_one,$previous_date_two])->get(); 
+    
+        
+          
+        $today_date_one = $todays_date.' 00:00';
+        $today_date_two = $todays_date.' 06:00';
+
+        $total_checkedins_todayy = 0;
+        $total_checkedouts_todayy = 0;
+
+       
+        $total_checkedins_todayy =   Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time',[$today_date_one,$today_date_two])->get(); 
+        $total_checkedouts_todayy =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time',[$today_date_one,$today_date_two])->get(); 
+    
+        
+        $total_checkedins_today = $total_checkedins_today->merge($total_checkedins_todayy);
+        $total_checkedouts_today = $total_checkedouts_today->merge($total_checkedouts_todayy);
+        
+      }
+    
+    }
+    else {
+
+
+      $today_date_one = $todays_date.' 06:01';
+      $today_date_two = $todays_date_time;
+
+      $total_checkedins_today =   Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkin_time',[$today_date_one,$today_date_two])->get(); 
+      $total_checkedouts_today =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])->whereBetween('checkout_time',[$today_date_one,$today_date_two])->get(); 
+    
+    }
+
+    $total_checkedins_today = $total_checkedins_today->map(function ($item) {
+      $obj = new stdClass();
+      $obj->booking_no = $item->booking_no;
+      $obj->customer_name = $item->customer['FirstName'].' '.$item->customer['LastName'];
+      $obj->CNIC = $item->customer['CNIC'];
+      $obj->rooms = $item->rooms->map(function ($room) {
+        return [
+          'RoomNumber' => $room->RoomNumber
+        ];
+      });
+      $obj->no_occupants = $item->no_occupants;
+      $obj->BookingFrom = $item->BookingFrom;
+      $obj->BookingTo = $item->BookingTo;
+      $obj->checkin_time = $item->checkin_time;
+      $obj->checkout_time = $item->checkout_time;
+      
+      return $obj;
+    });
+
+    $total_checkedouts_today = $total_checkedouts_today->map(function ($item) {
+      $obj = new stdClass();
+      $obj->booking_no = $item->booking_no;
+      $obj->customer_name = $item->customer['FirstName'].' '.$item->customer['LastName'];
+      $obj->CNIC = $item->customer['CNIC'];
+      $obj->rooms = $item->rooms->map(function ($room) {
+        return [
+          'RoomNumber' => $room->RoomNumber
+        ];
+      });
+      $obj->no_occupants = $item->no_occupants;
+      $obj->BookingFrom = $item->BookingFrom;
+      $obj->BookingTo = $item->BookingTo;
+      $obj->checkin_time = $item->checkin_time;
+      $obj->checkout_time = $item->checkout_time;
+      
+      return $obj;
+    });
+
+
+    
+    $abcd = array(
+      'get_checkedins_today' => $total_checkedins_today,
+      'get_checkedouts_today' => $total_checkedouts_today,
+      'hotelName' => $hotelName
+    );
+    
+    echo "<pre>";
+    var_dump($abcd);
+    echo "</pre>";
+
+    return;
+    return response()->json([
+        
+        'hotels'=>$hotels,
+        'todays_date'=>$todays_date,
+        'total_checkedins_today'=>$total_checkedins_today,
+        'total_checkedouts_today'=>$total_checkedouts_today,
+        // 'hotel_id'=>$hotel_id
+        //   'services'=>$services,
+
+    ]);
+
+  }
+
+
+
+
+  
 
 }
