@@ -78,6 +78,12 @@ class Booking extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    // Mr Optimist 18-02-2022
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function discount_request() {
         return $this->hasOne(DiscountRequest::class, 'booking_id', 'id');
     }

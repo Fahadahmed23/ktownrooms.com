@@ -327,7 +327,7 @@ class HotelDashboardController extends Controller
 
         // $revenueMonthly = json_encode($revenueMonthly);
 
-        
+
         // $overallBooking = Booking::where('status', 'CheckedOut')
         //     ->with(['invoice' => function ($query) {
         //         $query->groupBy('booking_id')->select('booking_id', DB::raw('SUM(net_total) AS amount_sum'));

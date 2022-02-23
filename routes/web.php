@@ -442,6 +442,15 @@ Route::get('get_inquirydetail_report', 'ReportControllerTwo@get_inquirydetail_re
 
 Route::get('get_individual_guest_ledger', 'ReportControllerTwo@get_individual_guest_ledger');
 
+// pending
+Route::get('get_average_daily_rate_report', 'ReportControllerTwo@get_average_daily_rate_report');
+
+Route::get('get_receivable_report', 'ReportControllerTwo@get_receivable_report');
+Route::get('get_btc_pending_list', 'ReportControllerTwo@get_btc_pending_list');
+Route::get('get_invoice_search/{id}', 'ReportControllerTwo@get_invoice_search');
+
+
+
 
 
 
