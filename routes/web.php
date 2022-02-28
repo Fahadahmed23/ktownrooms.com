@@ -450,6 +450,10 @@ Route::get('get_btc_pending_list', 'ReportControllerTwo@get_btc_pending_list');
 Route::get('get_invoice_search/{id}', 'ReportControllerTwo@get_invoice_search');
 
 
+Route::get('get_cash_flow_report', 'ReportControllerTwo@get_cash_flow_report');
+
+
+
 
 
 
