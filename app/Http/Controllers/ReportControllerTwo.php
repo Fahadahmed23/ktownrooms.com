@@ -1001,12 +1001,9 @@ class ReportControllerTwo extends Controller
     }
 
     $user_ids_hotels = UserHotel::where('hotel_id',$hotel_id)->pluck('user_id');
-
-
      // Get Room Stats
      $today = date('Y-m-d');
      $todays_date = date('Y-m-d');
-
 
     //$todays_date_time =  date("Y-m-d H:i:s");
      $todays_date_time =  date("Y-m-d H:i");
@@ -1029,111 +1026,108 @@ class ReportControllerTwo extends Controller
     $total_checkedins_today = 0;
     $total_checkedouts_today = 0;
 
-  
-  if(preg_match('/am$/i', $newDateTime)){
 
-      $previous_date =  date('Y-m-d', strtotime(' -1 day'));
-      $current_date_time = new DateTime($todays_date_time);
-      // G means 0 through 23
-      
-      if(($current_date_time->format('G') < 6)){
 
-        $previous_date_new = $previous_date.' 06:01';
+    // Opening Balance
+    $user_opening_balance = 0;
+
+    // Cashout Balance
+    $cashout = 0;
+    $cashout_arr = array();
+
+    // Cashout Work    
+    $created_by_ids = $this->getIncludedVouchers();
+
+    // closing balance
+    $closing_balance = 0;
+
+    if(preg_match('/am$/i', $newDateTime)){
+
+        $previous_date =  date('Y-m-d', strtotime(' -1 day'));
+        $current_date_time = new DateTime($todays_date_time);
+        // G means 0 through 23
         
-        $u = OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)
-          ->whereBetween('created_at',[$previous_date_new,$todays_date_time])
-          ->orderBy('id','desc')->get();
+        if(($current_date_time->format('G') < 6)){
 
-        $user_opening_balance = count($u)>0 ?$u[0]['opening_balance']:0;
+          $previous_date_new = $previous_date.' 06:01';
+          
+          $u = OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)
+            ->whereBetween('created_at',[$previous_date_new,$todays_date_time])
+            ->orderBy('id','desc')->get();
+
+          $user_opening_balance = count($u)>0 ? $u[0]['opening_balance'] : 0;
+
+          $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
+          ->where('hotel_id',$hotel_id)
+          ->whereIn('status', ['CheckedIn','CheckedOut'])
+          ->whereBetween('checkin_time', [$previous_date_new,$todays_date_time])  
+          ->orderBy('created_at', 'desc')->get();
+          
+          
+        }
+        else {
+
+          //var_dump('Greater than 6');
+
+          $previous_date_one = $previous_date.' 06:01';
+          $previous_date_two = $previous_date.' 23:59';
+
+
+          $today_date_one = $todays_date.' 00:00';
+          $today_date_two = $todays_date.' 06:00';
+
+          $u = OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)
+            ->whereBetween('created_at',[$previous_date_one,$today_date_two])
+            ->orderBy('id','desc')->get();
+
+          $user_opening_balance = count($u)>0 ?$u[0]['opening_balance']:0;
         
-        
-      }
-      else {
-
-        //var_dump('Greater than 6');
-
-        $previous_date_one = $previous_date.' 06:01';
-        $previous_date_two = $previous_date.' 23:59';
-
-
-        $today_date_one = $todays_date.' 00:00';
-        $today_date_two = $todays_date.' 06:00';
-
-        $u = OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)
-          ->whereBetween('created_at',[$previous_date_one,$today_date_two])
-          ->orderBy('id','desc')->get();
-
-        $user_opening_balance = count($u)>0 ?$u[0]['opening_balance']:0;
-      
-      
-      }
-  
-  }
-  else {
-
-      
-    $today_date_one = $todays_date.' 06:01';
-    $today_date_two = $todays_date_time;
-
-    $u = OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)
-    ->whereBetween('created_at',[$today_date_one,$today_date_two])
-    ->orderBy('id','desc')->get();
-
-    $user_opening_balance = count($u)>0 ?$u[0]['opening_balance']:0;
-
-  }
-
-
-  //$u =  OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)->where('is_closed' , 0)->orderBy('created_at','desc')->first(['opening_balance']);
-  $user_opening_balance = $u?$u['opening_balance']:0;
-
-
-
-    echo "<pre>";
-    var_dump("OpeningShiftHandover");
-    var_dump($user_opening_balance);
-    var_dump('Hotel Id');
-    var_dump($user_ids_hotels);
-    echo "</pre>";
-
+          $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
+          ->where('hotel_id',$hotel_id)
+          ->whereIn('status', ['CheckedIn','CheckedOut'])
+          ->whereBetween('checkin_time', [$previous_date_one,$today_date_two])  
+          ->orderBy('created_at', 'desc')->get(); 
+            
+        }
     
-  
-    die();
-  
-    $user = User::find(Auth::user()->id);
-    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
-    $hotel_id = $hotels[0]->id;
-    $hotelName = $hotels[0]->HotelName;
-    if(!empty($request['hotel_id'])) {
-        $hotel_id = $request['hotel_id'];
-        $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
+    }
+    else {
+
+      $today_date_one = $todays_date.' 06:01';
+      $today_date_two = $todays_date_time;
+
+      $u = OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)
+      ->whereBetween('created_at',[$today_date_one,$today_date_two])
+      ->orderBy('id','desc')->get();
+
+      $user_opening_balance = count($u)>0 ?$u[0]['opening_balance']:0;
+
+
+      $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
+      ->where('hotel_id',$hotel_id)
+      ->whereIn('status', ['CheckedIn','CheckedOut'])
+      ->whereBetween('checkin_time', [$today_date_one,$today_date_two])  
+      ->orderBy('created_at', 'desc')->get();
+
+      // Cashout Work
+      $voucher_master = VoucherMaster::where('hotel_id', $hotel_id)
+          ->with(['voucher_details' => function($q) {
+               // $q->where('account_gl_id', $receive_account_id)->where('is_concile',0);
+                //$q->latest()->first();
+                $q->orderBy('id','desc')->limit(1);
+            }])
+            ->with(['post_user'])
+            //->whereIn('CreatedBy', $created_by_ids)
+            ->whereBetween('created_at', [$today_date_one,$today_date_two]) 
+            ->get();
+      
     }
 
-    //$date_from = $request['date_from'];
-    //$date_to = $request['date_to'];
-    
-    $date_from = '2022-02-16';
-    $date_to = '2022-02-18';
-         
-    $previous_date_one = $date_from.' 06:01';
-    $previous_date_two = $date_from.' 23:59';
 
-    $next_date = date('Y-m-d', strtotime($date_to .' +1 day'));
-    $next_date_one = $next_date.' 00:00:00';
-    $next_date_two = $next_date.' 06:00:00';
-
-    
-    $bookings = Booking::whereHas('invoice', function ($q1) {    
-      $q1->whereNotNull('corporate_type');
-    })->with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
-    ->where('hotel_id',$hotel_id)
-    ->whereIn('status', ['CheckedIn','CheckedOut'])
-    ->whereBetween('checkin_time', [$previous_date_one,$next_date_two])  
-    ->orderBy('created_at', 'desc')->get();
-
-  
+    // Bookings Mapping
     if(!empty($bookings)){
 
+    
       $count = $bookings->count();
       if($count > 0) {
 
@@ -1143,7 +1137,6 @@ class ReportControllerTwo extends Controller
           $obj->id = $ex->id;
           $obj->booking_no = $ex->booking_no ?? "";
           $obj->booking_date = $ex->BookingDate ?? "";
-          $obj->corporate_client_name = $ex->invoice->corporate_client_name ?? "";
           $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
           $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
           $obj->HotelName = $ex->hotel->HotelName ?? "";
@@ -1154,7 +1147,7 @@ class ReportControllerTwo extends Controller
               $obj['RoomRent'] = $room->RoomCharges;
               return $obj;
           });
-          $obj->no_occupants = $ex->no_occupants ?? "";
+      
           $obj->checkin_time = $ex->checkin_time ?? "";
           $obj->checkout_time = $ex->checkout_time ?? "";
           
@@ -1164,68 +1157,131 @@ class ReportControllerTwo extends Controller
           $obj->net_total = $ex->invoice->net_total ?? "";
           $obj->payment_amount = $ex->invoice->payment_amount ?? "";
 
-
-          if($ex->invoice->corporate_type != null){
-            if($ex->invoice->corporate_type == 1 ){
-              $obj->btc_type = "Full Board";
-             
-            }
-            elseif($ex->invoice->corporate_type == 2){
-              $obj->btc_type = "Half Board";
-              
-            }
-            elseif($ex->invoice->corporate_type == 3){
-              $obj->btc_type = "Room Only";
-
-            }
-            
-          }
-          else {
-            $obj->btc_type = null;  
-          }
-
           $obj->user_name = $ex->created_by_user->name ?? "";
           $obj->status = $ex->status ?? "";
           return $obj;
         
         });
 
-        
+        $bookings_exec = $bookings_map;
+        //$bookings_exec = [];
 
+      
+        /*
         return response()->json([
           'success' => true,
           'totalRecords' => $count,
           'bookings' => $bookings_map,
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
+        **/
+
       }
       else {
 
+        $bookings_exec = [];
+
+        /*
         return response()->json([
           'success' => false,
           'totalRecords' => 0,
           'message' => ['No Bookings Found!'],
           'msgtype' => 'danger',
         ]);
+        **/
 
       } 
 
     }
     else {
-      return response()->json([
-        'success' => false,
-        'totalRecords' => 0,
-        'message' => ['No Bookings Found!'],
-        'msgtype' => 'danger',
-      ]);
+      $bookings_exec = [];
 
-    } 
+    }
 
+
+    // Vouchers Mappings
+    if(!empty($voucher_master)){
+      
+      $count = $voucher_master->count();
+      if($count > 0) {
+
+        $vouchers_map = $voucher_master->map(function ($ex) {
+
+          $obj = new stdClass();
+          $obj->id = $ex->id;
+          $obj->voucher_type_id = $ex->voucher_type_id ?? "";
+          $obj->description = $ex->description ?? "";
+          $obj->created_at = $ex->created_at ?? "";
+          $obj->voucher_details = $ex->voucher_details->map(function ($voucher_detail) {
+
+            $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
+       
+            
+           return $obj;
+          
+          });
+      
+        
+          $obj->post_user = $ex->post_user->name ?? "";
+          return $obj;
+        
+        });
+
+        $vouchers_exec = $vouchers_map;
+        
+      }
+      else {
+        $vouchers_exec = [];
+      } 
+    }
+    else {
+      $vouchers_exec = [];
+    }
+
+    
+
+
+    echo "<pre>";
+    
+    var_dump("VoucherMaster");
+    var_dump($cashout_arr);
+    echo "</pre>";
+    die();
+
+    //$u =  OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)->where('is_closed' , 0)->orderBy('created_at','desc')->first(['opening_balance']);
+    //$user_opening_balance = $u?$u['opening_balance']:0;
+    echo "<pre>";
+    var_dump("OpeningShiftHandover");
+    var_dump($user_opening_balance);
+    var_dump('Hotel Id');
+    var_dump($user_ids_hotels);
+    var_dump('Bookings');
+    var_dump($bookings_exec);
+    echo "</pre>";
+
+ 
+    die();
+  
+ 
+  }
+
+  public function getIncludedVouchers(){
+    $user = auth()->user();
+    $v =  VoucherMaster::select('CreatedBy')->distinct('CreatedBy')->get();
+        $created_by_ids = [];
+        foreach ($v as $key => $value) {
+            $userHasRole = User::where('id', $value->CreatedBy)
+            ->whereDoesntHave('roles', function ($query) {
+                    $query->where('name', '=', 'Frontdesk');
+                })
+                ->first();
+                if($userHasRole){
+                    $created_by_ids[] = $userHasRole['id'];
+                }
+        }
+        $created_by_ids[] = $user->id;
+        return $created_by_ids;
   }
   
-
-
-  
-
 
 }
