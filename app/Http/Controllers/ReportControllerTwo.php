@@ -1101,6 +1101,7 @@ class ReportControllerTwo extends Controller
       ->orderBy('id','desc')->get();
 
       $user_opening_balance = count($u)>0 ?$u[0]['opening_balance']:0;
+      
 
 
       $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
@@ -1113,16 +1114,20 @@ class ReportControllerTwo extends Controller
       $voucher_master = VoucherMaster::where('hotel_id', $hotel_id)
           ->with(['voucher_details' => function($q) {
                // $q->where('account_gl_id', $receive_account_id)->where('is_concile',0);
-                //$q->latest()->first();
-                $q->orderBy('id','desc')->limit(1);
-            }])
+
+                $q->where('cr_amount', '>',  0);
+                $q->orderBy('id','desc');
+                $q->get();
+                
+                //$q->orderBy('id','desc')->limit(1);
+            
+              }])      
             ->with(['post_user'])
             //->whereIn('CreatedBy', $created_by_ids)
             ->whereBetween('created_at', [$today_date_one,$today_date_two]) 
             ->get();
       
     }
-
 
     // Bookings Mapping
     if(!empty($bookings)){
@@ -1166,16 +1171,7 @@ class ReportControllerTwo extends Controller
         $bookings_exec = $bookings_map;
         //$bookings_exec = [];
 
-      
-        /*
-        return response()->json([
-          'success' => true,
-          'totalRecords' => $count,
-          'bookings' => $bookings_map,
-        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-
-        **/
-
+    
       }
       else {
 
@@ -1198,10 +1194,8 @@ class ReportControllerTwo extends Controller
 
     }
 
-
     // Vouchers Mappings
     if(!empty($voucher_master)){
-      
       $count = $voucher_master->count();
       if($count > 0) {
 
@@ -1212,16 +1206,12 @@ class ReportControllerTwo extends Controller
           $obj->voucher_type_id = $ex->voucher_type_id ?? "";
           $obj->description = $ex->description ?? "";
           $obj->created_at = $ex->created_at ?? "";
-          $obj->voucher_details = $ex->voucher_details->map(function ($voucher_detail) {
+          $obj->voucher_details = $ex->voucher_details->map(function($voucher_detail) {
 
             $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
-       
-            
-           return $obj;
+            return $obj;
           
           });
-      
-        
           $obj->post_user = $ex->post_user->name ?? "";
           return $obj;
         
@@ -1238,29 +1228,49 @@ class ReportControllerTwo extends Controller
       $vouchers_exec = [];
     }
 
+
+    if(count($vouchers_exec) > 0){
+        foreach($vouchers_exec as $voucher_exec){
+
+          if(isset($voucher_exec->voucher_details)){
+            //var_dump($voucher_exec->voucher_details[0]["cr_amount"]);
+            $cashout += $voucher_exec->voucher_details[0]["cr_amount"];
+         
+          }  
+        }
+    }
+
     
+    // closing balance
+    $closing_balance = $user_opening_balance-$cashout;
 
 
-    echo "<pre>";
-    
-    var_dump("VoucherMaster");
-    var_dump($cashout_arr);
-    echo "</pre>";
-    die();
+    $whole_response = array(
+      'Opening Balance' => $user_opening_balance,
+      'bookings' => $bookings_exec,
+      'Expense Details' => $vouchers_exec,
+      'Closing Balance' => $closing_balance,
+    );
 
-    //$u =  OpeningShiftHandover::whereIn('user_id',$user_ids_hotels)->where('is_closed' , 0)->orderBy('created_at','desc')->first(['opening_balance']);
-    //$user_opening_balance = $u?$u['opening_balance']:0;
-    echo "<pre>";
-    var_dump("OpeningShiftHandover");
-    var_dump($user_opening_balance);
-    var_dump('Hotel Id');
-    var_dump($user_ids_hotels);
-    var_dump('Bookings');
-    var_dump($bookings_exec);
-    echo "</pre>";
 
+    /*
+      return response()->json([
+        'success' => true,
+        'totalRecords' => $count,
+        'bookings' => $bookings_map,
+      ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
+      **/
  
+    echo "<pre>";
+    var_dump($whole_response);
+    echo "</pre>";
     die();
+
+
+
+  
+
   
  
   }
