@@ -787,191 +787,6 @@ class ReportControllerTwo extends Controller
   }
   
 
-  
-  
-  public function get_btc_pending_list(Request $request)
-  {
-
-    date_default_timezone_set("Asia/Karachi");
-        
-    $user = User::find(Auth::user()->id);
-    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
-    $hotel_id = $hotels[0]->id;
-    $hotelName = $hotels[0]->HotelName;
-    if(!empty($request['hotel_id'])) {
-        $hotel_id = $request['hotel_id'];
-        $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
-    }
-
-    //$date_from = $request['date_from'];
-    //$date_to = $request['date_to'];
-    
-    $date_from = '2022-02-16';
-    $date_to = '2022-02-18';
-         
-    $previous_date_one = $date_from.' 06:01';
-    $previous_date_two = $date_from.' 23:59';
-
-    $next_date = date('Y-m-d', strtotime($date_to .' +1 day'));
-    $next_date_one = $next_date.' 00:00:00';
-    $next_date_two = $next_date.' 06:00:00';
-
-    
-    $bookings = Booking::whereHas('invoice', function ($q1) {    
-      $q1->whereNotNull('corporate_type');
-    })->with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
-    ->where('hotel_id',$hotel_id)
-    ->whereIn('status', ['CheckedIn','CheckedOut'])
-    ->whereBetween('checkin_time', [$previous_date_one,$next_date_two])  
-    ->orderBy('created_at', 'desc')->get();
-
-  
-    if(!empty($bookings)){
-
-      $count = $bookings->count();
-      if($count > 0) {
-
-        $bookings_map = $bookings->map(function ($ex) {
-
-          $obj = new stdClass();
-          $obj->id = $ex->id;
-          $obj->booking_no = $ex->booking_no ?? "";
-          $obj->booking_date = $ex->BookingDate ?? "";
-          $obj->corporate_client_name = $ex->invoice->corporate_client_name ?? "";
-          $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
-          $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
-          $obj->HotelName = $ex->hotel->HotelName ?? "";
-          $obj->rooms = $ex->rooms->map(function ($room) {
-              
-              $obj['room_title'] = $room->room_title;
-              $obj['RoomNumber'] = $room->RoomNumber;
-              $obj['RoomRent'] = $room->RoomCharges;
-              return $obj;
-          });
-          $obj->no_occupants = $ex->no_occupants ?? "";
-          $obj->checkin_time = $ex->checkin_time ?? "";
-          $obj->checkout_time = $ex->checkout_time ?? "";
-          
-          $obj->BookingDate = $ex->BookingDate ?? "";
-          $obj->BookingFrom = $ex->BookingFrom ?? "";
-          $obj->BookingTo = $ex->BookingTo ?? "";
-          $obj->net_total = $ex->invoice->net_total ?? "";
-          $obj->payment_amount = $ex->invoice->payment_amount ?? "";
-
-
-          if($ex->invoice->corporate_type != null){
-            if($ex->invoice->corporate_type == 1 ){
-              $obj->btc_type = "Full Board";
-             
-            }
-            elseif($ex->invoice->corporate_type == 2){
-              $obj->btc_type = "Half Board";
-              
-            }
-            elseif($ex->invoice->corporate_type == 3){
-              $obj->btc_type = "Room Only";
-
-            }
-            
-          }
-          else {
-            $obj->btc_type = null;  
-          }
-
-          $obj->user_name = $ex->created_by_user->name ?? "";
-          $obj->status = $ex->status ?? "";
-          return $obj;
-        
-        });
-
-        
-
-        return response()->json([
-          'success' => true,
-          'totalRecords' => $count,
-          'bookings' => $bookings_map,
-        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-
-      }
-      else {
-
-        return response()->json([
-          'success' => false,
-          'totalRecords' => 0,
-          'message' => ['No Bookings Found!'],
-          'msgtype' => 'danger',
-        ]);
-
-      } 
-
-    }
-    else {
-      return response()->json([
-        'success' => false,
-        'totalRecords' => 0,
-        'message' => ['No Bookings Found!'],
-        'msgtype' => 'danger',
-      ]);
-
-    } 
-
-  }
-
-
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-
-  public function get_invoice_search($id) {
-
-      $booking = $this->getBooking($id);
-      $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
-      $default_rule_img = DefaultRule::first()->picture;
-      $default_rule = DefaultRule::first();
-      $msg = "";
-
-      if ($booking->discount_request) {
-          if ($booking->discount_request->status == 'Pending') {
-              $this->lockdown = true;
-              $msg = "Discount request has not been approved yet";
-          }
-
-          if ($booking->discount_request->status == 'Declined') {
-              $msg = "Discount request was declined";
-              $this->lockdown = false;
-          }
-      }
-
-      if (empty($booking)) {
-          return response()->json([
-              'success' => false,
-              'message' => ["Booking Not Found"],
-              'msgtype' => 'error',
-          ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-      } else {
-          return response()->json([
-              'success' => true,
-              'booking' => $booking,
-              'user' => [
-                  'name' => Auth::user()->name
-              ],
-              'default_rule_img'=>$default_rule_img,
-              'default_rule'=>$default_rule,
-              'lockdown' => $this->lockdown && false,
-              'invoice_details'=>$invoice_details,
-              'msg' => $msg
-          ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-      }
-  }
-
-
- 
-
-
   public function get_cash_flow_report(Request $request) {
     
     date_default_timezone_set("Asia/Karachi");
@@ -1360,7 +1175,310 @@ class ReportControllerTwo extends Controller
 
   }
 
+  
+  public function get_btc_pending_list(Request $request)
+  {
 
+    date_default_timezone_set("Asia/Karachi");
+        
+    $user = User::find(Auth::user()->id);
+    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
+    $hotel_id = $hotels[0]->id;
+    $hotelName = $hotels[0]->HotelName;
+    if(!empty($request['hotel_id'])) {
+        $hotel_id = $request['hotel_id'];
+        $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
+    }
+
+    //$date_from = $request['date_from'];
+    //$date_to = $request['date_to'];
+    
+    $date_from = '2022-02-16';
+    $date_to = '2022-02-18';
+         
+    $previous_date_one = $date_from.' 06:01';
+    $previous_date_two = $date_from.' 23:59';
+
+    $next_date = date('Y-m-d', strtotime($date_to .' +1 day'));
+    $next_date_one = $next_date.' 00:00:00';
+    $next_date_two = $next_date.' 06:00:00';
+
+    
+    $bookings = Booking::whereHas('invoice', function ($q1) {    
+      $q1->whereNotNull('corporate_type');
+    })->with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
+    ->where('hotel_id',$hotel_id)
+    ->whereIn('status', ['CheckedIn','CheckedOut'])
+    ->whereBetween('checkin_time', [$previous_date_one,$next_date_two])  
+    ->orderBy('created_at', 'desc')->get();
+
+  
+    if(!empty($bookings)){
+
+      $count = $bookings->count();
+      if($count > 0) {
+
+        $bookings_map = $bookings->map(function ($ex) {
+
+          $obj = new stdClass();
+          $obj->id = $ex->id;
+          $obj->booking_no = $ex->booking_no ?? "";
+          $obj->booking_date = $ex->BookingDate ?? "";
+          $obj->corporate_client_name = $ex->invoice->corporate_client_name ?? "";
+          $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
+          $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
+          $obj->HotelName = $ex->hotel->HotelName ?? "";
+          $obj->rooms = $ex->rooms->map(function ($room) {
+              
+              $obj['room_title'] = $room->room_title;
+              $obj['RoomNumber'] = $room->RoomNumber;
+              $obj['RoomRent'] = $room->RoomCharges;
+              return $obj;
+          });
+          $obj->no_occupants = $ex->no_occupants ?? "";
+          $obj->checkin_time = $ex->checkin_time ?? "";
+          $obj->checkout_time = $ex->checkout_time ?? "";
+          
+          $obj->BookingDate = $ex->BookingDate ?? "";
+          $obj->BookingFrom = $ex->BookingFrom ?? "";
+          $obj->BookingTo = $ex->BookingTo ?? "";
+          $obj->net_total = $ex->invoice->net_total ?? "";
+          $obj->payment_amount = $ex->invoice->payment_amount ?? "";
+
+
+          if($ex->invoice->corporate_type != null){
+            if($ex->invoice->corporate_type == 1 ){
+              $obj->btc_type = "Full Board";
+             
+            }
+            elseif($ex->invoice->corporate_type == 2){
+              $obj->btc_type = "Half Board";
+              
+            }
+            elseif($ex->invoice->corporate_type == 3){
+              $obj->btc_type = "Room Only";
+
+            }
+            
+          }
+          else {
+            $obj->btc_type = null;  
+          }
+
+          $obj->user_name = $ex->created_by_user->name ?? "";
+          $obj->status = $ex->status ?? "";
+          return $obj;
+        
+        });
+
+        
+
+        return response()->json([
+          'success' => true,
+          'totalRecords' => $count,
+          'bookings' => $bookings_map,
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
+      }
+      else {
+
+        return response()->json([
+          'success' => false,
+          'totalRecords' => 0,
+          'message' => ['No Bookings Found!'],
+          'msgtype' => 'danger',
+        ]);
+
+      } 
+
+    }
+    else {
+      return response()->json([
+        'success' => false,
+        'totalRecords' => 0,
+        'message' => ['No Bookings Found!'],
+        'msgtype' => 'danger',
+      ]);
+
+    } 
+
+  }
+
+  public function get_invoice_search($id) {
+
+    $booking = $this->getBooking($id);
+    $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
+    $default_rule_img = DefaultRule::first()->picture;
+    $default_rule = DefaultRule::first();
+    $msg = "";
+
+    if ($booking->discount_request) {
+        if ($booking->discount_request->status == 'Pending') {
+            $this->lockdown = true;
+            $msg = "Discount request has not been approved yet";
+        }
+
+        if ($booking->discount_request->status == 'Declined') {
+            $msg = "Discount request was declined";
+            $this->lockdown = false;
+        }
+    }
+
+    if (empty($booking)) {
+        return response()->json([
+            'success' => false,
+            'message' => ["Booking Not Found"],
+            'msgtype' => 'error',
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+    } else {
+        return response()->json([
+            'success' => true,
+            'booking' => $booking,
+            'user' => [
+                'name' => Auth::user()->name
+            ],
+            'default_rule_img'=>$default_rule_img,
+            'default_rule'=>$default_rule,
+            'lockdown' => $this->lockdown && false,
+            'invoice_details'=>$invoice_details,
+            'msg' => $msg
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+    }
+  
+  }
+
+
+  public function get_expenses_report(Request $request){
+
+    date_default_timezone_set("Asia/Karachi");
+
+    $user = User::find(Auth::user()->id);
+    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
+    $hotel_id = $hotels[0]->id;
+    $hotelName = $hotels[0]->HotelName;
+    if(!empty($request['hotel_id'])) {
+        $hotel_id = $request['hotel_id'];
+        $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
+    }
+
+    $get_expenses_report_arr = array();
+
+    $date_from = "2022-03-01";
+    $date_to = "2022-03-02";
+
+    $date_from_dt = new DateTime($date_from);
+    $date_to_dt = new DateTime($date_to);
+
+    //$date_from = $request['date_from'];
+    //$date_to = $request['date_to'];
+
+    $user_ids_hotels = UserHotel::where('hotel_id',$hotel_id)->pluck('user_id');
+    
+    for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
+      
+      $loop_date = date_format($date,"Y-m-d");
+
+      $date_one = $loop_date.' 06:01:00';
+      $date_two = $loop_date.' 23:59:00';
+
+      $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
+      $date_one_next = $next_date.' 00:00';
+      $date_two_next = $next_date.' 06:00';
+      
+      // Cashout Work    
+      $created_by_ids = $this->getIncludedVouchers();
+
+      // Cashout Work
+      $voucher_master = VoucherMaster::where('hotel_id', $hotel_id)
+                        ->with(['voucher_details' => function($q) {
+                          $q->where('cr_amount', '>',  0);
+                          $q->orderBy('id','desc');
+                          $q->get();
+                          //$q->orderBy('id','desc')->limit(1);
+                        }])      
+                        ->with(['post_user'])
+                        //->whereIn('CreatedBy', $created_by_ids)
+                        ->whereBetween('created_at', [$date_one,$date_two_next]) 
+                        ->get();
+
+      
+      // Vouchers Mappings
+      if(!empty($voucher_master)){
+        $count = $voucher_master->count();
+        if($count > 0) {
+
+          $vouchers_map = $voucher_master->map(function ($ex) {
+
+            $obj = new stdClass();
+            $obj->id = $ex->id;
+            $obj->voucher_type_id = $ex->voucher_type_id ?? "";
+            $obj->description = $ex->description ?? "";
+            $obj->created_at = $ex->created_at ?? "";
+            $obj->voucher_details = $ex->voucher_details->map(function($voucher_detail) {
+
+              $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
+              return $obj;
+            
+            });
+            $obj->post_user = $ex->post_user->name ?? "";
+            return $obj;
+          
+          });
+
+          $vouchers_exec = $vouchers_map;
+          
+        }
+        else {
+          $vouchers_exec = [];
+        } 
+      }
+      else {
+        $vouchers_exec = [];
+      }
+
+      $get_expenses_report_arr[] = array(
+        'Date' => $loop_date,
+        'Expense Details' => $vouchers_exec,
+      );
+
+    }
+
+    $whole_response = array(
+      $get_expenses_report_arr
+    );
+
+
+    /*
+    $whole_response = response()->json([
+      'Opening Balance' => $user_opening_balance,
+      'bookings' => $bookings_exec,
+      'Expense Details' => $vouchers_exec,
+      'Closing Balance' => $closing_balance
+    ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
+    **/
+    
+ 
+    echo "<pre>";
+    var_dump($whole_response);
+    echo "</pre>";
+    die();
+
+  }
+
+  public function get_discount_report(Request $request) {
+
+    echo "<pre>";
+    var_dump("get_discount_report");
+    echo "</pre>";
+
+  
+  
+  }
+
+  /*
+  * Call by other functions
+  **/
   private function getBooking($id) {
 
     $booking = Booking::with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){

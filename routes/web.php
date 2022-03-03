@@ -94,6 +94,7 @@ Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:
 
 /**
  * Miscellaneous Amount
+ * Mr Optimist
  */
 //Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
 Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount');
@@ -451,6 +452,10 @@ Route::get('get_invoice_search/{id}', 'ReportControllerTwo@get_invoice_search');
 
 Route::get('get_cash_flow_report', 'ReportControllerTwo@get_cash_flow_report');
 Route::get('get_revenue_par_report', 'ReportControllerTwo@get_revenue_par_report');
+
+Route::get('get_expenses_report', 'ReportControllerTwo@get_expenses_report');
+Route::get('get_discount_report', 'ReportControllerTwo@get_discount_report');
+
 
 
 
