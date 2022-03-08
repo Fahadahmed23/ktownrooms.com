@@ -453,8 +453,15 @@ Route::get('get_invoice_search/{id}', 'ReportControllerTwo@get_invoice_search');
 Route::get('get_cash_flow_report', 'ReportControllerTwo@get_cash_flow_report');
 Route::get('get_revenue_par_report', 'ReportControllerTwo@get_revenue_par_report');
 
+
+Route::get('get_monthly_sales_report', 'ReportControllerTwo@get_monthly_sales_report');
+
 Route::get('get_expenses_report', 'ReportControllerTwo@get_expenses_report');
 Route::get('get_discount_report', 'ReportControllerTwo@get_discount_report');
+
+Route::get('get_hotel_services_report','ReportControllerTwo@get_hotel_services_report');
+
+Route::get('get_klc_report','ReportControllerTwo@get_klc_report');
 
 
 
