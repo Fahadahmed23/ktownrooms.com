@@ -1,7 +1,7 @@
 <fieldset>
     <div class="form-group row" ng-hide="paymentCleared">
         <div class="col-md-12">
-       
+
             <label class="col-form-label">Name</label>
             <input type="text"  ng-model="Addmislisoin.Name">
             <br>
@@ -10,14 +10,14 @@
             <br>
             <label for="">Complementary</label>
             <select id="is_complementary" name="is_complementary" ng-model="Addmislisoin.is_complementary">
-                <option value="true">Yes / True</option>
-                <option value="false">No / False</option>
+                <option value="1">Yes / True</option>
+                <option value="0">No / False</option>
             </select>
             <br>
             <label for="status">Status</label>
             <select id="status" name="status" ng-model="Addmislisoin.status">
-                <option value="true">Yes / True</option>
-                <option value="false">No / False</option>
+                <option value="1">Yes / True</option>
+                <option value="0">No / False</option>
             </select>
 
 
