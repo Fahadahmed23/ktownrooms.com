@@ -1,20 +1,21 @@
 <fieldset>
     <div class="form-group row" ng-hide="paymentCleared">
         <div class="col-md-12">
+       
             <label class="col-form-label">Name</label>
-            <input type="text">
+            <input type="text"  ng-model="Addmislisoin.Name">
             <br>
             <label class="col-form-label">Amount</label>
-            <input type="text">
+            <input type="text" ng-model="Addmislisoin.Amount">
             <br>
             <label for="">Complementary</label>
-            <select id="" name="">
+            <select id="is_complementary" name="is_complementary" ng-model="Addmislisoin.is_complementary">
                 <option value="true">Yes / True</option>
                 <option value="false">No / False</option>
             </select>
             <br>
-            <label for="">Status</label>
-            <select id="" name="">
+            <label for="status">Status</label>
+            <select id="status" name="status" ng-model="Addmislisoin.status">
                 <option value="true">Yes / True</option>
                 <option value="false">No / False</option>
             </select>

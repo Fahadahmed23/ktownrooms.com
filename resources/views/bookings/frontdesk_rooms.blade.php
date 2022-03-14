@@ -292,6 +292,7 @@ display: none;
                                                             @endif
                                                         <a ng-click="showCustomer(room.booking_id)" class="dropdown-item"><i class="fa fa-user-tag"></i>Customer Detail</a>
                                                         <a ng-show="room.st.name=='Booked'" ng-click="showPartialPay(room.booking_id)" class="dropdown-item"><i class="icon-coin-dollar"></i>Add Payment</a>
+                                                        /* Editing right now */
                                                         <a ng-show="room.st.name=='Booked'" ng-click="showmiscamount(room.booking_id)" class="dropdown-item"><i class="icon-coin-dollar"></i>Add Miscellaneous Amount</a>
                                                         <a ng-click="requestForService(room.id)" ng-if="room.st.name=='Booked'" class="dropdown-item"><i class="fas fa-concierge-bell"></i>Request For Services </a>
                                                         <a ng-show="room.st.name=='Booked'" ng-click="checkOutExtend(room.id)" class="dropdown-item"><i class="fa fa-calendar"></i>Extend Booking </a>
