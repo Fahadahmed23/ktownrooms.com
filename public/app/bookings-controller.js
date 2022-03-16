@@ -3609,6 +3609,15 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
 
+    $scope.getmisAcountlist = function() {
+
+        $.get('getBookingsMiscellaneousAmount').done(function(response) {
+            $scope.misAmountList = response.result.booking_miscellaneous_amounts;
+            })
+
+    }
+
+
 
 
 
