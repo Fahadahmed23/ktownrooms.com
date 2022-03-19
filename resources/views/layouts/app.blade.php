@@ -308,7 +308,7 @@
 
 
         /* my navbar css */
-        /* .navbar-top-menu 
+        /* .navbar-top-menu
         {
             background: #ea883f;
         } */
@@ -344,7 +344,7 @@
                 @endphp
                 @if($img)
                 <img class="logo-icon"  src="{{$img}}" alt="">
-                @else 
+                @else
                 <img class="logo-icon"  src="global_assets/images/new-ktr-logo.png" alt="">
                 @endif
 
@@ -377,9 +377,19 @@
                     <a href="/reports" class="navbar-nav-link">Reports</a>
                 </li>
                 @endpermission
+                    {{-- New Reports View - Start - Arman Ahmad 18-03-2022 --}}
 
-               
-                
+
+                @permission('can-view-report')
+                <li class="nav-item">
+                    <a href="/report-new" class="navbar-nav-link">Reports-New</a>
+                </li>
+                @endpermission
+
+
+                {{-- New Reports View - End - Arman Ahmad 18-03-2022 --}}
+
+
                 <li class="nav-item">
                     @permission('can-view-frontdesk-booking')
                     <a href="/frontdesk" class="navbar-nav-link">Frontdesk</a>
@@ -397,7 +407,7 @@
                     <a href="/my_requests" class="navbar-nav-link">Discount Requests</a>
                     @endpermission
                 </li>
-                               
+
                 @if (auth()->user()->can('can-view-booking')|| auth()->user()->can('can-view-booking-mappings') )
                     <li class="nav-item dropdown ">
                         <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
@@ -406,13 +416,13 @@
                             @permission('can-view-booking')
                             <a href="/bookings" class="dropdown-item">Booking Management</a>
                             @endpermission
-                        
+
                             @permission('can-view-booking-mappings')
                             <a href="/booking_mappings" class="dropdown-item">Mapping</a>
                             @endpermission
                         </div>
                     </li>
-                @endif    
+                @endif
 
 
                 @permission('can-view-hotel')
@@ -437,7 +447,7 @@
                 @endif
 
 
-               
+
                 @if (auth()->user()->can('can-view-user')|| auth()->user()->can('can-view-role') )
                 <li class="nav-item dropdown">
                     <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
@@ -461,7 +471,7 @@
                 auth()->user()->can('can-view-facility') || auth()->user()->can('can-view-service') ||
                 auth()->user()->can('can-view-locale') || auth()->user()->can('can-view-lookup') ||
                 auth()->user()->can('can-view-promotion') || auth()->user()->can('can-view-partner') ||
-                auth()->user()->can('can-view-vendor') || auth()->user()->can('can-view-customers')|| auth()->user()->can('can-view-corporate-client')) 
+                auth()->user()->can('can-view-vendor') || auth()->user()->can('can-view-customers')|| auth()->user()->can('can-view-corporate-client'))
                 <li class="nav-item dropdown">
                     <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
                         aria-expanded="true">Setup</a>
@@ -566,7 +576,7 @@
                             @permission('can-view-general-ledger')
                             <a href="/ledger" class="dropdown-item">General Ledger</a>
                             @endpermission
-                            
+
                             @permission('can-view-income-statement')
                             <a href="/income_statement" class="dropdown-item">Income Statement</a>
                             @endpermission
@@ -657,7 +667,7 @@
                                                 class="badge badge-danger acpt_rjct_btn ml-1"
                                                 ng-click="acceptRejectBService(bs.id ,'rejected')">Reject
                                             </span>
-                                           
+
                                     </div>
                                 </div>
                         </div>
@@ -667,7 +677,7 @@
                             <a href="/hotel_booking_services" target="_blank"
                                 class="btn btn-light btn-block border-0 rounded-top-0" data-popup="tooltip" title=""
                                 data-original-title="Load more"><i class="icon-menu7"></i> See All </a>
-                            @endpermission    
+                            @endpermission
                         </div>
                     </div>
                 </li>
@@ -701,7 +711,7 @@
                                 class="icon-more"></i></a>
                     </div>
                     <div class="float-right">
-                        
+
                         <ul class="navbar-nav ml-xl-auto d-inline">
                             <li class="nav-item dropdown dropdown-user">
                                 <b class="navbar-nav-link d-flex align-items-center dropdown-toggle cursor-pointer" data-toggle="dropdown">
@@ -709,7 +719,7 @@
                                     <i class="icon-user mr-1"></i>
                                     <span>{{ Auth::user()->name }}</span>
                                 </b>
-            
+
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a href="/profile" class="dropdown-item"><i class="icon-user"></i> My profile</a>
                                     @permission('can-view-shift-handover')
@@ -801,7 +811,7 @@
 
 <script type="text/javascript">
     // for international phone number dropdown with masking
-   
+
 
 
 
@@ -811,7 +821,7 @@
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
     dUrl = "DataTables_DataTables_Table_0_";
-    
+
     $(document).on('change','.logo',function(){
         var imgctrl = $(this).closest('.wrapper').find('img')
             let img = new Image();
@@ -825,7 +835,7 @@
             };
 
     })
-    
+
 
     $(function() {
         $('.upload-logo').click(function(e) {
@@ -1065,7 +1075,7 @@
             } else {
                 toastr.warning('Please select a file to upload', 'Warning');
             }
-        
+
     })
 
 
@@ -1128,7 +1138,7 @@ $(document).on('click','.excel-upload',function(e){
             } else {
                 toastr.warning('Please select a file to upload', 'Warning');
             }
-        
+
     })
 
 
@@ -1208,7 +1218,7 @@ $(document).on({
             // original length
             var original_len = input_val.length;
 
-            // initial caret position 
+            // initial caret position
             var caret_pos = input.prop("selectionStart");
 
             // check for decimal
@@ -1253,7 +1263,7 @@ $(document).on({
             // format number 1000000 to 1,234,567
             return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         }
-        
+
         function formatCurrency(input, blur) {
             // appends $ to value, validates decimal side
             // and puts cursor back in right position.
@@ -1269,7 +1279,7 @@ $(document).on({
             // original length
             var original_len = input_val.length;
 
-            // initial caret position 
+            // initial caret position
             var caret_pos = input.prop("selectionStart");
 
             // check for decimal
@@ -1373,7 +1383,7 @@ $(document).on({
             block = $('.flex-fill .card');
             if(classnAME != undefined)
             block = $('.'+classnAME+' .card');
-            
+
             setTimeout(() => {
                 $(block).block({
                     message: '<span class="font-weight-semibold"><i class="icon-spinner4 spinner mr-2"></i>&nbsp; Fetching Data</span>',
@@ -1419,7 +1429,7 @@ $(document).on({
         //     ShowLoaderTb();
         //     first = false;
         // });
-        
+
         //$('.sidebar select').change(function(){$('.sidebar button:first').click()})
         $('.sidebar-control').click(function() {
             $('#icon-shift').toggleClass('icon-drag-right icon-drag-left');
@@ -1490,14 +1500,14 @@ $(document).on({
             }, placeholder="abc@example.com");
 
             $('.alphabets').mask('A',
-                {'translation': 
+                {'translation':
                     {
                         A: {pattern: /[A-Z . a-z .]/ , recursive: true},
                     }
             });
 
             $('.alpha_numeric').mask('A',
-                {'translation': 
+                {'translation':
                     {
                         A: {pattern: /[A-Z a-z 0-9.]/ , recursive: true},
                     }
@@ -1505,7 +1515,7 @@ $(document).on({
         }
 
         applyMask()
-        
+
         $('.flex-fill a[data-action="reload"]').click(function() {
             //$('.sidebar-content .btn:eq(1)').click();
             if ($(this).prev().hasClass('rotate-180'))
