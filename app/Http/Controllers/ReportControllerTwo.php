@@ -62,7 +62,16 @@ class ReportControllerTwo extends Controller
     $this->middleware('auth');
   }
 
+  public function index()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_new.index');
+  }
+  
+
   public function get_guest_detail(Request $request) {
+
+    date_default_timezone_set("Asia/Karachi");
 
       $user = User::find(Auth::user()->id);
       $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
@@ -72,84 +81,118 @@ class ReportControllerTwo extends Controller
           $hotel_id = $request['hotel_id'];
           $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
       }
-      date_default_timezone_set("Asia/Karachi");
+
+
+    
+      
 
       // Get Room Stats
-      $today = date('Y-m-d');
-      $todays_date = date('Y-m-d');
+      //$today = date('Y-m-d');
+      //$todays_date = date('Y-m-d');
 
-
-      $todays_date_time =  date("Y-m-d H:i");
-      $newDateTime = date('h:i:s A', strtotime($todays_date_time));
+      //$todays_date_time =  date("Y-m-d H:i");
+      // $newDateTime = date('h:i:s A', strtotime($todays_date_time));
 
       // $receiving_date = $request->receiving_date;
-      $receiving_date = '2022-01-14 06:01:00';
-      $receiving_date_two = '2022-01-14 23:59:00';
+      // $receiving_date = '2022-01-14 06:01:00';
+      // $receiving_date_two = '2022-01-14 23:59:00';
 
-      $next_date = date('Y-m-d', strtotime($receiving_date .' +1 day'));
-
-      $next_date_one = $next_date.' 00:00:00';
-      $next_date_two = $next_date.' 06:00:00';
+      //$next_date = date('Y-m-d', strtotime($receiving_date .' +1 day'));
+      //$next_date_one = $next_date.' 00:00:00';
+      //$next_date_two = $next_date.' 06:00:00';
       
+
+      $get_cash_flow_arr = array();
+
+      $date_from = "2022-03-03";
+      $date_to = "2022-03-04";
+  
+      $date_from_dt = new DateTime($date_from);
+      $date_to_dt = new DateTime($date_to);
+  
+      //$date_from = $request['date_from'];
+      //$date_to = $request['date_to'];
+
+      for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
+
+       
       
-      $total_checkedins_today = 0;
-      $total_checkedouts_today = 0;
+        //echo $date->format(DateTime::ATOM);
+        //date("Y-m-d H:i");
+        $loop_date = date_format($date,"Y-m-d");
+  
+        
+        // $receiving_date = $request->receiving_date;
+        $date_one = $loop_date.' 06:01:00';
+        $date_two = $loop_date.' 23:59:00';
+  
+        $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
+  
+        $date_one_next = $next_date.' 00:00';
+        $date_two_next = $next_date.' 06:00';
+  
+        
+        $guest_detail_report =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])
+        ->whereBetween('checkin_time', [$date_one,$date_two_next])
+        //->whereBetween('checkin_time', [$receiving_date,$receiving_date_two])->get();
+        //->orwherebetween('checkin_time', [$next_date_one,$next_date_two])
+        ->get();
 
-      $guest_detail_report =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])
-          ->whereBetween('checkin_time', [$receiving_date,$receiving_date_two])
-          //->whereBetween('checkin_time', [$receiving_date,$receiving_date_two])->get();
-          ->orwherebetween('checkin_time', [$next_date_one,$next_date_two])->get();
-          
-      $guest_detail_report = $guest_detail_report->map(function ($item) {
-          $obj = new stdClass();
-          $obj->booking_no = $item->booking_no;
-          $obj->customer_name = $item->customer['FirstName'].' '.$item->customer['LastName'];
-          $obj->rooms = $item->rooms->map(function ($room) {
-            return [
-              'RoomNumber' => $room->RoomNumber
-            ];
-          });
-          $obj->no_occupants = $item->no_occupants;
-          $obj->checkin_time = $item->checkin_time;
-          $obj->checkout_time = $item->checkout_time;
-          
-          return $obj;
-      });
+
+        //var_dump($guest_detail_report);
+
+        // Bookings Mapping
+        if(!empty($guest_detail_report)){
+
+          $count = $guest_detail_report->count();
+          if($count > 0) {
+
+    
+            $guest_detail_report_map = $guest_detail_report->map(function ($item) {
+              $obj = new stdClass();
+              $obj->booking_no = $item->booking_no;
+              $obj->customer_name = $item->customer['FirstName'].' '.$item->customer['LastName'];
+              $obj->rooms = $item->rooms->map(function ($room) {
+                return [
+                  'RoomNumber' => $room->RoomNumber
+                ];
+              });
+              $obj->no_occupants = $item->no_occupants;
+              $obj->checkin_time = $item->checkin_time;
+              $obj->checkout_time = $item->checkout_time;
+    
+              return $obj;
+            });
+
+            $bookings_exec = $guest_detail_report_map;
+        
+          }
+          else {
+            $bookings_exec = [];
+          }
+        }
+        else {
+          $bookings_exec = [];
+
+        }
 
       
-      /*
+        $get_cash_flow_arr[] = array(
+          'Date' => $loop_date,
+          'bookings' => $bookings_exec,
+        );
+  
+    
+      }
+  
 
-      $abcd = array(
-        'guest_detail_report' =>$guest_detail_report,
-        'hotelName' => $hotelName
-      );
-      
-      $abcd = array(
-        'rooms_occupiedd' =>$users_skills_points,
-        'rooms_occupied' =>$rooms_occupied,
-        'todays_date_time' => $todays_date_time,
-        'newDateTime' => $newDateTime,
-        'todays_date' => $todays_date,
-        'receiving_date' => $receiving_date,
-        'receiving_date_two' => $receiving_date_two,
-        'next_date_one' => $next_date_one,
-        'next_date_two' => $next_date_two
-      );
-      **/
+    $whole_response = array(
+      $get_cash_flow_arr
+    );
 
-      //echo "<pre>";
-      //var_dump($abcd);
-      //echo "</pre>";
-
-   
-      
-      return response()->json([
-        'guest_detail_report' =>$guest_detail_report,
-        'hotelName' => $hotelName
-      
-    ]);
-
-
+    echo "<pre>";
+    var_dump($whole_response);
+    echo "</pre>";
   
   
   }
@@ -157,6 +200,7 @@ class ReportControllerTwo extends Controller
 
   public function get_checkout_list(Request $request) {
 
+    date_default_timezone_set("Asia/Karachi");
     $user = User::find(Auth::user()->id);
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
     $hotel_id = $hotels[0]->id;
@@ -165,67 +209,120 @@ class ReportControllerTwo extends Controller
         $hotel_id = $request['hotel_id'];
         $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
     }
-    date_default_timezone_set("Asia/Karachi");
+    
 
     // Get Room Stats
-    $today = date('Y-m-d');
-    $todays_date = date('Y-m-d');
-
-
+    //$today = date('Y-m-d');
+    //$todays_date = date('Y-m-d');
 
     // $receiving_date = $request->receiving_date;
-    $receiving_date = '2022-01-14';
-    $next_date = date('Y-m-d', strtotime($receiving_date .' +1 day'));
+    //$receiving_date = '2022-01-14';
+    //$next_date = date('Y-m-d', strtotime($receiving_date .' +1 day'));
 
-    $total_checkedins_today = 0;
-    $total_checkedouts_today = 0;
+    //$total_checkedins_today = 0;
+    //$total_checkedouts_today = 0;
+
+    $get_cash_flow_arr = array();
+
+    $date_from = "2022-03-03";
+    $date_to = "2022-03-04";
+
+    $date_from_dt = new DateTime($date_from);
+    $date_to_dt = new DateTime($date_to);
+
+    //$date_from = $request['date_from'];
+    //$date_to = $request['date_to'];
+
+  
+    for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
+      
+      //echo $date->format(DateTime::ATOM);
+      //date("Y-m-d H:i");
+      $loop_date = date_format($date,"Y-m-d");
+
+      
+      // $receiving_date = $request->receiving_date;
+      $date_one = $loop_date.' 06:01:00';
+      $date_two = $loop_date.' 23:59:00';
+
+      $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
+
+      $date_one_next = $next_date.' 00:00';
+      $date_two_next = $next_date.' 06:00';
 
 
-    $get_checkout_list =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])
-        // ->where('BookingTo', '=', $receiving_date)
-        ->whereIn('BookingTo', [$receiving_date,$next_date])
-        ->get();
-        
-    $get_checkout_list = $get_checkout_list->map(function ($item) {
-        $obj = new stdClass();
-        $obj->booking_no = $item->booking_no;
-        $obj->customer_name = $item->customer['FirstName'].' '.$item->customer['LastName'];
-        $obj->rooms = $item->rooms->map(function ($room) {
-          return [
-            'RoomNumber' => $room->RoomNumber
-          ];
-        });
-        $obj->no_occupants = $item->no_occupants;
-        $obj->BookingFrom = $item->BookingFrom;
-        $obj->BookingTo = $item->BookingTo;
-        
-        //$obj->checkin_time = $item->checkin_time;
-        //$obj->checkout_time = $item->checkout_time;
-        
-        return $obj;
-    });
 
-    /*
-    $abcd = array(
-      'get_checkout_list' =>$get_checkout_list,
+      $get_checkout_list =  Booking::with('customer','rooms','hotel')->where('hotel_id', $hotel_id)->whereIn('status', ['CheckedIn','CheckedOut'])
+      // ->where('BookingTo', '=', $receiving_date)
+      ->whereIn('BookingTo', [$date_one,$date_two_next])
+      ->get();
+
+      // Bookings Mapping
+      if(!empty($get_checkout_list)){
+
+
+        $count = $get_checkout_list->count();
+        if($count > 0) {
+          
+          $get_checkout_list = $get_checkout_list->map(function ($item) {
+              $obj = new stdClass();
+              $obj->booking_no = $item->booking_no;
+              $obj->customer_name = $item->customer['FirstName'].' '.$item->customer['LastName'];
+              $obj->rooms = $item->rooms->map(function ($room) {
+                return [
+                  'RoomNumber' => $room->RoomNumber
+                ];
+              });
+              $obj->no_occupants = $item->no_occupants;
+              $obj->BookingFrom = $item->BookingFrom;
+              $obj->BookingTo = $item->BookingTo;
+              
+              //$obj->checkin_time = $item->checkin_time;
+              //$obj->checkout_time = $item->checkout_time;
+              
+              return $obj;
+          });
+
+          $bookings_exec = $get_checkout_list;
+
+        }
+        else {
+
+          $bookings_exec = [];
+        } 
+
+    
+      }
+      else {
+        $bookings_exec = [];
+      }
+
+
+      
+      $get_cash_flow_arr[] = array(
+        'Date' => $loop_date,
+        'bookings' => $bookings_exec,
+      );
+
+  
+    }
+    $whole_response = array(
+      'get_checkout_list' =>$get_cash_flow_arr,
       'hotelName' => $hotelName
     );
-    
-    echo "<pre>";
-    var_dump($abcd);
-    echo "</pre>";
-    
-    **/
 
-    return response()->json([
-      'get_checkout_list' =>$get_checkout_list,
-      'hotelName' => $hotelName
-    
-    ]);
+
+ 
+    echo "<pre>";
+    var_dump($whole_response);
+    echo "</pre>";
+    die();
 
   }
 
   public function get_inquirydetail_report(Request $request) {
+
+    date_default_timezone_set("Asia/Karachi");
         
     $user = User::find(Auth::user()->id);
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
@@ -236,7 +333,7 @@ class ReportControllerTwo extends Controller
         $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
     }
 
-    date_default_timezone_set("Asia/Karachi");
+    
     
     // Get Room Stats
     
@@ -245,12 +342,10 @@ class ReportControllerTwo extends Controller
 
     $todays_date = date('Y-m-d',strtotime('2022-01-18'));
 
-
     //$todays_date_time =  date("Y-m-d H:i");
 
     $todays_date_time = date('Y-m-d H:i',strtotime('2022-01-18 07:30'));
 
-    
     $newDateTime = date('h:i:s A', strtotime($todays_date_time));        
     $total_checkedins_today = 0;
     $total_checkedouts_today = 0;
@@ -364,9 +459,14 @@ class ReportControllerTwo extends Controller
 
     date_default_timezone_set("Asia/Karachi");
     
-    $user_email = 'fahadahmedoptimist@gmail.com';
-    //$user_email = $request->email ?? null;
-    $user_cnic = $request->cnic ?? null;
+    //$user_email = 'fahadahmedoptimist@gmail.com';
+    $user_email = $request->email ?? null;
+    
+    $user_cnic = '41304-1502264-9';
+    //$user_cnic = $request->cnic ?? null;
+
+    //$booking_no = 'Test030322767';
+    $booking_no = $request->booking_no ?? null;
 
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
     $hotel_id = $hotels[0]->id;
@@ -377,123 +477,184 @@ class ReportControllerTwo extends Controller
         $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
     }
 
-    if(!empty($user_email)) {
 
-        
-      $bookings = Booking::whereHas('customer', function ($q1) use ($user_email) {
-          
-          $q1->where('Email', $user_email);
+    if(!empty($user_cnic)) {
 
-      })->with(['hotel','rooms', 'rooms.category','services','invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
+      $bookings = Booking::whereHas('customer', function ($q1) use ($user_cnic) {
+
+        $q1->where('CNIC', $user_cnic);
+
+      })->with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
       ->where('hotel_id',$hotel_id)
       ->orderBy('created_at', 'desc')->get();
 
-    
-      if(!empty($bookings)){
+    }
+    elseif(!empty($booking_no)) {
 
-          $count = $bookings->count();
-          if($count > 0){
+      $bookings = Booking::with(['customer','hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
+      ->where('booking_no',$booking_no)
+      ->where('hotel_id',$hotel_id)
+      ->orderBy('created_at', 'desc')
+      ->get();
 
-              $bookings_map = $bookings->map(function ($ex) {
+    }
+    elseif(!empty($user_email)) {
 
-                  $obj = new stdClass();
-                  $obj->id = $ex->id;
-                  $obj->booking_no = $ex->booking_no ?? "";
-                  $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
-                  $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
-                  $obj->HotelName = $ex->hotel->HotelName ?? "";
-                  $obj->rooms = $ex->rooms->map(function ($room) {
-                     
-                      $obj['room_title'] = $room->room_title;
-                      $obj['RoomNumber'] = $room->RoomNumber;
-                      $obj['RoomRent'] = $room->RoomCharges;
-                      return $obj;
-                  });
-                  $obj->no_occupants = $ex->no_occupants ?? "";
-                  $obj->checkin_time = $ex->checkin_time ?? "";
-                  $obj->checkout_time = $ex->checkout_time ?? "";
-                  
-                  $obj->BookingDate = $ex->BookingDate ?? "";
-                  $obj->BookingFrom = $ex->BookingFrom ?? "";
-                  $obj->BookingTo = $ex->BookingTo ?? "";
-                  $obj->net_total = $ex->invoice->net_total ?? "";
-                  $obj->payment_amount = $ex->invoice->payment_amount ?? "";
+      $bookings = Booking::whereHas('customer', function ($q1) use ($user_email) {
+        $q1->where('Email', $user_email);
+      })->with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
+      ->where('hotel_id',$hotel_id)
+      ->orderBy('created_at', 'desc')->get();
+      
+    }
+    else {
+      $bookings = array();
+    }
 
-                  if($ex->invoice->corporate_type != null){
-                      if($ex->invoice->corporate_type == 1 ){
-                        $obj->corporate_type = "Full Board";
-                        $obj->corporate_type_total = 0;
-                      }
-                      elseif($ex->invoice->corporate_type == 2){
-                        $obj->corporate_type = "Half Board";
-                        $obj->corporate_type_total = $ex->invoice->net_total/2;
-                      }
-                      elseif($ex->invoice->corporate_type == 3){
-                        $obj->corporate_type = "Room Only";
-                        $obj->corporate_type_total = 0;
-                        if( count($ex->services) > 0){
-                          for ($i = 0; $i < count($ex->services); $i++) {
-                            
-                            $obj->corporate_type_total += $ex->services[$i]->amount;
-                          }
+    if(!empty($bookings)) {
 
-                        }
-                        
-                      }
-                      
-                  }
-                  else {
-                    $obj->corporate_type = $ex->invoice->corporate_type ?? "";
-                    $obj->corporate_type_total = 0;
-                    
-                  }
-                  
-                  $obj->status = $ex->status ?? "";
-                  return $obj;
-              });
+      $count = $bookings->count();
+      if($count > 0){
+
+        $bookings_map = $bookings->map(function ($ex) {
+
+          $obj = new stdClass();
+          $obj->id = $ex->id;
+          $obj->booking_no = $ex->booking_no ?? "";
+          $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
+          $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
+          $obj->HotelName = $ex->hotel->HotelName ?? "";
+          $obj->rooms = $ex->rooms->map(function ($room) {
+
+              $obj['room_title'] = $room->room_title;
+              $obj['RoomNumber'] = $room->RoomNumber;
+              $obj['RoomRent'] = $room->RoomCharges;
+              return $obj;
+          });
 
 
-              /*
-              $abcd = array(
-                'success' => true,
-                'totalRecords' => $count,
-                'bookings' => $bookings_map,
-              );
+          $obj->roomscharges =$ex->rooms[0]->RoomCharges;
 
-              echo "<pre>";
-              var_dump($abcd);
-              echo "</pre>";
-              return;
-              **/
+          if(count($ex->services) > 0){
 
-              return response()->json([
-                  'success' => true,
-                  'totalRecords' => $count,
-                  'bookings' => $bookings_map,
-              ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+            $obj->services = $ex->services->map(function($service) {
+              
+              $obj['department_name'] = $service->room_title;
+              $obj['service_name'] = $service->service_name;
+              $obj['service_charges'] = $service->service_charges;
+              $obj['amount'] = $service->amount;
+              return $obj;
+            });
+
+            $services_amount_extra = 0;
+            foreach($obj->services as $single_service){
+              $services_amount_extra += $single_service['amount'];
+            }
+
+            $obj->services_amount = $services_amount_extra;
+            unset($obj->services);
+            
+          }
+          else {
+            $obj->services_amount = 0;
+          }
+
+          if(count($ex->booking_miscellaneous_amount) > 0){
+
+            $obj->booking_miscellaneous_amount = $ex->booking_miscellaneous_amount->map(function($booking_miscellaneous_amount) {
+              
+              if($booking_miscellaneous_amount->status){
+
+                $obj['name'] = $booking_miscellaneous_amount->name;
+                $obj['amount'] = $booking_miscellaneous_amount->amount;
+                return $obj;
+              }
+              
+            });
+
+            $miscellaneous_amount_extra = 0;
+            foreach($obj->booking_miscellaneous_amount as $single_miscellaneous){
+
+              $miscellaneous_amount_extra += $single_miscellaneous['amount'];
+
+            }
+
+            $obj->miscellaneous_amount = $miscellaneous_amount_extra;
+            unset($obj->booking_miscellaneous_amount);
+            
+          }
+          else {
+            $obj->miscellaneous_amount = 0;
+          }
+
+
+
+
+          $obj->no_occupants = $ex->no_occupants ?? "";
+          $obj->checkin_time = $ex->checkin_time ?? "";
+          $obj->checkout_time = $ex->checkout_time ?? "";
+
+          $obj->BookingDate = $ex->BookingDate ?? "";
+          $obj->BookingFrom = $ex->BookingFrom ?? "";
+          $obj->BookingTo = $ex->BookingTo ?? "";
+          $obj->net_total = $ex->invoice->net_total ?? "";
+          $obj->payment_amount = $ex->invoice->payment_amount ?? "";
+          $obj->balance_outstanding = $obj->net_total-$obj->payment_amount;
+
+          if($ex->invoice->corporate_type != null){
+            if($ex->invoice->corporate_type == 1 ){
+              $obj->corporate_type = "Full Board";
+              $obj->corporate_type_total = 0;
+            }
+            elseif($ex->invoice->corporate_type == 2){
+              $obj->corporate_type = "Half Board";
+              $obj->corporate_type_total = $ex->invoice->net_total/2;
+            }
+            elseif($ex->invoice->corporate_type == 3){
+              $obj->corporate_type = "Room Only";
+              $obj->corporate_type_total = 0;
+              if( count($ex->services) > 0) {
+                for ($i = 0; $i < count($ex->services); $i++) {
+
+                  $obj->corporate_type_total += $ex->services[$i]->amount;
+                }
+
+              }
+
+            }
 
           }
           else {
+            $obj->corporate_type = $ex->invoice->corporate_type ?? "";
+            $obj->corporate_type_total = 0;
 
-              return response()->json([
-                  'success' => false,
-                  'totalRecords' => 0,
-                  'message' => ['No Bookings Found!'],
-                  'msgtype' => 'danger',
-              ]);
+          }
 
-          } 
+          $obj->status = $ex->status ?? "";
+          return $obj;
+        
+        });
+
+        
+
+        return response()->json([
+          'success' => true,
+          'totalRecords' => $count,
+          'bookings' => $bookings_map,
+          ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
       }
       else {
-           return response()->json([
-                  'success' => false,
-                  'totalRecords' => 0,
-                  'message' => ['No Bookings Found!'],
-                  'msgtype' => 'danger',
-              ]);
+
+        return response()->json([
+        'success' => false,
+        'totalRecords' => 0,
+        'message' => ['No Bookings Found!'],
+        'msgtype' => 'danger',
+        ]);
 
       } 
+
     }
     else {
       return response()->json([
@@ -502,7 +663,11 @@ class ReportControllerTwo extends Controller
         'message' => ['No Bookings Found!'],
         'msgtype' => 'danger',
       ]);
-    }
+
+    } 
+
+   
+     
 
   }
 
@@ -681,10 +846,14 @@ class ReportControllerTwo extends Controller
   {
 
     date_default_timezone_set("Asia/Karachi");
-    
+
+    $net_total_revenue = 0;
+    $payment_amount_revenue = 0;
+    $balance_outstanding_revenue = 0;
+
     //$user_email = 'fahadahmedoptimist@gmail.com';
     //$user_email = $request->email ?? null;
-    $user_cnic = $request->cnic ?? null;
+    //$user_cnic = $request->cnic ?? null;
         
     $user = User::find(Auth::user()->id);
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
@@ -695,95 +864,132 @@ class ReportControllerTwo extends Controller
         $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
     }
 
-    //$date_from = $request['date_from'];
-    //$date_to = $request['date_to'];
+
+
+
+    //$get_cash_flow_arr = array();
+    $date_from = $request['date_from'];
+    $date_to = $request['date_to'];
     
-    $date_from = '2022-02-16';
-    $date_to = '2022-02-18';
+    //$date_from = '2022-03-11';
+    //$date_to = '2022-03-15';
 
-    // $date_from = strtotime($date_from);
-    // $date_to = strtotime($date_to); // or your date as well
-         
-    $previous_date_one = $date_from.' 06:01';
-    $previous_date_two = $date_from.' 23:59';
+    $date_from_dt = new DateTime($date_from);
+    $date_to_dt = new DateTime($date_to);
 
-    $next_date = date('Y-m-d', strtotime($date_to .' +1 day'));
-    $next_date_one = $next_date.' 00:00:00';
-    $next_date_two = $next_date.' 06:00:00';
 
-    
-    $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
-    ->where('hotel_id',$hotel_id)
-    ->whereIn('status', ['CheckedIn','CheckedOut'])
-    ->whereBetween('checkin_time', [$previous_date_one,$next_date_two])  
-    ->orderBy('created_at', 'desc')->get();
+    for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
+      
+      //echo $date->format(DateTime::ATOM);
+      //date("Y-m-d H:i");
+      $loop_date = date_format($date,"Y-m-d");
 
-    if(!empty($bookings)){
 
-      $count = $bookings->count();
-      if($count > 0) {
+      // $receiving_date = $request->receiving_date;
+      $date_one = $loop_date.' 06:01:00';
+      $date_two = $loop_date.' 23:59:00';
 
-        $bookings_map = $bookings->map(function ($ex) {
+      $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
-          $obj = new stdClass();
-          $obj->id = $ex->id;
-          $obj->booking_no = $ex->booking_no ?? "";
-          $obj->booking_date = $ex->BookingDate ?? "";
-          $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
-          $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
-          $obj->HotelName = $ex->hotel->HotelName ?? "";
-          $obj->rooms = $ex->rooms->map(function ($room) {
-              
-              $obj['room_title'] = $room->room_title;
-              $obj['RoomNumber'] = $room->RoomNumber;
-              $obj['RoomRent'] = $room->RoomCharges;
-              return $obj;
+      $date_one_next = $next_date.' 00:00';
+      $date_two_next = $next_date.' 06:00';
+
+
+      $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice', 'promotion','tax_rate','invoice.payment_mode'])
+      ->where('hotel_id',$hotel_id)
+      ->whereIn('status', ['CheckedIn','CheckedOut'])
+      ->whereBetween('checkin_time', [$date_one,$date_two_next])  
+      ->orderBy('created_at', 'desc')->get();
+
+
+      if(!empty($bookings)){
+
+        $count = $bookings->count();
+        if($count > 0) {
+
+          $bookings_map = $bookings->map(function ($ex) {
+
+            $obj = new stdClass();
+            $obj->id = $ex->id;
+            $obj->booking_no = $ex->booking_no ?? "";
+            $obj->booking_date = $ex->BookingDate ?? "";
+            $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
+            $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
+            $obj->HotelName = $ex->hotel->HotelName ?? "";
+            $obj->rooms = $ex->rooms->map(function ($room) {
+                
+                $obj['room_title'] = $room->room_title;
+                $obj['RoomNumber'] = $room->RoomNumber;
+                $obj['RoomRent'] = $room->RoomCharges;
+                return $obj;
+            });
+            $obj->no_occupants = $ex->no_occupants ?? "";
+            $obj->checkin_time = $ex->checkin_time ?? "";
+            $obj->checkout_time = $ex->checkout_time ?? "";
+            
+            $obj->BookingDate = $ex->BookingDate ?? "";
+            $obj->BookingFrom = $ex->BookingFrom ?? "";
+            $obj->BookingTo = $ex->BookingTo ?? "";
+            $obj->net_total = $ex->invoice->net_total ?? "";
+            $obj->payment_amount = $ex->invoice->payment_amount ?? "";
+            $obj->balance_outstanding = $obj->net_total-$obj->payment_amount;
+            
+            $obj->user_name = $ex->created_by_user->name ?? "";
+            $obj->status = $ex->status ?? "";
+            return $obj;
+          
           });
-          $obj->no_occupants = $ex->no_occupants ?? "";
-          $obj->checkin_time = $ex->checkin_time ?? "";
-          $obj->checkout_time = $ex->checkout_time ?? "";
-          
-          $obj->BookingDate = $ex->BookingDate ?? "";
-          $obj->BookingFrom = $ex->BookingFrom ?? "";
-          $obj->BookingTo = $ex->BookingTo ?? "";
-          $obj->net_total = $ex->invoice->net_total ?? "";
-          $obj->payment_amount = $ex->invoice->payment_amount ?? "";
 
-          
-          
-          $obj->status = $ex->status ?? "";
-          return $obj;
-        
-        });
 
-        return response()->json([
-          'success' => true,
-          'totalRecords' => $count,
-          'bookings' => $bookings_map,
-        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
+          if(count($bookings_map) > 0){
+            foreach($bookings_map as $bookings_map_single){
+
+              $net_total_revenue += $bookings_map_single->net_total;
+              $payment_amount_revenue += $bookings_map_single->payment_amount;
+              $balance_outstanding_revenue += $bookings_map_single->balance_outstanding;
+              
+            }
+          }
+
+          $response_booking = array(
+            'success' => true,
+            'Date' => $loop_date,
+            'totalRecords' => $count,
+            'bookings' => $bookings_map,
+            'net_total_revenue' => $net_total_revenue,
+            'payment_amount_revenue' => $payment_amount_revenue,
+            'balance_outstanding_revenue' => $balance_outstanding_revenue,
+          );
+
+          $bookings_exec = $response_booking;
+
+        }
+        else {
+          $bookings_exec = [];
+        } 
       }
       else {
-
-        return response()->json([
-          'success' => false,
-          'totalRecords' => 0,
-          'message' => ['No Bookings Found!'],
-          'msgtype' => 'danger',
-        ]);
-
+        $bookings_exec = [];
       } 
 
-    }
-    else {
-      return response()->json([
-        'success' => false,
-        'totalRecords' => 0,
-        'message' => ['No Bookings Found!'],
-        'msgtype' => 'danger',
-      ]);
 
-    } 
+      $get_cash_flow_arr[] = array(
+        $bookings_exec
+      );
+
+      
+      $net_total_revenue = 0;
+      $payment_amount_revenue = 0;
+      $balance_outstanding_revenue = 0;
+
+  
+    }
+    
+
+    echo "<pre>";
+    var_dump($get_cash_flow_arr);
+    echo "</pre>";
 
   }
   
@@ -801,10 +1007,14 @@ class ReportControllerTwo extends Controller
         $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
     }
 
+    $total_amount_received =0;
+    $total_cash_in_drawer =0;
+   
+
     $get_cash_flow_arr = array();
 
-    $date_from = "2022-03-01";
-    $date_to = "2022-03-02";
+    $date_from = "2022-03-14";
+    $date_to = "2022-03-15";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -820,7 +1030,6 @@ class ReportControllerTwo extends Controller
       //date("Y-m-d H:i");
       $loop_date = date_format($date,"Y-m-d");
 
-      
       // $receiving_date = $request->receiving_date;
       $date_one = $loop_date.' 06:01:00';
       $date_two = $loop_date.' 23:59:00';
@@ -911,6 +1120,21 @@ class ReportControllerTwo extends Controller
           
           });
 
+          if(count($bookings_map) > 0){
+            foreach($bookings_map as $bookings_map_single){
+
+              //$net_total_revenue += $bookings_map_single->net_total;
+              //$payment_amount_revenue += $bookings_map_single->payment_amount;
+              //$balance_outstanding_revenue += $bookings_map_single->balance_outstanding;
+
+              $total_amount_received += $bookings_map_single->payment_amount;
+              
+            }
+          }
+
+
+          
+
           $bookings_exec = $bookings_map;
           //$bookings_exec = [];
 
@@ -980,39 +1204,30 @@ class ReportControllerTwo extends Controller
       // closing balance
       $closing_balance = $user_opening_balance-$cashout;
 
-
       $get_cash_flow_arr[] = array(
         'Date' => $loop_date,
         'Opening Balance' => $user_opening_balance,
+        'Cash In' => $total_amount_received,
         'bookings' => $bookings_exec,
         'Expense Details' => $vouchers_exec,
+        'Cash In Drawer' => $closing_balance,
         'Closing Balance' => $closing_balance,
       );
+
+
+      $user_opening_balance =0;
+      $total_amount_received =0;
+      $closing_balance =0;
 
   
     }
 
-
-    
-    
     $whole_response = array(
       $get_cash_flow_arr
     );
 
-
-    /*
-    $whole_response = response()->json([
-      'Opening Balance' => $user_opening_balance,
-      'bookings' => $bookings_exec,
-      'Expense Details' => $vouchers_exec,
-      'Closing Balance' => $closing_balance
-    ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-
-    **/
-    
- 
     echo "<pre>";
-    var_dump($whole_response);
+    var_dump($get_cash_flow_arr);
     echo "</pre>";
     die();
 
@@ -1034,8 +1249,8 @@ class ReportControllerTwo extends Controller
 
     $get_cash_flow_arr = array();
 
-    $date_from = "2022-03-01";
-    $date_to = "2022-03-02";
+    $date_from = "2022-03-14";
+    $date_to = "2022-03-15";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1177,6 +1392,7 @@ class ReportControllerTwo extends Controller
   }
 
   
+
   public function get_btc_pending_list(Request $request)
   {
 
@@ -1194,118 +1410,270 @@ class ReportControllerTwo extends Controller
     //$date_from = $request['date_from'];
     //$date_to = $request['date_to'];
     
-    $date_from = '2022-02-16';
-    $date_to = '2022-02-18';
-         
-    $previous_date_one = $date_from.' 06:01';
-    $previous_date_two = $date_from.' 23:59';
 
-    $next_date = date('Y-m-d', strtotime($date_to .' +1 day'));
-    $next_date_one = $next_date.' 00:00:00';
-    $next_date_two = $next_date.' 06:00:00';
+    $get_cash_flow_arr = array();
 
-    
-    $bookings = Booking::whereHas('invoice', function ($q1) {    
-      $q1->whereNotNull('corporate_type');
-    })->with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
-    ->where('hotel_id',$hotel_id)
-    ->whereIn('status', ['CheckedIn','CheckedOut'])
-    ->whereBetween('checkin_time', [$previous_date_one,$next_date_two])  
-    ->orderBy('created_at', 'desc')->get();
+    $date_from = "2022-03-14";
+    $date_to = "2022-03-15";
 
+    $date_from_dt = new DateTime($date_from);
+    $date_to_dt = new DateTime($date_to);
+
+
+    for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
+      
+      $loop_date = date_format($date,"Y-m-d");
+
+      $date_one = $loop_date.' 06:01:00';
+      $date_two = $loop_date.' 23:59:00';
+
+      $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
+      $date_one_next = $next_date.' 00:00';
+      $date_two_next = $next_date.' 06:00';
+
+
+      $bookings = Booking::whereHas('invoice', function ($q1) {    
+        $q1->whereNotNull('corporate_type');
+      })->with(['hotel','rooms', 'rooms.category','booking_miscellaneous_amount','services','invoice','tax_rate','created_by_user'])
+      ->where('hotel_id',$hotel_id)
+      ->whereIn('status', ['CheckedIn','CheckedOut'])
+      ->whereBetween('checkin_time', [$date_one,$date_two_next])  
+      ->orderBy('created_at', 'desc')->get();
   
-    if(!empty($bookings)){
+    
+      if(!empty($bookings)){
+  
+        $count = $bookings->count();
+        if($count > 0) {
+  
+          $bookings_map = $bookings->map(function ($ex) {
+  
+            $obj = new stdClass();
+            $obj->id = $ex->id;
+            $obj->booking_no = $ex->booking_no ?? "";
+            $obj->booking_date = $ex->BookingDate ?? "";
+            $obj->corporate_client_name = $ex->invoice->corporate_client_name ?? "";
+            $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
+            $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
+            $obj->HotelName = $ex->hotel->HotelName ?? "";
+            $obj->rooms = $ex->rooms->map(function ($room) {
+                
+                $obj['room_title'] = $room->room_title;
+                $obj['RoomNumber'] = $room->RoomNumber;
+                $obj['RoomRent'] = $room->RoomCharges;
+                return $obj;
+            });
 
-      $count = $bookings->count();
-      if($count > 0) {
-
-        $bookings_map = $bookings->map(function ($ex) {
-
-          $obj = new stdClass();
-          $obj->id = $ex->id;
-          $obj->booking_no = $ex->booking_no ?? "";
-          $obj->booking_date = $ex->BookingDate ?? "";
-          $obj->corporate_client_name = $ex->invoice->corporate_client_name ?? "";
-          $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
-          $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
-          $obj->HotelName = $ex->hotel->HotelName ?? "";
-          $obj->rooms = $ex->rooms->map(function ($room) {
-              
-              $obj['room_title'] = $room->room_title;
-              $obj['RoomNumber'] = $room->RoomNumber;
-              $obj['RoomRent'] = $room->RoomCharges;
-              return $obj;
-          });
-          $obj->no_occupants = $ex->no_occupants ?? "";
-          $obj->checkin_time = $ex->checkin_time ?? "";
-          $obj->checkout_time = $ex->checkout_time ?? "";
           
-          $obj->BookingDate = $ex->BookingDate ?? "";
-          $obj->BookingFrom = $ex->BookingFrom ?? "";
-          $obj->BookingTo = $ex->BookingTo ?? "";
-          $obj->net_total = $ex->invoice->net_total ?? "";
-          $obj->payment_amount = $ex->invoice->payment_amount ?? "";
+            if(count($ex->services) > 0){
 
-
-          if($ex->invoice->corporate_type != null){
-            if($ex->invoice->corporate_type == 1 ){
-              $obj->btc_type = "Full Board";
-             
-            }
-            elseif($ex->invoice->corporate_type == 2){
-              $obj->btc_type = "Half Board";
+              $obj->services = $ex->services->map(function($service) {
+                
+                $obj['department_name'] = $service->room_title;
+                $obj['service_name'] = $service->service_name;
+                $obj['service_charges'] = $service->service_charges;
+                $obj['amount'] = $service->amount;
+                return $obj;
+              });
+  
+              $services_amount_extra = 0;
+              foreach($obj->services as $single_service){
+                $services_amount_extra += $single_service['amount'];
+              }
+  
+              $obj->services_amount = $services_amount_extra;
+              unset($obj->services);
               
             }
-            elseif($ex->invoice->corporate_type == 3){
-              $obj->btc_type = "Room Only";
-
+            else {
+              $obj->services_amount = 0;
             }
+
+            if(count($ex->booking_miscellaneous_amount) > 0) {
+
+              $obj->booking_miscellaneous_amount = $ex->booking_miscellaneous_amount->map(function($booking_miscellaneous_amount) {
+                
+                if($booking_miscellaneous_amount->status){
+
+                  $obj['name'] = $booking_miscellaneous_amount->name;
+                  $obj['amount'] = $booking_miscellaneous_amount->amount;
+                  return $obj;
+                }
+                
+              });
+
+              $miscellaneous_amount_extra = 0;
+              foreach($obj->booking_miscellaneous_amount as $single_miscellaneous){
+
+                $miscellaneous_amount_extra += $single_miscellaneous['amount'];
+
+              }
+
+              $obj->miscellaneous_amount = $miscellaneous_amount_extra;
+              unset($obj->booking_miscellaneous_amount);
+              
+            }
+            else {
+              $obj->miscellaneous_amount = 0;
+            }
+
             
-          }
-          else {
-            $obj->btc_type = null;  
-          }
+            $obj->no_occupants = $ex->no_occupants ?? "";
+            $obj->checkin_time = $ex->checkin_time ?? "";
+            $obj->checkout_time = $ex->checkout_time ?? "";
 
-          $obj->user_name = $ex->created_by_user->name ?? "";
-          $obj->status = $ex->status ?? "";
-          return $obj;
-        
-        });
+            $obj->nights = $ex->invoice->nights ?? "";
+            $obj->tax_name = $ex->invoice->tax_name ?? "";
+            $obj->tax_rate = $ex->invoice->tax_rate ?? "";
+            $obj->tax_charges = $ex->invoice->tax_charges ?? "";
 
-        
+            $obj->total_other_amenities =  $obj->services_amount+$obj->miscellaneous_amount;
+            
+            
+            
+            $obj->BookingDate = $ex->BookingDate ?? "";
+            $obj->BookingFrom = $ex->BookingFrom ?? "";
+            $obj->BookingTo = $ex->BookingTo ?? "";
+            $obj->net_total = $ex->invoice->net_total ?? "";
+            $obj->payment_amount = $ex->invoice->payment_amount ?? "";
+  
+  
+            if($ex->invoice->corporate_type != null){
+              if($ex->invoice->corporate_type == 1 ){
+                $obj->btc_type = "Full Board";
+               
+              }
+              elseif($ex->invoice->corporate_type == 2){
+                $obj->btc_type = "Half Board";
+                
+              }
+              elseif($ex->invoice->corporate_type == 3){
+                $obj->btc_type = "Room Only";
+  
+              }
+              
+            }
+            else {
+              $obj->btc_type = null;  
+            }
+  
+            $obj->user_name = $ex->created_by_user->name ?? "";
+            $obj->status = $ex->status ?? "";
+            return $obj;
+          
+          });
+  
+          
 
-        return response()->json([
-          'success' => true,
-          'totalRecords' => $count,
-          'bookings' => $bookings_map,
-        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-
+          $bookings_exec = $bookings_map;
+  
+        }
+        else {
+  
+          $bookings_exec = [];
+  
+        } 
+  
       }
       else {
+        $bookings_exec = [];
+  
+      }
+      
+      $get_cash_flow_arr[] = array(
+        'Date' => $loop_date,
+        'Hotel Name' => $hotelName,
+        'Bookings' => $bookings_exec
+      );  
 
-        return response()->json([
-          'success' => false,
-          'totalRecords' => 0,
-          'message' => ['No Bookings Found!'],
-          'msgtype' => 'danger',
-        ]);
-
-      } 
-
+    
     }
-    else {
-      return response()->json([
-        'success' => false,
-        'totalRecords' => 0,
-        'message' => ['No Bookings Found!'],
-        'msgtype' => 'danger',
-      ]);
 
-    } 
+  
+    $get_revenue_par_report = array(
+      $get_cash_flow_arr
+    );
+
+
+    echo "<pre>";
+    var_dump($get_cash_flow_arr);
+    echo "</pre>";
 
   }
 
-  public function get_invoice_search($id) {
+  // updating
+  public function get_invoice_search() {
+
+    date_default_timezone_set("Asia/Karachi");
+    
+  
+    
+   
+
+    //$booking_no = 'Test030322767';
+    $booking_no = $request->booking_no ?? null;
+
+    $user_cnic = '41304-1502264-9';
+    //$user_cnic = $request->cnic ?? null;
+
+    //$user_passport = 'PK12345';
+    //$user_cnic = $request->cnic ?? null;
+
+    
+    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
+    $hotel_id = $hotels[0]->id;
+    $hotelName = $hotels[0]->HotelName;
+  
+    if(!empty($request['hotel_id'])){
+        $hotel_id = $request['hotel_id'];
+        $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
+    }
+
+
+    if(!empty($user_cnic)) {
+      $bookings = Booking::join('customers', 'customers.id', '=','bookings.id')
+      ->where('customers.CNIC', $user_cnic)
+      ->whereNull('bookings.deleted_at')
+      ->get();
+
+      
+      echo "<pre>";
+      var_dump($bookings);
+      var_dump('Fahad Ahmed Zindabad');
+      echo "</pre>";
+
+      die;
+
+      $bookings = Booking::whereHas('customer', function ($q1) use ($user_cnic) {
+        $q1->where('customer.CNIC',$user_cnic);
+      })->with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
+      ->where('hotel_id',$hotel_id)
+      ->orderBy('created_at','desc')->get();
+
+    }
+    elseif(!empty($booking_no)) {
+
+      $bookings = Booking::with(['customer','hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice', 'promotion','tax_rate', 'invoice.payment_mode'])
+      ->where('booking_no',$booking_no)
+      ->where('hotel_id',$hotel_id)
+      ->orderBy('created_at', 'desc')
+      ->get();
+
+    }
+    else {
+      $bookings = array();
+    }
+
+
+
+
+
+    echo "<pre>";
+    var_dump($bookings);
+    var_dump('Fahad Ahmed Zindabad');
+    echo "</pre>";
+
+    die;
 
     $booking = $this->getBooking($id);
     $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
