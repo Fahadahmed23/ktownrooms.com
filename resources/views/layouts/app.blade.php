@@ -382,7 +382,7 @@
 
                 @permission('can-view-report')
                 <li class="nav-item">
-                    <a href="/report-new" class="navbar-nav-link">Reports-New</a>
+                    <a href="/reports_get_guest_detail" class="navbar-nav-link">Reports-New</a>
                 </li>
                 @endpermission
 

@@ -434,12 +434,16 @@ Route::post('shareReportConfig', 'ReportController@share_report_config')->middle
 
 /**
 * Mr Optimist 12 Jan 2022
-* Reporting work 
+* Reporting work
 */
 
 
+//Reports View Controller - Arman Ahmad - 19-March-2022 - Start
 
-Route::get('reports_new', 'ReportControllerTwo@index');
+Route::get('reports_get_guest_detail', 'ReportControllerTwo@index_get_guest_detail');
+Route::get('reports_get_checkout_list', 'ReportControllerTwo@index_get_checkout_list');
+
+//Reports View Controller - Arman Ahmad - 19-March-2022 - End
 Route::get('get_guest_detail', 'ReportControllerTwo@get_guest_detail');
 Route::get('get_checkout_list', 'ReportControllerTwo@get_checkout_list');
 
