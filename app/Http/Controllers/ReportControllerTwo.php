@@ -206,9 +206,9 @@ class ReportControllerTwo extends Controller
       $get_cash_flow_arr
     );
 
-    echo "<pre>";
-    var_dump($whole_response);
-    echo "</pre>";
+    // echo "<pre>";
+    // var_dump($whole_response);
+    // echo "</pre>";
 
 
   }
@@ -329,10 +329,10 @@ class ReportControllerTwo extends Controller
 
 
 
-    echo "<pre>";
-    var_dump($whole_response);
-    echo "</pre>";
-    die();
+    // echo "<pre>";
+    // var_dump($whole_response);
+    // echo "</pre>";
+    // die();
 
   }
 
