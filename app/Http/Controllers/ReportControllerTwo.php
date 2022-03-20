@@ -63,15 +63,19 @@ class ReportControllerTwo extends Controller
   }
 
 // Reports index views Arman Ahmad 19-March-2022 - Start
+    public function index_reports_new_main()
+    {
+    \Session::forget('breadcrumb');
+    return view('reports_new_main.index');
+    }
 
-
-  public function index_get_guest_detail()
+  public function index_reports_get_guest_detail()
   {
     \Session::forget('breadcrumb');
     return view('reports_get_guest_detail.index');
   }
 
-  public function index_get_checkout_list()
+  public function index_reports_get_checkout_list()
   {
     \Session::forget('breadcrumb');
     return view('reports_get_checkout_list.index');

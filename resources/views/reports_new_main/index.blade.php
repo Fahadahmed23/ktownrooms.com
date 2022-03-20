@@ -10,18 +10,81 @@
     <div class="content">
     <div class="content-wrapper">
 
-        @include('reports_get_guest_detail.header')
+        @include('reports_new_main.header')
 
         <div class="content">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
-                        <h4 class="card-title">Get Guest Details</h4>
+                        <h4 class="card-title">New Reports Main Page</h4>
                     </div>
-
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="search"  class="form-control" />
+                                    <label class="form-label">Search</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                  <button type="button" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                  </button>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
                     <div class="card-body">
                         {{-- [[modules]] --}}
-                        <div style="display: inline-flex; width: 100%;" class="justify-content-lg-between">
+                        <br>
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <form action="reports_get_guest_detail">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Get Guest Details" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="reports_get_checkout_list">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Get CheckOut List" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="#">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="#">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                </form>
+                            </div>
+                        </div>
+                        <br>
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <form action="#">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="#">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="#">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="#">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                </form>
+                            </div>
+                        </div>
+                        {{-- <div style="display: inline-flex; width: 100%;" class="justify-content-lg-between">
                             <ul class="nav nav-pills flex-column mr-lg-3 wmin-lg-250 mb-lg-0">
 
                                 <li ng-cloak ng-repeat="module in modules" class="nav-item">
@@ -44,7 +107,7 @@
                                     <div class="row" >
 
                                         {{-- [[module.reports.name]] --}}
-                                        <div ng-cloak ng-repeat="report in module.reports" class="col-md-4" ng-if="report.name">
+                                       {{-- <div ng-cloak ng-repeat="report in module.reports" class="col-md-4" ng-if="report.name">
                                             <div class="card" >
                                                 <div class="card-header header-elements-inline">
                                                     <h5 class="card-title sortable " ng-click="loadDynamicReport(report.report)" style="cursor: pointer">
@@ -64,7 +127,7 @@
                                                     <a>
                                                         {{-- <a href="criteria?module=[[module.name]]&report=[[report.name]]"></a> --}}
                                                         <!--<legend class="font-weight-semibold">[[report.name]]</legend>-->
-                                                        <p>[[report.description]]</p>
+                                                       {{-- <p>[[report.description]]</p>
                                                     </a>
                                                 </div>
                                             </div>
@@ -83,7 +146,7 @@
                                             <div class="card"  >
                                                 <div class="card-header header-elements-inline">
                                                     {{-- <legend class="font-weight-semibold">[[report.name]]</legend> --}}
-                                                    <h5 class="card-title sortable" ng-click="loadConfigAndRunReport(report)" style="cursor: pointer">
+                                                   {{-- <h5 class="card-title sortable" ng-click="loadConfigAndRunReport(report)" style="cursor: pointer">
                                                         <a data-popup="tooltip" data-original-title="[[report.name]]" data-trigger="hover" class="current-div1">
                                                             [[report.name]]
                                                         </a>
@@ -110,7 +173,7 @@
                                 </div>
 
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

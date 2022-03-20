@@ -6,7 +6,8 @@
 
 @section('content')
 
-<div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'>
+{{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
+    <div class="content">
     <div class="content-wrapper">
 
         @include('reports_get_checkout_list.header')
@@ -15,7 +16,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
-                        <h6 class="card-title">All Reports</h6>
+                        <h4 class="card-title">Get CheckOut List</h4>
                     </div>
 
                     <div class="card-body">
