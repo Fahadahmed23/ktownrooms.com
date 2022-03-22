@@ -26,6 +26,11 @@ class VoucherMaster extends Model
         return $this->fiscal_year->title ?? '';
     }
     
+    // Mr Optimist 19 March 2022
+    public function createdByUser()
+    {
+        return $this->belongsTo(User::class, 'CreatedBy', 'id');
+    }
 
     public function post_user()
     {
