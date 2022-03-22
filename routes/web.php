@@ -437,13 +437,18 @@ Route::post('shareReportConfig', 'ReportController@share_report_config')->middle
 * Reporting work 
 */
 
-
-
 Route::get('reports_new', 'ReportControllerTwo@index');
+
 Route::get('get_guest_detail', 'ReportControllerTwo@get_guest_detail');
 Route::get('get_checkout_list', 'ReportControllerTwo@get_checkout_list');
 
 // Route::get('get_inquirydetail_report', 'ReportControllerTwo@get_inquirydetail_report');
+
+Route::get('get_daily_sales_report', 'ReportControllerTwo@get_daily_sales_report');
+
+Route::get('get_sales_summary_report', 'ReportControllerTwo@get_sales_summary_report');
+
+
 
 Route::get('get_individual_guest_ledger', 'ReportControllerTwo@get_individual_guest_ledger');
 
