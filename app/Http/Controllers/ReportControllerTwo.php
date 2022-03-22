@@ -2857,14 +2857,7 @@ class ReportControllerTwo extends Controller
   public function get_klc_report(Request $request) {
 
 
-    echo "<pre>";
-    var_dump('Bookings');
-    echo "</pre>";
-
-    die;
-
-
-
+ 
     date_default_timezone_set("Asia/Karachi"); 
     $user = User::find(Auth::user()->id);
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
@@ -2878,8 +2871,8 @@ class ReportControllerTwo extends Controller
     $get_hotel_services_arr = array();
    
 
-    $date_from = "2022-03-07";
-    $date_to = "2022-03-07";
+    $date_from = "2022-03-18";
+    $date_to = "2022-03-22";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -2900,40 +2893,19 @@ class ReportControllerTwo extends Controller
       $date_one_next = $next_date.' 00:00';
       $date_two_next = $next_date.' 06:00';
 
-      
-      $bookings = Booking::with(['customer','hotel','rooms','invoice','rooms.category','tax_rate','created_by_user'])
-      //->whereHas('invoice', function ($q) {
-      //  $q->where('discount_amount','>','0');
-      //})
-      ->whereHas('customer', function ($q) {
-        $q->groupBy('customer.Email');
-        $q->havingRaw('COUNT(*) > 1');
-        $q->get();
-        //$q->where('player_id', Auth::user()->id);
-      })
-      ->where('hotel_id',$hotel_id)
-      ->whereIn('status', ['CheckedIn','CheckedOut'])
-      ->whereBetween('checkin_time', [$date_one,$date_two_next])  
-      ->orderBy('created_at', 'desc')->get();
+    
+      $bookings = Booking::with(['customer','hotel','rooms','rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
+        ->where('hotel_id',$hotel_id)
+        ->whereIn('status', ['CheckedIn','CheckedOut'])
+        //->whereIn('status','CheckedOut')
+        ->whereBetween('checkin_time', [$date_one,$date_two_next])  
+        ->orderBy('created_at', 'desc')->get();
 
 
-      $users = DB::table('bookings')
-            ->join('contacts', 'bookings.id', '=', 'contacts.user_id')
-            ->select('users.*', 'contacts.phone', 'orders.price')
-            ->get();
-
-
-
-      
       echo "<pre>";
-      var_dump('Bookings');
       var_dump($bookings);
       echo "</pre>";
-
       die;
-
-
-
 
       // Bookings Mapping
       if(!empty($bookings)){
@@ -2948,31 +2920,33 @@ class ReportControllerTwo extends Controller
             $obj->id = $ex->id;
             $obj->booking_no = $ex->booking_no ?? "";
             $obj->booking_date = $ex->BookingDate ?? "";
-            $obj->services = $ex->services->map(function($service) {
-                
-              $obj['department_name'] = $service->room_title;
-              $obj['service_name'] = $service->service_name;
-              $obj['service_charges'] = $service->service_charges;
-              $obj['amount'] = $service->amount;
-              return $obj;
-            });
+           
             $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
             $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
+            $obj->corporate_client_name = $ex->invoice->corporate_client_name ?? "";
             $obj->HotelName = $ex->hotel->HotelName ?? "";
-            $obj->rooms = $ex->rooms->map(function ($room) {
-                
-                $obj['room_title'] = $room->room_title;
-                $obj['RoomNumber'] = $room->RoomNumber;
-                $obj['RoomRent'] = $room->RoomCharges;
-                return $obj;
-            });
-        
-            $obj->checkin_time = $ex->checkin_time ?? "";
-            $obj->checkout_time = $ex->checkout_time ?? "";
-            
+
             $obj->BookingDate = $ex->BookingDate ?? "";
             $obj->BookingFrom = $ex->BookingFrom ?? "";
             $obj->BookingTo = $ex->BookingTo ?? "";
+       
+        
+            $obj->checkin_time = $ex->checkin_time ?? "";
+            $obj->checkout_time = $ex->checkout_time ?? "";
+
+
+            $obj->rooms = $ex->rooms->map(function ($room) {
+                
+              $obj['room_title'] = $room->room_title;
+              $obj['RoomNumber'] = $room->RoomNumber;
+              $obj['RoomRent'] = $room->RoomCharges;
+              return $obj;
+            });
+
+            $obj->roomnumber =$ex->rooms[0]->RoomNumber;
+            $obj->roomscharges =$ex->rooms[0]->RoomCharges;
+            
+           
             $obj->net_total = $ex->invoice->net_total ?? "";
             //$obj->payment_amount = $ex->invoice->payment_amount ?? "";
 
