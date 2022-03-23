@@ -1186,21 +1186,23 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             })
     }
 
-    $scope.GetguestDetails = function() {
-        $scope.ajaxGet('reports_get_guest_detail', {}, true)
-            .then(function(response) {
+    // $scope.GetguestDetails = function() {
+    //     debugger;
+    //     $scope.ajaxGet('reports_get_guest_detail', {}, true)
+    //         .then(function(response) {
                
-                //OutOut print in Browser Conlsole window copy parameters name  and Bind With  you
-               //like this // $scope.totalRecords = response.totalRecords;
+    //             //OutOut print in Browser Conlsole window copy parameters name  and Bind With  you
+    //            //like this // $scope.totalRecords = response.totalRecords;
                 
-                console.log(response);
-            })
-            .catch(function(e) {
-                console.log(e);
-            })
-    }
+    //             console.log(response);
+    //         })
+    //         .catch(function(e) {
+    //             console.log(e);
+    //         })
+    // }
 
     $scope.GetCheckOutList = function() {
+        debugger;
         $scope.ajaxGet('reports_get_checkout_list', {}, true)
             .then(function(response) {
                
@@ -1218,9 +1220,10 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     
 
     $scope.GetGuestDetails = function() {
-        $scope.ajaxGet('get_guest_detail', {}, true)
+        debugger;
+        $scope.ajaxGet('reports_get_guest_detail', {}, true)
             .then(function(response) {
-               
+               alert($scope.response.Data.data);
                 //OutOut print in Browser Conlsole window copy parameters name  and Bind With  your parameters 
                //like this // $scope.totalRecords = response.totalRecords;
                
@@ -1230,6 +1233,9 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                 console.log(e);
             })
     }
+
+
+    
 
 
     $scope.GetCheckOutList = function() {

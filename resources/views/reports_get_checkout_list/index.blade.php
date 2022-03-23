@@ -19,7 +19,7 @@
                         <h4 class="card-title">Get CheckOut List</h4>
                     </div>
 
-                    <table class="table">
+                    <table class="table" >  
                         <thead>
                           <tr>
                             <th scope="col">#</th>

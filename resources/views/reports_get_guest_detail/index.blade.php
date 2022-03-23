@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    <!-- <script src="~/app/reports-controller.js"></script> -->
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
-    <div class="content">
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
 
         @include('reports_get_guest_detail.header')
@@ -18,7 +19,7 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Get Guest Details</h4>
                     </div>
-                    <table class="table">
+                    <table class="table" ng-init="GetGuestDetails()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
