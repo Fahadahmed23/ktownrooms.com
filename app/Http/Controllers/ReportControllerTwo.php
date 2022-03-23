@@ -10,7 +10,9 @@ use App\Models\VoucherDetail;
 use App\Models\VoucherMaster;
 use App\Models\UserHotel;
 
-
+use App\Models\HotelCategories;
+use App\Models\HotelCategory;
+use App\Models\HotelCobranding;
 
 // use Illuminate\Support\Facades\Storage;
 
@@ -2869,10 +2871,11 @@ class ReportControllerTwo extends Controller
     }
 
     $get_hotel_services_arr = array();
-   
 
-    $date_from = "2022-03-18";
-    $date_to = "2022-03-22";
+    
+
+    $date_from = "2022-03-22";
+    $date_to = "2022-03-23";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -2902,10 +2905,7 @@ class ReportControllerTwo extends Controller
         ->orderBy('created_at', 'desc')->get();
 
 
-      echo "<pre>";
-      var_dump($bookings);
-      echo "</pre>";
-      die;
+      
 
       // Bookings Mapping
       if(!empty($bookings)){
@@ -2914,12 +2914,41 @@ class ReportControllerTwo extends Controller
         $count = $bookings->count();
         if($count > 0) {
 
+        
           $bookings_map = $bookings->map(function ($ex) {
 
             $obj = new stdClass();
             $obj->id = $ex->id;
             $obj->booking_no = $ex->booking_no ?? "";
             $obj->booking_date = $ex->BookingDate ?? "";
+
+
+          
+            $customer_id = $ex->customer->id;
+            $customer_bookings = Customer::with(['bookings'])->where('id','=',$customer_id)->first();
+            $customer_bookings_hotel_id = $customer_bookings->bookings[0]->hotel_id;
+            
+
+            $hotel_cateogry = HotelCategory::with(['hotelCategories'])->where('hotel_id','=',$customer_bookings_hotel_id)
+              ->orderBy('created_at', 'desc')->limit(1)->get();
+
+            
+        
+            if($customer_bookings_hotel_id == $ex->hotel_id){
+              $obj->hotel_type = 'Same Hotel';
+            }
+            elseif(count($hotel_cateogry)==0) {
+              $obj->hotel_type = 'Not Found';
+            }
+            elseif(count($hotel_cateogry) >0 ) {
+
+                $obj->hotel_type = $hotel_cateogry[0]->hotelCategories['name'];
+            }
+            else {
+              $obj->hotel_type = 'Not Found';
+            }
+            
+          
            
             $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
             $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
@@ -2945,20 +2974,121 @@ class ReportControllerTwo extends Controller
 
             $obj->roomnumber =$ex->rooms[0]->RoomNumber;
             $obj->roomscharges =$ex->rooms[0]->RoomCharges;
+
+            $obj->nights = $ex->invoice->nights ?? "";
+
+            if(count($ex->services) > 0){
+
+              $obj->services = $ex->services->map(function($service) {
+                
+                $obj['department_name'] = $service->room_title;
+                $obj['service_name'] = $service->service_name;
+                $obj['service_charges'] = $service->service_charges;
+                $obj['amount'] = $service->amount;
+                return $obj;
+              });
+
+              $services_amount_extra = 0;
+              foreach($obj->services as $single_service){
+                $services_amount_extra += $single_service['amount'];
+              }
+
+              $obj->services_amount = $services_amount_extra;
+              unset($obj->services);
+              
+            }
+            else {
+              $obj->services_amount = 0;
+            }
+
+            if(count($ex->booking_miscellaneous_amount) > 0){
+
+              $obj->booking_miscellaneous_amount = $ex->booking_miscellaneous_amount->map(function($booking_miscellaneous_amount) {
+                
+                if($booking_miscellaneous_amount->status){
+
+                  $obj['name'] = $booking_miscellaneous_amount->name;
+                  $obj['amount'] = $booking_miscellaneous_amount->amount;
+                  return $obj;
+                }
+                
+              });
+
+              $miscellaneous_amount_extra = 0;
+              foreach($obj->booking_miscellaneous_amount as $single_miscellaneous){
+
+                $miscellaneous_amount_extra += $single_miscellaneous['amount'];
+
+              }
+
+              $obj->miscellaneous_amount = $miscellaneous_amount_extra;
+              unset($obj->booking_miscellaneous_amount);
+              
+            }
+            else {
+              $obj->miscellaneous_amount = 0;
+            }
+
+            if(count($ex->invoice_details) > 0) {
+
+              $ex->invoice_details = $ex->invoice_details->map(function($invoice_detail) {
+                
+              
+                $obj['id'] = $invoice_detail->id;
+                $obj['title'] = $invoice_detail->title;
+                $obj['type'] = $invoice_detail->type;
+                $obj['amount'] = $invoice_detail->amount;
+                return $obj;
+              
+              });
+
+              $early_checkin_amount = 0;
+              $late_checkout_amount = 0;
+
+              foreach($ex->invoice_details as $single_invoice_detail){
+
+                if($single_invoice_detail['title']=='Early CheckIn'){
+                    $early_checkin_amount += $single_invoice_detail['amount'];
+                }
+                if($single_invoice_detail['title']=='Late Checkout'){
+                  $late_checkout_amount += $single_invoice_detail['amount'];
+                }
+
+              }
+
+              $obj->early_checkin = $early_checkin_amount;
+              $obj->late_checkout = $late_checkout_amount;
+              unset($ex->invoice_details);
+              
             
-           
-            $obj->net_total = $ex->invoice->net_total ?? "";
-            //$obj->payment_amount = $ex->invoice->payment_amount ?? "";
+            }
+            else {
+              $obj->early_checkin = 0;
+              $obj->late_checkout = 0;
+              
+            }
+
+            $obj->total_other_amenities = $obj->services_amount+$obj->miscellaneous_amount;
+            $obj->total_room_revenue = ($obj->roomscharges*$obj->nights)+$obj->early_checkin+$obj->late_checkout;
+            
+            $obj->total_amount = ($obj->roomscharges*$obj->nights) + $obj->total_other_amenities;
+            
+            $obj->total_amount_received = $ex->invoice->payment_amount ?? "";
+
+            $obj->amount_balance = $obj->total_amount-$obj->total_amount_received;
 
             $obj->user_name = $ex->created_by_user->name ?? "";
             $obj->status = $ex->status ?? "";
-            return $obj;
-          
+
+            if($obj->hotel_type == 'Partner Hotels'){
+              return $obj;
+            }
+
+          })->reject(function ($aa) {
+            return $aa == null;
           });
 
           $bookings_exec = $bookings_map;
-          //$bookings_exec = [];
-
         }
         else {
           $bookings_exec = [];
@@ -2978,27 +3108,17 @@ class ReportControllerTwo extends Controller
     }
 
 
-  
-    $whole_response = array(
-      $get_hotel_services_arr
-    );
-
-
-    /*
-    $whole_response = response()->json([
-      'Opening Balance' => $user_opening_balance,
-      'bookings' => $bookings_exec,
-      'Expense Details' => $vouchers_exec,
-      'Closing Balance' => $closing_balance
-    ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-
-    **/
-    
- 
     echo "<pre>";
-    var_dump($whole_response);
+    var_dump($get_hotel_services_arr);
     echo "</pre>";
-    die();
+    die;
+
+
+
+  
+
+
+  
 
   }
 
