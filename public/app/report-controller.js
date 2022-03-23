@@ -1221,8 +1221,9 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
 
     $scope.GetGuestDetails = function() {
         debugger;
-        $scope.ajaxGet('reports_get_guest_detail', {}, true)
+        $scope.ajaxGet('get_guest_detail', {}, true)
             .then(function(response) {
+                debugger;
                alert($scope.response.Data.data);
                 //OutOut print in Browser Conlsole window copy parameters name  and Bind With  your parameters 
                //like this // $scope.totalRecords = response.totalRecords;
