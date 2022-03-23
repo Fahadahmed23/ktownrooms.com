@@ -443,6 +443,12 @@ Route::get('reports_new_main', 'ReportControllerTwo@index_reports_new_main')->mi
 Route::get('reports_get_guest_detail', 'ReportControllerTwo@index_reports_get_guest_detail')->middleware('permission:can-view-partner');
 Route::get('reports_get_checkout_list', 'ReportControllerTwo@index_reports_get_checkout_list')->middleware('permission:can-view-partner');
 
+Route::get('reports_get_btc_pending_list', 'ReportControllerTwo@index_reports_get_btc_pending_list')->middleware('permission:can-view-partner');
+Route::get('reports_get_invoice_search', 'ReportControllerTwo@index_reports_get_invoice_search')->middleware('permission:can-view-partner');
+Route::get('reports_get_expenses_report', 'ReportControllerTwo@index_reports_get_expenses_report')->middleware('permission:can-view-partner');
+Route::get('reports_get_daily_sales_report', 'ReportControllerTwo@index_reports_get_daily_sales_report')->middleware('permission:can-view-partner');
+Route::get('reports_get_sales_summary_report', 'ReportControllerTwo@index_reports_get_sales_summary_report')->middleware('permission:can-view-partner');
+
 //Reports View Controller - Arman Ahmad - 19-March-2022 - End
 Route::get('reports_new', 'ReportControllerTwo@index');
 
