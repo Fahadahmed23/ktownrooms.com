@@ -3576,7 +3576,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
 
-    // Misc Amount Start - 22-Dec-21
+    // Misc Amount Start - 14-March-2022
 
     $scope.showmiscamount = function(b) {
         // $scope.paymentCleared = false;
@@ -3599,7 +3599,45 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
 
-    // Misc Amount End - 22-Dec-21
+    $scope.getmisAcountlist = function() {
+
+        $.get('getBookingsMiscellaneousAmount').done(function(response) {
+            $scope.misAmountList = response.result.booking_miscellaneous_amounts;
+        })
+
+    }
+
+
+
+    $scope.savemislinsonPayment = function() {
+
+        console.log($scope.Addmislisoin.Amount);
+        console.log($scope.Addmislisoin.Name);
+
+        
+        $scope.ajaxPost('saveBookingsMiscellaneousAmount', {
+            booking_id: $scope.fBooking.id,
+            amount: $scope.Addmislisoin.Amount,
+            name:$scope.Addmislisoin.Name,
+            is_complementary:$scope.Addmislisoin.is_complementary,
+            status:$scope.Addmislisoin.status
+        }, false).then(function(response) {
+            if (response.success) {
+
+                $('#addmiscamount').modal('hide');
+                // if ($scope.formType == 'view' && !$scope.user.is_frontdesk) {
+                //     $scope.showBookDetailRBox($scope.fBooking.id);
+                // }
+            }
+        });
+        
+    }
+
+
+
+
+
+    // Misc Amount End - 14-March-2022
 
 
     $scope.showStagingPay = function(b) {

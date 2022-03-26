@@ -437,7 +437,25 @@ Route::post('shareReportConfig', 'ReportController@share_report_config')->middle
 * Reporting work 
 */
 
-Route::get('reports_new', 'ReportControllerTwo@index');
+//Reports View Controller - Arman Ahmad - 19-March-2022 - Start
+Route::get('reports_new_main', 'ReportControllerTwo@index_reports_new_main')->middleware('permission:can-view-partner');
+Route::get('reports_get_guest_detail', 'ReportControllerTwo@index_reports_get_guest_detail')->middleware('permission:can-view-partner');
+Route::get('reports_get_checkout_list', 'ReportControllerTwo@index_reports_get_checkout_list')->middleware('permission:can-view-partner');
+
+Route::get('reports_get_btc_pending_list', 'ReportControllerTwo@index_reports_get_btc_pending_list');//->middleware('permission:can-view-partner');
+Route::get('reports_get_invoice_search', 'ReportControllerTwo@index_reports_get_invoice_search'); //->middleware('permission:can-view-partner');
+Route::get('reports_get_expenses_report', 'ReportControllerTwo@index_reports_get_expenses_report');   //->middleware('permission:can-view-partner');
+Route::get('reports_get_daily_sales_report', 'ReportControllerTwo@index_reports_get_daily_sales_report'); //->middleware('permission:can-view-partner');
+Route::get('reports_get_sales_summary_report', 'ReportControllerTwo@index_reports_get_sales_summary_report'); //->middleware('permission:can-view-partner');
+
+//Reports View Controller - Arman Ahmad - 19-March-2022 - End
+
+
+// Filter : Hotels connected with user
+Route::get('get_user_hotels', 'ReportControllerTwo@get_user_hotels');
+
+
+//Route::get('reports_new', 'ReportControllerTwo@index');
 
 Route::get('get_guest_detail', 'ReportControllerTwo@get_guest_detail');
 Route::get('get_checkout_list', 'ReportControllerTwo@get_checkout_list');

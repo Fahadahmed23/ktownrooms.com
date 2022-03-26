@@ -64,16 +64,121 @@ class ReportControllerTwo extends Controller
     $this->middleware('auth');
   }
 
+  // Reports index views Arman Ahmad 19-March-2022 - Start
+  public function index_reports_new_main()
+  {
+  \Session::forget('breadcrumb');
+  return view('reports_new_main.index');
+  }
+
+  public function index_reports_get_guest_detail()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_get_guest_detail.index');
+  }
+
+  public function index_reports_get_checkout_list()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_get_checkout_list.index');
+  }
+
+
+  public function index_reports_get_btc_pending_list()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_get_btc_pending_list.index');
+  }
+  public function index_reports_get_invoice_search()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_get_invoice_search.index');
+  }
+  public function index_reports_get_expenses_report()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_get_expenses_report.index');
+  }
+  public function index_reports_get_daily_sales_report()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_get_daily_sales_report.index');
+  }
+  public function index_reports_get_sales_summary_report()
+  {
+    \Session::forget('breadcrumb');
+    return view('reports_get_sales_summary_report.index');
+  }
+
+
+
+
+
+
+
+// Reports index views Arman Ahmad 19-March-2022 - End
+
+
+
   public function index()
   {
     \Session::forget('breadcrumb');
     return view('reports_new.index');
   }
+
+  /*
+  * Filter
+  * Hotels connected with user
+  */
+  public function get_user_hotels(){
+
+
+    $user = User::find(Auth::user()->id);
+    $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
+
+    
+    
+    //$hotel_id = $hotels[0]->id;
+    //$hotelName = $hotels[0]->HotelName;
+    //if(!empty($request['hotel_id'])) {
+    //    $hotel_id = $request['hotel_id'];
+    //    $hotelName = Hotel::where('id',$request['hotel_id'])->pluck('HotelName');
+    //} 
+
+      
+      $user_hotels = array();
+
+      if(count($hotels) > 0){
+
+        foreach($hotels as $single_user_hotel){
+
+          $user_inner_hotel = array();
+            //var_dump($single_user_hotel);
+            
+          $hotel_id = $single_user_hotel->id;
+          $hotelName = $single_user_hotel->HotelName;
+
+          $user_inner_hotel['Hotel Id'] =  $hotel_id;
+          $user_inner_hotel['Hotel Name'] =  $hotelName;
+
+
+          $user_hotels[] =$user_inner_hotel;
+
+        }
+
+      }
+    
+    return response()->json([
+      'get_user_hotels'=>$user_hotels,
+
+    ]);
+
+  }
   
 
   public function get_guest_detail(Request $request) {
 
-    date_default_timezone_set("Asia/Karachi");
+      date_default_timezone_set("Asia/Karachi");
 
       $user = User::find(Auth::user()->id);
       $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
@@ -680,11 +785,15 @@ class ReportControllerTwo extends Controller
       $late_checkout_amount = 0;
 
     }
+
+
+
+    return response()->json([
+      'success' => true,
+      'message' => $get_cash_flow_arr,
+      'msgtype' => 'success',
+    ]);
      
- 
-     echo "<pre>";
-     var_dump($get_cash_flow_arr);
-     echo "</pre>";
 
   }
 
@@ -1332,17 +1441,11 @@ class ReportControllerTwo extends Controller
     }
 
 
-    /*
-    $get_average_daily_rate_report = array(
-      $get_cash_flow_arr
-    );
-    **/
-
-    echo "<pre>";
-    var_dump( $get_cash_flow_arr);
-    echo "</pre>";
-    die;
-
+    return response()->json([
+      'success' => true,
+      'message' => $get_cash_flow_arr,
+      'msgtype' => 'success',
+    ]);
 
   }
 
@@ -1490,11 +1593,13 @@ class ReportControllerTwo extends Controller
 
   
     }
-    
 
-    echo "<pre>";
-    var_dump($get_cash_flow_arr);
-    echo "</pre>";
+    return response()->json([
+      'success' => true,
+      'message' => $bookings_exec,
+      'msgtype' => 'success',
+    ]);
+    
 
   }
   
@@ -1727,14 +1832,11 @@ class ReportControllerTwo extends Controller
   
     }
 
-    $whole_response = array(
-      $get_cash_flow_arr
-    );
-
-    echo "<pre>";
-    var_dump($get_cash_flow_arr);
-    echo "</pre>";
-    die();
+    return response()->json([
+      'success' => true,
+      'message' => $get_cash_flow_arr,
+      'msgtype' => 'success',
+    ]);
 
   }
 
@@ -2094,15 +2196,14 @@ class ReportControllerTwo extends Controller
     
     }
 
-  
-    $get_revenue_par_report = array(
-      $get_cash_flow_arr
-    );
 
 
-    echo "<pre>";
-    var_dump($get_cash_flow_arr);
-    echo "</pre>";
+    return response()->json([
+      'success' => true,
+      'message' => $get_cash_flow_arr,
+      'msgtype' => 'success',
+    ]);
+
 
   }
 
@@ -2195,7 +2296,8 @@ class ReportControllerTwo extends Controller
         return response()->json([
           'success' => true,
           'totalRecords' => $count,
-          'bookings' => $bookings_map,
+          'message' => $bookings_map,
+          'msgtype' => 'success',
           ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
       }
@@ -2551,18 +2653,14 @@ class ReportControllerTwo extends Controller
 
     }
 
-    $whole_response = array(
-      $get_expenses_report_arr
-    );
 
+    return response()->json([
+      'success' => true,
+      'message' => $get_expenses_report_arr,
+      'msgtype' => 'success',
+    ]);
 
-   
-
-    echo "<pre>";
-    var_dump($whole_response);
-    echo "</pre>";
-    die();
-
+    
   }
 
 
@@ -3104,21 +3202,14 @@ class ReportControllerTwo extends Controller
         'bookings' => $bookings_exec,
       );
 
-  
     }
 
 
-    echo "<pre>";
-    var_dump($get_hotel_services_arr);
-    echo "</pre>";
-    die;
-
-
-
-  
-
-
-  
+    return response()->json([
+      'success' => true,
+      'message' => $get_hotel_services_arr,
+      'msgtype' => 'success',
+    ]);
 
   }
 
