@@ -2208,7 +2208,7 @@ class ReportControllerTwo extends Controller
 
       $get_cash_flow_arr[] = array(
         'Date' => $loop_date,
-        'Hotel Name' => $hotelName,
+        'HotelName' => $hotelName,
         'Bookings' => $bookings_exec
       );
 

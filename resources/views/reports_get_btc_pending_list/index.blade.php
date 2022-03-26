@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    <!-- <script = src="app/reports-controller.js"></script> -->
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
-    <div class="content">
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
 
         @include('reports_get_btc_pending_list.header')
@@ -18,7 +19,8 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">BTC Pending</h4>
                     </div>
-                    <table class="table">
+                    [[btcpendinglist | json]]
+                    <table class="table"ng-init="GetBtcPendingList()"> 
                         <thead>
                           <tr>
                             <th scope="col">#</th>
@@ -28,24 +30,18 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                          <tr ng-repeat="c in btcpendinglist" class="unread">
+                         
                             <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <td>[[c.Date]]</td>
+                            <td>[[c.HotelName]]</td>
+                            <!-- <td ng-repeat="d in c.bookings">
+                                 + ,
+                            </td> -->
+
+                           
                           </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                          </tr>
+                         
                         </tbody>
                       </table>
 

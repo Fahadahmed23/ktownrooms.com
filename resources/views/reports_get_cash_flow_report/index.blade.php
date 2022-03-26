@@ -12,14 +12,14 @@
     <div class="content-wrapper">
 
         @include('reports_get_cash_flow_report.header')
-
+   [[cashflow | json]]
         <div class="content">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Cash Flow</h4>
                     </div>
-                    <table class="table" ng-init="GetGuestDetails()">
+                    <table class="table" ng-init="GetCashFlowReport()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
@@ -29,24 +29,13 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                          <tr ng-repeat='cf in cashflow' class="unread">
                             <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
+                            <td>[[cf.Date]]</td>
+                            <td></td>
                             <td>@mdo</td>
                           </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                          </tr>
+                         
                         </tbody>
                       </table>
 
