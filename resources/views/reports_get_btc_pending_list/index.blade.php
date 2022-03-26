@@ -23,7 +23,7 @@
                     <table class="table"ng-init="GetBtcPendingList()"> 
                         <thead>
                           <tr>
-                            <th scope="col">#</th>
+                            <th scope="col">[[$index]]</th>
                             <th scope="col">First</th>
                             <th scope="col">Last</th>
                             <th scope="col">Handle</th>
@@ -32,7 +32,7 @@
                         <tbody>
                           <tr ng-repeat="c in btcpendinglist" class="unread">
                          
-                            <th scope="row">1</th>
+                            <th scope="row">[[$index +1]]</th>
                             <td>[[c.Date]]</td>
                             <td>[[c.HotelName]]</td>
                             <!-- <td ng-repeat="d in c.bookings">
