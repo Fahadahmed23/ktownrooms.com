@@ -3619,12 +3619,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 
 
-
-
-
-
-
-
     $scope.savemislinsonPayment = function() {
         console.log($scope.Addmislisoin.Amount);
 

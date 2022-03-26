@@ -10,13 +10,13 @@
     <div class="content">
     <div class="content-wrapper">
 
-        @include('reports_get_guest_detail.header')
+        @include('reports_get_sales_summary_report.header')
 
         <div class="content">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
-                        <h4 class="card-title">Get Guest Details</h4>
+                        <h4 class="card-title">Sales Summary</h4>
                     </div>
                     <table class="table">
                         <thead>
