@@ -105,7 +105,7 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
    <div class="content-wrapper">
 
       <!-- Page header -->
-      @include('reports_get_guest_detail.header')
+      @include('reports_get_sales_summary_report.header')
       <!--/page header-->
       <!-- Content area -->
       <div class="content">
@@ -162,7 +162,7 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
                                  </div>
                               </div>
                               <div class="card-body">
-                                 @include('reports_get_guest_detail.edit-criteria-tab-modal')
+                                 @include('reports_get_sales_summary_report.edit-criteria-tab-modal')
                                  <!-- <p ng-if="searchGroups[0][0].column == null">No Criteria selected</p>
                            <p ng-if="searchGroups[0][0].column != null">This report will display following search criteria</p>
                            <ul ng-if="searchGroups[0][0].column != null">
@@ -205,7 +205,7 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
                                  </div>
                               </div>
                               <div class="card-body">
-                                 @include('reports_get_guest_detail.edit-tab-columns-modal')
+                                 @include('reports_get_sales_summary_report.edit-tab-columns-modal')
                                  <!-- <p>This report will display the following columns</p>
                                  <ul>
                                     <li ng-cloak ng-repeat="col in selectedColumns">
@@ -252,7 +252,7 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
                                  </div>
                               </div>
                               <div class="card-body">
-                                 @include('reports_get_guest_detail.edit-tab-grouped-columns-modal')
+                                 @include('reports_get_sales_summary_report.edit-tab-grouped-columns-modal')
                                  <!-- <p>This report will group the following columns</p>
                                  <ul>
                                     <li ng-cloak ng-repeat="col in groupedColumns">
@@ -412,9 +412,9 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
 
 
 
-         @include('reports_get_guest_detail.edit-columns-modal')
-         @include('reports_get_guest_detail.edit-grouped-columns-modal')
-         @include('reports_get_guest_detail.edit-aggregate-modal')
+         @include('reports_get_sales_summary_report.edit-columns-modal')
+         @include('reports_get_sales_summary_report.edit-grouped-columns-modal')
+         @include('reports_get_sales_summary_report.edit-aggregate-modal')
 
 
          <div id="SaveReport" class="modal fade" tabindex="-1">

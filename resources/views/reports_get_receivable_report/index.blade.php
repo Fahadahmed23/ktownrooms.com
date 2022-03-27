@@ -1,22 +1,54 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    <!-- <script src="~/app/reports-controller.js"></script> -->
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
-<div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'>
+{{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
 
-        @include('reports.header')
+        @include('reports_get_receivable_report.header')
 
         <div class="content">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
-                        <h6 class="card-title">All Reports</h6>
+                        <h4 class="card-title">Receivables</h4>
                     </div>
+                    <table class="table" ng-init="GetGuestDetails()">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Handle</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">2</th>
+                            <td ng-model="response.totalRecords">Jacob</td>
+                            <td>Thornton</td>
+                            <td>@fat</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">3</th>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>@twitter</td>
+                          </tr>
+                        </tbody>
+                      </table>
 
                     <div class="card-body">
                         {{-- [[modules]] --}}
@@ -41,10 +73,10 @@
                             <div style="width: 100%;" class="tab-content">
                                 <div ng-cloak ng-repeat="module in modules" ng-class="module.name == (currentModule ? currentModule : 'Bookings') ? ['show','active'] : '' " class="tab-pane fade" id="[[module.name]]">
                                     <div class="row" >
-                                        
+
                                         {{-- [[module.reports.name]] --}}
                                         <div ng-cloak ng-repeat="report in module.reports" class="col-md-4" ng-if="report.name">
-                                            <div class="card" > 
+                                            <div class="card" >
                                                 <div class="card-header header-elements-inline">
                                                     <h5 class="card-title sortable " ng-click="loadDynamicReport(report.report)" style="cursor: pointer">
                                                         <a data-popup="tooltip" data-original-title="[[report.name]]" data-trigger="hover" class="current-div1">
@@ -94,7 +126,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="card-body">
-                                                    
+
                                                     <a >
                                                         <p>[[report.description]]</p>
                                                     </a>
@@ -143,21 +175,21 @@
                        {{-- [[getModules]] --}}
                         <div class="col-lg-12" ng-if="!shareReportForm.edit">
                             <label class="col-form-label">Select Module <span class="required">*</span></label>
-                            <md-select class="form-control" ng-model="shareReportForm.module_id" placeholder="Select your Module"> 
+                            <md-select class="form-control" ng-model="shareReportForm.module_id" placeholder="Select your Module">
                                 <md-option ng-repeat="module in modules" value="[[module.id]]">[[module.name]]</md-option>
                             </md-select>
-                        </div> 
+                        </div>
                         <div class="col-lg-12" ng-if="!shareReportForm.edit">
                             <label class="col-form-label">Share with all <span class="required">*</span></label>
-                            <md-switch class="" ng-model="shareReportForm.shareWith"> 
+                            <md-switch class="" ng-model="shareReportForm.shareWith">
                             </md-switch>
-                        </div> 
+                        </div>
                         <div class="col-lg-12" ng-hide="shareReportForm.shareWith" ng-if="!shareReportForm.edit">
                             <label class="col-form-label">Select Role <span class="required">*</span></label>
-                            <md-select class="form-control" multiple ng-model="shareReportForm.role_ids" placeholder="Select your Role"> 
+                            <md-select class="form-control" multiple ng-model="shareReportForm.role_ids" placeholder="Select your Role">
                                 <md-option ng-repeat="role in roles" value="[[role.id]]">[[role.name]]</md-option>
                             </md-select>
-                        </div> 
+                        </div>
                     </div>
 
                  </div>
@@ -186,10 +218,10 @@
                        {{-- [[getModules]] --}}
                         <div class="col-lg-12">
                             <label class="col-form-label">Select Module <span class="required">*</span></label>
-                            <md-select class="form-control" ng-model="moveReportForm.module_id" placeholder="Select your Module"> 
+                            <md-select class="form-control" ng-model="moveReportForm.module_id" placeholder="Select your Module">
                                 <md-option ng-repeat="module in modules" value="[[module.id]]">[[module.name]]</md-option>
                             </md-select>
-                        </div> 
+                        </div>
                     </div>
 
                  </div>

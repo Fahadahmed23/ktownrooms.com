@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <!-- <script = src="app/reports-controller.js"></script> -->
+    <!-- <script src="~/app/reports-controller.js"></script> -->
     <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
@@ -11,35 +11,29 @@
     <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
 
-        @include('reports_get_btc_pending_list.header')
-
+        @include('reports_get_cash_flow_report.header')
+   [[cashflow | json]]
         <div class="content">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
-                        <h4 class="card-title">BTC Pending</h4>
+                        <h4 class="card-title">Cash Flow</h4>
                     </div>
-                    [[btcpendinglist | json]]
-                    <table class="table"ng-init="GetBtcPendingList()"> 
+                    <table class="table" ng-init="GetCashFlowReport()">
                         <thead>
                           <tr>
-                            <th scope="col">[[$index]]</th>
+                            <th scope="col">#</th>
                             <th scope="col">First</th>
                             <th scope="col">Last</th>
                             <th scope="col">Handle</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr ng-repeat="c in btcpendinglist" class="unread">
-                         
-                            <th scope="row">[[$index +1]]</th>
-                            <td>[[c.Date]]</td>
-                            <td>[[c.HotelName]]</td>
-                            <!-- <td ng-repeat="d in c.bookings">
-                                 + ,
-                            </td> -->
-
-                           
+                          <tr ng-repeat='cf in cashflow' class="unread">
+                            <th scope="row">1</th>
+                            <td>[[cf.Date]]</td>
+                            <td></td>
+                            <td>@mdo</td>
                           </tr>
                          
                         </tbody>

@@ -1,24 +1,26 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    <!-- <script = src="app/reports-controller.js"></script> -->
+
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
-    <div class="content">
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
-
-        @include('reports_get_guest_detail.header')
+[[getexpenses|json_last_error_msg]]
+        @include('reports_get_daily_sales_report.header')
 
         <div class="content">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
-                        <h4 class="card-title">Get Guest Details</h4>
+                        <h4 class="card-title">Daily Sales</h4>
                     </div>
-                    <table class="table">
+                    <table class="table" ng-init="GetDailySalesReport()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
@@ -28,7 +30,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                          <tr ng-repeat="c in getexpenses">
                             <th scope="row">1</th>
                             <td>Mark</td>
                             <td>Otto</td>

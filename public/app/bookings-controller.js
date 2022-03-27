@@ -50,6 +50,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.hotel = {};
 
+
+
     // extend checkout
     $scope.extend = 1;
 
@@ -110,6 +112,14 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         { Name: 'action', Alias: 'Action', isSort: false, isShow: true },
     ]
 
+
+
+    $scope.Addmislisoin={
+
+        Id:0,
+        Name:null,
+        Amount: null
+    }
 
     // sorting
     $scope.sorting_type = "desc";
@@ -3603,7 +3613,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
         $.get('getBookingsMiscellaneousAmount').done(function(response) {
             $scope.misAmountList = response.result.booking_miscellaneous_amounts;
-        })
+            })
 
     }
 
@@ -3736,6 +3746,11 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             }
         })
     }
+// $scope.name=null;
+//     $scope.savepayment = function() {
+//         debugger;
+//         alert($scope.name);
+//     }
 
     $scope.bookingReceiptRedirect = function(booking_id) {
         window.open('bookings/receipt/' + booking_id);
@@ -3879,7 +3894,13 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         return true;
     }
 
+
+
+
+
+
     $scope.savePayment = function() {
+        debugger;
         if ($scope.formType != 'view') {
             $scope.myForm.$submitted = true;
 
@@ -4330,5 +4351,4 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 })
 
 // comment kt-new
-// comment kt-new-arman-test
 

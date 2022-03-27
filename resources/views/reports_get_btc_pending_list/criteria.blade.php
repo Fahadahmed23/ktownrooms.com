@@ -162,7 +162,7 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
                                  </div>
                               </div>
                               <div class="card-body">
-                                 @include('reports_get_guest_detail.edit-criteria-tab-modal')
+                                 @include('reports_get_btc_pending_list.edit-criteria-tab-modal')
                                  <!-- <p ng-if="searchGroups[0][0].column == null">No Criteria selected</p>
                            <p ng-if="searchGroups[0][0].column != null">This report will display following search criteria</p>
                            <ul ng-if="searchGroups[0][0].column != null">
@@ -205,7 +205,7 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
                                  </div>
                               </div>
                               <div class="card-body">
-                                 @include('reports_get_guest_detail.edit-tab-columns-modal')
+                                 @include('reports_get_btc_pending_list.edit-tab-columns-modal')
                                  <!-- <p>This report will display the following columns</p>
                                  <ul>
                                     <li ng-cloak ng-repeat="col in selectedColumns">
@@ -412,9 +412,9 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
 
 
 
-         @include('reports_get_guest_detail.edit-columns-modal')
-         @include('reports_get_guest_detail.edit-grouped-columns-modal')
-         @include('reports_get_guest_detail.edit-aggregate-modal')
+         @include('reports_get_btc_pending_list.edit-columns-modal')
+         @include('reports_get_btc_pending_list.edit-grouped-columns-modal')
+         @include('reports_get_btc_pending_list.edit-aggregate-modal')
 
 
          <div id="SaveReport" class="modal fade" tabindex="-1">

@@ -40,23 +40,23 @@
                         <br/>
                         <div class="row">
                             <div class="col-md-3">
-                                <form action="reports_get_guest_detail">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Get Guest Details" />
+                                <form action="reports_get_btc_pending_list">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="BTC Pending List" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="reports_get_cash_flow_report">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Cash Flow Report" />
                                 </form>
                             </div>
                             <div class="col-md-3">
                                 <form action="reports_get_checkout_list">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Get CheckOut List" />
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="CheckOut List Report" />
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_btc_pending_list">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
-                                </form>
-                            </div>
-                            <div class="col-md-3">
-                                <form action="reports_get_invoice_search">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                <form action="reports_get_daily_sales_report">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Daily Sales Report" />
                                 </form>
                             </div>
                         </div>
@@ -65,14 +65,28 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <form action="reports_get_expenses_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Expenses Report" />
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_daily_sales_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                <form action="reports_get_invoice_search">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Invoice Search Report" />
                                 </form>
                             </div>
+                            <div class="col-md-3">
+                                <form action="reports_get_klc_report">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="KLC Report" />
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form action="reports_get_receivable_report">
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Receivable Report" />
+                                </form>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row">
                             <div class="col-md-3">
                                 <form action="reports_get_sales_summary_report">
                                     <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />

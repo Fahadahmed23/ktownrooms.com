@@ -1,27 +1,28 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    <!-- <script = src="app/reports-controller.js"></script> -->
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
-    <div class="content">
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
 
         @include('reports_get_checkout_list.header')
-
-        <div class="content">
+[[checkoutlist|json]]
+        <div class="content" >
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Get CheckOut List</h4>
                     </div>
 
-                    <table class="table" >  
+                    <table class="table" ng-init="GetCheckOutList()" >  
                         <thead>
-                          <tr>
+                          <tr ng-repeat="c in checkoutlist">
                             <th scope="col">#</th>
                             <th scope="col">First</th>
                             <th scope="col">Last</th>
@@ -29,7 +30,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                          <tr ng-repeat="c in checkoutlist ">
                             <th scope="row">1</th>
                             <td>Mark</td>
                             <td>Otto</td>

@@ -320,8 +320,8 @@ class BookingsController extends Controller
             $miscellaneous_amount = new BookingMiscellaneousAmount();  
         }
         $miscellaneous_amount->booking_id = $request->booking_id;
-        $miscellaneous_amount->name = $request->name;
-        $miscellaneous_amount->amount = $request->amount;
+        $miscellaneous_amount->name = $request->Name;
+        $miscellaneous_amount->amount = $request->payment_amount;
         $miscellaneous_amount->is_complementary = $request->is_complementary;
         $miscellaneous_amount->status = $request->status;
         $miscellaneous_amount->save();
