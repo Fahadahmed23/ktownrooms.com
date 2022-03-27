@@ -52,6 +52,8 @@
 <div ng-controller="housekeepingCtrl">
     @include('housekeeping.services')
 </div>
+
+
 <!-- calendar view script -->
 {{-- <script>
 

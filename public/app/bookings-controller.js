@@ -4330,4 +4330,5 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 })
 
 // comment kt-new
+// comment kt-new-arman-test
 
