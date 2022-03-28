@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    {{-- <script = src="app/reports-controller.js"></script> --}}
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content">
     <div class="content-wrapper">
 
@@ -18,33 +20,29 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Sales Summary</h4>
                     </div>
-                    <table class="table">
+                    [[getsummaryreport | json]]
+                    <table class="table" ng-init="getsummaryReport()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Total Rooms</th>
+                            <th scope="col">Today's Occupancy</th>
+                            <th scope="col">Booking Revenue</th>
+                            <th scope="col">Total Revenue</th>
+                            <th scope="col">Occupancy %</th>
+                            <th scope="col">ADR Average Daily Rate</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
+                            <tr ng-repeat="a in getsummaryreport" class="unread">
+                                <th scope="row">[[$index +1]]</th>
+                                <td>[[a.Date]]</td>
+                                <td>[[a.total_rooms]]</td>
+                                <td>[[a.today_occupancy]]</td>
+                                <td>[[a.booking_revenue]]</td>
+                                <td>[[a.total_revenue]]</td>
+                                <td>[[a.occupancy_in_percentage]]</td>
                           </tr>
                         </tbody>
                       </table>

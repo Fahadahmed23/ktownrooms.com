@@ -20,28 +20,43 @@
                         <h4 class="card-title">BTC Pending</h4>
                     </div>
                     [[btcpendinglist | json]]
-                    <table class="table"ng-init="GetBtcPendingList()"> 
+                    <table class="table"ng-init="GetBtcPendingList()">
                         <thead>
                           <tr>
                             <th scope="col">[[$index]]</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Booking No.</th>
+                            <th scope="col">Hotel Name</th>
+                            <th scope="col">Company Name</th>
+                            <th scope="col">Guest Name</th>
+                            <th scope="col">Room No.</th>
+                            <th scope="col">No. of occupants</th>
+                            <th scope="col">Check in Date</th>
+                            <th scope="col">Check out date </th>
+                            <th scope="col">Nights </th>
+                            <th scope="col">TAX </th>
+                            <th scope="col">Room Rate</th>
+                            <th scope="col">Total Amenties Amount</th>
+                            <th scope="col">Amount Paid</th>
+                            <th scope="col">Amount Balance</th>
+                            <th scope="col">BTC Type</th>
+                            <th scope="col">User Name (who booked)</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr ng-repeat="c in btcpendinglist" class="unread">
-                         
                             <th scope="row">[[$index +1]]</th>
                             <td>[[c.Date]]</td>
                             <td>[[c.HotelName]]</td>
-                            <!-- <td ng-repeat="d in c.bookings">
-                                 + ,
-                            </td> -->
+                            <td>[[d.message.Bookings.bookings_exec.booking_no]]</td>
 
-                           
+
+                             {{-- <td ng-repeat="d in c.Bookings">
+                                 [[d.message.Bookings.bookings_exec.booking_no]]
+                            </td> --}}
+
+
                           </tr>
-                         
+
                         </tbody>
                       </table>
 

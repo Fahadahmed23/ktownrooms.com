@@ -89,7 +89,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <form action="reports_get_sales_summary_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
+                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Sale Summary" />
                                 </form>
                             </div>
                             <div class="col-md-3">

@@ -11,7 +11,7 @@
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
     <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
-[[getexpenses|json_last_error_msg]]
+        [[getexpenses | json]]
         @include('reports_get_daily_sales_report.header')
 
         <div class="content">
@@ -31,23 +31,9 @@
                         </thead>
                         <tbody>
                           <tr ng-repeat="c in getexpenses">
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                          </tr>
+                                <th scope="row">[[$index +1]]</th>
+                                <td>[[c.Date]]</td>
+                                <td>[[c.bookings]]</td>
                         </tbody>
                       </table>
 

@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    {{-- <script = src="app/reports-controller.js"></script> --}}
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content">
     <div class="content-wrapper">
 
@@ -18,33 +20,22 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Expenses</h4>
                     </div>
-                    <table class="table">
+                    [[getexpenses | json]]
+                    <table class="table"ng-init="GetExpensesReport()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Expense Details</th>
+                            <th scope="col">Expense Amount</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
+                            <tr ng-repeat="ep in getexpenses" class="unread">
+                            <th scope="row">[[$index +1]]</th>
+                            <td>[[ep.Date]]</td>
+                            <td>[[ep.ExpenseDetails]]</td>
+                            <td>[[ep.TotalExpensesAmount]]</td>
                           </tr>
                         </tbody>
                       </table>

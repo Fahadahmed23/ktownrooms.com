@@ -3,6 +3,7 @@
 @section('scripts')
     <!-- <script src="~/app/reports-controller.js"></script> -->
     <script src="{{ asset_path('app/report-controller.js') }}"></script>
+
 @endsection
 
 @section('content')
@@ -19,33 +20,32 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Receivables</h4>
                     </div>
-                    <table class="table" ng-init="GetGuestDetails()">
+                    [[rec1 | json]]
+                    <table class="table" ng-init="GetReceivableReport()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Room No.</th>
+                            <th scope="col">Booking No.</th>
+                            {{-- <th scope="col">Guest Name</th> --}}
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">Amount Paid</th>
+                            <th scope="col">Out Standing Balance</th>
+                            <th scope="col">UserName</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
+                          <tr ng-repeat="a in rec1" class="unread">
+                            <th scope="row">[[$index +1]]</th>
+                            <td>[[a.Date]]</td>
+                            <td>[[a.totalRecords]]</td>
+                            {{-- <td ng-repeat="d in rec2.bookings">
+                                [[d.bookings.booking_no]]
+                           </td> --}}
+                            <td>[[a.bookings]]</td>
+                            <td>[[a.net_total_revenue]]</td>
+                            <td>[[a.payment_amount_revenue]]</td>
                           </tr>
                         </tbody>
                       </table>

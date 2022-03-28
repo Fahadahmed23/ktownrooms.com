@@ -19,33 +19,24 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">KLC</h4>
                     </div>
-                    <table class="table" ng-init="GetGuestDetails()">
+                    [[getklc | json]]
+                    <table class="table" ng-init="GetKlcReprot()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Guest Name</th>
+                            <th scope="col">CheckIn</th>
+                            <th scope="col">CheckOut</th>
+                            <th scope="col">Room #</th>
+                            <th scope="col">Room Rent</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
+                          <tr ng-repeat="k in getklc" class="unread">
+                                <th scope="row">[[$index +1]]</th>
+                                <td>[[k.Date]]</td>
+                                <td>[[k.bookings]]</td>
                           </tr>
                         </tbody>
                       </table>

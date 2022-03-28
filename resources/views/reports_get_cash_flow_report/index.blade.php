@@ -22,20 +22,28 @@
                     <table class="table" ng-init="GetCashFlowReport()">
                         <thead>
                           <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Sr</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Opening Balance</th>
+                            <th scope="col">Closing Balance</th>
+                            <th scope="col">Cash In</th>
+                            <th scope="col">Bookings</th>
+                            <th scope="col">Cash In Drawer</th>
+                            <th scope="col">Expense Details</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr ng-repeat='cf in cashflow' class="unread">
-                            <th scope="row">1</th>
+                            <th scope="row">[[$index +1]]</th>
                             <td>[[cf.Date]]</td>
-                            <td></td>
-                            <td>@mdo</td>
+                            <td>[[cf.OpeningBalance]]</td>
+                            <td>[[cf.ClosingBalance]]</td>
+                            <td>[[cf.CashIn]]</td>
+                            <td>[[cf.bookings]]</td>
+                            <td>[[cf.CashInDrawer]]</td>
+                            <td>[[cf.ExpenseDetails]]</td>
+
                           </tr>
-                         
                         </tbody>
                       </table>
 
