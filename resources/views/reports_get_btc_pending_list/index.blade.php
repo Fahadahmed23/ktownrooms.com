@@ -35,9 +35,11 @@
                             <th scope="row">[[$index +1]]</th>
                             <td>[[c.Date]]</td>
                             <td>[[c.HotelName]]</td>
-                            <!-- <td ng-repeat="d in c.bookings">
-                                 + ,
-                            </td> -->
+                            
+                           
+                            <td ng-repeat="d in c.Bookings">
+                                <td>[[d.booking_no]]</td>
+                            </td> 
 
                            
                           </tr>
