@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
 @section('scripts')
-    <script = src="app/reports-controller.js"></script>
+    {{-- <script = src="app/reports-controller.js"></script> --}}
+    <script src="{{ asset_path('app/report-controller.js') }}"></script>
 @endsection
 
 @section('content')
 
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
+    <div class="content" ng-controller='reportCtrl'>
     <div class="content">
     <div class="content-wrapper">
 
@@ -18,33 +20,29 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Invoice Search</h4>
                     </div>
-                    <table class="table">
+                    {{-- [[getinvoice | json]] --}}
+                    <table class="table" ng-init="GetInvoiceSearch()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Guest Name</th>
+                            <th scope="col">Hotel Name</th>
+                            <th scope="col">Booking #</th>
+                            <th scope="col">Check-in Date</th>
+                            <th scope="col">Check-out Date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">View Invoice</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
+                          <tr ng-repeat="c in getinvoice">
+                            <th scope="row">[[$index +1]]</th>
+                            <td>[[c.customer_first_name]] [[c.customer_last_name]]</td>
+                            <td>[[c.HotelName]]</td>
+                            <td>[[c.booking_no]]</td>
+                            <td>[[c.checkin_time]]</td>
+                            <td>[[c.checkout_time]]</td>
+                            <td>[[c.status]]</td>
                           </tr>
                         </tbody>
                       </table>

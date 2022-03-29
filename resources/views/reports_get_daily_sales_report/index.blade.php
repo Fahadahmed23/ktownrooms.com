@@ -11,7 +11,7 @@
 {{-- <div class="content" ng-controller='reportsCtrl' ng-init='getSavedReports()'> --}}
     <div class="content" ng-controller='reportCtrl'>
     <div class="content-wrapper">
-[[getexpenses|json_last_error_msg]]
+        {{-- [[getexpenses | json]] --}}
         @include('reports_get_daily_sales_report.header')
 
         <div class="content">
@@ -24,30 +24,66 @@
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Booking No.</th>
+                            <th scope="col">Guest Name</th>
+                            <th scope="col">Room No.</th>
+                            <th scope="col">No. of occupants</th>
+                            <th scope="col">Check in Date</th>
+                            <th scope="col">Check out date </th>
+                            <th scope="col">Room Rent</th>
+                            <th scope="col">Late checkout </th>
+                            <th scope="col">Early checkin </th>
+                            <th scope="col">Misc amount</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">Paid Amount</th>
+                            <th scope="col">Balance Outstanding</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr ng-repeat="c in getexpenses">
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                          </tr>
+                          <tr ng-repeat="d in getexpenses">
+                                <th scope="row">[[$index +1]]</th>
+                                <td>
+                                    [[d.booking_no]]
+                                </td>
+                                <td>
+                                    [[d.customer_first_name]] [[d.customer_last_name]]
+                               </td>
+                               <td>
+                                [[d.RoomNumber]]
+                               </td>
+                               <td>
+                                [[d.no_occupants]]
+                               </td>
+                               <td>
+                                [[d.checkin_time]]
+                               </td>
+                               <td>
+                                [[d.checkout_time]]
+                               </td>
+                               <td>
+                                [[d.roomscharges]]
+                               </td>
+                               <td>
+                                [[d.late_checkout]]
+                               </td>
+                               <td>
+                                [[d.early_checkin]]
+                               </td>
+                               <td>
+                                [[d.miscellaneous_amount]]
+                               </td>
+                               <td>
+                                [[d.net_total]]
+                               </td>
+                               <td>
+                                [[d.payment_amount]]
+                               </td>
+                               <td>
+                                [[d.balance_outstanding]]
+                               </td>
+
+
+                                {{-- <td>[[c.bookings]]</td> --}}
                         </tbody>
                       </table>
 

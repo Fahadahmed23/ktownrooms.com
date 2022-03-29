@@ -3,6 +3,7 @@
 @section('scripts')
     <!-- <script src="~/app/reports-controller.js"></script> -->
     <script src="{{ asset_path('app/report-controller.js') }}"></script>
+
 @endsection
 
 @section('content')
@@ -19,130 +20,38 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">Receivables</h4>
                     </div>
-                    <table class="table" ng-init="GetGuestDetails()">
+                    {{-- [[rec1 | json]] --}}
+                    <table class="table" ng-init="GetReceivableReport()">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Room No.</th>
+                            <th scope="col">Booking No.</th>
+                            <th scope="col">Guest Name</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">Amount Paid</th>
+                            <th scope="col">Out Standing Balance</th>
+                            <th scope="col">UserName</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td ng-model="response.totalRecords">Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
+                          <tr ng-repeat="a in rec1" class="unread">
+                            <th scope="row">[[$index +1]]</th>
+                            <td>[[a.checkin_time]]</td>
+                            <td>[[a.roomNumber]]</td>
+                            <td>[[a.booking_no]]</td>
+                            <td>[[a.customer_first_name]] [[a.customer_last_name]]</td>
+                            <td>[[a.net_total]]</td>
+                            <td>[[a.payment_amount]]</td>
+                            <td>[[a.balance_outstanding]]</td>
+                            <td>[[a.user_name]]</td>
+                            
                           </tr>
                         </tbody>
                       </table>
 
-                    <div class="card-body">
-                        {{-- [[modules]] --}}
-                        <div style="display: inline-flex; width: 100%;" class="justify-content-lg-between">
-                            <ul class="nav nav-pills flex-column mr-lg-3 wmin-lg-250 mb-lg-0">
-
-                                <li ng-cloak ng-repeat="module in modules" class="nav-item">
-                                    <a href="#[[module.name]]" ng-click="activeModule(module.name)" ng-class="{ active: module.name == (currentModule ? currentModule : 'Bookings')} " class="nav-link" data-toggle="tab">
-                                        <i class="icon-file-presentation mr-2"></i>
-                                        [[module.name]]
-                                    </a>
-                                </li>
-                                <li ng-if="myReports.length > 0" class="nav-item">
-                                    <a href="#my-reports" ng-click="activeModule('My Reports')" class="nav-link" data-toggle="tab">
-                                        <i class="icon-file-presentation mr-2"></i>
-                                        My Reports
-                                    </a>
-                                </li>
-
-                            </ul>
-
-                            <div style="width: 100%;" class="tab-content">
-                                <div ng-cloak ng-repeat="module in modules" ng-class="module.name == (currentModule ? currentModule : 'Bookings') ? ['show','active'] : '' " class="tab-pane fade" id="[[module.name]]">
-                                    <div class="row" >
-
-                                        {{-- [[module.reports.name]] --}}
-                                        <div ng-cloak ng-repeat="report in module.reports" class="col-md-4" ng-if="report.name">
-                                            <div class="card" >
-                                                <div class="card-header header-elements-inline">
-                                                    <h5 class="card-title sortable " ng-click="loadDynamicReport(report.report)" style="cursor: pointer">
-                                                        <a data-popup="tooltip" data-original-title="[[report.name]]" data-trigger="hover" class="current-div1">
-                                                            [[report.name]]
-                                                        </a>
-                                                    </h5>
-                                                    <div class="list-icons">
-                                                        <a ng-hide="report.created_by == 0" ng-click="moveReport(report.report)" data-popup="tooltip" data-original-title="Move Report" data-trigger="hover" class="current-div1 list-icons-item mr-2"><i class="icon-move"></i></a>
-                                                        <a ng-hide="report.created_by == 0" ng-click="editSharedReport(report.report)" data-popup="tooltip" data-original-title="Edit Shared Report" data-trigger="hover" class="current-div1 list-icons-item mr-2"><i class="icon-pencil6"></i></a>
-                                                        <a ng-hide="report.created_by == 0" ng-click="deleteSharedReport(report.report)" data-popup="tooltip" data-original-title="Delete Shared Report" data-trigger="hover" class="current-div1 list-icons-item mr-2"><i class="icon-trash"></i></a>
-                                                    </div>
-
-                                                </div>
-                                                <div class="card-body">
-
-                                                    <a>
-                                                        {{-- <a href="criteria?module=[[module.name]]&report=[[report.name]]"></a> --}}
-                                                        <!--<legend class="font-weight-semibold">[[report.name]]</legend>-->
-                                                        <p>[[report.description]]</p>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-
-
-                                </div>
-
-                                <div ng-if="myReports.length > 0" class="tab-pane fade" id="my-reports">
-                                    <div class="row">
-
-                                        <div ng-cloak ng-repeat="report in myReports" class="col-md-6">
-                                            <div class="card"  >
-                                                <div class="card-header header-elements-inline">
-                                                    {{-- <legend class="font-weight-semibold">[[report.name]]</legend> --}}
-                                                    <h5 class="card-title sortable" ng-click="loadConfigAndRunReport(report)" style="cursor: pointer">
-                                                        <a data-popup="tooltip" data-original-title="[[report.name]]" data-trigger="hover" class="current-div1">
-                                                            [[report.name]]
-                                                        </a>
-                                                    </h5>
-                                                    <div class="list-icons">
-                                                        <a ng-click="openShareModal(report)" data-popup="tooltip" data-original-title="Share Report" data-trigger="hover" class="current-div1 list-icons-item mr-2"><i class="icon-share2"></i></a>
-                                                        <a ng-click="editReport(report)" data-popup="tooltip" data-original-title="Edit Report" data-trigger="hover" class="current-div1 list-icons-item mr-2"><i class="icon-pencil6"></i></a>
-                                                        <a ng-click="deleteReport(report)" data-popup="tooltip" data-original-title="Delete Report" data-trigger="hover" class="current-div1 list-icons-item mr-2"><i class="icon-trash"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-
-                                                    <a >
-                                                        <p>[[report.description]]</p>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+             
                 </div>
             </div>
 

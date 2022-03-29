@@ -1169,14 +1169,14 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         // console.log(navLink);
     }
 
-     
+
 
 
     // start my work
     $scope.getNewMainReport = function() {
         $scope.ajaxGet('reports_new_main', {}, true)
             .then(function(response) {
-               
+
                 $scope.totalRecords = response.totalRecords;
                 $scope.bookings = response.bookings;
                 console.log(response);
@@ -1186,37 +1186,20 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             })
     }
 
-   
-
-   
-    
-
-    $scope.GetGuestDetails = function() {
-        debugger;
-       
-        $scope.ajaxGet('get_receivable_report', {  }, true)
-            .then(function(response) {
-                debugger;
-              
-               $scope.objlist = response.message;
-                //OutOut print in Browser Conlsole window copy parameters name  and Bind With  your parameters 
-               //like this // $scope.totalRecords = response.totalRecords;
-               
-                console.log($scope.message);
-            })
-            .catch(function(e) {
-                console.log(e);
-            })
-    }
 
 
-    
+
+
+
+  
+
+
 
 
     $scope.GetCheckOutList = function() {
         $scope.ajaxGet('get_checkout_list', {}, true)
             .then(function(response) {
-               
+
                 $scope.checkoutlist=response.message[0];
                 console.log(response);
             })
@@ -1226,11 +1209,12 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     }
 
 
-    $scope.GetCashFlowReport = function() {
-        $scope.ajaxGet('get_cash_flow_report', {}, true)
+    $scope.GetReceivableReport = function() {
+        $scope.ajaxGet('get_receivable_report', {}, true)
             .then(function(response) {
-               
-               $scope.cashflow=response.message;
+
+               $scope.rec1=response.message;
+            //    $scope.rec2=response.bookings;
                 console.log(response);
             })
             .catch(function(e) {
@@ -1238,11 +1222,30 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             })
     }
 
+    $scope.GetCashFlowReport = function() {
+        $scope.ajaxGet('get_cash_flow_report', {}, true)
+            .then(function(response) {
+
+               $scope.cashflow=response.message;
+
+
+               
+                console.log(response);
+            })
+            .catch(function(e) {
+                console.log(e);
+            })
+    }
+
+    
+
+
     $scope.GetBtcPendingList = function() {
         $scope.ajaxGet('get_btc_pending_list', {}, true)
             .then(function(response) {
-               
+                // debugger;
                $scope.btcpendinglist=response.message;
+            //    $scope.Bookings=response.Bookings.bookings_exec;
                 console.log(response);
             })
             .catch(function(e) {
@@ -1253,7 +1256,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.GetInvoiceSearch = function() {
         $scope.ajaxGet('get_invoice_search', {}, true)
             .then(function(response) {
-               
+
                $scope.getinvoice=response.message;
                 console.log(response);
             })
@@ -1266,8 +1269,8 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.GetExpensesReport = function() {
         $scope.ajaxGet('get_expenses_report', {}, true)
             .then(function(response) {
-               
-               $scope.getexpenses=response.message[0];
+
+               $scope.getexpenses=response.message;
                 console.log(response);
             })
             .catch(function(e) {
@@ -1277,7 +1280,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.GetDailySalesReport = function() {
         $scope.ajaxGet('get_daily_sales_report', {}, true)
             .then(function(response) {
-               
+
                $scope.getexpenses=response.message;
                 console.log(response);
             })
@@ -1289,7 +1292,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.GetKlcReprot = function() {
         $scope.ajaxGet('get_klc_report', {}, true)
             .then(function(response) {
-               
+
                $scope.getklc=response.message;
                 console.log(response);
             })
@@ -1301,7 +1304,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.getsummaryReport = function() {
         $scope.ajaxGet('get_sales_summary_report', {}, true)
             .then(function(response) {
-               
+
                $scope.getsummaryreport=response.message;
                 console.log(response);
             })
@@ -1309,7 +1312,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                 console.log(e);
             })
     }
-    // End 
+    // End
 
 
 });

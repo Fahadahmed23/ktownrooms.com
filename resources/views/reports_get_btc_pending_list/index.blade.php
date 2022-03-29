@@ -19,31 +19,55 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">BTC Pending</h4>
                     </div>
-                    [[btcpendinglist | json]]
-                    <table class="table"ng-init="GetBtcPendingList()"> 
+                    {{-- [[btcpendinglist | json]] --}}
+                    <table class="table"ng-init="GetBtcPendingList()">
                         <thead>
                           <tr>
-                            <th scope="col">[[$index]]</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Hotel Name</th>
+                            <th scope="col">Booking No.</th>
+                            <th scope="col">Company Name</th>
+                            <th scope="col">Guest Name</th>
+                            <th scope="col">Room No.</th>
+                            <th scope="col">No. of occupants</th>
+                            <th scope="col">Check in Date</th>
+                            <th scope="col">Check out date </th>
+                            <th scope="col">Nights </th>
+                            <th scope="col">TAX </th>
+                            <th scope="col">Room Rate</th>
+                            <th scope="col">Total Amenties Amount</th>
+                            <th scope="col">Amount Paid</th>
+                            <th scope="col">Amount Balance</th>
+                            <th scope="col">BTC Type</th>
+                            <th scope="col">User Name (who booked)</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr ng-repeat="c in btcpendinglist" class="unread">
-                         
                             <th scope="row">[[$index +1]]</th>
-                            <td>[[c.Date]]</td>
+                            <td>[[c.BookingFrom]]</td>
                             <td>[[c.HotelName]]</td>
-                            
-                           
-                            <td ng-repeat="d in c.Bookings">
-                                <td>[[d.booking_no]]</td>
-                            </td> 
+                            <td>[[c.booking_no]]</td>
+                            <td>[[c.corporate_client_name]]</td>
+                            <td>[[c.customer_first_name]] [[c.customer_last_name]]</td>
+                            <td>[[c.roomNumber]]</td>
+                            <td>[[c.no_occupants]]</td>
+                            <td>[[c.checkin_time]]</td>
+                            <td>[[c.checkout_time]]</td>
+                            <td>[[c.nights]]</td>
+                            <td>[[c.tax_charges]]</td>
+                            <td>[[c.RoomRent]]</td>
+                            <td>[[c.total_other_amenities]]</td>
+                            <td>[[c.payment_amount]]</td>
+                            <td>[[c.net_total]]</td>
+                            <td>[[c.btc_type]]</td>
+                            <td>[[c.user_name]]</td>
 
-                           
+
+
                           </tr>
-                         
+
                         </tbody>
                       </table>
 
