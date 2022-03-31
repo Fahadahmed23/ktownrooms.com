@@ -177,8 +177,8 @@ class ReportControllerTwo extends Controller
           $hotel_id = $single_user_hotel->id;
           $hotelName = $single_user_hotel->HotelName;
 
-          $user_inner_hotel['Hotel Id'] =  $hotel_id;
-          $user_inner_hotel['Hotel Name'] =  $hotelName;
+          $user_inner_hotel['hotel_id'] =  $hotel_id;
+          $user_inner_hotel['hotel_name'] =  $hotelName;
 
 
           $user_hotels[] =$user_inner_hotel;
@@ -598,8 +598,8 @@ class ReportControllerTwo extends Controller
     //$date_from = $request['date_from'];
     //$date_to = $request['date_to'];
 
-    $date_from = '2022-03-20';
-    $date_to = '2022-03-29';
+    $date_from = '2022-03-28';
+    $date_to = '2022-03-30';
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1238,7 +1238,7 @@ class ReportControllerTwo extends Controller
     $get_cash_flow_arr = array();
 
     $date_from = "2022-03-21";
-    $date_to = "2022-03-29";
+    $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1535,7 +1535,7 @@ class ReportControllerTwo extends Controller
     //$date_to = $request['date_to'];
 
     $date_from = '2022-03-27';
-    $date_to = '2022-03-29';
+    $date_to = '2022-03-30';
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1720,8 +1720,8 @@ class ReportControllerTwo extends Controller
 
     $get_cash_flow_arr = array();
 
-    $date_from = "2022-03-15";
-    $date_to = "2022-03-29";
+    $date_from = "2022-03-28";
+    $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -2343,7 +2343,7 @@ class ReportControllerTwo extends Controller
     date_default_timezone_set("Asia/Karachi");
 
 
-    //$booking_no = 'Test030322773';
+    $booking_no = 'Test030322793';
     //$booking_no = $request->booking_no ?? null;
 
     //$user_cnic = '41304-1502264-9';
@@ -2352,7 +2352,7 @@ class ReportControllerTwo extends Controller
     //$user_passport = 'PK12345';
     //$user_passport = $request->passport ?? null;
 
-    $user_mobile_no = '+923487276089';
+    //$user_mobile_no = '+923487276089';
     //$user_mobile_no = $request->cnic ?? null;
 
 
@@ -2689,8 +2689,8 @@ class ReportControllerTwo extends Controller
 
     $get_expenses_report_arr = array();
 
-    $date_from = "2022-03-20";
-    $date_to = "2022-03-29";
+    $date_from = "2022-03-28";
+    $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -3135,8 +3135,8 @@ class ReportControllerTwo extends Controller
     $get_hotel_services_arr = array();
 
 
-    $date_from = "2022-03-22";
-    $date_to = "2022-03-29";
+    $date_from = "2022-03-29";
+    $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);

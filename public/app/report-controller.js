@@ -1208,18 +1208,132 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             })
     }
 
+    // Mr Optimist 31 March 2022 starts 
+    $scope.showFilter = function() {
+        $('.sidebar').toggle();
+        //$scope.hideBookDetailRBox();
+        //applyMask();
+    }
+    $scope.hideFilter = function() {
+        $('.sidebar').hide();
+    }
 
+    $scope.filterData = function(searchFields, check) {
+
+        if (searchFields === undefined) {
+            return;
+        }
+        
+        //console.log('Hotel Id');
+        //console.log(searchFields.Hotel);
+        //console.log('Booking From');
+        //console.log(searchFields.BookedFrom);
+        //console.log('Booking To');
+        //console.log(searchFields.BookedTo);
+        // '2022-03-27';
+        //return;
+     
+
+        if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
+            var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
+        }
+        if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
+            var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
+        }
+
+  
+
+  
+        
+
+
+        return;
+        if (searchFields.Hotel === undefined) {
+            console.log('Undefined value!');
+           
+        }
+        else {
+            console.log('Defined value!');
+        }
+
+
+        return;
+        if (typeof searchFields.Hotel == 'undefined') {
+            var hotel_id = null;
+        }
+        else {
+            
+           var hotel_id = searchFields.Hotel;
+
+        }
+
+        if (typeof searchFields.BookedFrom == 'undefined') {
+            var sBookedFrom = null;
+        }
+        else {
+
+            if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
+                var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
+            }
+
+        }
+
+        if (typeof searchFields.BookedTo == 'undefined') {
+            var sBookedTo = null;
+        }
+        else {
+            
+            if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
+                var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
+            }
+
+        }
+    
+        
+
+        
+
+        $scope.ajaxGet('get_receivable_report', {}, true)
+        .then(function(response) {
+
+            $scope.rec1=response.message;
+        //    $scope.rec2=response.bookings;
+            console.log(response);
+        })
+        .catch(function(e) {
+            console.log(e);
+        });    
+    }
+
+    // Mr Optimist 31 March 2022 ends 
     $scope.GetReceivableReport = function() {
+
+        
+
+        $scope.ajaxGet('get_user_hotels', {}, true)
+            .then(function(response) {
+
+
+                //console.log('All hotels response');
+                //$scope.rec1=response.message;
+                //$scope.rec2=response.bookings;
+                $scope.hotels = response.get_user_hotels;
+                //console.log(response.get_user_hotels);
+            })
+            .catch(function(e) {
+                console.log(e);
+            });
+        
         $scope.ajaxGet('get_receivable_report', {}, true)
             .then(function(response) {
 
                $scope.rec1=response.message;
             //    $scope.rec2=response.bookings;
-                console.log(response);
+                //console.log(response);
             })
             .catch(function(e) {
                 console.log(e);
-            })
+            });
     }
 
     $scope.GetCashFlowReport = function() {

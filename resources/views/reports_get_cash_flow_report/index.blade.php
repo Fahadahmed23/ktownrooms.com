@@ -24,8 +24,8 @@
                         <tbody ng-repeat='cf in cashflow'>
                             <tr class="unread">
                                 <tr>
-                                    <th>Date</th>
-                                    <th> [[ cf.Date ]] </th>
+                                    <th><h3> Date </h3></th>
+                                    <th><h3> [[ cf.Date ]] </h3></th>
                                 </tr>
                                 <tr>
                                     <th>Opening Balance</th>
