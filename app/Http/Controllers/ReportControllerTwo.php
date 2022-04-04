@@ -1510,6 +1510,17 @@ class ReportControllerTwo extends Controller
 
     date_default_timezone_set("Asia/Karachi");
 
+    $request->validate([
+    
+      'booked_from' => 'date',
+      'booked_to' => 'date|after_or_equal:booked_from'
+    ], [
+      'booked_from.after_or_equal' => 'Booking From Date cannot be before current date',
+      'booked_to.after_or_equal' => 'Booking To Date must be equal or greater than Booking From'
+    ]);
+
+
+
     $net_total_revenue = 0;
     $payment_amount_revenue = 0;
     $balance_outstanding_revenue = 0;
@@ -1528,14 +1539,35 @@ class ReportControllerTwo extends Controller
     }
 
 
+    $get_cash_flow_arr = array();
+
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+      $date_from = $request['booked_from'];
+      $date_to = $request['booked_from'];
+    }
+    else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+      $date_from = $request['booked_to'];
+      $date_to = $request['booked_to'];
+    }
+    else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+      $date_from = $request['booked_from'];
+      $date_to = $request['booked_to'];
+    }
+    elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+      $date_from = date('Y-m-d');
+      $date_to = date('Y-m-d');
+    }
+    else {
+      $date_from = date('Y-m-d');
+      $date_to = date('Y-m-d');
+    }
 
 
-    //$get_cash_flow_arr = array();
     //$date_from = $request['date_from'];
     //$date_to = $request['date_to'];
 
-    $date_from = '2022-03-27';
-    $date_to = '2022-03-30';
+    //$date_from = '2022-03-27';
+    //$date_to = '2022-04-01';
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1682,7 +1714,7 @@ class ReportControllerTwo extends Controller
 
         return response()->json([
           'success' => true,
-          'message' => $get_cash_flow_array,
+          'result' => $get_cash_flow_array,
           'msgtype' => 'success',
         ]);
 
@@ -1690,13 +1722,12 @@ class ReportControllerTwo extends Controller
     else {
       return response()->json([
         'success' => true,
-        'message' => $get_cash_flow_arr,
+        'result' => $get_cash_flow_arr,
         'msgtype' => 'success',
       ]);
       
     }
 
-        
 
   }
 

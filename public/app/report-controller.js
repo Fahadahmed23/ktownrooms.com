@@ -1241,68 +1241,43 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
         }
 
-  
-
-  
-        
 
 
-        return;
-        if (searchFields.Hotel === undefined) {
-            console.log('Undefined value!');
-           
-        }
-        else {
-            console.log('Defined value!');
-        }
+        $scope.ajaxGet('get_receivable_report', {
+            hotel_id: searchFields.Hotel,
+            booked_from: sBookedFrom,
+            booked_to: sBookedTo
+            }, true)
+            .then(function(response) {
 
+                //$scope.rec1=response.message;
+                //    $scope.rec2=response.bookings;
+               // console.log(response);
+               // console.log('FAHAD AHMED 2');
+               // console.log(response.message);
+                //console.log(response.errors);
 
-        return;
-        if (typeof searchFields.Hotel == 'undefined') {
-            var hotel_id = null;
-        }
-        else {
-            
-           var hotel_id = searchFields.Hotel;
-
-        }
-
-        if (typeof searchFields.BookedFrom == 'undefined') {
-            var sBookedFrom = null;
-        }
-        else {
-
-            if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-                var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-            }
-
-        }
-
-        if (typeof searchFields.BookedTo == 'undefined') {
-            var sBookedTo = null;
-        }
-        else {
-            
-            if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-                var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-            }
-
-        }
-    
-        
-
-        
-
-        $scope.ajaxGet('get_receivable_report', {}, true)
-        .then(function(response) {
-
-            $scope.rec1=response.message;
-        //    $scope.rec2=response.bookings;
-            console.log(response);
+                $scope.rec1=response.result;
+                console.log(response);
+                
         })
         .catch(function(e) {
             console.log(e);
-        });    
+        }); 
+
+  
+
+  
+        
+
+
+        return;
+     
+        
+
+        
+
+       
     }
 
     // Mr Optimist 31 March 2022 ends 
@@ -1327,9 +1302,9 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         $scope.ajaxGet('get_receivable_report', {}, true)
             .then(function(response) {
 
-               $scope.rec1=response.message;
+               $scope.rec1=response.result;
             //    $scope.rec2=response.bookings;
-                //console.log(response);
+                console.log(response);
             })
             .catch(function(e) {
                 console.log(e);
