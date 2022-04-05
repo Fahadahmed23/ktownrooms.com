@@ -2451,7 +2451,7 @@ class ReportControllerTwo extends Controller
       }
 
 
-    }
+
 
 
     if(count($get_cash_flow_arr)){
@@ -2483,6 +2483,7 @@ class ReportControllerTwo extends Controller
 
 
   }
+
 
   // updating
   public function get_invoice_search(Request $request) {
@@ -3038,6 +3039,7 @@ class ReportControllerTwo extends Controller
       ]);
 
     }
+}
     else {
 
       return response()->json([
@@ -3613,7 +3615,7 @@ class ReportControllerTwo extends Controller
 
       }
 
-    }
+    // }
 
     if(count($get_hotel_services_arr)){
       $get_hotel_services_array = array();
@@ -3634,6 +3636,7 @@ class ReportControllerTwo extends Controller
       ]);
 
     }
+
     else {
       return response()->json([
         'success' => true,
