@@ -1528,7 +1528,6 @@ class ReportControllerTwo extends Controller
       );
 
 
-
     }
 
     if(count($get_cash_flow_arr)){
@@ -1551,7 +1550,6 @@ class ReportControllerTwo extends Controller
         'message' => $get_cash_flow_arr,
         'msgtype' => 'success',
       ]);
-
     }
 
   }
@@ -1563,7 +1561,6 @@ class ReportControllerTwo extends Controller
     date_default_timezone_set("Asia/Karachi");
 
     $request->validate([
-
       'booked_from' => 'date',
       'booked_to' => 'date|after_or_equal:booked_from'
     ], [
@@ -1594,26 +1591,25 @@ class ReportControllerTwo extends Controller
     $get_cash_flow_arr = array();
 
     if(!empty($request['booked_from']) && is_null($request->booked_to)) {
-      $date_from = $request['booked_from'];
-      $date_to = $request['booked_from'];
-    }
-    else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
-      $date_from = $request['booked_to'];
-      $date_to = $request['booked_to'];
-    }
-    else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
-      $date_from = $request['booked_from'];
-      $date_to = $request['booked_to'];
-    }
-    elseif( empty($request['booked_from']) && empty($request['booked_to'])){
-      $date_from = date('Y-m-d');
-      $date_to = date('Y-m-d');
-    }
-    else {
-      $date_from = date('Y-m-d');
-      $date_to = date('Y-m-d');
-    }
-
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
 
     //$date_from = $request['date_from'];
     //$date_to = $request['date_to'];
@@ -1647,6 +1643,14 @@ class ReportControllerTwo extends Controller
       ->whereIn('status', ['CheckedIn','CheckedOut'])
       ->whereBetween('checkin_time', [$date_one,$date_two_next])
       ->orderBy('created_at', 'desc')->get();
+
+
+      //echo "<pre>";
+      //var_dump($date_one);
+      //var_dump($date_two_next);
+      //var_dump($bookings);
+      //echo "<pre>";
+      //die;
 
 
       if(!empty($bookings)){
@@ -1701,21 +1705,18 @@ class ReportControllerTwo extends Controller
             }
           }
 
+        //   $response_booking = array(
+        //     'success' => true,
+        //     'Date' => $loop_date,
+        //     'totalRecords' => $count,
+        //     'bookings' => $bookings_map,
+        //     'net_total_revenue' => $net_total_revenue,
+        //     'payment_amount_revenue' => $payment_amount_revenue,
+        //     'balance_outstanding_revenue' => $balance_outstanding_revenue,
+        //   );
 
+        //   $bookings_exec = $response_booking;
 
-          /*
-          $response_booking = array(
-            'success' => true,
-            'Date' => $loop_date,
-            'totalRecords' => $count,
-            'bookings' => $bookings_map,
-            'net_total_revenue' => $net_total_revenue,
-            'payment_amount_revenue' => $payment_amount_revenue,
-            'balance_outstanding_revenue' => $balance_outstanding_revenue,
-          );
-
-          $bookings_exec = $response_booking;
-          **/
           $bookings_exec = $bookings_map;
 
         }
@@ -1777,7 +1778,6 @@ class ReportControllerTwo extends Controller
         'result' => $get_cash_flow_arr,
         'msgtype' => 'success',
       ]);
-
     }
 
 
@@ -1837,8 +1837,8 @@ class ReportControllerTwo extends Controller
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
 
-    //$date_from = $request['date_from'];
-    //$date_to = $request['date_to'];
+    // $date_from = $request['date_from'];
+    // $date_to = $request['date_to'];
 
     $user_ids_hotels = UserHotel::where('hotel_id',$hotel_id)->pluck('user_id');
 
@@ -2317,7 +2317,6 @@ class ReportControllerTwo extends Controller
             $obj->RoomRent = $ex->rooms[0]->RoomCharges;
 
 
-
             if(count($ex->services) > 0){
 
               $obj->services = $ex->services->map(function($service) {
@@ -2443,6 +2442,14 @@ class ReportControllerTwo extends Controller
 
       }
 
+        $get_cash_flow_arr[] = array(
+          'Date' => $loop_date,
+          'HotelName' => $hotelName,
+          'bookings' => $bookings_exec
+        );
+
+      }
+
 
     }
 
@@ -2472,7 +2479,6 @@ class ReportControllerTwo extends Controller
         'message' => $get_cash_flow_arr,
         'msgtype' => 'success',
       ]);
-
     }
 
 
@@ -2941,7 +2947,6 @@ class ReportControllerTwo extends Controller
             $obj->created_at = $ex->created_at->format('y-m-d') ?? "";
             //$obj->created_at = '$loop_date' ?? "";
 
-
             $obj->voucher_details = $ex->voucher_details->map(function($voucher_detail) {
 
               $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
@@ -2964,7 +2969,6 @@ class ReportControllerTwo extends Controller
       else {
         $vouchers_exec = [];
       }
-
 
 
       $total_expenses_amount =0;
@@ -2996,6 +3000,10 @@ class ReportControllerTwo extends Controller
       $get_expenses_report_array = array();
       foreach($get_expenses_report_arr as $single_expenses_report){
 
+    if(count($get_expenses_report_arr)){
+      $get_expenses_report_array = array();
+      foreach($get_expenses_report_arr as $single_expenses_report){
+
         foreach($single_expenses_report["ExpenseDetails"] as $single_expense){
 
           $get_expenses_report_array[] = $single_expense;
@@ -3003,6 +3011,24 @@ class ReportControllerTwo extends Controller
         }
 
       }
+
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_expenses_report_array,
+        'msgtype' => 'success',
+      ]);
+
+    }
+    else {
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_expenses_report_arr,
+        'msgtype' => 'success',
+      ]);
+
+    }
 
 
       return response()->json([
@@ -3363,6 +3389,7 @@ class ReportControllerTwo extends Controller
     //$date_to = $request['date_to'];
 
 
+
     for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
 
       $loop_date = date_format($date,"Y-m-d");
@@ -3579,6 +3606,13 @@ class ReportControllerTwo extends Controller
 
       }
 
+        $get_hotel_services_arr[] = array(
+          'Date' => $loop_date,
+          'bookings' => $bookings_exec,
+        );
+
+      }
+
     }
 
     if(count($get_hotel_services_arr)){
@@ -3608,9 +3642,6 @@ class ReportControllerTwo extends Controller
       ]);
 
     }
-
-
-
 
   }
 

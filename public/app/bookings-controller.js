@@ -3620,24 +3620,28 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 
     $scope.savemislinsonPayment = function() {
+
         console.log($scope.Addmislisoin.Amount);
+        console.log($scope.Addmislisoin.Name);
 
-            $scope.ajaxPost('saveBookingsMiscellaneousAmount', {
-                booking_id: $scope.fBooking.id,
-                payment_amount: $scope.Addmislisoin.Amount,
-                Name:$scope.Addmislisoin.Name,
-                is_complementary:$scope.Addmislisoin.is_complementary,
-                status:$scope.Addmislisoin.status
-            }, false).then(function(response) {
-                if (response.success) {
+        
+        $scope.ajaxPost('saveBookingsMiscellaneousAmount', {
+            booking_id: $scope.fBooking.id,
+            amount: $scope.Addmislisoin.Amount,
+            name:$scope.Addmislisoin.Name,
+            is_complementary:$scope.Addmislisoin.is_complementary,
+            status:$scope.Addmislisoin.status
+        }, false).then(function(response) {
+            if (response.success) {
 
-                    $('#addmiscamount').modal('hide');
-                    // if ($scope.formType == 'view' && !$scope.user.is_frontdesk) {
-                    //     $scope.showBookDetailRBox($scope.fBooking.id);
-                    // }
-                }
-            });
-        }
+                $('#addmiscamount').modal('hide');
+                // if ($scope.formType == 'view' && !$scope.user.is_frontdesk) {
+                //     $scope.showBookDetailRBox($scope.fBooking.id);
+                // }
+            }
+        });
+        
+    }
 
 
 

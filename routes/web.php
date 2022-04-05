@@ -456,50 +456,32 @@ Route::get('reports_get_klc_report','ReportControllerTwo@index_reports_get_klc_r
 
 //Reports View Controller - Arman Ahmad - 19-March-2022 - End
 
-// Filter : Hotels connected with user
 
+// Filter : Hotels connected with user
 Route::get('get_user_hotels', 'ReportControllerTwo@get_user_hotels');
 
-Route::get('reports_new', 'ReportControllerTwo@index');
+
+//Route::get('reports_new', 'ReportControllerTwo@index');
 
 Route::get('get_guest_detail', 'ReportControllerTwo@get_guest_detail');
 Route::get('get_checkout_list', 'ReportControllerTwo@get_checkout_list');
 
 // Route::get('get_inquirydetail_report', 'ReportControllerTwo@get_inquirydetail_report');
-
 Route::get('get_daily_sales_report', 'ReportControllerTwo@get_daily_sales_report');
-
 Route::get('get_sales_summary_report', 'ReportControllerTwo@get_sales_summary_report');
-
 Route::get('get_individual_guest_ledger', 'ReportControllerTwo@get_individual_guest_ledger');
-
 Route::get('get_average_daily_rate_report', 'ReportControllerTwo@get_average_daily_rate_report');
-
 Route::get('get_receivable_report', 'ReportControllerTwo@get_receivable_report');
-
 Route::get('get_cash_flow_report', 'ReportControllerTwo@get_cash_flow_report');
 Route::get('get_revenue_par_report', 'ReportControllerTwo@get_revenue_par_report');
-
-
 Route::get('get_btc_pending_list', 'ReportControllerTwo@get_btc_pending_list');
 //Route::get('get_invoice_search/{id}', 'ReportControllerTwo@get_invoice_search');
 Route::get('get_invoice_search', 'ReportControllerTwo@get_invoice_search');
-
-
 Route::get('get_monthly_sales_report', 'ReportControllerTwo@get_monthly_sales_report');
-
 Route::get('get_expenses_report', 'ReportControllerTwo@get_expenses_report');
 Route::get('get_discount_report', 'ReportControllerTwo@get_discount_report');
-
 Route::get('get_hotel_services_report','ReportControllerTwo@get_hotel_services_report');
-
 Route::get('get_klc_report','ReportControllerTwo@get_klc_report');
-
-
-
-
-
-
 
 
 // partners

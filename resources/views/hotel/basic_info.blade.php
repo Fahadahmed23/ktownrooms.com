@@ -1,4 +1,4 @@
-<form id="hotelForm" class="card-body" name="hotelForm" >
+<form id="hotelForm" class="card-body" name="hotelForm">
     <div class="row m-0 mt-4">
         <div class="col-md-4">
             <fieldset>   

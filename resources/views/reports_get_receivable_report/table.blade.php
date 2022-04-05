@@ -9,9 +9,9 @@
     <div class="card bookingTable">
         <div class="card-header header-elements-inline">
             <h5 class="card-title">
-                Receivables 
+                Receivables
                     <span><a href="#" class="" ng-click="showFilter()">
-                        <i id="" class="icon-search4 " style="font-size: 12px;"></i> 
+                        <i id="" class="icon-search4 " style="font-size: 12px;"></i>
                    </a></span>
             </h5>
         </div>
@@ -45,8 +45,8 @@
                     </tr>
                 </tbody>
             </table>
-            
+
         </div>
- 
+
     </div>
 </div>

@@ -17,5 +17,24 @@ class HotelCategory extends Model
         return $this->hasMany(Hotel::class);
     }
     **/
+
+    
+
+
+    /*
+    * Mr Optimist 22 March 2022
+    */
+
+    public function hotelCategories()
+    {
+        //return $this->hasOne(HotelCategories::class);
+        return $this->hasOne(HotelCategories::class, 'id', 'hotel_category_id');
+    }
+
+  
+
+
+
+
   
 }

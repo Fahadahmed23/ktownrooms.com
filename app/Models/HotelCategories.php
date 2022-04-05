@@ -15,4 +15,19 @@ class HotelCategories extends Model
        
         return $this->belongsToMany(Hotel::class, 'hotel_category','hotel_category_id','hotel_id');
     }
+
+    
+
+    /*
+    * Mr Optimist 22 March 2022
+    */
+
+
+    public function hotelCategory()
+    {
+        //return $this->hasOne(HotelCategories::class);
+        return $this->belongsTo(HotelCategory::class, 'hotel_category_id');
+    }
+
+
 }
