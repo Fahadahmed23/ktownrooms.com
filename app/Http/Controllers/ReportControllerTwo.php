@@ -174,12 +174,11 @@ class ReportControllerTwo extends Controller
 
           $user_inner_hotel = array();
             //var_dump($single_user_hotel);
-
           $hotel_id = $single_user_hotel->id;
           $hotelName = $single_user_hotel->HotelName;
 
-          $user_inner_hotel['Hotel Id'] =  $hotel_id;
-          $user_inner_hotel['Hotel Name'] =  $hotelName;
+          $user_inner_hotel['hotel_id'] =  $hotel_id;
+          $user_inner_hotel['hotel_name'] =  $hotelName;
 
 
           $user_hotels[] =$user_inner_hotel;
@@ -187,14 +186,12 @@ class ReportControllerTwo extends Controller
         }
 
       }
-
     return response()->json([
       'get_user_hotels'=>$user_hotels,
 
     ]);
 
   }
-
 
   public function get_guest_detail(Request $request) {
 
@@ -587,6 +584,15 @@ class ReportControllerTwo extends Controller
 
     date_default_timezone_set("Asia/Karachi");
 
+    $request->validate([
+
+      'booked_from' => 'date',
+      'booked_to' => 'date|after_or_equal:booked_from'
+    ], [
+      'booked_from.after_or_equal' => 'Booking From Date cannot be before current date',
+      'booked_to.after_or_equal' => 'Booking To Date must be equal or greater than Booking From'
+    ]);
+
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
     $hotel_id = $hotels[0]->id;
     $hotelName = $hotels[0]->HotelName;
@@ -597,12 +603,34 @@ class ReportControllerTwo extends Controller
     }
 
 
-    //$get_cash_flow_arr = array();
+    $get_cash_flow_arr = array();
+
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+
     //$date_from = $request['date_from'];
     //$date_to = $request['date_to'];
 
-    $date_from = '2022-03-21';
-    $date_to = '2022-03-28';
+    // $date_from = '2022-03-28';
+    // $date_to = '2022-03-30';
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -655,7 +683,7 @@ class ReportControllerTwo extends Controller
               return $obj;
             });
 
-
+            $obj->RoomNumber =$ex->rooms[0]->RoomNumber;
             $obj->roomscharges =$ex->rooms[0]->RoomCharges;
 
             $obj->rooms = $ex->rooms->map(function($room) {
@@ -793,10 +821,13 @@ class ReportControllerTwo extends Controller
 
       }
 
-      $get_cash_flow_arr[] = array(
-        'Date' => $loop_date,
-        'bookings' => $bookings_exec,
-      );
+
+      if(count($bookings_exec) > 0 ){
+        $get_cash_flow_arr[] = array(
+          'Date' => $loop_date,
+          'bookings' => $bookings_exec,
+        );
+      }
 
 
       $total_amount = 0;
@@ -805,14 +836,32 @@ class ReportControllerTwo extends Controller
 
     }
 
+    if(count($get_cash_flow_arr)){
+      $get_cash_flow_array = array();
+      foreach($get_cash_flow_arr as $single_get_cash_flow_arr){
 
+        foreach($single_get_cash_flow_arr["bookings"] as $single_booking){
 
-    return response()->json([
-      'success' => true,
-      'message' => $get_cash_flow_arr,
-      'msgtype' => 'success',
-    ]);
+          $get_cash_flow_array[] = $single_booking;
 
+        }
+
+      }
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_cash_flow_array,
+        'msgtype' => 'success',
+      ]);
+
+    }
+    else {
+      return response()->json([
+        'success' => true,
+        'message' => $get_cash_flow_arr,
+        'msgtype' => 'success',
+      ]);
+    }
 
   }
 
@@ -1218,15 +1267,36 @@ class ReportControllerTwo extends Controller
     }
 
     $get_cash_flow_arr = array();
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
 
-    $date_from = "2022-03-21";
-    $date_to = "2022-03-22";
+    // $date_from = "2022-03-21";
+    // $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
 
-    //$date_from = $request['date_from'];
-    //$date_to = $request['date_to'];
+    // $date_from = $request['date_from'];
+    // $date_to = $request['date_to'];
+
 
     $total_rooms = Room::where('hotel_id', $hotel_id)->count();
 
@@ -1457,14 +1527,32 @@ class ReportControllerTwo extends Controller
         'occupancy_in_percentage' =>$occupancy_in_percentage,
       );
 
+
+
     }
 
+    if(count($get_cash_flow_arr)){
+      $get_cash_flow_array = array();
+      foreach($get_cash_flow_arr as $single_get_cash_flow_arr){
+        $get_cash_flow_array[] = $single_get_cash_flow_arr;
+      }
 
-    return response()->json([
-      'success' => true,
-      'message' => $get_cash_flow_arr,
-      'msgtype' => 'success',
-    ]);
+      return response()->json([
+        'success' => true,
+        'message' => $get_cash_flow_array,
+        'msgtype' => 'success',
+      ]);
+
+    }
+    else {
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_cash_flow_arr,
+        'msgtype' => 'success',
+      ]);
+
+    }
 
   }
 
@@ -1473,6 +1561,17 @@ class ReportControllerTwo extends Controller
   {
 
     date_default_timezone_set("Asia/Karachi");
+
+    $request->validate([
+
+      'booked_from' => 'date',
+      'booked_to' => 'date|after_or_equal:booked_from'
+    ], [
+      'booked_from.after_or_equal' => 'Booking From Date cannot be before current date',
+      'booked_to.after_or_equal' => 'Booking To Date must be equal or greater than Booking From'
+    ]);
+
+
 
     $net_total_revenue = 0;
     $payment_amount_revenue = 0;
@@ -1492,14 +1591,35 @@ class ReportControllerTwo extends Controller
     }
 
 
+    $get_cash_flow_arr = array();
+
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+      $date_from = $request['booked_from'];
+      $date_to = $request['booked_from'];
+    }
+    else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+      $date_from = $request['booked_to'];
+      $date_to = $request['booked_to'];
+    }
+    else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+      $date_from = $request['booked_from'];
+      $date_to = $request['booked_to'];
+    }
+    elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+      $date_from = date('Y-m-d');
+      $date_to = date('Y-m-d');
+    }
+    else {
+      $date_from = date('Y-m-d');
+      $date_to = date('Y-m-d');
+    }
 
 
-    //$get_cash_flow_arr = array();
     //$date_from = $request['date_from'];
     //$date_to = $request['date_to'];
 
-    $date_from = '2022-03-26';
-    $date_to = '2022-03-29';
+    //$date_from = '2022-03-27';
+    //$date_to = '2022-04-01';
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1550,6 +1670,9 @@ class ReportControllerTwo extends Controller
                 $obj['RoomRent'] = $room->RoomCharges;
                 return $obj;
             });
+
+            $obj->roomNumber =$ex->rooms[0]->RoomNumber;
+
             $obj->no_occupants = $ex->no_occupants ?? "";
             $obj->checkin_time = $ex->checkin_time ?? "";
             $obj->checkout_time = $ex->checkout_time ?? "";
@@ -1628,11 +1751,35 @@ class ReportControllerTwo extends Controller
 
     }
 
-    return response()->json([
-      'success' => true,
-      'message' => $get_cash_flow_arr,
-      'msgtype' => 'success',
-    ]);
+
+    if(count($get_cash_flow_arr)){
+        $get_cash_flow_array = array();
+        foreach($get_cash_flow_arr as $single_get_cash_flow_arr){
+
+          foreach($single_get_cash_flow_arr["bookings"] as $single_booking){
+
+            $get_cash_flow_array[] = $single_booking;
+
+          }
+
+        }
+
+        return response()->json([
+          'success' => true,
+          'result' => $get_cash_flow_array,
+          'msgtype' => 'success',
+        ]);
+
+    }
+    else {
+      return response()->json([
+        'success' => true,
+        'result' => $get_cash_flow_arr,
+        'msgtype' => 'success',
+      ]);
+
+    }
+
 
   }
 
@@ -1640,7 +1787,14 @@ class ReportControllerTwo extends Controller
   public function get_cash_flow_report(Request $request) {
 
     date_default_timezone_set("Asia/Karachi");
+    $request->validate([
 
+        'booked_from' => 'date',
+        'booked_to' => 'date|after_or_equal:booked_from'
+      ], [
+        'booked_from.after_or_equal' => 'Booking From Date cannot be before current date',
+        'booked_to.after_or_equal' => 'Booking To Date must be equal or greater than Booking From'
+      ]);
     $user = User::find(Auth::user()->id);
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
     $hotel_id = $hotels[0]->id;
@@ -1656,8 +1810,29 @@ class ReportControllerTwo extends Controller
 
     $get_cash_flow_arr = array();
 
-    $date_from = "2022-03-14";
-    $date_to = "2022-03-29";
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+
+    // $date_from = "2022-03-28";
+    // $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1748,6 +1923,8 @@ class ReportControllerTwo extends Controller
                 return $obj;
             });
 
+            $obj->roomNumber =$ex->rooms[0]->RoomNumber;
+
             $obj->checkin_time = $ex->checkin_time ?? "";
             $obj->checkout_time = $ex->checkout_time ?? "";
 
@@ -1808,7 +1985,8 @@ class ReportControllerTwo extends Controller
             $obj->id = $ex->id;
             $obj->voucher_type_id = $ex->voucher_type_id ?? "";
             $obj->description = $ex->description ?? "";
-            $obj->created_at = $ex->created_at ?? "";
+            //$obj->created_at = $ex->created_at ?? "";
+            $obj->created_at = $ex->created_at->format('y-m-d') ?? "";
             $obj->voucher_details = $ex->voucher_details->map(function($voucher_detail) {
 
               $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
@@ -1852,6 +2030,7 @@ class ReportControllerTwo extends Controller
         'OpeningBalance' => $user_opening_balance,
         'CashIn' => $total_amount_received,
         'bookings' => $bookings_exec,
+        'CashOut' => $cashout,
         'ExpenseDetails' => $vouchers_exec,
         'CashInDrawer' => $closing_balance,
         'ClosingBalance' => $closing_balance,
@@ -1889,7 +2068,7 @@ class ReportControllerTwo extends Controller
 
     $get_cash_flow_arr = array();
 
-    $date_from = "2021-03-14";
+    $date_from = "2022-03-14";
     $date_to = "2022-03-15";
 
     $date_from_dt = new DateTime($date_from);
@@ -2038,6 +2217,15 @@ class ReportControllerTwo extends Controller
 
     date_default_timezone_set("Asia/Karachi");
 
+    $request->validate([
+
+        'booked_from' => 'date',
+        'booked_to' => 'date|after_or_equal:booked_from'
+      ], [
+        'booked_from.after_or_equal' => 'Booking From Date cannot be before current date',
+        'booked_to.after_or_equal' => 'Booking To Date must be equal or greater than Booking From'
+      ]);
+
     $user = User::find(Auth::user()->id);
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
     $hotel_id = $hotels[0]->id;
@@ -2053,8 +2241,29 @@ class ReportControllerTwo extends Controller
 
     $get_cash_flow_arr = array();
 
-    $date_from = "2022-02-14";
-    $date_to = "2022-03-15";
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+
+    // $date_from = "2022-03-08";
+    // $date_to = "2022-03-28";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -2103,6 +2312,10 @@ class ReportControllerTwo extends Controller
                 $obj['RoomRent'] = $room->RoomCharges;
                 return $obj;
             });
+
+            $obj->roomNumber =$ex->rooms[0]->RoomNumber;
+            $obj->RoomRent = $ex->rooms[0]->RoomCharges;
+
 
 
             if(count($ex->services) > 0){
@@ -2220,33 +2433,91 @@ class ReportControllerTwo extends Controller
 
       }
 
-      $get_cash_flow_arr[] = array(
-        'Date' => $loop_date,
-        'HotelName' => $hotelName,
-        'Bookings' => $bookings_exec
-      );
+      if(count($bookings_exec) > 0 ){
+
+        $get_cash_flow_arr[] = array(
+          'Date' => $loop_date,
+          'HotelName' => $hotelName,
+          'bookings' => $bookings_exec
+        );
+
+      }
 
 
     }
 
 
+    if(count($get_cash_flow_arr)){
+      $get_cash_flow_array = array();
+      foreach($get_cash_flow_arr as $single_get_cash_flow_arr){
 
-    return response()->json([
-      'success' => true,
-      'message' => $get_cash_flow_arr,
-      'msgtype' => 'success',
-    ]);
+
+        foreach($single_get_cash_flow_arr["bookings"] as $single_booking){
+          $get_cash_flow_array[] = $single_booking;
+        }
+
+      }
+
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_cash_flow_array,
+        'msgtype' => 'success',
+      ]);
+
+    }
+    else {
+      return response()->json([
+        'success' => true,
+        'message' => $get_cash_flow_arr,
+        'msgtype' => 'success',
+      ]);
+
+    }
 
 
   }
 
   // updating
-  public function get_invoice_search() {
+  public function get_invoice_search(Request $request) {
 
     date_default_timezone_set("Asia/Karachi");
 
+    $request->validate([
 
-    //$booking_no = 'Test030322773';
+        'booked_from' => 'date',
+        'booked_to' => 'date|after_or_equal:booked_from'
+      ], [
+        'booked_from.after_or_equal' => 'Booking From Date cannot be before current date',
+        'booked_to.after_or_equal' => 'Booking To Date must be equal or greater than Booking From'
+      ]);
+
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+
+
+      $date_from_dt = new DateTime($date_from);
+      $date_to_dt = new DateTime($date_to);
+
+    $booking_no = 'Test030322793';
     //$booking_no = $request->booking_no ?? null;
 
     //$user_cnic = '41304-1502264-9';
@@ -2255,7 +2526,7 @@ class ReportControllerTwo extends Controller
     //$user_passport = 'PK12345';
     //$user_passport = $request->passport ?? null;
 
-    $user_mobile_no = '+923487276089';
+    //$user_mobile_no = '+923487276089';
     //$user_mobile_no = $request->cnic ?? null;
 
 
@@ -2592,8 +2863,32 @@ class ReportControllerTwo extends Controller
 
     $get_expenses_report_arr = array();
 
-    $date_from = "2022-03-18";
-    $date_to = "2022-03-28";
+
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+
+
+
+    // $date_from = "2022-03-28";
+    // $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -2627,7 +2922,8 @@ class ReportControllerTwo extends Controller
                         }])
                         ->with(['createdByUser'])
                         //->whereIn('CreatedBy', $created_by_ids)
-                        ->whereBetween('post_date', [$date_one,$date_two_next])
+                        //->whereBetween('post_date', [$date_one,$date_two_next])
+                        ->whereBetween('created_at', [$date_one,$date_two_next])
                         ->get();
 
       // Vouchers Mappings
@@ -2641,7 +2937,11 @@ class ReportControllerTwo extends Controller
             $obj->id = $ex->id;
             $obj->voucher_type_id = $ex->voucher_type_id ?? "";
             $obj->description = $ex->description ?? "";
-            $obj->created_at = $ex->created_at ?? "";
+            //$obj->created_at = $ex->created_at ?? "";
+            $obj->created_at = $ex->created_at->format('y-m-d') ?? "";
+            //$obj->created_at = '$loop_date' ?? "";
+
+
             $obj->voucher_details = $ex->voucher_details->map(function($voucher_detail) {
 
               $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
@@ -2665,6 +2965,8 @@ class ReportControllerTwo extends Controller
         $vouchers_exec = [];
       }
 
+
+
       $total_expenses_amount =0;
 
       if(count($vouchers_exec) > 0){
@@ -2677,21 +2979,48 @@ class ReportControllerTwo extends Controller
       }
 
 
+      if(count($vouchers_exec) > 0 ){
 
-      $get_expenses_report_arr[] = array(
-        'Date' => $loop_date,
-        'ExpenseDetails' => $vouchers_exec,
-        'TotalExpensesAmount' => $total_expenses_amount
-      );
+        $get_expenses_report_arr[] = array(
+          'Date' => $loop_date,
+          'ExpenseDetails' => $vouchers_exec,
+          'TotalExpensesAmount' => $total_expenses_amount
+        );
+
+      }
 
     }
 
 
-    return response()->json([
-      'success' => true,
-      'message' => $get_expenses_report_arr,
-      'msgtype' => 'success',
-    ]);
+    if(count($get_expenses_report_arr)){
+      $get_expenses_report_array = array();
+      foreach($get_expenses_report_arr as $single_expenses_report){
+
+        foreach($single_expenses_report["ExpenseDetails"] as $single_expense){
+
+          $get_expenses_report_array[] = $single_expense;
+
+        }
+
+      }
+
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_expenses_report_array,
+        'msgtype' => 'success',
+      ]);
+
+    }
+    else {
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_expenses_report_arr,
+        'msgtype' => 'success',
+      ]);
+
+    }
 
 
   }
@@ -3003,9 +3332,29 @@ class ReportControllerTwo extends Controller
 
     $get_hotel_services_arr = array();
 
+    if(!empty($request['booked_from']) && is_null($request->booked_to)) {
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_from'];
+      }
+      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+        $date_from = $request['booked_to'];
+        $date_to = $request['booked_to'];
+      }
+      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+        $date_from = $request['booked_from'];
+        $date_to = $request['booked_to'];
+      }
+      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
+      else {
+        $date_from = date('Y-m-d');
+        $date_to = date('Y-m-d');
+      }
 
-    $date_from = "2022-03-22";
-    $date_to = "2022-03-28";
+    // $date_from = "2022-03-29";
+    // $date_to = "2022-03-30";
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -3232,12 +3581,36 @@ class ReportControllerTwo extends Controller
 
     }
 
+    if(count($get_hotel_services_arr)){
+      $get_hotel_services_array = array();
+      foreach($get_hotel_services_arr as $single_hotel_services_arr){
 
-    return response()->json([
-      'success' => true,
-      'message' => $get_hotel_services_arr,
-      'msgtype' => 'success',
-    ]);
+        foreach($single_hotel_services_arr["bookings"] as $single_booking){
+
+          $get_hotel_services_array[] = $single_booking;
+
+        }
+
+      }
+
+      return response()->json([
+        'success' => true,
+        'message' => $get_hotel_services_array,
+        'msgtype' => 'success',
+      ]);
+
+    }
+    else {
+      return response()->json([
+        'success' => true,
+        'message' => $get_hotel_services_arr,
+        'msgtype' => 'success',
+      ]);
+
+    }
+
+
+
 
   }
 
