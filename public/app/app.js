@@ -1,4 +1,8 @@
-var app = angular.module('ktown', ['ngMaterial', 'datatables', 'ngPatternRestrict', 'ngMessages', 'ngSanitize', 'angularUtils.directives.dirPagination'])
+
+// Mr Optimist 5 April 2022
+//var app = angular.module('ktown', ['ngMaterial','datatables','ngPatternRestrict', 'ngMessages', 'ngSanitize', 'angularUtils.directives.dirPagination'])
+
+var app = angular.module('ktown', ['ngMaterial','datatables','datatables.buttons','ngPatternRestrict', 'ngMessages', 'ngSanitize', 'angularUtils.directives.dirPagination'])
     // .config(function ($mdThemingProvider) {
     //     $mdThemingProvider.theme('default')
     //         .primaryPalette('blue')

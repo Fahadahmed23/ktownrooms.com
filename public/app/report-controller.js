@@ -9,7 +9,31 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.pageSize = 100;
     $scope.TotalRecords = 0;
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withOption('stateSave', true).withOption('lengthMenu', [100]);
+    // Mr Optimist
+    //$scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withOption('stateSave', true).withOption('lengthMenu', [100]);
+    $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withOption('stateSave', true).withOption('lengthMenu', [100]).withButtons([
+        {
+            extend : 'excel',
+            filename:'Ktown-report'
+        },
+        {
+            extend : 'pdf',
+            filename:'Ktown-report'
+        },
+        {
+            extend: 'pdfHtml5',
+            orientation: 'landscape',
+            pageSize: 'LEGAL',
+            text:'PDF LEGAL',
+            filename:'Ktown-report'
+        },
+        {
+            extend : 'copy',
+            filename: 'Ktown-report', 
+        },
+              
+    ]);
+    //.withButtons( ['excel', 'pdf','print','copy','columnsToggle',colvis']);
 
 
     $scope.currentModule = localStorage.getItem("reportBackModule") == null ? 'Bookings' : localStorage.getItem("reportBackModule");
@@ -1258,7 +1282,6 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                 //console.log(response.errors);
 
                 $scope.rec1=response.result;
-                console.log(response);
                 
         })
         .catch(function(e) {
@@ -1266,18 +1289,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         }); 
 
   
-
-  
-        
-
-
-        return;
-     
-        
-
-        
-
-       
+   
     }
 
     // Mr Optimist 31 March 2022 ends 
@@ -1403,5 +1415,9 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     }
     // End
 
+    
+
 
 });
+
+

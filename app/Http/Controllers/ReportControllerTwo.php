@@ -1544,25 +1544,33 @@ class ReportControllerTwo extends Controller
     if(!empty($request['booked_from']) && is_null($request->booked_to)) {
       $date_from = $request['booked_from'];
       $date_to = $request['booked_from'];
+
     }
     else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
       $date_from = $request['booked_to'];
       $date_to = $request['booked_to'];
+
+
     }
     else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
       $date_from = $request['booked_from'];
       $date_to = $request['booked_to'];
+
+     
+
     }
     elseif( empty($request['booked_from']) && empty($request['booked_to'])){
       $date_from = date('Y-m-d');
       $date_to = date('Y-m-d');
+
     }
     else {
       $date_from = date('Y-m-d');
       $date_to = date('Y-m-d');
     }
 
-
+    
+    
     //$date_from = $request['date_from'];
     //$date_to = $request['date_to'];
 
@@ -1595,6 +1603,14 @@ class ReportControllerTwo extends Controller
       ->whereIn('status', ['CheckedIn','CheckedOut'])
       ->whereBetween('checkin_time', [$date_one,$date_two_next])
       ->orderBy('created_at', 'desc')->get();
+
+
+      //echo "<pre>";
+      //var_dump($date_one);
+      //var_dump($date_two_next);
+      //var_dump($bookings);
+      //echo "<pre>";
+      //die;
 
 
       if(!empty($bookings)){
