@@ -17,16 +17,13 @@
             </div>
 
             <div class="table table-responsive dataTables_wrapper">
-                <table ng-cloak class="table table-striped hover display dataTable datatable-basic">
+                <table id="examplefahad" datatable="ng" dt-options="dtOptions" class="table table-striped hover display dataTable datatable-basic receivable-report-table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Date</th>
                         <th scope="col">Expense Details</th>
-                        {{-- <th scope="col">Expense Amount</th>
-                        <th scope="col">Total Aproved Amount</th>
-                        <th scope="col">Total Declined Amount</th>
-                        <th scope="col">Total Expenses Amount</th> --}}
+                        <th scope="col">Expense Amount</th>
                       </tr>
                 </thead>
                     <tbody data-link="row" class="rowlink">
