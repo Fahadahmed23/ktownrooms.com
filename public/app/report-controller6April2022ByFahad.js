@@ -29,11 +29,10 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         },
         {
             extend : 'copy',
-            filename: 'Ktown-report',
+            filename: 'Ktown-report', 
         },
-
+              
     ]);
-    
     //.withButtons( ['excel', 'pdf','print','copy','columnsToggle',colvis']);
 
 
@@ -189,10 +188,10 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
 
             if (previous_url) {
 
-                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&period=Year&report=" + report.report_name + "&previous_url=My%20Reports";
+                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&_period_=Year&report=" + report.report_name + "&previous_url=My%20Reports";
             } else {
 
-                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&period=Year&report=" + report.report_name;
+                window.location.href = "report?module=" + report.module + "&title=" + report.name + "&_period_=Year&report=" + report.report_name;
             }
         }
 
@@ -211,7 +210,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         if (report.grouped_columns)
             localStorage.setItem("groupedColumns" + report.report_name, report.grouped_columns);
         //localStorage.setItem("groupedColumns" + $scope.reportName, angular.toJson($scope.groupedColumns));//JSON.stringify($scope.selectedColumns) );
-        window.location.href = "criteria?module=" + report.module.name + "&title=" + report.name + "&period=Year&report=" + report.report_name;
+        window.location.href = "criteria?module=" + report.module.name + "&title=" + report.name + "&_period_=Year&report=" + report.report_name;
         // window.location.href = "report?module=" + report.module.name + "&report=" + report.report_name;
 
     }
@@ -691,7 +690,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                 report: $scope.params.report,
                 defaultConfig: defaultConfig,
                 searchGroups: localStorage.getItem("searchGroups" + $scope.reportName),
-                period: $scope.params.period ? $scope.params.period : 'Month',
+                period: $scope.params._period_ ? $scope.params._period_ : 'Month',
                 selectedColumns: localStorage.getItem("selectedColumns" + $scope.reportName),
                 groupedColumns: localStorage.getItem("groupedColumns" + $scope.reportName)
             }
@@ -702,7 +701,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                     // report: $scope.params.report,
                     // defaultConfig: defaultConfig,
                     // searchGroups: localStorage.getItem("searchGroups" + $scope.reportName),
-                    // period: $scope.params.period ? $scope.params.period : 'Month',
+                    // period: $scope.params._period_ ? $scope.params._period_ : 'Month',
                     // selectedColumns: localStorage.getItem("selectedColumns" + $scope.reportName),
                     // groupedColumns: localStorage.getItem("groupedColumns" + $scope.reportName)
                     //}
@@ -722,7 +721,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             criteria = [];
             counter = 0;
             for (const property in $scope.params) {
-                if (property == "module" || property == "report" || property == "period" || property == "year" || property == "title" || property == "previous_url" || property == "d")
+                if (property == "module" || property == "report" || property == "_period_" || property == "_year_" || property == "title" || property == "previous_url" || property == "d")
                     continue; //no need to process these query string params
                 criteria[counter] = { column: property, value: $scope.params[property] };
                 counter++;
@@ -771,7 +770,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             $scope.ajaxParameters = {
                 defaultConfig: defaultConfig,
                 report: $scope.params.report,
-                period: $scope.params.period ? $scope.params.period : 'Month',
+                period: $scope.params._period_ ? $scope.params._period_ : 'Month',
                 searchCriteria: searchCriteria[0].length > 0 ? searchCriteria : null,
                 searchGroups: searchGroups
             }
@@ -780,7 +779,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                     // {
                     //     defaultConfig: defaultConfig,
                     //     report: $scope.params.report,
-                    //     period: $scope.params.period ? $scope.params.period : 'Month',
+                    //     period: $scope.params._period_ ? $scope.params._period_ : 'Month',
                     //     searchCriteria: searchCriteria[0].length > 0 ? searchCriteria : null,
                     //     searchGroups: searchGroups
                     // }
@@ -984,7 +983,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             title: $scope.params.title,
             defaultConfig: 0,
             searchGroups: localStorage.getItem("searchGroups" + $scope.reportName),
-            period: $scope.params.period ? $scope.params.period : 'Month',
+            period: $scope.params._period_ ? $scope.params._period_ : 'Month',
             selectedColumns: localStorage.getItem("selectedColumns" + $scope.reportName),
             groupedColumns: localStorage.getItem("groupedColumns" + $scope.reportName)
         }, true).then(function(response) {
@@ -1042,7 +1041,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                     if (value == "-") return '-';
                     //console.log($scope.params);
                     if (col.isPeriod != undefined) {
-                        if ($scope.params.period && ($scope.params.period == 'Month' || $scope.params.period == 'Quarter' || $scope.params.period == 'Year'))
+                        if ($scope.params._period_ && ($scope.params._period_ == 'Month' || $scope.params._period_ == 'Quarter' || $scope.params._period_ == 'Year'))
                             return value; //no change
                     }
 
@@ -1055,7 +1054,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                     if (!value) return '-';
                     if (value == "-") return '-';
                     //console.log(col.Type);
-                    if ($scope.params.period && ($scope.params.period == 'Month' || $scope.params.period == 'Quarter'))
+                    if ($scope.params._period_ && ($scope.params._period_ == 'Month' || $scope.params._period_ == 'Quarter'))
                         return value; //no change
                     value = $scope.tConvert(value);
                     //console.log(value);
@@ -1214,7 +1213,26 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
 
 
 
-    // Mr Optimist 31 March 2022 starts
+
+
+  
+
+
+
+
+    $scope.GetCheckOutList = function() {
+        $scope.ajaxGet('get_checkout_list', {}, true)
+            .then(function(response) {
+
+                $scope.checkoutlist=response.message[0];
+                console.log(response);
+            })
+            .catch(function(e) {
+                console.log(e);
+            })
+    }
+
+    // Mr Optimist 31 March 2022 starts 
     $scope.showFilter = function() {
         $('.sidebar').toggle();
         //$scope.hideBookDetailRBox();
@@ -1229,7 +1247,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         if (searchFields === undefined) {
             return;
         }
-
+        
         //console.log('Hotel Id');
         //console.log(searchFields.Hotel);
         //console.log('Booking From');
@@ -1238,7 +1256,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
         //console.log(searchFields.BookedTo);
         // '2022-03-27';
         //return;
-
+     
 
         if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
             var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
@@ -1256,8 +1274,6 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             }, true)
             .then(function(response) {
 
-                $scope.checkoutlist=response.message[0];
-                console.log(response);
                 //$scope.rec1=response.message;
                 //    $scope.rec2=response.bookings;
                // console.log(response);
@@ -1266,20 +1282,20 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
                 //console.log(response.errors);
 
                 $scope.rec1=response.result;
-
+                
         })
         .catch(function(e) {
             console.log(e);
-        });
+        }); 
 
-
-
+  
+   
     }
 
-    // Mr Optimist 31 March 2022 ends
+    // Mr Optimist 31 March 2022 ends 
     $scope.GetReceivableReport = function() {
 
-
+        
 
         $scope.ajaxGet('get_user_hotels', {}, true)
             .then(function(response) {
@@ -1294,7 +1310,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             .catch(function(e) {
                 console.log(e);
             });
-
+        
         $scope.ajaxGet('get_receivable_report', {}, true)
             .then(function(response) {
 
@@ -1307,818 +1323,101 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
             });
     }
 
-    // Mr Optimist 31 March 2022 starts
-    $scope.showFilter = function() {
-        $('.sidebar').toggle();
-        //$scope.hideBookDetailRBox();
-        //applyMask();
-    }
-    $scope.hideFilter = function() {
-        $('.sidebar').hide();
-    }
-
-    $scope.filterData = function(searchFields, check) { //Function for Dates
-
-        if (searchFields === undefined) {
-            return;
-        }
-
-        //console.log('Hotel Id');
-        //console.log(searchFields.Hotel);
-        //console.log('Booking From');
-        //console.log(searchFields.BookedFrom);
-        //console.log('Booking To');
-        //console.log(searchFields.BookedTo);
-        // '2022-03-27';
-        //return;
-
-
-        if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-            var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-        }
-        if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-            var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-        }
-
-        $scope.ajaxGet('get_receivable_report', {
-            hotel_id: searchFields.Hotel,
-            booked_from: sBookedFrom,
-            booked_to: sBookedTo
-            }, true)
+    $scope.GetCashFlowReport = function() {
+        $scope.ajaxGet('get_cash_flow_report', {}, true)
             .then(function(response) {
 
-                //$scope.rec1=response.message;
-                //    $scope.rec2=response.bookings;
-               // console.log(response);
-               // console.log('FAHAD AHMED 2');
-               // console.log(response.message);
-                //console.log(response.errors);
+               $scope.cashflow=response.message;
 
-                $scope.rec1=response.result;
-                console.log(response);
 
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-        return;
-
-    }
-
-    // Mr Optimist 31 March 2022 ends
-    $scope.GetReceivableReport = function() { // Function for hotel
-        $scope.ajaxGet('get_user_hotels', {}, true)
-            .then(function(response) {
-                //console.log('All hotels response');
-                //$scope.rec1=response.message;
-                //$scope.rec2=response.bookings;
-                $scope.hotels = response.get_user_hotels;
-                //console.log(response.get_user_hotels);
-            })
-            .catch(function(e) {
-                console.log(e);
-            });
-
-        $scope.ajaxGet('get_receivable_report', {}, true)
-            .then(function(response) {
-
-               $scope.rec1=response.result;
-            //    $scope.rec2=response.bookings;
+               
                 console.log(response);
             })
             .catch(function(e) {
                 console.log(e);
-            });
-    }
-
-
-
-
-
-
-    // $scope.GetBtcPendingList = function() {
-    //     $scope.ajaxGet('get_btc_pending_list', {}, true)
-    //         .then(function(response) {
-    //             // debugger;
-    //            $scope.btcpendinglist=response.message;
-    //         //    $scope.Bookings=response.Bookings.bookings_exec;
-    //             console.log(response);
-    //         })
-    //         .catch(function(e) {
-    //             console.log(e);
-    //         })
-    // }
-
-
-
-    // Get Cash Flow Start - Arman Ahmad - 4-4-2022 - Start
-
-
-    $scope.showFilter = function() {
-        $('.sidebar').toggle();
-        //$scope.hideBookDetailRBox();
-        //applyMask();
-    }
-    $scope.hideFilter = function() {
-        $('.sidebar').hide();
-    }
-
-    $scope.filterData_btc_pending = function(searchFields, check) { //Function for Dates
-
-        if (searchFields === undefined) {
-            return;
-        }
-
-        //console.log('Hotel Id');
-        //console.log(searchFields.Hotel);
-        //console.log('Booking From');
-        //console.log(searchFields.BookedFrom);
-        //console.log('Booking To');
-        //console.log(searchFields.BookedTo);
-        // '2022-03-27';
-        //return;
-
-
-        if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-            var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-        }
-        if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-            var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-        }
-
-        $scope.ajaxGet('get_btc_pending_list', {
-            hotel_id: searchFields.Hotel,
-            booked_from: sBookedFrom,
-            booked_to: sBookedTo
-            }, true)
-            .then(function(response) {
-
-                //$scope.rec1=response.message;
-                //    $scope.rec2=response.bookings;
-               // console.log(response);
-               // console.log('FAHAD AHMED 2');
-               // console.log(response.message);
-                //console.log(response.errors);
-
-                $scope.btcpendinglist=response.message;
-                console.log(response);
-
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-        return;
-
-    }
-
-    $scope.GetBtcPendingList = function() { // Function for hotel
-        $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-            .then(function(response) {
-                //console.log('All hotels response');
-                //$scope.rec1=response.message;
-                //$scope.rec2=response.bookings;
-                $scope.hotels = response.get_user_hotels;
-                //console.log(response.get_user_hotels);
             })
-            .catch(function(e) {
-                console.log(e);
-            });
+    }
 
+    
+
+
+    $scope.GetBtcPendingList = function() {
         $scope.ajaxGet('get_btc_pending_list', {}, true)
             .then(function(response) {
-
-                $scope.btcpendinglist=response.message;
+                // debugger;
+               $scope.btcpendinglist=response.message;
+            //    $scope.Bookings=response.Bookings.bookings_exec;
                 console.log(response);
             })
             .catch(function(e) {
                 console.log(e);
-            });
+            })
     }
 
-
-
-
-
-    // Get Cash Flow Start - Arman Ahmad - 4-4-2022 - End
-
-
-
-    // $scope.GetCashFlowReport = function() {
-    //     $scope.ajaxGet('get_cash_flow_report', {}, true)
-    //         .then(function(response) {
-
-    //            $scope.cashflow=response.message;
-
-
-
-    //             console.log(response);
-    //         })
-    //         .catch(function(e) {
-    //             console.log(e);
-    //         })
-    // }
-
-
-    // Get Cash Flow Start - Arman Ahmad - 4-4-2022 - Start
-
-
-$scope.showFilter = function() {
-    $('.sidebar').toggle();
-    //$scope.hideBookDetailRBox();
-    //applyMask();
-}
-$scope.hideFilter = function() {
-    $('.sidebar').hide();
-}
-
-$scope.filterData_cashflow = function(searchFields, check) { //Function for Dates
-
-    if (searchFields === undefined) {
-        return;
-    }
-
-    //console.log('Hotel Id');
-    //console.log(searchFields.Hotel);
-    //console.log('Booking From');
-    //console.log(searchFields.BookedFrom);
-    //console.log('Booking To');
-    //console.log(searchFields.BookedTo);
-    // '2022-03-27';
-    //return;
-
-
-    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-    }
-    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-    }
-
-    $scope.ajaxGet('get_cash_flow_report', {
-        hotel_id: searchFields.Hotel,
-        booked_from: sBookedFrom,
-        booked_to: sBookedTo
-        }, true)
-        .then(function(response) {
-
-            //$scope.rec1=response.message;
-            //    $scope.rec2=response.bookings;
-           // console.log(response);
-           // console.log('FAHAD AHMED 2');
-           // console.log(response.message);
-            //console.log(response.errors);
-
-            $scope.cashflow=response.message;
-            console.log(response);
-
-    })
-    .catch(function(e) {
-        console.log(e);
-    });
-
-    return;
-
-}
-
-$scope.GetCashFlowReport = function() { // Function for hotel
-    $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_cash_flow_report', {}, true)
-        .then(function(response) {
-
-            $scope.cashflow=response.message;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-
-
-
-// Get Cash Flow Start - Arman Ahmad - 4-4-2022 - End
-
-
-    // $scope.GetInvoiceSearch = function() {
-    //     $scope.ajaxGet('get_invoice_search', {}, true)
-    //         .then(function(response) {
-
-    //            $scope.getinvoice=response.message;
-    //             console.log(response);
-    //         })
-    //         .catch(function(e) {
-    //             console.log(e);
-    //         })
-    // }
-
-
-
-// Get Invoice Search Start - Arman Ahmad - 4-4-2022 - Start
-
-
-$scope.showFilter = function() {
-    $('.sidebar').toggle();
-    //$scope.hideBookDetailRBox();
-    //applyMask();
-}
-$scope.hideFilter = function() {
-    $('.sidebar').hide();
-}
-
-$scope.filterData_invoice_search = function(searchFields, check) { 
-    //Function for Dates
-
-    if (searchFields === undefined) {
-        return;
-    }
-
-
-    $scope.ajaxGet('get_invoice_search', {
-        hotel_id:searchFields.Hotel,
-        booking_no:searchFields.booking_no,
-        cnic:searchFields.cnic,
-        mobile_no:searchFields.mobile_no
-        
-    }, true)
-    .then(function(response) {
-
-        $scope.getinvoice=response.result;
-        console.log(response);
-
-    })
-    .catch(function(e) {
-        console.log(e);
-    });
-
-
-}
-
-$scope.GetInvoiceSearch = function() { // Function for hotel
-    $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_invoice_search', {}, true)
-        .then(function(response) {
-
-            $scope.getinvoice=response.result;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-
-
-
-// Get Invoice Search Start - Arman Ahmad - 4-4-2022 - End
-
-
-    // $scope.GetExpensesReport = function() {
-    //     $scope.ajaxGet('get_expenses_report', {}, true)
-    //         .then(function(response) {
-
-    //            $scope.getexpenses=response.message;
-    //             console.log(response);
-    //         })
-    //         .catch(function(e) {
-    //             console.log(e);
-    //         })
-    // }
-
-// Get Expenses Report Start - Arman Ahmad - 4-4-2022 - Start
-
-
-$scope.showFilter = function() {
-    $('.sidebar').toggle();
-    //$scope.hideBookDetailRBox();
-    //applyMask();
-}
-$scope.hideFilter = function() {
-    $('.sidebar').hide();
-}
-
-$scope.filterData_expenses = function(searchFields, check) { 
-
-    if (searchFields === undefined) {
-        return;
-    }
-
-
-
-    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-    }
-    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-    }
-
-    $scope.ajaxGet('get_expenses_report', {
-        hotel_id: searchFields.Hotel,
-        booked_from: sBookedFrom,
-        booked_to: sBookedTo
-        }, true)
-        .then(function(response) {
-
-            //$scope.rec1=response.message;
-            //    $scope.rec2=response.bookings;
-           // console.log(response);
-           // console.log('FAHAD AHMED 2');
-           // console.log(response.message);
-            //console.log(response.errors);
-
-            $scope.getexpenses=response.result;
-            console.log(response);
-
-    })
-    .catch(function(e) {
-        console.log(e);
-    });
-
-    return;
-
-}
-
-$scope.GetExpensesReport = function() { // Function for hotel
-    $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_expenses_report', {}, true)
-        .then(function(response) {
-
-            $scope.getexpenses=response.result;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-
-
-
-// Get Expenses Report Start - Arman Ahmad - 4-4-2022 - End
-
-    // $scope.GetDailySalesReport = function() {
-    //     $scope.ajaxGet('get_daily_sales_report', {}, true)
-    //         .then(function(response) {
-
-    //            $scope.dailysales=response.message;
-    //             console.log(response);
-    //         })
-    //         .catch(function(e) {
-    //             console.log(e);
-    //         })
-    // }
-
-
-
-// Get Daily Sales Report Start - Arman Ahmad - 4-4-2022 - Start
-
-
-$scope.showFilter = function() {
-    $('.sidebar').toggle();
-    //$scope.hideBookDetailRBox();
-    //applyMask();
-}
-$scope.hideFilter = function() {
-    $('.sidebar').hide();
-}
-
-$scope.filterData_dailysales = function(searchFields, check) { //Function for Dates
-
-    if (searchFields === undefined) {
-        return;
-    }
-
-    //console.log('Hotel Id');
-    //console.log(searchFields.Hotel);
-    //console.log('Booking From');
-    //console.log(searchFields.BookedFrom);
-    //console.log('Booking To');
-    //console.log(searchFields.BookedTo);
-    // '2022-03-27';
-    //return;
-
-
-    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-    }
-    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-    }
-
-    $scope.ajaxGet('get_daily_sales_report', {
-        hotel_id: searchFields.Hotel,
-        booked_from: sBookedFrom,
-        booked_to: sBookedTo
-        }, true)
-        .then(function(response) {
-
-            //$scope.rec1=response.message;
-            //    $scope.rec2=response.bookings;
-           // console.log(response);
-           // console.log('FAHAD AHMED 2');
-           // console.log(response.message);
-            //console.log(response.errors);
-
-            $scope.dailysales=response.message;
-            console.log(response);
-
-    })
-    .catch(function(e) {
-        console.log(e);
-    });
-
-    return;
-
-}
-
-$scope.GetDailySalesReport = function() { // Function for hotel
-    $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_daily_sales_report', {}, true)
-        .then(function(response) {
-
-            $scope.dailysales=response.message;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-
-
-
-// Get Daily Sales Report Start - Arman Ahmad - 4-4-2022 - End
-
-
-    // $scope.GetKlcReprot = function() {
-    //     $scope.ajaxGet('get_klc_report', {}, true)
-    //         .then(function(response) {
-
-    //            $scope.getklc=response.message;
-    //             console.log(response);
-    //         })
-    //         .catch(function(e) {
-    //             console.log(e);
-    //         })
-    // }
-
-
-
-// Get KLC Report Start - Arman Ahmad - 4-4-2022 - Start
-
-
-$scope.showFilter = function() {
-    $('.sidebar').toggle();
-    //$scope.hideBookDetailRBox();
-    //applyMask();
-}
-$scope.hideFilter = function() {
-    $('.sidebar').hide();
-}
-
-$scope.filterData_klc = function(searchFields, check) { //Function for Dates
-
-    if (searchFields === undefined) {
-        return;
-    }
-
-    //console.log('Hotel Id');
-    //console.log(searchFields.Hotel);
-    //console.log('Booking From');
-    //console.log(searchFields.BookedFrom);
-    //console.log('Booking To');
-    //console.log(searchFields.BookedTo);
-    // '2022-03-27';
-    //return;
-
-
-    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-    }
-    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-    }
-
-    $scope.ajaxGet('get_klc_report', {
-        hotel_id: searchFields.Hotel,
-        booked_from: sBookedFrom,
-        booked_to: sBookedTo
-        }, true)
-        .then(function(response) {
-
-            //$scope.rec1=response.message;
-            //    $scope.rec2=response.bookings;
-           // console.log(response);
-           // console.log('FAHAD AHMED 2');
-           // console.log(response.message);
-            //console.log(response.errors);
-
-            $scope.getklc=response.message;
-            console.log(response);
-
-    })
-    .catch(function(e) {
-        console.log(e);
-    });
-
-    return;
-
-}
-
-$scope.GetKlcReprot = function() { // Function for hotel
-    $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_klc_report', {}, true)
-        .then(function(response) {
-
-            $scope.getklc=response.message;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-
-
-
-// Get KLC Report Start - Arman Ahmad - 4-4-2022 - End
-
-
-
-
-    // $scope.getsummaryReport = function() {
-    //     $scope.ajaxGet('get_sales_summary_report', {}, true)
-    //         .then(function(response) {
-
-    //            $scope.getsummaryreport=response.message;
-    //             console.log(response);
-    //         })
-    //         .catch(function(e) {
-    //             console.log(e);
-    //         })
-    // }
-
-
-
-
-// Get Sales Summary Report Start - Arman Ahmad - 4-4-2022 - Start
-
-
-    $scope.showFilter = function() {
-        $('.sidebar').toggle();
-        //$scope.hideBookDetailRBox();
-        //applyMask();
-    }
-    $scope.hideFilter = function() {
-        $('.sidebar').hide();
-    }
-
-    $scope.filterData_sale_summary = function(searchFields, check) { //Function for Dates
-
-        if (searchFields === undefined) {
-            return;
-        }
-
-        //console.log('Hotel Id');
-        //console.log(searchFields.Hotel);
-        //console.log('Booking From');
-        //console.log(searchFields.BookedFrom);
-        //console.log('Booking To');
-        //console.log(searchFields.BookedTo);
-        // '2022-03-27';
-        //return;
-
-
-        if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-            var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-        }
-        if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-            var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-        }
-
-        $scope.ajaxGet('get_sales_summary_report', {
-            hotel_id: searchFields.Hotel,
-            booked_from: sBookedFrom,
-            booked_to: sBookedTo
-            }, true)
+    $scope.GetInvoiceSearch = function() {
+        $scope.ajaxGet('get_invoice_search', {}, true)
             .then(function(response) {
 
-                //$scope.rec1=response.message;
-                //    $scope.rec2=response.bookings;
-               // console.log(response);
-               // console.log('FAHAD AHMED 2');
-               // console.log(response.message);
-                //console.log(response.errors);
-
-                $scope.getsummaryreport=response.message;
+               $scope.getinvoice=response.message;
                 console.log(response);
-
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-        return;
-
-    }
-
-    $scope.getsummaryReport = function() { // Function for hotel
-        $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-            .then(function(response) {
-                //console.log('All hotels response');
-                //$scope.rec1=response.message;
-                //$scope.rec2=response.bookings;
-                $scope.hotels = response.get_user_hotels;
-                //console.log(response.get_user_hotels);
             })
             .catch(function(e) {
                 console.log(e);
-            });
+            })
+    }
 
+
+    $scope.GetExpensesReport = function() {
+        $scope.ajaxGet('get_expenses_report', {}, true)
+            .then(function(response) {
+
+               $scope.getexpenses=response.message;
+                console.log(response);
+            })
+            .catch(function(e) {
+                console.log(e);
+            })
+    }
+    $scope.GetDailySalesReport = function() {
+        $scope.ajaxGet('get_daily_sales_report', {}, true)
+            .then(function(response) {
+
+               $scope.getexpenses=response.message;
+                console.log(response);
+            })
+            .catch(function(e) {
+                console.log(e);
+            })
+    }
+
+    $scope.GetKlcReprot = function() {
+        $scope.ajaxGet('get_klc_report', {}, true)
+            .then(function(response) {
+
+               $scope.getklc=response.message;
+                console.log(response);
+            })
+            .catch(function(e) {
+                console.log(e);
+            })
+    }
+
+    $scope.getsummaryReport = function() {
         $scope.ajaxGet('get_sales_summary_report', {}, true)
             .then(function(response) {
 
-                $scope.getsummaryreport=response.message;
+               $scope.getsummaryreport=response.message;
                 console.log(response);
             })
             .catch(function(e) {
                 console.log(e);
-            });
+            })
     }
-
-
-
-
-
-// Get Sales Summary Report Start - Arman Ahmad - 4-4-2022 - End
-
-
-
-
-
-
     // End
+
+    
 
 
 });
+
+
