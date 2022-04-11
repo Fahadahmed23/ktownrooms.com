@@ -1533,6 +1533,91 @@ $scope.hideFilter = function() {
     $('.sidebar').hide();
 }
 
+$scope.filterData_cashflowcashin = function(searchFields, check) { 
+
+    if (searchFields === undefined) {
+        return;
+    }
+
+
+    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
+        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
+    }
+    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
+        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
+    }
+
+    $scope.ajaxGet('get_cash_flow_cashin_report', {
+        hotel_id: searchFields.Hotel,
+        booked_from: sBookedFrom,
+        booked_to: sBookedTo
+        }, true)
+        .then(function(response) {
+
+            //$scope.rec1=response.message;
+            //    $scope.rec2=response.bookings;
+           // console.log(response);
+           // console.log('FAHAD AHMED 2');
+           // console.log(response.message);
+            //console.log(response.errors);
+
+            $scope.cashflowcashin=response.result;
+            console.log(response);
+
+    })
+    .catch(function(e) {
+        console.log(e);
+    });
+
+
+
+
+}
+
+$scope.filterData_cashflowcashout = function(searchFields, check) { 
+
+    if (searchFields === undefined) {
+        return;
+    }
+
+
+    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
+        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
+    }
+    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
+        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
+    }
+
+    $scope.ajaxGet('get_cash_flow_cashout_report', {
+        hotel_id: searchFields.Hotel,
+        booked_from: sBookedFrom,
+        booked_to: sBookedTo
+        }, true)
+        .then(function(response) {
+
+            //$scope.rec1=response.message;
+            //    $scope.rec2=response.bookings;
+           // console.log(response);
+           // console.log('FAHAD AHMED 2');
+           // console.log(response.message);
+            //console.log(response.errors);
+
+            $scope.cashflowcashout=response.result;
+            console.log(response);
+
+    })
+    .catch(function(e) {
+        console.log(e);
+    });
+
+
+
+
+}
+
+
+
+
 $scope.filterData_cashflow = function(searchFields, check) { //Function for Dates
 
     if (searchFields === undefined) {
@@ -1605,6 +1690,58 @@ $scope.GetCashFlowReport = function() { // Function for hotel
             console.log(e);
         });
 }
+
+
+$scope.GetCashFlowInReport = function() {
+    $scope.ajaxGet('get_user_hotels', {}, true) 
+        .then(function(response) {
+            //console.log('All hotels response');
+            //$scope.rec1=response.message;
+            //$scope.rec2=response.bookings;
+            $scope.hotels = response.get_user_hotels;
+            //console.log(response.get_user_hotels);
+        })
+        .catch(function(e) {
+            console.log(e);
+        });
+
+    $scope.ajaxGet('get_cash_flow_cashin_report', {}, true)
+        .then(function(response) {
+
+            $scope.cashflowcashin=response.result;
+            //$scope.cashflowin=response.result;
+            console.log(response);
+        })
+        .catch(function(e) {
+            console.log(e);
+        });
+}
+
+
+$scope.GetCashFlowOutReport = function() {
+    $scope.ajaxGet('get_user_hotels', {}, true) 
+        .then(function(response) {
+            //console.log('All hotels response');
+            //$scope.rec1=response.message;
+            //$scope.rec2=response.bookings;
+            $scope.hotels = response.get_user_hotels;
+            //console.log(response.get_user_hotels);
+        })
+        .catch(function(e) {
+            console.log(e);
+        });
+
+    $scope.ajaxGet('get_cash_flow_cashout_report', {}, true)
+        .then(function(response) {
+
+            $scope.cashflowcashout=response.result;
+            console.log(response);
+        })
+        .catch(function(e) {
+            console.log(e);
+        });
+}
+
 
 
 
