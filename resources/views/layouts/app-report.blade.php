@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="shortcut icon" href="https://www.ktownrooms.com/resources/assets/web/img/favicon.png"
         type="image/x-icon">
-    <title>KTOWNROOMS</title>
+    <title style="display: none;">KTOWNROOMS</title>
 
     <!-- Global stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
@@ -27,8 +27,8 @@
     <link rel="stylesheet" href="{{asset('assets/css/intlTelInput.css')}}">
 
     <!-- MR OPTIMIST -->
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"> --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
 
     <!-- mystyle css -->
@@ -91,7 +91,7 @@
     {{-- <script src="https://d3js.org/d3.v4.js"></script> --}}
 
     <!-- Mr Optimist 4 April 2022 -->
-{{--
+
 
      <!--   <script src="{{asset('datatableswork/js/jquery-3.5.1.js')}}"></script> -->
     <script src="{{asset('datatableswork/js/jquery.dataTables.min.js')}}"></script>
@@ -101,7 +101,7 @@
     <script src="{{asset('datatableswork/js/pdfmake.min.js')}}"></script>
     <script src="{{asset('datatableswork/js/vfs_fonts.js')}}"></script>
     <script src="{{asset('datatableswork/js/buttons.html5.min.js')}}"></script>
-    <script src="{{asset('datatableswork/js/buttons.print.min.js')}}"></script> --}}
+    <script src="{{asset('datatableswork/js/buttons.print.min.js')}}"></script>
 
 
     <!-- /theme JS files -->
@@ -402,7 +402,7 @@
                     <a href="/reports" class="navbar-nav-link">Reports</a>
                 </li>
                 @endpermission
-                {{-- New Reports View - Start - Arman Ahmad 18-03-2022 --}}
+                    {{-- New Reports View - Start - Arman Ahmad 18-03-2022 --}}
 
 
                 @permission('can-view-report')
@@ -413,6 +413,7 @@
 
 
                 {{-- New Reports View - End - Arman Ahmad 18-03-2022 --}}
+
 
                 {{-- New Reports View FDO - Start - Arman Ahmad 12-04-2022 --}}
 

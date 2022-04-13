@@ -17,8 +17,8 @@
             </div>
 
             <div class="table table-responsive dataTables_wrapper">
-                <table id="examplefahad" datatable="ng" dt-options="dtOptions" class="table table-striped hover display dataTable datatable-basic receivable-report-table">
-                {{-- <table ng-cloak class="table table-striped hover display dataTable datatable-basic"> --}}
+                {{-- <table id="examplefahad" datatable="ng" dt-options="dtOptions" class="table table-striped hover display dataTable datatable-basic receivable-report-table"> --}}
+                <table ng-cloak class="table table-striped hover display dataTable datatable-basic">
                 <thead>
                     <tr>
                         <th scope="col">#</th>

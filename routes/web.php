@@ -451,6 +451,12 @@ Route::get('reports_get_sales_summary_report', 'ReportControllerTwo@index_report
 
 Route::get('reports_get_receivable_report', 'ReportControllerTwo@index_reports_get_receivable_report');
 Route::get('reports_get_cash_flow_report', 'ReportControllerTwo@index_reports_get_cash_flow_report');
+
+Route::get('reports_get_cash_flow_cashin', 'ReportControllerTwo@index_reports_get_cash_flow_cashin');
+Route::get('reports_get_cash_flow_cashout', 'ReportControllerTwo@reports_get_cash_flow_cashout');
+
+
+
 Route::get('reports_get_klc_report','ReportControllerTwo@index_reports_get_klc_report');
 
 
@@ -473,6 +479,11 @@ Route::get('get_individual_guest_ledger', 'ReportControllerTwo@get_individual_gu
 Route::get('get_average_daily_rate_report', 'ReportControllerTwo@get_average_daily_rate_report');
 Route::get('get_receivable_report', 'ReportControllerTwo@get_receivable_report');
 Route::get('get_cash_flow_report', 'ReportControllerTwo@get_cash_flow_report');
+
+Route::get('get_cash_flow_cashin_report', 'ReportControllerTwo@get_cash_flow_cashin_report');
+Route::get('get_cash_flow_cashout_report', 'ReportControllerTwo@get_cash_flow_cashout_report');
+
+
 Route::get('get_revenue_par_report', 'ReportControllerTwo@get_revenue_par_report');
 Route::get('get_btc_pending_list', 'ReportControllerTwo@get_btc_pending_list');
 //Route::get('get_invoice_search/{id}', 'ReportControllerTwo@get_invoice_search');

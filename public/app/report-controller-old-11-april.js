@@ -14,30 +14,25 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withOption('stateSave', true).withOption('lengthMenu', [100]).withButtons([
         {
             extend : 'excel',
-            filename:'Ktown-report',
-            title: ''
+            filename:'Ktown-report'
         },
         {
             extend : 'pdf',
-            filename:'Ktown-report',
-            title: ''
+            filename:'Ktown-report'
         },
         {
             extend: 'pdfHtml5',
             orientation: 'landscape',
             pageSize: 'LEGAL',
             text:'PDF LEGAL',
-            filename:'Ktown-report',
-            title: ''
+            filename:'Ktown-report'
         },
         {
             extend : 'copy',
             filename: 'Ktown-report',
-            title: ''
         },
 
     ]);
-
     //.withButtons( ['excel', 'pdf','print','copy','columnsToggle',colvis']);
 
 
@@ -1416,7 +1411,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
 
 
 
-    // Get BTC Pending Start - Arman Ahmad - 4-4-2022 - Start
+    // Get Cash Flow Start - Arman Ahmad - 4-4-2022 - Start
 
 
     $scope.showFilter = function() {
@@ -1505,7 +1500,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
 
 
 
-    // Get BTC Pending Start - Arman Ahmad - 4-4-2022 - End
+    // Get Cash Flow Start - Arman Ahmad - 4-4-2022 - End
 
 
 
@@ -1525,7 +1520,7 @@ app.controller('reportCtrl', function($scope, DTOptionsBuilder, urlService, $fil
     // }
 
 
-    // Get Cash Flow Cash In Start - Arman Ahmad - 11-4-2022 - Start
+    // Get Cash Flow Start - Arman Ahmad - 4-4-2022 - Start
 
 
 $scope.showFilter = function() {
@@ -1537,7 +1532,7 @@ $scope.hideFilter = function() {
     $('.sidebar').hide();
 }
 
-$scope.filterData_cashflowcashin = function(searchFields, check) { //Function for Dates
+$scope.filterData_cashflow = function(searchFields, check) { //Function for Dates
 
     if (searchFields === undefined) {
         return;
@@ -1560,7 +1555,7 @@ $scope.filterData_cashflowcashin = function(searchFields, check) { //Function fo
         var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
     }
 
-    $scope.ajaxGet('get_cash_flow_cashin_report', {
+    $scope.ajaxGet('get_cash_flow_report', {
         hotel_id: searchFields.Hotel,
         booked_from: sBookedFrom,
         booked_to: sBookedTo
@@ -1574,7 +1569,7 @@ $scope.filterData_cashflowcashin = function(searchFields, check) { //Function fo
            // console.log(response.message);
             //console.log(response.errors);
 
-            $scope.cashflowcashin=response.result;
+            $scope.cashflow=response.message;
             console.log(response);
 
     })
@@ -1586,7 +1581,7 @@ $scope.filterData_cashflowcashin = function(searchFields, check) { //Function fo
 
 }
 
-$scope.GetCashFlowInReport = function() { // Function for hotel
+$scope.GetCashFlowReport = function() { // Function for hotel
     $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
         .then(function(response) {
             //console.log('All hotels response');
@@ -1599,35 +1594,10 @@ $scope.GetCashFlowInReport = function() { // Function for hotel
             console.log(e);
         });
 
-    $scope.ajaxGet('get_cash_flow_cashin_report', {}, true)
+    $scope.ajaxGet('get_cash_flow_report', {}, true)
         .then(function(response) {
 
-            $scope.cashflowcashin=response.result;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-$scope.GetCashFlowInReport = function() {
-    $scope.ajaxGet('get_user_hotels', {}, true)
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_cash_flow_cashin_report', {}, true)
-        .then(function(response) {
-
-            $scope.cashflowcashin=response.result;
+            $scope.cashflow=response.message;
             console.log(response);
         })
         .catch(function(e) {
@@ -1639,125 +1609,7 @@ $scope.GetCashFlowInReport = function() {
 
 
 
-// Get Cash Flow Cash In Start - Arman Ahmad -11-4-2022 - End
-
-
-
-// Get Cash Flow Cash Out Start - Arman Ahmad - 11-4-2022 - Start
-
-
-$scope.showFilter = function() {
-    $('.sidebar').toggle();
-    //$scope.hideBookDetailRBox();
-    //applyMask();
-}
-$scope.hideFilter = function() {
-    $('.sidebar').hide();
-}
-
-$scope.filterData_cashflowcashout = function(searchFields, check) { //Function for Dates
-
-    if (searchFields === undefined) {
-        return;
-    }
-
-    //console.log('Hotel Id');
-    //console.log(searchFields.Hotel);
-    //console.log('Booking From');
-    //console.log(searchFields.BookedFrom);
-    //console.log('Booking To');
-    //console.log(searchFields.BookedTo);
-    // '2022-03-27';
-    //return;
-
-
-    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
-        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
-    }
-    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
-        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
-    }
-
-    $scope.ajaxGet('get_cash_flow_cashout_report', {
-        hotel_id: searchFields.Hotel,
-        booked_from: sBookedFrom,
-        booked_to: sBookedTo
-        }, true)
-        .then(function(response) {
-
-            //$scope.rec1=response.message;
-            //    $scope.rec2=response.bookings;
-           // console.log(response);
-           // console.log('FAHAD AHMED 2');
-           // console.log(response.message);
-            //console.log(response.errors);
-
-            $scope.cashflowcashout=response.message;
-            console.log(response);
-
-    })
-    .catch(function(e) {
-        console.log(e);
-    });
-
-    return;
-
-}
-
-$scope.GetCashFlowOutReport = function() { // Function for hotel
-    $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_cash_flow_cashout_report', {}, true)
-        .then(function(response) {
-
-            $scope.cashflowcashout=response.message;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-$scope.GetCashFlowInReport = function() {
-    $scope.ajaxGet('get_user_hotels', {}, true)
-        .then(function(response) {
-            //console.log('All hotels response');
-            //$scope.rec1=response.message;
-            //$scope.rec2=response.bookings;
-            $scope.hotels = response.get_user_hotels;
-            //console.log(response.get_user_hotels);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-
-    $scope.ajaxGet('get_cash_flow_cashout_report', {}, true)
-        .then(function(response) {
-
-            $scope.cashflowcashout=response.result;
-            console.log(response);
-        })
-        .catch(function(e) {
-            console.log(e);
-        });
-}
-
-
-
-
-
-// Get Cash Flow Cash Out Start - Arman Ahmad -11-4-2022 - End
+// Get Cash Flow Start - Arman Ahmad - 4-4-2022 - End
 
 
     // $scope.GetInvoiceSearch = function() {
@@ -1786,31 +1638,52 @@ $scope.hideFilter = function() {
     $('.sidebar').hide();
 }
 
-$scope.filterData_invoice_search = function(searchFields, check) {
-    //Function for Dates
+$scope.filterData_invoice_search = function(searchFields, check) { //Function for Dates
 
     if (searchFields === undefined) {
         return;
     }
 
+    //console.log('Hotel Id');
+    //console.log(searchFields.Hotel);
+    //console.log('Booking From');
+    //console.log(searchFields.BookedFrom);
+    //console.log('Booking To');
+    //console.log(searchFields.BookedTo);
+    // '2022-03-27';
+    //return;
+
+
+    if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
+        var sBookedFrom = moment(searchFields.BookedFrom).format("YYYY-MM-DD");
+    }
+    if (searchFields.BookedTo && searchFields.BookedTo.trim().length > 1) {
+        var sBookedTo = moment(searchFields.BookedTo).format("YYYY-MM-DD");
+    }
 
     $scope.ajaxGet('get_invoice_search', {
-        hotel_id:searchFields.Hotel,
-        booking_no:searchFields.booking_no,
-        cnic:searchFields.cnic,
-        mobile_no:searchFields.mobile_no
+        hotel_id: searchFields.Hotel,
+        booked_from: sBookedFrom,
+        booked_to: sBookedTo
+        }, true)
+        .then(function(response) {
 
-    }, true)
-    .then(function(response) {
+            //$scope.rec1=response.message;
+            //    $scope.rec2=response.bookings;
+           // console.log(response);
+           // console.log('FAHAD AHMED 2');
+           // console.log(response.message);
+            //console.log(response.errors);
 
-        $scope.getinvoice=response.result;
-        console.log(response);
+            $scope.getinvoice=response.message;
+            console.log(response);
 
     })
     .catch(function(e) {
         console.log(e);
     });
 
+    return;
 
 }
 
@@ -1830,7 +1703,7 @@ $scope.GetInvoiceSearch = function() { // Function for hotel
     $scope.ajaxGet('get_invoice_search', {}, true)
         .then(function(response) {
 
-            $scope.getinvoice=response.result;
+            $scope.getinvoice=response.message;
             console.log(response);
         })
         .catch(function(e) {
@@ -1869,12 +1742,20 @@ $scope.hideFilter = function() {
     $('.sidebar').hide();
 }
 
-$scope.filterData_expenses = function(searchFields, check) {
+$scope.filterData_expenses = function(searchFields, check) { //Function for Dates
 
     if (searchFields === undefined) {
         return;
     }
 
+    //console.log('Hotel Id');
+    //console.log(searchFields.Hotel);
+    //console.log('Booking From');
+    //console.log(searchFields.BookedFrom);
+    //console.log('Booking To');
+    //console.log(searchFields.BookedTo);
+    // '2022-03-27';
+    //return;
 
 
     if (searchFields.BookedFrom && searchFields.BookedFrom.trim().length > 1) {
@@ -1898,7 +1779,7 @@ $scope.filterData_expenses = function(searchFields, check) {
            // console.log(response.message);
             //console.log(response.errors);
 
-            $scope.getexpenses=response.result;
+            $scope.getexpenses=response.message;
             console.log(response);
 
     })
@@ -1926,7 +1807,7 @@ $scope.GetExpensesReport = function() { // Function for hotel
     $scope.ajaxGet('get_expenses_report', {}, true)
         .then(function(response) {
 
-            $scope.getexpenses=response.result;
+            $scope.getexpenses=response.message;
             console.log(response);
         })
         .catch(function(e) {

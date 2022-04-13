@@ -44,7 +44,7 @@ class PermissionController extends Controller
                 } else {
                     $postData['id'] = 1;
                 }
-                
+
                 $permission = Permission::create($postData);
             }
         }
@@ -133,7 +133,7 @@ class PermissionController extends Controller
         //     ['url'=> 'admin/volunteers', 'view_name' => 'Volunteer','is_active' => 1, 'group' => 'Volunteer', 'name' => 'can-view-volunteer', 'display_name' => 'Can View Volunteer'],
         //     ['url'=> 'admin/campaigns', 'view_name' => 'Campaign','is_active' => 1, 'group' => 'Campaign', 'name' => 'can-view-campaign', 'display_name' => 'Can View Campaign'],
         //     ['url'=> 'donations', 'view_name' => 'Donation','is_active' => 1, 'group' => 'Donation', 'name' => 'can-view-donation', 'display_name' => 'Can View Donation'],
-        //     ['url'=> 'reports', 'view_name' => 'Report','is_active' => 1, 'group' => 'Report', 'name' => 'can-view-report', 'display_name' => 'Can View Report'],
+        //     ['url'=> 'reports', 'view_name' => 'Report','is_active' => 1, 'group' => 'Report', 'name' => '', 'display_name' => 'Can View Report'],
         //     // ******views end********
 
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Slot', 'name' => 'can-add-slot', 'display_name' => 'Can Add Slot'],
@@ -143,28 +143,28 @@ class PermissionController extends Controller
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Role', 'name' => 'can-add-role', 'display_name' => 'Can Add Role'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Role', 'name' => 'can-delete-role', 'display_name' => 'Can Delete Role'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Tour', 'name' => 'can-add-tour', 'display_name' => 'Can Add Tour'],
-            
+
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Tour', 'name' => 'can-delete-tour', 'display_name' => 'Can Delete Tour'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Member', 'name' => 'can-add-member', 'display_name' => 'Can Add Member'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Member', 'name' => 'can-delete-member', 'display_name' => 'Can Delete Member'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Membership_level', 'name' => 'can-add-membership_level', 'display_name' => 'Can Add Membership_level'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Membership_level', 'name' => 'can-delete-membership_level', 'display_name' => 'Can Delete Membership_level'],
-            
+
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Volunteer', 'name' => 'can-add-volunteer', 'display_name' => 'Can Add Volunteer'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Volunteer_availability', 'name' => 'can-add-volunteer_availability', 'display_name' => 'Can Add Volunteer_availability'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Volunteer', 'name' => 'can-delete-volunteer', 'display_name' => 'Can Delete Volunteer'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Volunteer_availability', 'name' => 'can-delete-volunteer_availability', 'display_name' => 'Can Delete Volunteer_availability'],
         //     // ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Volunteer_schedule', 'name' => 'can-add-volunteer_schedule', 'display_name' => 'Can Add Volunteer_schedule'],
-            
+
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Email_template', 'name' => 'can-add-email_template', 'display_name' => 'Can Add Email_template'],
-            
+
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Criteria', 'name' => 'can-view-criteria', 'display_name' => 'Can View Criteria'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Campaign', 'name' => 'can-add-campaign', 'display_name' => 'Can Add Campaign'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Campaign_response', 'name' => 'can-add-campaign_response', 'display_name' => 'Can Add Campaign_response'],
-        //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Email_template', 'name' => 'can-delete-email_template', 'display_name' => 'Can Delete Email_template'],            
+        //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Email_template', 'name' => 'can-delete-email_template', 'display_name' => 'Can Delete Email_template'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Campaign', 'name' => 'can-delete-campaign', 'display_name' => 'Can Delete Campaign'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Donation', 'name' => 'can-add-donation', 'display_name' => 'Can Add Donation'],
-            
+
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Report_config', 'name' => 'can-add-report_config', 'display_name' => 'Can Add Report_config'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Staff', 'name' => 'can-add-staff', 'display_name' => 'Can Add Staff'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Staff', 'name' => 'can-delete-staff', 'display_name' => 'Can Delete Staff'],
@@ -174,7 +174,7 @@ class PermissionController extends Controller
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Member', 'name' => 'can-delete-membermanagement', 'display_name' => 'Can Delete Member Management'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Donor', 'name' => 'can-add-donormanagement', 'display_name' => 'Can Add Donor Management'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Donor', 'name' => 'can-delete-donormanagement', 'display_name' => 'Can Delete Donor Management'],
-            
+
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Annual Calendar', 'name' => 'can-add-annualcalendar', 'display_name' => 'Can Add Annual Calendar'],
         //     ['url'=> '', 'view_name' => '','is_active' => 1, 'group' => 'Annual Calendar', 'name' => 'can-delete-annualcalendar', 'display_name' => 'Can Delete Annual Calendar'],
         // ];

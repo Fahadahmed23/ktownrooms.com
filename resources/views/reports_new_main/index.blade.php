@@ -18,7 +18,7 @@
                     <div class="card-header header-elements-inline">
                         <h4 class="card-title">New Reports Main Page</h4>
                     </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <input type="search"  class="form-control" />
@@ -32,7 +32,7 @@
                                   </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <br>
                     <div class="card-body">
                         {{-- [[modules]] --}}
@@ -40,23 +40,28 @@
                         <br/>
                         <div class="row">
                             <div class="col-md-3">
-                                <form action="reports_get_btc_pending_list">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="BTC Pending List" />
+
+                                <form action="reports_get_btc_pending_list" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>GET BTC Pending</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="BTC Pending List" /> --}}
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_cash_flow_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Cash Flow Report" />
+                                <form action="reports_get_cash_flow_report" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Cash Flow Report</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Cash Flow Report" /> --}}
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_checkout_list">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="CheckOut List Report" />
+                                <form action="reports_get_daily_sales_report" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Daily Sales Report</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Daily Sales Report" /> --}}
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_daily_sales_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Daily Sales Report" />
+                                <form action="reports_get_sales_summary_report" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Sale Summary</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Sale Summary" /> --}}
                                 </form>
                             </div>
                         </div>
@@ -64,40 +69,32 @@
                         <br/>
                         <div class="row">
                             <div class="col-md-3">
-                                <form action="reports_get_expenses_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Expenses Report" />
+                                <form action="reports_get_expenses_report" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Expenses Report</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Expenses Report" /> --}}
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_invoice_search">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Invoice Search Report" />
+                                <form action="reports_get_invoice_search" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Invoice Search Report</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Invoice Search Report" /> --}}
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_klc_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="KLC Report" />
+                                <form action="reports_get_klc_report" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>KLC Report</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="KLC Report" /> --}}
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_receivable_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Receivable Report" />
+                                <form action="reports_get_receivable_report" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Receivable Report</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Receivable Report" /> --}}
                                 </form>
                             </div>
                         </div>
                         <br>
                         <br>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <form action="reports_get_sales_summary_report">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Sale Summary" />
-                                </form>
-                            </div>
-                            <div class="col-md-3">
-                                <form action="#">
-                                    <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Report Name" />
-                                </form>
-                            </div>
-                        </div>
                         {{-- <div style="display: inline-flex; width: 100%;" class="justify-content-lg-between">
                             <ul class="nav nav-pills flex-column mr-lg-3 wmin-lg-250 mb-lg-0">
 
