@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-report')
 
 @section('scripts')
     <!-- <script src="app/bookings-controller.js"></script> -->

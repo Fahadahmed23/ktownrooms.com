@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-report')
 
 @section('scripts')
     <!-- <script = src="app/reports-controller.js"></script> -->
@@ -12,7 +12,7 @@
     <div class="content-wrapper">
 
         @include('reports_get_checkout_list.header')
-[[checkoutlist|json]]
+{{-- [[checkoutlist|json]] --}}
         <div class="content" >
             <div class="col-lg-12">
                 <div class="card">
@@ -20,7 +20,7 @@
                         <h4 class="card-title">Get CheckOut List</h4>
                     </div>
 
-                    <table class="table" ng-init="GetCheckOutList()" >  
+                    <table class="table" ng-init="GetCheckOutList()" >
                         <thead>
                           <tr ng-repeat="c in checkoutlist">
                             <th scope="col">#</th>

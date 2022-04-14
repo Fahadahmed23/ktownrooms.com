@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-report')
 
 @section('scripts')
     <!-- <script src="app/bookings-controller.js"></script> -->
@@ -11,7 +11,7 @@
 
 
 <div class="content" ng-controller='reportCtrl' ng-init='GetReceivableReport()'>
-    
+
     <div class="d-md-flex admin-panel-section align-items-md-start">
         <!-- Left sidebar component -->
         @include('reports_get_receivable_report.filter')
@@ -20,7 +20,7 @@
         {{-- <div class="flex-fill overflow-auto"> --}}
 
         <div class="flex-fill overflow-auto">
-            
+
             @include('reports_get_receivable_report.table')
 
         </div>

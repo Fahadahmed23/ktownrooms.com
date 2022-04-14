@@ -5,22 +5,20 @@
 .cursorShow{cursor: default;}
 </style>
 
-
-
 <div id="bookings-table" class="col-12 col-md-12 col-sm-12 left-tour-bar float-left p-0">
     <div class="card bookingTable">
         <div class="card-header header-elements-inline">
             <h5 class="card-title">
-                Receivables 
+                Receivables
                     <span><a href="#" class="" ng-click="showFilter()">
-                        <i id="" class="icon-search4 " style="font-size: 12px;"></i> 
+                        <i id="" class="icon-search4 " style="font-size: 12px;"></i>
                    </a></span>
             </h5>
         </div>
 
-        <table id="examplefahad" datatable="ng" dt-options="dtOptions" class="table table-striped hover display dataTable datatable-basic receivable-report-table">
-
-        <!-- <table id="examplefahad" datatable="ng" dt-options="vm.dtOptions" ng-cloak class="table table-striped hover display dataTable datatable-basic receivable-report-table">-->
+        <div class="table table-responsive dataTables_wrapper">
+            <table id="examplefahad" datatable="ng" dt-options="dtOptions" class="table table-striped hover display dataTable datatable-basic receivable-report-table">
+            {{-- <table ng-cloak class="table table-striped hover display dataTable datatable-basic"> --}}
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -50,10 +48,8 @@
                     </tr>
                 </tbody>
             </table>
-            
-       
- 
+
+        </div>
+
     </div>
 </div>
-
-

@@ -2,7 +2,6 @@
     .md-select-menu-container.md-active.md-clickable{
         z-index: 1000;
     }
-    
     </style>
 <div class="sidebar sidebar-light bg-transparent sidebar-component border-0 shadow-0 sidebar-expand-md" style="none">
     <!-- Sidebar content -->
@@ -20,7 +19,6 @@
 
             <div class="card-body">
                 <form>
-                    
                     <md-select name="hotel"  class="m-0" ng-model="searchReportingAttributes.Hotel" placeholder="Select a Hotel">
                         <md-option ng-repeat="hotel in hotels" ng-value="hotel.hotel_id">[[hotel.hotel_name]]</md-option>
                     </md-select>
@@ -33,7 +31,7 @@
                             <span class="input-group-append">
                                 <span class="input-group-text"><i class="icon-calendar"></i></span>
                             </span>
-                            <label>Booking From</label>
+                            <label>Date From</label>
                         </div>
                     </div>
 
@@ -43,10 +41,10 @@
                             <span class="input-group-append">
                                 <span class="input-group-text"><i class="icon-calendar"></i></span>
                             </span>
-                            <label>Booking To</label>
+                            <label>Date To</label>
                         </div>
                     </div>
-               
+
 
                     <div class="float-right">
                         <button class="btn btn-default float-right" ng-click="filterData(searchReportingAttributes, 'clear')"  type="reset">Reset</button>
