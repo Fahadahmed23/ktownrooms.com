@@ -27,7 +27,7 @@
                         <th scope="col">Booking #</th>
                         <th scope="col">Check-in Date</th>
                         <th scope="col">Check-out Date</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">View Invoice</th>
                         <!--<th scope="col">View Invoice</th> -->
                     </tr>
                 </thead>
@@ -39,7 +39,7 @@
                                 <td>[[c.booking_no]]</td>
                                 <td>[[c.checkin_time]]</td>
                                 <td>[[c.checkout_time]]</td>
-                                <td>[[c.status]]</td>
+                                <td><a href="<?php echo url('/bookings/receipt').'/'; ?>[[c.id]]" target="_blank">Click</a></td>
                         </tr>
                     </tbody>
                 </table>

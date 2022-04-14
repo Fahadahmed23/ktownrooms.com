@@ -32,14 +32,7 @@
                     <th scope="col">Amount Paid</th>
                     <th scope="col">Out Standing Balance</th>
                     <th scope="col">UserName</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Room No.</th>
-                    <th scope="col">Booking No.</th>
-                    <th scope="col">Guest Name</th>
-                    <th scope="col">Total Amount</th>
-                    <th scope="col">Amount Paid</th>
-                    <th scope="col">Out Standing Balance</th>
-                    <th scope="col">UserName</th>
+                   
                 </tr>
             </thead>
                 <tbody data-link="row" class="rowlink">
@@ -53,14 +46,7 @@
                         <td>[[a.payment_amount]]</td>
                         <td>[[a.balance_outstanding]]</td>
                         <td>[[a.user_name]]</td>
-                        <td>[[a.checkin_time]]</td>
-                        <td>[[a.roomNumber]]</td>
-                        <td>[[a.booking_no]]</td>
-                        <td>[[a.customer_first_name]] [[a.customer_last_name]]</td>
-                        <td>[[a.net_total]]</td>
-                        <td>[[a.payment_amount]]</td>
-                        <td>[[a.balance_outstanding]]</td>
-                        <td>[[a.user_name]]</td>
+                       
                     </tr>
                 </tbody>
             </table>
