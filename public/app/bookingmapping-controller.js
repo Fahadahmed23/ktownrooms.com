@@ -182,3 +182,7 @@ app.controller('bookingmappingCtrl', function($scope, DTColumnDefBuilder, DTOpti
         $('#addNewInventory').hide('slow');
     }
 });
+
+
+
+// comment kt-new 

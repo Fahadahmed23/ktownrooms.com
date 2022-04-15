@@ -295,13 +295,17 @@ class HotelDashboardController extends Controller
         $today_earning = round($today_earning,0);
 
         $temp = [];
-        foreach($currentMonthData['date'] as $key => $value) {
-            if(!array_key_exists($value, $temp)) {
-                $temp[$value] = 0;
+        
+        // Mr Optimist 02 Dec 2021
+        if(isset($currentMonthData['date'])) {
+            foreach($currentMonthData['date'] as $key => $value) {
+                if(!array_key_exists($value, $temp)) {
+                    $temp[$value] = 0;
+                }
+                $temp[$value] += $currentMonthData['value'][$key];
             }
-            $temp[$value] += $currentMonthData['value'][$key];
         }
-
+        
         $revenueMonthly = [];
         $revenueMonthly['date'] = array_keys($temp);
         $revenueMonthly['value'] = array_values($temp);
@@ -313,7 +317,7 @@ class HotelDashboardController extends Controller
 
         // $revenueMonthly = json_encode($revenueMonthly);
 
-        
+
         // $overallBooking = Booking::where('status', 'CheckedOut')
         //     ->with(['invoice' => function ($query) {
         //         $query->groupBy('booking_id')->select('booking_id', DB::raw('SUM(net_total) AS amount_sum'));

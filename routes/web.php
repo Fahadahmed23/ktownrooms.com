@@ -88,8 +88,19 @@ Route::post('bookings/transfer/search', 'BookingsController@searchForTransfer')-
 Route::post('bookings/transfer/request', 'BookingsController@requestForTransfer')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
 Route::post('checkRoomAvailability', 'BookingsController@checkRoomAvailability')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
 Route::post('send_sms', 'BookingsController@sendSms')->middleware('permission:can-send-sms-booking||can-send-sms-frontdesk-booking');
+Route::post('search-customers', 'BookingsController@searchCustomers')->middleware('permission:can-add-booking');
 // FrontDesk
 Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-frontdesk-booking');
+
+/**
+ * Miscellaneous Amount
+ * Mr Optimist
+ */
+//Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::get('getBookingsMiscellaneousAmount', 'BookingsController@getBookingsMiscellaneousAmount');
+Route::post('deleteBookingsMiscellaneousAmount', 'BookingsController@deleteBookingsMiscellaneousAmount');
+Route::post('saveBookingsMiscellaneousAmount', 'BookingsController@saveBookingsMiscellaneousAmount');
+
 // Route::get('bookings/find/{id}', 'BookingsController@show')->middleware('permission:can-add-booking');
 // Route::get('getBookings','BookingsController@getBookings')->middleware('permission:can-view-booking');
 // Route::post('searchRooms', 'BookingsController@searchRooms')->middleware('permission:can-add-booking');
@@ -419,6 +430,69 @@ Route::get('getRoles', function () {
 });
 Route::post('shareReportConfig', 'ReportController@share_report_config')->middleware('permission:can-view-report');
 
+/**
+* Mr Optimist 12 Jan 2022
+* Reporting work
+*/
+
+
+//Reports View Controller - Arman Ahmad - 19-March-2022 - Start
+Route::get('reports_new_main', 'ReportControllerTwo@index_reports_new_main');
+Route::get('reports_get_guest_detail', 'ReportControllerTwo@index_reports_get_guest_detail');
+Route::get('reports_get_checkout_list', 'ReportControllerTwo@index_reports_get_checkout_list');
+
+Route::get('reports_get_btc_pending_list', 'ReportControllerTwo@index_reports_get_btc_pending_list');
+Route::get('reports_get_invoice_search', 'ReportControllerTwo@index_reports_get_invoice_search');
+Route::get('reports_get_expenses_report', 'ReportControllerTwo@index_reports_get_expenses_report');
+Route::get('reports_get_daily_sales_report', 'ReportControllerTwo@index_reports_get_daily_sales_report');
+Route::get('reports_get_sales_summary_report', 'ReportControllerTwo@index_reports_get_sales_summary_report');
+
+Route::get('reports_get_receivable_report', 'ReportControllerTwo@index_reports_get_receivable_report');
+Route::get('reports_get_cash_flow_report', 'ReportControllerTwo@index_reports_get_cash_flow_report');
+
+Route::get('reports_get_cash_flow_cashin', 'ReportControllerTwo@index_reports_get_cash_flow_cashin');
+Route::get('reports_get_cash_flow_cashout', 'ReportControllerTwo@index_reports_get_cash_flow_cashout');
+
+
+
+Route::get('reports_get_klc_report','ReportControllerTwo@index_reports_get_klc_report');
+
+
+//Reports View Controller - Arman Ahmad - 19-March-2022 - End
+
+
+// Filter : Hotels connected with user
+Route::get('get_user_hotels', 'ReportControllerTwo@get_user_hotels');
+
+
+//Route::get('reports_new', 'ReportControllerTwo@index');
+
+Route::get('get_guest_detail', 'ReportControllerTwo@get_guest_detail');
+Route::get('get_checkout_list', 'ReportControllerTwo@get_checkout_list');
+
+// Route::get('get_inquirydetail_report', 'ReportControllerTwo@get_inquirydetail_report');
+Route::get('get_daily_sales_report', 'ReportControllerTwo@get_daily_sales_report');
+Route::get('get_sales_summary_report', 'ReportControllerTwo@get_sales_summary_report');
+Route::get('get_individual_guest_ledger', 'ReportControllerTwo@get_individual_guest_ledger');
+Route::get('get_average_daily_rate_report', 'ReportControllerTwo@get_average_daily_rate_report');
+Route::get('get_receivable_report', 'ReportControllerTwo@get_receivable_report');
+Route::get('get_cash_flow_report', 'ReportControllerTwo@get_cash_flow_report');
+
+Route::get('get_cash_flow_cashin_report', 'ReportControllerTwo@get_cash_flow_cashin_report');
+Route::get('get_cash_flow_cashout_report', 'ReportControllerTwo@get_cash_flow_cashout_report');
+
+
+Route::get('get_revenue_par_report', 'ReportControllerTwo@get_revenue_par_report');
+Route::get('get_btc_pending_list', 'ReportControllerTwo@get_btc_pending_list');
+//Route::get('get_invoice_search/{id}', 'ReportControllerTwo@get_invoice_search');
+Route::get('get_invoice_search', 'ReportControllerTwo@get_invoice_search');
+Route::get('get_monthly_sales_report', 'ReportControllerTwo@get_monthly_sales_report');
+Route::get('get_expenses_report', 'ReportControllerTwo@get_expenses_report');
+Route::get('get_discount_report', 'ReportControllerTwo@get_discount_report');
+Route::get('get_hotel_services_report','ReportControllerTwo@get_hotel_services_report');
+Route::get('get_klc_report','ReportControllerTwo@get_klc_report');
+
+
 // partners
 Route::get('partners', 'PartnersController@index')->middleware('permission:can-view-partner');
 Route::get('getPartners', 'PartnersController@getPartners');
@@ -648,10 +722,6 @@ Route::get('get_shift_handover', 'ShiftHandOverController@getData')->middleware(
 Route::post('shift_handover', 'ShiftHandOverController@store')->middleware('permission:can-view-shift-handover');
 Route::post('calculate_voucher_amount', 'ShiftHandOverController@calculateAmount')->middleware('permission:can-view-shift-handover');
 
-Route::post('customer_bookings','CustomerProfileController@getCustomerBookingsAll');
-Route::post('external_customer_bookings', 'CustomerProfileController@getCustomerBooking');
-
-
 /**
 Route::get('/clear-cache', function() {
     //return 'abcd';
@@ -667,3 +737,15 @@ Route::get('/clear-cache', function() {
 });
 **/
 
+
+
+// Mr Optimist + Arman Bhai
+Route::get('customer_profile_bookings', 'CustomerProfileController@getCustomerBookings');
+Route::post('customer_bookings', 'CustomerProfileController@getCustomerBookingsAll');
+Route::post('external_customer_bookings', 'CustomerProfileController@getCustomerBooking');
+
+//Route::get('customer_single_profile_booking/{id}', 'CustomerProfileController@customerSingleProfileBooking');
+Route::get('customer_single_profile_booking/{id}', 'CustomerProfileController@show');
+
+
+// ->middleware('permission:can-view-booking||can-view-frontdesk-booking');

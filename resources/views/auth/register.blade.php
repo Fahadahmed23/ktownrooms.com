@@ -1,77 +1,193 @@
-@extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Ktown Rooms | Register</title>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+	<!-- Global stylesheets -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<link href="{{asset('global_assets/css/icons/icomoon/styles.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/bootstrap_limitless.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/layout.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/components.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/colors.min.css')}}" rel="stylesheet" type="text/css">
+	<!-- /global stylesheets -->
 
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+	<!-- Core JS files -->
+	<script src="{{asset('global_assets/js/main/jquery.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/main/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/plugins/loaders/blockui.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/plugins/ui/ripple.min.js')}}"></script>
+	<script src="https://kit.fontawesome.com/ff383a412e.js" crossorigin="anonymous"></script>
+	<!-- /core JS files -->
 
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+	<!-- Theme JS files -->
+	<script src="{{asset('global_assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
 
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+	<script src="assets/js/app.js"></script>
 
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+	<!-- /theme JS files -->
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+	<style>
+	.field-icon {
+	float: right;
+	margin-left: -25px;
+	margin-top: -25px;
+	position: relative;
+	z-index: 2;
+	}
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+	.container{
+	padding-top:50px;
+	margin: auto;
+	}
+	.bg-slate-800 {
+    background-color: #37474f;
+    background-image: url(https://www.ktownrooms.com/resources/assets/web/img/abt-slide-img.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.toaster {
+    background: #fde1df;
+    color: #7f231c;
+    width: 90%;
+    box-shadow: 0 0 7px 0px #fde1df;
+    margin: 22px auto;
+}
+.eror p {
+    margin: 0;
+}
+.eror {
+    text-align: left;
+    padding: 10px;
+}
+	</style>
+</head>
 
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+<body class="bg-slate-800">
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+	<!-- Page content -->
+	<div class="page-content">
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+		<!-- Main content -->
+		<div class="content-wrapper">
+       
 
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
+			<!-- Content area -->
+			<div class="content ">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-3">
+						@php
+							$default_rule =  \App\Models\DefaultRule::first();
+							$img = $default_rule->picture;
+							$name = $default_rule->name;
+							@endphp
+							@if($img)
+							<img class="logo-icon img-fluid"  src="{{$img}}" alt="">
+							@else 
+							<img class="img-fluid" src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="" srcset="">
+							@endif
+						</div>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 10%;">
+				<div class="col-md-6" style="text-align: right">
+					
+					<h1 style="font-size: 45px;line-height: 55px;font-weight: 800;">Welcome to <span style="color: #ea863b;">{{$name ?? 'Ktown Rooms'}}</span><br> & Experience Hospitality Beyond Borders!</h1>
+					<h3 style="font-weight: 400;">Affordability. Standardization. Predictability. Classification.</h3>
+				</div>
+				<div class="col-md-4">
+						<!-- Login card -->
+						 {{-- <div class="card"> --}}
+							
+							<form class="login-form" action="{{url('register')}}" method="POST" style="float: right;">
+								{{ csrf_field() }}
+									<div class="card mb-0">
+										@if ($errors->any())
+										<div class="toaster">
+											<div class="eror">
+												@foreach ($errors->all() as $error)
+												<p>{{ $error }}</p>
+												@endforeach
+												
+											</div>
+										</div>
+										@endif
+										<div class="card-body">
+											<div class="text-center mb-3">
+												<div class="toaster">
+													<div class="box"></div>
+												</div>
+												<h2 class="mb-0">REGISTER</h2>
+											</div>
 
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
+                                            <div class="floating-label"> 
+												{{-- <input ng-model="searchID" type="text" class="form-control" placeholder=" "> --}}
+												<input name="name" type="text" class="form-control" placeholder=" ">
+												<span class="highlight"></span>
+												<label>Name</label>
+											</div>
+											
+											<div class="floating-label"> 
+												{{-- <input ng-model="searchID" type="text" class="form-control" placeholder=" "> --}}
+												<input name="email" type="email" class="form-control" placeholder=" ">
+												<span class="highlight"></span>
+												<label>Email</label>
+											</div>
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+											<div class="floating-label"> 
+												{{-- <input ng-model="searchID" type="text" class="form-control" placeholder=" "> --}}
+												<input id="password-field" name="password" type="password" class="form-control" placeholder=" ">
+												<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password" style="right:5px"></span>
+												<span class="highlight"></span>
+												<label>Password</label>
+											</div>
+                                            <div class="floating-label"> 
+												{{-- <input ng-model="searchID" type="text" class="form-control" placeholder=" "> --}}
+												<input id="password-field-confirm" name="password_confirmation" type="password" class="form-control" placeholder=" ">
+												<span toggle="#password-field-confirm" class="fa fa-fw fa-eye field-icon toggle-password" style="right:5px"></span>
+												<span class="highlight"></span>
+												<label>Confirm Password</label>
+											</div>
+
+	            							<div class="form-group">
+												<button type="submit" class="btn btn-primary btn-block">Sign up <i class="icon-circle-right2 ml-2"></i></button>
+											</div>
+				
+											<span class="form-text text-center text-muted">By continuing, you're confirming that you've read our <a href="https://www.ktownrooms.com/terms-conditions">Terms &amp; Conditions</a> and <a href="https://www.ktownrooms.com/web-privacy-policy">Privacy Policy</a></span>
+										</div>
+									</div>
+							</form>
+							<!-- /login card -->
+						{{-- </div> --}}
+				</div>
+					
+
+				</div>
+			</div>
+			<!-- /content area -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	<script>
+	$(".toggle-password").click(function() {
+
+	$(this).toggleClass("fa-eye fa-eye-slash");
+	var input = $($(this).attr("toggle"));
+	if (input.attr("type") == "password") {
+	input.attr("type", "text");
+	} else {
+	input.attr("type", "password");
+	}
+	});
+	</script>
+</body>
+</html>

@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
-        'third_party_booking', 'order-confirmation/*','blinq_archive','customer_bookings','external_customer_bookings'
+        'third_party_booking', 'order-confirmation/*','blinq_archive','customer_bookings','external_customer_bookings',
+        'getBookingsMiscellaneousAmount','deleteBookingsMiscellaneousAmount','saveBookingsMiscellaneousAmount'
     ];
 }

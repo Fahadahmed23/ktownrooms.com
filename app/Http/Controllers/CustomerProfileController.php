@@ -64,7 +64,7 @@ class CustomerProfileController extends Controller
      */
     public function __construct()
     {
-        return 'sadasdsa';
+        
         $this->middleware('auth')->except(['customer_bookings','external_customer_bookings']);
     }
 

@@ -60,6 +60,7 @@ class CreateBookingInvoicesTable extends Migration {
 			$table->string('corporate_client_name', 100)->nullable();
 			$table->integer('customer_nationality')->nullable();
 			$table->decimal('per_night_charges', 10)->nullable();
+			$table->boolean('is_corporate')->nullable()->default(0);
 		});
 	}
 

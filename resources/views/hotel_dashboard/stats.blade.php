@@ -13,7 +13,7 @@
                         <h3 class="font-weight-semibold mb-0">Booking Statistics</h3>
                         <!-- <div class="list-icons ml-auto">
                             <div class="dropdown position-static">
-                                <md-select md-no-asterisk  name="month" class="m-0" ng-model="hotel_dashboard.month" placeholder="Select a Month ">
+                                <md-select md-no-asterisk  name="month" class="m-0" ng-model=".month" placeholder="Select a Month ">
                                     <md-option ng-repeat="month in months" ng-value="month.name">[[month.name]]</md-option>
                                 </md-select>
                             </div>
@@ -62,7 +62,7 @@
                 <div class="svg-center" id="pie_progress_bar">
                 </div>
 
-                
+
             </div>
             <!-- /pie with progress -->
 
@@ -76,7 +76,7 @@
                     <div class="list-icons text-right ml-auto">
                         <div class="dropdown position-static">
                             <md-select ng-change="getCheckouts()" md-no-asterisk name="checkout_period" class="m-0"
-                                ng-model="hotel_dashboard.checkout_period" placeholder="Select a Period ">
+                                ng-model=".checkout_period" placeholder="Select a Period ">
                                 <md-option ng-repeat="period in periods" ng-value="period.name">[[period.name]]
                                 </md-option>
                             </md-select>
@@ -85,7 +85,7 @@
 
                 </div>
                 <div class="media">
-                    
+
 
                     <div class="media-body text-left">
                         <h3 class="font-weight-semibold mb-0">[[records.expectedCheckoutCount]]</h3>
@@ -105,7 +105,7 @@
                     <div class="list-icons text-right ml-auto">
                         <div class="dropdown position-static">
                             <md-select ng-change="getCheckins()" md-no-asterisk name="checkin_period" class="m-0"
-                                ng-model="hotel_dashboard.checkin_period" placeholder="Select a Period ">
+                                ng-model=".checkin_period" placeholder="Select a Period ">
                                 <md-option ng-repeat="period in periods" ng-value="period.name">[[period.name]]
                                 </md-option>
                             </md-select>
@@ -151,7 +151,7 @@
 
                 Checkout processed
                 <div class="font-size-sm opacity-75">[[records.expectedCheckoutCount]] checkouts are pending</div>
-                
+
             </div>
         </div>
         <div class="col-sm-6 col-xl-3 d-flex">
@@ -194,7 +194,7 @@
                         <h3 class="font-weight-semibold mb-0">CheckOut/CheckIn Statistics</h3>
                         <!-- <div class="list-icons ml-auto">
                             <div class="dropdown position-static">
-                                <md-select md-no-asterisk  name="month" class="m-0" ng-model="hotel_dashboard.month" placeholder="Select a Month ">
+                                <md-select md-no-asterisk  name="month" class="m-0" ng-model=".month" placeholder="Select a Month ">
                                     <md-option ng-repeat="month in months" ng-value="month.name">[[month.name]]</md-option>
                                 </md-select>
                             </div>

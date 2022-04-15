@@ -420,6 +420,9 @@ app.controller('housekeepingCtrl', function($scope, $rootScope, DTColumnDefBuild
             return;
         }
 
+        console.log($scope.service_request);
+        return;
+
         $scope.ajaxPost('saveRequest', {
                 service_request: $scope.service_request,
             }, false)

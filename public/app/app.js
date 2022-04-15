@@ -1,4 +1,8 @@
-var app = angular.module('ktown', ['ngMaterial', 'datatables', 'ngPatternRestrict', 'ngMessages', 'ngSanitize', 'angularUtils.directives.dirPagination'])
+
+// Mr Optimist 5 April 2022
+var app = angular.module('ktown', ['ngMaterial','datatables','ngPatternRestrict', 'ngMessages', 'ngSanitize', 'angularUtils.directives.dirPagination'])
+
+//var app = angular.module('ktown', ['ngMaterial','datatables','datatables.buttons','ngPatternRestrict', 'ngMessages', 'ngSanitize', 'angularUtils.directives.dirPagination'])
     // .config(function ($mdThemingProvider) {
     //     $mdThemingProvider.theme('default')
     //         .primaryPalette('blue')
@@ -121,7 +125,7 @@ var app = angular.module('ktown', ['ngMaterial', 'datatables', 'ngPatternRestric
                 return LocalServiceUrl + url;
             },
             getUrlParams: function() {
-                // This function is anonymous, is executed immediately and 
+                // This function is anonymous, is executed immediately and
                 // the return value is assigned to QueryString!
                 var query_string = {};
                 var query = window.location.search.substring(1);
