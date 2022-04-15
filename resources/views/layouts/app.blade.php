@@ -78,7 +78,7 @@
 
 
     <script src="https://kit.fontawesome.com/ff383a412e.js" crossorigin="anonymous"></script>
-    <script src="{{asset('assets/js/app-report.js')}}"></script>
+    <script src="{{asset('assets/js/app.js')}}"></script>
     <script src="{{asset('global_assets/js/demo_pages/datatables_advanced.js')}}"></script>
     <script src="{{asset('global_assets/js/demo_pages/picker_date.js')}}"></script>
     <script src="{{asset('global_assets/js/demo_pages/form_checkboxes_radios.js')}}"></script>
@@ -91,9 +91,11 @@
     {{-- <script src="https://d3js.org/d3.v4.js"></script> --}}
 
     <!-- Mr Optimist 4 April 2022 -->
-{{--
+
 
      <!--   <script src="{{asset('datatableswork/js/jquery-3.5.1.js')}}"></script> -->
+
+    <!-- 
     <script src="{{asset('datatableswork/js/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('datatableswork/js/dataTables.buttons.min.js')}}"></script>
 
@@ -101,7 +103,7 @@
     <script src="{{asset('datatableswork/js/pdfmake.min.js')}}"></script>
     <script src="{{asset('datatableswork/js/vfs_fonts.js')}}"></script>
     <script src="{{asset('datatableswork/js/buttons.html5.min.js')}}"></script>
-    <script src="{{asset('datatableswork/js/buttons.print.min.js')}}"></script> --}}
+    <script src="{{asset('datatableswork/js/buttons.print.min.js')}}"></script> -->
 
 
     <!-- /theme JS files -->
@@ -135,7 +137,7 @@
     <script type="text/javascript"
         src="https://cdn.rawgit.com/AlphaGit/ng-pattern-restrict/master/src/ng-pattern-restrict.min.js"></script>
     <script src="{{asset('assets/js/angular-pagination.js')}}"></script>
-    <script src="{{asset('app/app-report.js')}}"></script>
+    <script src="{{asset('app/app.js')}}"></script>
 
     <script src="{{asset('global_assets/js/demo_pages/form_multiselect.js')}}"></script>
 

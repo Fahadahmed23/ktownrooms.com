@@ -78,7 +78,7 @@
 
 
     <script src="https://kit.fontawesome.com/ff383a412e.js" crossorigin="anonymous"></script>
-    <script src="{{asset('assets/js/app-report.js')}}"></script>
+    <script src="{{asset('assets/js/app.js')}}"></script>
     <script src="{{asset('global_assets/js/demo_pages/datatables_advanced.js')}}"></script>
     <script src="{{asset('global_assets/js/demo_pages/picker_date.js')}}"></script>
     <script src="{{asset('global_assets/js/demo_pages/form_checkboxes_radios.js')}}"></script>
