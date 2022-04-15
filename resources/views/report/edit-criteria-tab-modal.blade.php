@@ -58,13 +58,17 @@
                         <input ng-cloak placeholder="Type [[colCriteria.column.alias]] value to be filtered" ng-if="colCriteria.column.type != 'enum'  && colCriteria.column.type != 'date'" id="colInput" type="[[ (colCriteria.column.type == 'number' || colCriteria.column.type == 'float' || colCriteria.column.type == 'amount' || colCriteria.column.type == 'int' ) ? 'number' : 'text' ]]" ng-model="colCriteria.value" class="form-control  [[ colCriteria.column.type == 'time' ? 'pickatime' : '' ]]">
                         <input ng-cloak placeholder="Click to filter date for [[colCriteria.column.alias]]" ng-if="colCriteria.column.type == 'date' && colCriteria.operator != '=='" id="colInput" type="text" ng-model="colCriteria.value" class="form-control pickadatereport">
                         <md-select ng-cloak placeholder="Select timespan" class="timespan_value" ng-if="colCriteria.column.type == 'date' && colCriteria.operator == '=='" ng-model="colCriteria.value">
+                            <md-option value="yesterday">Yesterday</md-option>
                             <md-option value="today">Today</md-option>
+                            <md-option value="tomorrow">Tomorrow</md-option>
                             <md-option value="this week">This Week</md-option>
                             <md-option value="this month">This Month</md-option>
                             <md-option value="this quarter">This Quarter</md-option>
+                            <md-option value="this calendar year">This Calendar Year</md-option>
+                            <md-option value="last week">Last Week</md-option>
+                            <md-option value="last month">Last Month</md-option>
                             <md-option value="last 3 months">Last 3 Months</md-option>
                             <md-option value="last 6 months">Last 6 Months</md-option>
-                            <md-option value="this calendar year">This Calendar Year</md-option>
                             <md-option value="last year (12 months)">Last Year (12 Months)</md-option>
                             <md-option value="previous year today">Previous Year Today</md-option>
                             <md-option value="previous year this week">Previous Year This Week</md-option>
@@ -73,14 +77,14 @@
                             <md-option value="previous year last 3 months">Previous Year Last 3 Months</md-option>
                             <md-option value="previous year last 6 months">Previous Year Last 6 Months</md-option>
                             <md-option value="previous calendar year">Previous Calendar Year</md-option>
-                            <md-option value="previous year (12 months)">Previous Year (12 Months)</md-option>
+                            {{-- <md-option value="previous year (12 months)">Previous Year (12 Months)</md-option> --}}
                             {{-- Next Year Timespan --}}
                             <md-option value="next week">Next Week</md-option>
                             <md-option value="next month">Next Month</md-option>
                             <md-option value="next quarter">Next Quarter</md-option>
                             <md-option value="next 3 months">Next 3 Months</md-option>
                             <md-option value="next 6 months">Next 6 Months</md-option>
-                            <md-option value="next year (12 months)">Last Year (12 Months)</md-option>
+                            <md-option value="next year (12 months)">Next Year (12 Months)</md-option>
                             <md-option value="next year today">Next Year Today</md-option>
                             <md-option value="next year this week">Next Year This Week</md-option>
                             <md-option value="next year this month">Next Year This Month</md-option>

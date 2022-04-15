@@ -28,40 +28,42 @@ class InventoryController extends Controller
     {
         $qry = Inventory::with('hotel')->orderBy('Title', 'ASC');
 
-        if(isset($request->Title)){
-            $qry->where('Title', 'like', "%" . $request->Title . "%");
-        }
+            if(isset($request->Title)){
+                $qry->where('Title', 'like', "%" . $request->Title . "%");
+            }
 
-        if(isset($request->Rate)){
-            $qry->where('Rate', 'like', "%" . $request->Rate . "%");
-        }
+            if(isset($request->Rate)){
+                $qry->where('Rate', 'like', "%" . $request->Rate . "%");
+            }
 
-        if(isset($request->Description)){
-            $qry->where('Description', 'like', "%" . $request->Description . "%");
-        }
+            if(isset($request->Description)){
+                $qry->where('Description', 'like', "%" . $request->Description . "%");
+            }
 
-        if(isset($request->Hotel)){
-            $qry->whereHas('hotel', function ($q) use ($request) {
-                $q->where('HotelName', 'like', "%" .$request->Hotel. "%");
-            });
-        }
-
-        if (auth()->user()->hasRole('Admin')) {
+            if(isset($request->Hotel)){
+                $qry->whereHas('hotel', function ($q) use ($request) {
+                    $q->where('HotelName', 'like', "%" .$request->Hotel. "%");
+                });
+            }
+        $user = Auth::user();
+        if (auth()->user()->hasRole('Admin')) 
+        {
             $inventories = $qry->get();
             $is_admin = true;
-            }
+        }
             else{
-                $inventories = $qry->where('hotel_id', auth()->user()->hotel->id)->get();
+                $inventories = $qry->whereIn('hotel_id', $user->HotelIds)->get();
                 $is_admin = false;
             }
 
-        $hotels = Hotel::orderBy('HotelName', 'ASC')->get();
-        $user = Auth::user();
+        // $hotels = Hotel::orderBy('HotelName', 'ASC')->get();
+        $hotels = auth()->user()->user_hotels();
+        
         return response()->json([
             'is_admin'=>$is_admin,
             'user'=>$user,
             'inventories'=> $inventories,
-            'hotels'=>$hotels,
+            'hotels'=>$hotels->get(),
         ]);
 
     }

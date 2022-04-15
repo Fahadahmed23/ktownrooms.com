@@ -33,6 +33,7 @@ class RolesController extends Controller
     public function create(AddRoleRequest $request, Role $role)
     {
 
+        
         $postData = $request->all();
         $i = 0;
         $count = 0;
@@ -150,15 +151,19 @@ class RolesController extends Controller
         $roles ="";
 
         if (isset($data['name'])) {
-            $roles=Role::where('name', 'like', '%' . $data['name'] . '%')->whereNotIn('name',['superadmin','guest', 'Admin'])->get();
+            $roles=Role::where('name', 'like', '%' . $data['name'] . '%')->withCount('users')->get();
+            // ->whereNotIn('name',['superadmin','guest', 'Admin'])->get();
         }
         else{
-            $roles=Role::whereNotIn('name',['superadmin','guest', 'Admin'])->get();
+            $roles=Role::withCount('users')->get();
+            // whereNotIn('name',['superadmin','guest', 'Admin'])->get();
+            // dd($roles);
         }
 
         $data = [];
         foreach ($roles->toArray() as $role) {
             $rolePermissions = \DB::table('permission_role')->where('role_id', $role['id'])->get();
+           
 
             if (count($rolePermissions) > 0) {
                 foreach ($rolePermissions as $rolePermission) {
@@ -169,9 +174,21 @@ class RolesController extends Controller
                 $role['permissions'] = [];
             }
 
-            $data[] = $role;
-        }
+            // $roleUsers = \DB::table('role_user')->where('role_id', $role['id'])->get();
 
+            // if (count($roleUsers) > 0) {
+            //     foreach ($roleUsers as $roleUser) {
+            //         $role['users'][$roleUser->user_id] = true;
+            //         // $role['userscount'] = count($role['users']);
+            //     }
+
+            // } else {
+            //     $role['users'] = [];
+            // }
+            
+            $data[] = $role;
+            
+        }
 
         echo json_encode(['success' => true, 'payload' => $data], JSON_NUMERIC_CHECK);
     }
@@ -195,26 +212,6 @@ class RolesController extends Controller
             $data[] = $value->id;
         }
 
-        
-// \DB::enableQueryLog(); // Enable query log
-// $data = $query->get();
-
-
-        // $role['availableusers'] = User::with(['roles'])->whereHas('roles', function ($q) use ($data) {
-        //     $q->whereNotIn('name', ['member', 'donor','superadmin','guest']);
-        // })->whereNotIn('id', $data)->get();
-
-        // $role['availableusers'] = DB::select("SELECT 
-        //     * 
-        // FROM
-        //     users 
-        // WHERE NOT EXISTS 
-        //     (SELECT 
-        //     * 
-        //     FROM
-        //     role_user 
-        //     WHERE role_id = $roleName 
-        //   AND user_id = users.id)");
 
         $role['availableusers'] = User::with(['roles'])->whereRaw("NOT EXISTS 
             (SELECT 

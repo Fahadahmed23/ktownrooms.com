@@ -38,7 +38,7 @@
     </div>
 
     <div class="card-body">
-        <form name="myForm" confirm-on-exit>
+        <form name="myForm">
             <div class="row">
                 <div class="col-md-6">
                     <fieldset>
@@ -62,7 +62,12 @@
                                 <textarea ng-disabled="view" ng-model="roleForm.description" class="form-control"></textarea>
                             </div>
                             <div class="col-lg-6">
-                                <md-checkbox class="mt-3" style="display:block" ng-checked="roleForm.has_discount_priviledge" ng-true-value="1" ng-false-value="0" ng-model="roleForm.has_discount_priviledge">Has Discount Priviledge</md-checkbox>
+                                <label class="col-form-label">Can Have</label>
+                                <md-switch ng-model="roleForm.has_multiple_hotels" ng-true-value="1" ng-false-value="0">Multiple Hotels</md-switch>
+                                <md-switch ng-model="roleForm.has_discount_priviledge" ng-true-value="1" ng-false-value="0">Discount Priviledge</md-switch>
+                                <md-switch ng-model="roleForm.self_manipulated_entries" ng-true-value="1" ng-false-value="0">Self Manipulated Entries</md-switch>
+
+                                {{-- <md-checkbox class="mt-3" style="display:block" ng-checked="roleForm.has_discount_priviledge" ng-true-value="1" ng-false-value="0" ng-model="roleForm.has_discount_priviledge">Has Discount Priviledge</md-checkbox> --}}
                             </div>
                             <!-- <div class="col-lg-6">
                                 <label class="col-form-label">Preference <span class="required">*</span></label>

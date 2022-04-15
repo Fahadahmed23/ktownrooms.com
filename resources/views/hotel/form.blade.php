@@ -8,18 +8,22 @@
     color: #fff;
 }
 .categorycounter input {
-    width: 50%;
+   /* width: 50%;*/
+    width: 70%;
     float: left;
     height: 22px;
     text-align: center;
 }
+
 .addi_charges input{
     margin-top: 5px;
     padding: 5px;
-    width: 80%;
+    /*width: 80%;*/
+    width:100%;
     height: 25px;
     border: 1px solid rgb(158 158 158) !important
 }
+
 
 /* Chrome, Safari, Edge, Opera */
 .categorycounter input::-webkit-outer-spin-button,
@@ -114,7 +118,7 @@
                                 <h3 class="mb-0">[[hotel.RoomCount]]</h3>
                                 <span class="text-uppercase font-size-xs">Total Rooms</span>
                             </div>
-
+            
                             <div class="ml-3 align-self-center">
                                 <i class="icon-city icon-3x opacity-75"></i>
                             </div>
@@ -122,7 +126,7 @@
                     </div>
                 </a>
             </div>
-
+        
              <div class="col-md-4">
                  <a href="http://localhost:8000/bookings" target="_blank">
                     <div class="card card-body bg-success-400 has-bg-image" style="min-height: 95px;">
@@ -131,7 +135,7 @@
                                 <h3 class="mb-0">[[hotel.BookingCount]]</h3>
                                 <span class="text-uppercase font-size-xs">Total Bookings</span>
                             </div>
-
+            
                             <div class="ml-3 align-self-center">
                                 <i class="far fa-calendar-check fa-4x opacity-75"></i>
                             </div>
@@ -139,8 +143,8 @@
                     </div>
                  </a>
             </div>
-
-
+    
+    
             <div class="col-md-4">
                    <div class="card card-body bg-indigo-400 has-bg-image" style="min-height: 95px;">
                        <div class="media">
@@ -148,7 +152,7 @@
                                <h3 class="mb-0">[[hotel.BookingRevenueSum |currency ]]</h3>
                                <span class="text-uppercase font-size-xs">Total Revenue</span>
                            </div>
-
+           
                            <div class="ml-3 align-self-center">
                             <i class="far fa-money-bill-alt fa-4x opacity-75"></i>
                            </div>
@@ -160,11 +164,83 @@
 
 
         @include('layouts.form_messages')
+        <ul class="nav nav-tabs nav-tabs-bottom flex-nowrap mb-0 hotel-navs-tabs">
 
+            @permission('can-add-hotel')
+                <li class="nav-item active show"><a id="basic-info-btn" href="#basic_info" class="nav-link active show" data-toggle="tab"><i class="icon-stack-check mr-2 text-success"></i>Basic Info</a></li>
+            @endpermission
+
+            @permission('can-add-update-hotel-room-categories')
+                <li ng-if="hotel_id" class="nav-item"><a id="categories-btn" ng-click="addHotelRoomCategories()" href="#hotel_room_categories" class="nav-link" data-toggle="tab"><i class="icon-crown mr-2 text-warning"></i>Hotel Room Categories</a></li>
+            @endpermission
+
+
+            @permission('can-add-update-hotel-contacts')
+                <li ng-if="hotel_id"class="nav-item"><a id="contact-info-btn"  ng-click="showHotelContacts()" href="#hotel_contacts" class="nav-link" data-toggle="tab"><i class="icon-collaboration mr-2 text-pink"></i>Hotel Contacts</a></li>
+            @endpermission
+
+
+            @permission('can-add-update-hotel-accounts-mapping')
+                <li ng-if="hotel_id" class="nav-item"><a id="account-info-btn" ng-click="getGlAccounts()"  href="#account_info" class="nav-link" data-toggle="tab"><i class="icon-wallet mr-2 text-teal"></i>Account Info</a></li>
+            @endpermission
+
+
+            @permission('can-add-update-hotel-checkin-checkout-rules')
+                <li ng-if="hotel_id" class="nav-item"><a id="cin-cout-btn" ng-click="setDefaultRules()" href="#check_in_check_out_rules" class="nav-link " data-toggle="tab"><i class="icon-watch mr-2 text-info"></i>Checkin CheckOut Rules</a></li>
+            @endpermission
+
+            @permission('can-add-update-hotel-sms-configuration')
+                <li ng-if="hotel_id" class="nav-item"><a id="default-msg-btn"  ng-click="getSmsConfiguration()" href="#default_msgs" class="nav-link " data-toggle="tab"><i class="icon-envelop4 mr-2 text-warning"></i>Sms Configuration</a></li>
+            @endpermission
+
+
+        </ul>
+        <div class="tab-content hotel-tabs">
+            @permission('can-add-hotel')
+                <div class="tab-pane fade show active" id="basic_info">
+                    @include('hotel.basic_info')
+                </div>
+            @endpermission
+
+            @permission('can-add-update-hotel-room-categories')
+
+                <div class="tab-pane fade" id="hotel_room_categories">
+                    @include('hotel.hotel_room_categories')
+                </div>
+            @endpermission
+
+            @permission('can-add-update-hotel-contacts')
+
+                <div class="tab-pane fade" id="hotel_contacts">
+                    @include('hotel.hotel_contacts')
+                </div>
+            @endpermission
+
+            @permission('can-add-update-hotel-accounts-mapping')
+                <div class="tab-pane fade" id="account_info">
+                    @include('hotel.account_info')
+                </div>
+            @endpermission
+
+            @permission('can-add-update-hotel-checkin-checkout-rules')
+                <div class="tab-pane fade" id="check_in_check_out_rules">
+                    @include('hotel.cin_cout')
+                </div>
+            @endpermission
+
+
+            @permission('can-add-update-hotel-sms-configuration')
+                <div class="tab-pane fade" id="default_msgs">
+                    @include('hotel.sms_configuration')
+                </div>
+            @endpermission
+           
+        </div>
+    <div class="d-none">
         <form id="hotelForm" class="card-body" name="hotelForm" >
             <div class="form-group row">
-                    <div class="col-md-6 leftcol-6">
-                        <fieldset>
+                    <div class="col-md-6 leftcol-6">  
+                        <fieldset>   
                             <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom p-2 bg-light"><i class="icon-check mr-2"></i>
                                 Basic Information
                             </legend>
@@ -176,8 +252,8 @@
                                     <div ng-messages="hotelForm.HotelName.$error" ng-if='hotelForm.HotelName.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                         <div class="text-danger" ng-message="required">Hotel Name is required</div>
                                     </div>
-                                </div>
-
+                                </div>    
+                
                                 <div class="col-md-4">
                                     <label>Company <span class="text-danger">*</span> </label>
                                     <md-select md-no-asterisk name="company_id" class="m-0" ng-model="hotel.company_id" placeholder="Select a Company" required>
@@ -198,16 +274,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row">    
                                 <div class="col-md-12 mt-2">
                                     <label class="col-form-label">Description </label>
                                     <textarea name="Description" maxlength="255" ng-model="hotel.Description" class="form-control" cols="30" rows="5" style="border: 1px solid #e0e0e0 !important;"></textarea>
                                     {{-- <input name="Description"  ng-model="hotel.Description" type="text" class="form-control alphabets" maxlength="20" placeholder="New Description"> --}}
                                 </div>
                             </div>
-<!-- arman -->
-<!-- arman -->
-<!-- arman -->
+
 
                             <div ng-if="formType == 'edit'" class="row mt-2 gl-account-div">
                                 <div class="col-md-12">
@@ -217,8 +291,6 @@
                                                 [[hotel.HotelName]] GL Accounts:
                                             </legend>
                                             <md-checkbox ng-checked="selectAll" ng-value="" ng-model="is_selected" ng-change="selectCheck()"> Select All</md-checkbox>
-
-
                                         </div>
                                         <div class="hotel-gl-list py-2">
                                             <ul class="p-0">
@@ -236,35 +308,19 @@
                                     </div>
                                 </div>
                             </div>
-
-
-                            {{-- <ul ng-if="formType == 'edit'"  class="nav nav-tabs nav-tabs-bottom flex-nowrap my-3">
-                                <li class="nav-item active show"><a href="#basic_info" class="nav-link active show" data-toggle="tab"><i class="icon-checkmark-circle mr-2 text-success"></i>Basic Information</a></li>
-                                <li class="nav-item"><a href="#gl_information" class="nav-link" data-toggle="tab"><i class="icon-cash  mr-2 text-warning"></i>Account Gl Information</a></li>
-                            </ul> --}}
-                            {{-- <div class="tab-content"> --}}
-                                {{-- <div class="tab-pane fade active show" id="basic_info"> --}}
-
-                                {{-- </div> --}}
-
-                                {{-- <div ng-if="formType == 'edit'" class="tab-pane fade" id="gl_information"> --}}
-                                {{-- </div> --}}
-
-                            {{-- </div> --}}
-
                         </fieldset>
 
                         <fieldset class="mt-2">
                             <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light"><i class="icon-city mr-2"></i>
                                 Tax Information
-                            </legend>
+                            </legend> 
                             <div class="row d-flex">
                                 <div class="col-md-3">
                                     <label class="col-form-label">Tax Chargeable</label>
-                                    <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.has_tax" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
+                                    <md-switch ng-true-value="'1'" ng-false-value="'0'" ng-model="hotel.has_tax" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
                                 </div>
-                                <div class="col-md-9">
-                                    <div id="taxrateDD" ng-if="hotel.has_tax == 1">
+                                <div class="col-md-9">    
+                                    <div id="taxrateDD" ng-if="hotel.has_tax == '1'">
                                         {{-- <label class="col-lg-6 col-form-label">Tax<span class="text-danger">*</span></label> --}}
                                         <md-select  md-no-asterisk name="tax_rate_id" class="m-0" ng-model="hotel.tax_rate_id" placeholder="Select Tax*" required>
                                             <md-option ng-repeat="tax_rate in tax_rates" ng-value="tax_rate.id">[[tax_rate.Tax]]</md-option>
@@ -278,11 +334,11 @@
                             </div>
                         </fieldset>
 
-                        <fieldset class="mt-3">
+                        <fieldset class="mt-3">    
                             <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
                                 <i class="icon-calendar mr-2"></i>
                                Agreement Validity
-                            </legend>
+                            </legend>  
                             <div class="row">
                                 <div class="col-md-6">
                                     <label class="col-form-label">Agreement Start Date <span class="text-danger">*</span> </label>
@@ -300,7 +356,8 @@
                                     </div>
                                 </div>
 
-
+                                
+        
                                 <div class="col-md-6">
                                     <label class="col-form-label">Agreement End Date <span class="text-danger">*</span> </label>
                                     <div class="input-group">
@@ -318,13 +375,13 @@
                                 </div>
                             </div>
                         </fieldset>
+                        
 
-
-                        <fieldset class="mt-3">
+                        <fieldset class="mt-3">    
                                 <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
                                     <i class="fa fa-users mr-2"></i>
                                     Partner information
-                                </legend>
+                                </legend> 
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label class="col-form-label">Partner <span class="text-danger">*</span></label>
@@ -339,14 +396,14 @@
                                     {{-- <div class="col-md-4">
                                         <label class="col-form-label">Partner Price <span class="text-danger">*</span></label>
                                         <input required data-type="currency" currency aria-invalid="true" name="partnerPrice"  ng-model="hotel.partnerPrice" maxlength="10" type="text" class="form-control" placeholder="1,500.00">
-
+                                   
                                         <div ng-messages="hotelForm.partnerPrice.$error" ng-if='hotelForm.partnerPrice.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                             <div class="text-danger" ng-message="required">Partner Price is required</div>
                                         </div>
                                     </div> --}}
 
                                     <div class="col-md-4">
-                                        <label class="col-form-label">Ratings <span class="text-danger">*</span></label>
+                                        <label class="col-form-label">Ratings <span class="text-danger">*</span></label>                                       
                                         <md-select name="Rating" md-no-asterisk required class="m-0" ng-model="hotel.Rating" placeholder="Select Rating">
                                             <md-option ng-value="1"> <md-icon> 1 </md-option>
                                             <md-option ng-value="2">2</md-option>
@@ -356,50 +413,22 @@
                                         </md-select>
 
 
-
+                                        
                                         <div ng-messages="hotelForm.Rating.$error" ng-if='hotelForm.Rating.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                             <div class="text-danger" ng-message="required">Rating is required</div>
                                         </div>
 
                                     </div>
                                 </div>
-                        </fieldset>
-
-                        {{-- <fieldset class="mt-3">
-                            <legend class="font-weight-semibold text-uppercase font-size-sm border-0">
-                                <i class="fa fa-poll mr-2"></i>
-                                SEO
-                            </legend>
-                                <div class="row">
-
-
-                                    <div class="col-md-4">
-                                        <label class="col-form-label">Meta Title</label>
-                                        <input name="metaTitle" ng-model="hotel.metaTitle" type="text" class="form-control" maxlength="255" placeholder="New Title">
-
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <label class="col-form-label">Meta Keywords </label>
-                                        <input  name="metaKeyword" ng-model="hotel.metaKeyword" type="text" class="form-control" maxlength="255" placeholder="New Keyword">
-
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <label class="col-form-label">Meta Description </label>
-                                        <input  name="metaDescription" ng-model="hotel.metaDescription" type="text" class="form-control " maxlength="255" placeholder="New Description">
-
-                                    </div>
-                                </div>
-                        </fieldset>  --}}
-
-
+                        </fieldset>  
+                        
+                        
                         <div class="row mt-2">
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
                                 <div class="row">
                                 <div class="col-md-12">
                                   <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom">
-                                    <i class="icon-city mr-2"></i>
+                                    <i class="icon-image2 mr-2"></i>
                                     Map Image
                                   </legend>
                                 </div>
@@ -417,70 +446,43 @@
                                       <button ng-hide="hotel.mapimage" name="hotel" class="btn m-b-xs w-auto btn-success upload-logo" type="button"><i class="icon-upload"></i> Upload</button>
                                       <button ng-show="hotel.mapimage" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearPicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
                                     </div>
-
+                    
                                   </div>
-
+                    
                                 </div>
-                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="row">
+                                <div class="col-md-12">
+                                  <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom">
+                                    <i class="icon-image2 mr-2"></i>
+                                    Mail Image
+                                  </legend>
+                                </div>
+                                  <div class="col-lg-3">
+                                    <div class="wrapper prof-wrap">
+                                      <img id="preview" class="output_image" ng-src="[[hotel.mailimage!=null ? hotel.mailimage : 'https://icons-for-free.com/iconfiles/png/512/add+photo+instagram+upload+icon-1320184027593509107.png']]">
+                                      <div class="custom-file">
+                                        <input name="logo" type="file" class="custom-file-input logo" form="mail-img-form">
+                                        <label id="fileLabel" class="custom-file-label" for="customFile">Choose file</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-lg-6">
+                                    <div class="btns-div">
+                                      <button ng-hide="hotel.mailimage" name="hotel" class="btn m-b-xs w-auto btn-success upload-mail-img" type="button"><i class="icon-upload"></i> Upload</button>
+                                      <button ng-show="hotel.mailimage" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearMailPicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
+                                    </div>
+                    
+                                  </div>
+                    
+                                </div>
+                            </div>
                         </div>
-
-                        <fieldset class="mt-3">
-                                <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
-                                    <i class="fa fa-users mr-2"></i>
-                                    Hotel Categories
-                                </legend>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="col-form-label">Hotel Categories <span class="text-danger">*</span></label>
-                                        <md-select name="hotelcateogry_id" md-no-asterisk required class="m-0" ng-model="hotel.hotelcateogry_id" placeholder="Select a Hotel Category">
-                                            <md-option ng-repeat="hotel_category in hotel_categories" ng-value="hotel_category.id">[[hotel_category.name]]</md-option>
-                                        </md-select>
-                                        <div ng-messages="hotelForm.hotelcateogry_id.$error" ng-if='hotelForm.hotelcateogry_id.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
-                                            <div class="text-danger" ng-message="required">Hotel Cateogory is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </fieldset>
-                        <fieldset class="mt-3">
-                                <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
-                                    <i class="fa fa-users mr-2"></i>
-                                    Co-Branding
-                                </legend>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="col-form-label">Co-Branding</label>
-                                        <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.has_cobranding" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
-                                        <input type="hidden" name="cobranding" ng-model="hotel.cobranding"  ng-value="hotel.has_cobranding"/>
-                                    </div>
-                                </div>
-                        </fieldset>
-                        <fieldset class="mt-3" ng-if="hotel.has_cobranding == 1">
-                                <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light">
-                                    <i class="fa fa-users mr-2"></i>
-                                    Software Fees & Percentage Ammount in percentage
-                                </legend>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="col-form-label">Software Fees <span class="text-danger">*</span></label>
-                                        <input type="number" name="software_fees"  ng-model="hotel.software_fees"  onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" min="0" max="100" ng-min="0" ng-max="100" class="form-control" required>
-                                        <div ng-messages="hotelForm.software_fees.$error" ng-if='hotelForm.software_fees.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
-                                            <div class="text-danger" ng-message="required">Software Fees is required</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="col-form-label">Percentage Ammount <span class="text-danger">*</span></label>
-                                        <input type="number" name="percentage_amount"  ng-model="hotel.percentage_amount" ng-min="0" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" min="1" max="100" ng-max="100" class="form-control" required>
-                                        <div ng-messages="hotelForm.percentage_amount.$error" ng-if='hotelForm.percentage_amount.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
-                                            <div class="text-danger" ng-message="required">Percentage Amount is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </fieldset>
-                    </div>
-
+                    </div>      
                     <div class="col-md-6">
                          <!-- HotelContact list -->
-                         <div class="card">
+                        <div class="card">
                             <div class="card-header header-elements-inline">
                                 <h5 class="card-title">Hotel Contacts</h5>
                                 <div class="header-elements">
@@ -497,7 +499,7 @@
                                             <li class="media m-0" ng-repeat="contact in hotel.contacts">
                                                 <div class="media-body">
                                                     <div class="media-title font-weight-semibold">[[contact.ContactPerson]]
-
+                                                        
                                                     <span class="align-self-center ml-3 float-right">
                                                         <span class="list-icons list-icons-extended">
                                                             <a href="" class="list-icons-item" ng-click="editContact(contact)" title="Edit Address"><i class="icon-pencil6"></i></a>
@@ -505,29 +507,29 @@
                                                         </span>
                                                     </span>
                                                     </div>
-                                                    <span class="text-muted">
+                                                    <span class="text-muted"> 
                                                         <p class="my-0"><i ng-class="getTypeClass(contact.contact_type.ContactType)" class="mr-2"></i>: [[contact.Value]] </p>
                                                     </span>
                                                 </div>
 
-
+                                                
                                             </li>
                                         </div>
-
+                                    
                                     </ul>
                             </div>
                         </div>
                         <!-- /HotelContact list -->
-                        <fieldset class="">
+                        <fieldset class="">    
                             <legend class="font-weight-semibold text-uppercase font-size-sm border-0">
                                 <i class="fa fa-map mr-2"></i>
                                 Address information
-                            </legend>
+                            </legend> 
                             <div class="row">
                                 <div class="col-md-4">
                                     <label class="col-form-label">Address <span class="text-danger">*</span></label>
                                     <input aria-invalid="true" name="Address" required ng-model="hotel.Address" maxlength="50" type="text" class="form-control" placeholder="Main Shahrah e Faisal Karachi Cantonment">
-
+                                    
                                     <div ng-messages="hotelForm.Address.$error" ng-if='hotelForm.Address.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                         <div class="text-danger" ng-message="required"> Address is required</div>
                                     </div>
@@ -542,38 +544,36 @@
                                     <div ng-messages="hotelForm.city_id.$error" ng-if='hotelForm.city_id.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                         <div class="text-danger" ng-message="required"> City is required</div>
                                     </div>
-                                </div>
-
+                                </div> 
+                
                                 <div class="col-md-4">
                                     <label class="col-form-label">Zip Code <span class="text-danger">*</span></label>
                                     <input required name="ZipCode" type="text" ng-model="hotel.ZipCode" placeholder="35950" class="form-control zip_us">
-
+                                    
                                     <div ng-messages="hotelForm.ZipCode.$error" ng-if='hotelForm.ZipCode.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                         <div class="text-danger" ng-message="required"> ZipCode is required</div>
                                     </div>
 
                                 </div>
-
-                                <div class="col-md-6">
+                
+                                <div class="col-md-6">        
                                     <label class="col-form-label">Longitude <span class="text-danger">*</span></label>
                                     <input id="longitude" required name="Longitude" type="text" class="form-control px-2 latlng" ng-model="hotel.Longitude" placeholder="12.123456" required>
-
+                               
                                     <div ng-messages="hotelForm.Longitude.$error" ng-if='hotelForm.Longitude.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                         <div class="text-danger" ng-message="required"> Longitude is required</div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-6">
+                
+                                <div class="col-md-6">        
                                     <label class="col-form-label">Latitude <span class="text-danger">*</span></label>
                                     <input id="Latitude" required name="Latitude" type="text" class="form-control px-2 latlng" ng-model="hotel.Latitude" placeholder="12.123456" required>
-
+                                    
                                     <div ng-messages="hotelForm.Latitude.$error" ng-if='hotelForm.Latitude.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                         <div class="text-danger" ng-message="required"> Latitude is required</div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </fieldset>
 
                         <div class="card mt-3">
@@ -591,9 +591,9 @@
                                         <div ng-repeat="room_category in room_categories" class="col-md-6 ">
                                             <div class="card">
                                                 <div class="card-header px-1">
-                                                    <span class="card-title">
+                                                    <span class="card-title"> 
                                                         <div class="toggle-checkbox-div-all">
-                                                            <md-switch ng-change="hotelRoomCategory(room_category)" ng-model="hotel.hotelroomcategories[room_category.id].status" ng-true-value="1" ng-false-value="0" style="display:block" >
+                                                            <md-switch ng-change="hotelRoomCategory(room_category)" ng-model="hotel.hotelroomcategories[room_category.id].status" ng-true-value="'1'" ng-false-value="'0'" style="display:block" >
                                                                 <span class="">[[room_category.RoomCategory]]</span>
                                                             </md-switch>
                                                         </div>
@@ -621,7 +621,7 @@
                                                                     </div> -->
                                                                 </span>
                                                             </div>
-
+                                                        
 
                                                     </div>
                                                 </div>
@@ -635,22 +635,22 @@
                                                                 <input  ng-model="hotel.hotelroomcategories[room_category.id].allowed" ng-value="hotel.hotelroomcategories[room_category.id].allowed?hotel.hotelroomcategories[room_category.id].allowed:room_category.AllowedOccupants" class="quantity form-control" min="1" name="AllowedOccupants" type="number" aria-invalid="false" style="">
                                                                 <button type="button" ng-click="incrementAllowedOccupants(room_category)" class="plus p-2"></button>
                                                                 </div>
-                                                            </div>
-
-                                                        </div>
+                                                            </div> 
+                                                            
+                                                        </div> 
 
 
                                                         <div class="col-md-6 pb-2">
                                                             <span>Max Occupants:</span>
                                                             <div class="col-md-10 pl-0">
-
+                                                            
                                                                 <div class="def-number-input number-input safari_only">
                                                                 <button type="button" ng-click="decrementMaxAllowedOccupants(room_category)" class="minus p-2"></button>
                                                                 <input  ng-model="hotel.hotelroomcategories[room_category.id].max_allowed" ng-value="hotel.hotelroomcategories[room_category.id].max_allowed?hotel.hotelroomcategories[room_category.id].max_allowed:room_category.MaxAllowedOccupants" class="quantity form-control" min="1" name="MaxAllowedOccupants" type="number" aria-invalid="false" style="">
                                                                 <button type="button" ng-click="incrementMaxAllowedOccupants(room_category)" class="plus p-2"></button>
                                                                 </div>
-                                                            </div>
-                                                        </div>
+                                                            </div> 
+                                                        </div> 
 
                                                         <div class="col-md-6 pt-2">
                                                             <span style="display: inline-block; padding-top:12px;">Add. Guest Charges:</span>
@@ -659,12 +659,12 @@
                                                             <span style="font-weight: 800">
                                                                 <input  ng-model="hotel.hotelroomcategories[room_category.id].additional_guest_charges" ng-value="hotel.hotelroomcategories[room_category.id]?hotel.hotelroomcategories[room_category.id].additional_guest_charges:room_category.AdditionalGuestCharges"  type="text" data-type="currency" class="form-control" name="AdditionalGuestCharges">
                                                             </span>
-                                                        </div>
+                                                        </div>  
                                                     </div>
 
 
                                                 </div>
-
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -677,7 +677,7 @@
                         @include('hotel.check_out')
 
 
-
+                        
                     </div>
             </div>
             <div class="text-right">
@@ -686,22 +686,25 @@
         </form>
 
         <form action="saveProfilePicture" method="post" enctype="multipart/form-data" id="logo-form" onsubmit="return false;"></form>
+        <form action="mailImage" method="post" enctype="multipart/form-data" id="mail-img-form" onsubmit="return false;"></form>
+    </div>
 </div>
 
 <script>
+    
 
 
-
-
+    
 // $(".pickadate").pickadate({
 //     min: true
 //         });
 
         $.extend($.fn.pickadate.defaults, {
-            min:true,
+            // min:true,
             // formatSubmit: 'yyyy-mm-dd',
             format: 'mm/dd/yyyy',
             // hiddenName: true,
             // hiddenSuffix: '_submit',
         })
 </script>
+

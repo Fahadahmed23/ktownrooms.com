@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-header border-bottom header-elements-inline">
                 <h5 class="card-title" style="text-transform:capitalize;">[[department_name?department_name:'Department']] Services Stats
-                    <span ng-if="user_is_admin"><a href="#" class="" ng-click="showFilter()">
+                    <span><a href="#" class="" ng-click="showFilter()">
                         <i id="" class="icon-search4 " style="font-size: 12px;"></i> 
                    </a></span>
                 </h5>

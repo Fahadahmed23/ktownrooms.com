@@ -266,7 +266,7 @@
             <div class="sectionTwo " style=" width: 100%;float: left;">
                 <div class="sectionTwocontent " style="width: 100%;float: left;color: #00000091;">
                     <div class="box " style=" border: 1px solid #eee;border-collapse: collapse;padding: 10px 20px;">
-                        <h5 style=" margin: 0;font-size: 18px;text-decoration: underline;">Invoice Detail</h5>
+                        <h5 style=" margin: 0;font-size: 18px;text-decoration: underlin;">Invoice Detail</h5>
                         <div class=" ">
 
                             <table style="margin-top: 25px;width: 100%;text-align: left;border-collapse: collapse;">
@@ -338,7 +338,7 @@
                             @if ($booking->status == 'CheckedIn')
                             <div class="ComplainViewbtn">
                                 <p style="margin: 10px 0 0;">For any complain or to request a service. Click on the button below!</p>
-                                <a href="{{url('customerservices') . '/' . encrypt($booking->booking_no)}}" style="border: none;background: #4caf50;padding: 5px 10px;color: #fff;cursor: pointer;font-weight: 400;margin: 5px 0;text-decoration: none;display: inline-block;">
+                                <a href="{{url('cportal') . '/' . $booking->booking_code}}" style="border: none;background: #4caf50;padding: 5px 10px;color: #fff;cursor: pointer;font-weight: 400;margin: 5px 0;text-decoration: none;display: inline-block;">
                                     Customer Portal
                                 </a>
                             </div>

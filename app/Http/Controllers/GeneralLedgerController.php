@@ -36,9 +36,29 @@ class GeneralLedgerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getGeneralLedgers()
+    public function getGeneralLedgers(Request $request)
     {
-        $general_ledgers = AccountGeneralLedger::get();
+// dd($request['filters']);
+        $general_ledgers = AccountGeneralLedger::where('is_active', 1);
+        if(!empty($request['filters']))
+        {
+            if (!empty($request['filters']['account_type_id'])) {
+                $general_ledgers = $general_ledgers->whereIn('account_type_id',$request['filters']['account_type_id']);
+            }
+            if (!empty($request['filters']['account_level_id'])) {
+                $general_ledgers = $general_ledgers->whereIn('account_level_id',$request['filters']['account_level_id']);
+            }
+
+            if (!empty($request['filters']['title'])) {
+                $general_ledgers = $general_ledgers->where('title','like',$request['filters']['title'].'%');
+            }
+
+            if (!empty($request['filters']['account_gl_code'])) {
+                $general_ledgers = $general_ledgers->where('account_gl_code','like',$request['filters']['account_gl_code'].'%');
+            }
+        }
+        $general_ledgers = $general_ledgers->get();
+
         // for dropdown
         $account_types = AccountType::all();
         $account_levels = AccountLevel::all();
@@ -145,7 +165,6 @@ class GeneralLedgerController extends Controller
      */
     public function store(Request $request)
     { 
-        //    dd($request->all());
         $general_ledgerExists = AccountGeneralLedger::where('title', $request->title)->where('account_level_id', $request['account_level_id'])->where('parent_account',$request->parent_acount)->get();
         $gl = new AccountGeneralLedger();
         $gl->title = $request['title'];

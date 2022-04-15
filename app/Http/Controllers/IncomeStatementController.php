@@ -20,15 +20,21 @@ class IncomeStatementController extends Controller
     public function get_income_statement(Request $request)
     {
         // dd($request->all());
+        $request->validate([
+            'fiscal_year' => 'required',
+            'level' => 'required',
+        ]);
+        $fiscal_year = $request->fiscal_year;
+        $level = $request->level;
+        $start_date = $request->start_date ?? NULL;
+        $end_date = $request->end_date ?? NULL;
+        // $hotel_id = $request->hotel_id ?? NULL;
+        $hotel_id = isset($request->hotel_id) ?implode(",", $request->hotel_id) : '';
 
-        $start_date = $request->start_date ?? '';
-        $end_date = $request->end_date ?? '';
-        $fiscal_year = $request->fiscal_year ?? '';
-        $hotel_id = $request->hotel_id ?? '';
-
-        $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?)',array($fiscal_year,$start_date, $end_date, $hotel_id));
-        // dd($income_statements);
+        // dd($level, $fiscal_year, $start_date, $end_date, $hotel_id);
+        $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?,?)',array($level, $fiscal_year,$start_date, $end_date, $hotel_id));
         return response()->json([
+            'success'=> true,
             'income_statements'=>$income_statements,
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
@@ -39,14 +45,17 @@ class IncomeStatementController extends Controller
     public function income_pdf(Request $request)
     {
 
+
         // dd($request->all());
+        $level = $request->level;
         $fiscal_year = $request->fiscal_year;
         // dd($fiscal_year);
-        $start_date = $request->start_date ?? '';
-        $end_date = $request->end_date ?? '';
-        $hotel_id = $request->hotel_id ?? '';
+        $start_date = $request->start_date ?? NULL;
+        $end_date = $request->end_date ?? NULL;
+        // $hotel_id = $request->hotel_id ?? NULL;
+        $hotel_id = isset($request->hotel_id) ?implode(",", $request->hotel_id) : '';
 
-        $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?)',array($fiscal_year,$start_date, $end_date, $hotel_id));
+        $income_statements  = DB::select('call GetIncomeStatement(?,?,?,?,?)',array($level, $fiscal_year,$start_date, $end_date, $hotel_id));
 
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);

@@ -10,13 +10,23 @@ class Service extends Model
 {
     use SoftDeletes;
     // public $timestamps = false;
-
+    protected $appends = 
+    [
+    'HotelName',
+    ];
 
     public function department()
     {
       return $this->belongsTo(Department::class,'department_id','id' );
     }
+    public function hotel()
+    {
+      return $this->belongsTo(Hotel::class,'hotel_id','id' );
+    }
 
+    public function getHotelNameAttribute() {
+      return $this->hotel->HotelName??null;
+    }
     // public function service_type()
     // {
     //     return $this->belongsTo(ServiceType::class,'service_type_id', 'id');

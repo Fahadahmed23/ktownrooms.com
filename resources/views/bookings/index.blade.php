@@ -19,8 +19,11 @@
         
         @include('bookings.addOccupantsModal') 
         @include('bookings.add_partial_pay')
+        {{-- @include('bookings.add_staging_pay') --}}
         @include('bookings.addBulkOccupants')    
         @include('bookings.checkout_extend_modal')  
+        @include('bookings.send_message_modal')  
+
         @include('bookings.customer_modal')
         @include('bookings.stays_modal')
         @include('bookings.status_change_modal')

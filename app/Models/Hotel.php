@@ -11,7 +11,9 @@ class Hotel extends Model
     use SoftDeletes;
 
     protected $table = "hotels";
+    
     public $timestamps = true;
+
     protected $appends = 
     [
     'RoomCount',
@@ -26,8 +28,7 @@ class Hotel extends Model
     'TodayPendingBookingCount',
     'TodayCancelBookingCount',
     'AvailableRoomCount',
-    'BlockedRoomCount',
-    'KtownCommission'
+    'BlockedRoomCount'
     ];
 
     // protected $fillable = [
@@ -37,6 +38,10 @@ class Hotel extends Model
     //     'UpdationIP', 'updated_by', 'UpdatedByModule' ,'HotelName'
     // ];
 
+    public function allUsers(){
+        return $this->belongsToMany(User::class,'user_hotels');
+    }
+    
     public function hotel_gl_accounts()
     {
         return $this->hasMany(AccountGeneralLedgerMapping::class, 'hotel_id','id');
@@ -57,27 +62,8 @@ class Hotel extends Model
         return $this->hasMany(HotelContact::class);
     }
 
-    public function city() {
+    public function city () {
         return $this->belongsTo(City::class, 'city_id', 'id');
-    }
-
-    
-    /*
-    public function hotel_category () {
-        return $this->belongsTo(HotelCategory::class, 'hotel_category_id', 'id');
-    }
-    **/
-
-    
-    public function hotel_cobrandings() {
-        //return $this->hasMany(HotelCobranding::class, 'hotel_id','id');   
-        return $this->hasMany(HotelCobranding::class);   
-    }
-    
-
-    public function hotel_categories()
-    {
-        return $this->belongsToMany(HotelCategories::class, 'hotel_category','hotel_id','hotel_category_id')->withPivot('created_at as pcreated_at')->withTimestamps();
     }
 
     public function hotelroomcategories()
@@ -127,34 +113,10 @@ class Hotel extends Model
     {
         return $this->bookings()->where("bookings.status",'Pending')->where('bookings.BookingDate',  date('Y-m-d').' 00:00:00')->count();
     }
-
     public function getBookingRevenueSumAttribute()
     {
         return $this->bookings()->join('booking_invoices', 'bookings.id','=','booking_invoices.booking_id')
         ->where("bookings.status",'=','Confirmed')->sum('booking_invoices.net_total');
-    }
-
-    public function getKtownCommissionAttribute()
-    {
-        $bookingsRevenue = $this->bookings()
-        ->join('booking_invoices', 'bookings.id','=','booking_invoices.booking_id')
-        ->leftJoin('customers', 'customers.id', 'bookings.customer_id')
-        ->leftJoin('users', 'users.id', 'customers.created_by')
-        ->where('users.hotel_id', '!=', 'bookings.hotel_id')
-        ->where('bookings.status', 'Confirmed')
-        ->sum('booking_invoices.net_total');
-
-        $applicationRevenue = $this->bookings()
-        ->join('booking_invoices', 'bookings.id','=','booking_invoices.booking_id')
-        ->leftJoin('customers', 'customers.id', 'bookings.customer_id')
-        ->leftJoin('users', 'users.id', 'customers.created_by')
-        ->where('users.hotel_id', '=', 'bookings.hotel_id')
-        ->where('bookings.status', 'Confirmed')
-        ->sum('booking_invoices.net_total');
-
-        $ktownCommission = ((20 / 100) * $bookingsRevenue) + ((1.85 / 100) * $applicationRevenue);
-
-        return $ktownCommission;
     }
 
     public function getRoomCountAttribute() {

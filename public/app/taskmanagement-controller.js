@@ -41,8 +41,9 @@ app.controller('taskmanagementCtrl', function($scope) {
 
     $scope.init = function() {
         console.log("initialize");
-        $scope.getDepartments();
+        $scope.getddData();
         $scope.getTasks();
+        $scope.date_filter = 'today';
 
 
     }
@@ -59,15 +60,28 @@ app.controller('taskmanagementCtrl', function($scope) {
         $scope.getTasks();
 
     }
+
+    $scope.filterData = function(searchFields, check) {
+        if (check == 'clear') {
+            $scope.filters = {};
+            $scope.date_filter = 'today';
+        } else {
+            $scope.filters = angular.copy(searchFields);
+        }
+        $scope.getTasks($scope.filters);
+    }
+
     $scope.getTasks = function() {
         $scope.ajaxPost('getTasks', {
-                department_id: $scope.filter.department_id,
-                date: $scope.date_filter
+                date: $scope.date_filter,
+                filters: $scope.filters,
             }, true)
             .then(function(response) {
                 $scope.tasks = response.tasks;
                 $scope.counts = response.counts;
                 $scope.user_is_admin = response.user_is_admin;
+                $scope.isSelectHotel = response.isSelectHotel;
+                $scope.isSelectDepartment = response.isSelectDepartment;
                 console.log($scope.tasks);
                 for (let i = 0; i < $scope.tasks.length; i++) {
                     $scope.tasks[i].booking_service.created_at = moment($scope.tasks[i].created_at).format('MM/DD/YYYY');
@@ -79,10 +93,12 @@ app.controller('taskmanagementCtrl', function($scope) {
                 console.log(e);
             })
     }
-    $scope.getDepartments = function() {
-        $scope.ajaxGet('get_departments', {}, true)
+    $scope.getddData = function() {
+        $scope.ajaxGet('get_dropdowns', {}, true)
             .then(function(response) {
                 $scope.departments = response.departments;
+                $scope.hotels = response.hotels;
+                // $scope.rooms = response.rooms;
             })
             .catch(function(e) {
                 console.log(e);

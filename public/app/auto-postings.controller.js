@@ -4,6 +4,7 @@ app.controller('autopostingsCtrl', function($scope, DTColumnDefBuilder, DTOption
     $scope.auto_postings = [];
     $scope.posting_type = {};
     $scope.auto_postings_arr = [];
+    $scope.auto_posting_ar = {}
     $scope.formType = "";
     $scope.errors = [];
     // datatables
@@ -34,6 +35,7 @@ app.controller('autopostingsCtrl', function($scope, DTColumnDefBuilder, DTOption
                 $scope.auto_postings = response.auto_postings;
 
                 // for drop downs
+                $scope.account_types = response.account_types;
                 $scope.account_heads = response.account_heads;
                 $scope.auto_posting_types = response.auto_posting_types;
                 console.log($scope.auto_postings);
@@ -48,7 +50,7 @@ app.controller('autopostingsCtrl', function($scope, DTColumnDefBuilder, DTOption
         $scope.autoPostingForm.$setPristine();
         $scope.autoPostingForm.$setUntouched();
         $scope.posting_type = {};
-        $scope.auto_postings_arr = {};
+        $scope.auto_postings_ar = {};
         $scope.formType = "save";
         window.scrollTop();
         $('#addNewAutoPosting').show('slow');
@@ -56,16 +58,17 @@ app.controller('autopostingsCtrl', function($scope, DTColumnDefBuilder, DTOption
     $scope.getGl = function(gl_id) {
         console.log(gl_id);
         $scope.gl = angular.copy(Object.values($scope.account_heads).find(ah => ah.id == gl_id))
-        $scope.auto_posting_arr.account_gl_name = $scope.gl.title;
-        $scope.auto_posting_arr.account_gl_code = $scope.gl.account_gl_code;
-        $scope.auto_posting_arr.account_level = $scope.gl.account_level_id;
+        $scope.auto_posting_ar.account_gl_name = $scope.gl.title;
+        $scope.auto_posting_ar.account_gl_code = $scope.gl.account_gl_code;
+        $scope.auto_posting_ar.account_level = $scope.gl.account_level_id;
     }
 
 
-    $scope.pushAutoPosting = function(auto_posting_arr) {
-        console.log(auto_posting_arr);
-        $scope.auto_postings_arr.push(auto_posting_arr);
-        $scope.auto_posting_arr = {};
+    $scope.pushAutoPosting = function(auto_posting_ar) {
+        console.log(auto_posting_ar);
+        $scope.auto_posting_ar.account_type_name = $scope.account_types.find((at) => at.id === auto_posting_ar.account_type_id).title;
+        $scope.auto_postings_arr.push(auto_posting_ar);
+        $scope.auto_posting_ar = {};
     }
     $scope.removeRecord = function(i, ap) {
         console.log($scope.auto_postings_arr[i]);
@@ -86,7 +89,7 @@ app.controller('autopostingsCtrl', function($scope, DTColumnDefBuilder, DTOption
             }, false)
             .then(function(response) {
                 if (response.success) {
-                    $scope.auto_posting_arr = {};
+                    $scope.auto_posting_ar = {};
                     $scope.posting_type = {};
                     $scope.getAutoPostings();
                     $('#addNewAutoPosting').hide('slow');
@@ -100,15 +103,39 @@ app.controller('autopostingsCtrl', function($scope, DTColumnDefBuilder, DTOption
 
 
     $scope.editAutoPosting = function(ap) {
+        $scope.auto_posting_type_id = angular.copy(ap.auto_posting_type_id);
         window.scrollTop();
         $scope.autoPostingForm.$setPristine();
         $scope.autoPostingForm.$setUntouched();
-        $scope.auto_postings_arr = $scope.auto_postings.filter((p) => p.auto_posting_type_id == ap.auto_posting_type_id);
-        $scope.posting_type.auto_posting_type_id = ap.auto_posting_type_id;
-        $scope.auto_posting_arr = {};
-        $scope.formType = "update";
-        console.log($scope.auto_postings_arr);
-        $('#addNewAutoPosting').show('slow');
+
+        let formUrl = 'auto_posting_by_type';
+        $scope.ajaxPost(formUrl, {
+                auto_posting_type_id: $scope.auto_posting_type_id,
+            }, true)
+            .then(function(response) {
+                if (response.success) {
+                    $scope.auto_postings_arr = response.ap;
+                    $scope.posting_type.auto_posting_type_id = response.ap[0].auto_posting_type_id;
+                    $scope.formType = "update";
+                    console.log($scope.auto_postings_arr);
+                    $('#addNewAutoPosting').show('slow');
+                } else {
+                    console.log(response);
+                }
+
+            })
+            .catch(function(e) {
+                console.log(response);
+            });
+
+
+
+        // $scope.auto_postings_arr = $scope.auto_postings.filter((p) => p.auto_posting_type_id == ap.auto_posting_type_id);
+        // $scope.posting_type.auto_posting_type_id = ap.auto_posting_type_id;
+        // $scope.auto_posting_arr = {};
+        // $scope.formType = "update";
+        // console.log($scope.auto_postings_arr);
+        // $('#addNewAutoPosting').show('slow');
 
     }
     $scope.revert = function() {

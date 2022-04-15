@@ -199,7 +199,7 @@
                                 <div class="card-body">
                                     <div class="row m-0">
                                         <div class="col-md-6">
-                                            <div class="row py-1">
+                                            <div class="row py-1"  ng-show="room.st.name=='Open' || room.st.name=='Not Available'">
                                                 <div class="col-lg-12">
                                                     <h6 class="mt-2 mb-0">[[room.RoomCharges | currency]] / Night</h6>
                                                 </div>
@@ -211,6 +211,27 @@
                                                 </div>
                                                 <div class="col-lg-12">
                                                     Additional Guest Charges: [[room.hotel_room_category.additional_guest_charges | currency]] / Night
+                                                </div>
+                                            </div>
+
+                                            <div class="row py-1" ng-show="room.st.name!='Open' && room.st.name!='Not Available'">
+                                                <div class="col-lg-12">
+                                                    Booking #: [[room.booking_no]] <i ng-show="room.booking_code" ng-click="getPortallink(room.booking_code);" class="icon-clipboard4 ml-1 cursor-pointer" data-popup="popover" title="" data-trigger="focus" data-content="Copied to clipboard!" data-original-title=""></i>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    Customer Name: [[room.customer_name]]
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    Check-In Date: [[room.checkin_date]]
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    Checkout Date: [[room.checkout_date]]
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    Occupants: [[room.num_occupants]]
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    Outstanding Balance: [[room.outstanding_balance | currency]]
                                                 </div>
                                             </div>
                                         </div>

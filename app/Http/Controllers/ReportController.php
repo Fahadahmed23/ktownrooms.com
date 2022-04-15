@@ -28,6 +28,7 @@ class ReportController extends Controller
    */
 
   private $periodLabels;
+  private $monthLabels;
   private $year;
 
   private function getMonthDays()
@@ -46,6 +47,19 @@ class ReportController extends Controller
 
     $this->year = date("Y");
     $this->setPeriodLabels();
+    $this->setMonthLabels();
+  }
+
+  private function setMonthLabels()
+  {
+    $this->monthLabels = [
+      'Year' => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      
+    ];
+    foreach ($this->monthLabels['Year'] as $key => $entry) {
+      $this->monthLabels['Year'][$key] = $entry . ' ' . $this->year;
+    }
+    //dd($this->periodLabels);
   }
 
   private function setPeriodLabels()
@@ -89,7 +103,7 @@ class ReportController extends Controller
     foreach ($modules as $key => $module) {
       $data[$key]['name'] = $module->name;
       $data[$key]['id'] = $module->id;
-      $module_reports = ModuleReport::where('module_id', $module->id)->with('module')->get();
+      $module_reports = ModuleReport::where('module_id', $module->id)->where('is_active', 1)->with('module')->get();
       foreach ($module_reports as $key1 => $module_report) {
         // $data['can_delete'] =false;
         // $data[$key]['reports'][$key1]['can_delete'] = false;//commented because all users can delete reports and set always true
@@ -227,11 +241,12 @@ class ReportController extends Controller
     $data['reportColumns'] = config('constants.reports.' . $input['report'] . '.columns');
     $data['dataTypes'] = config('constants.reports.datatype_operators');
     $data['searchGroups'] = config('constants.reports.' . $input['report'] . '.searchGroups');
-    // dd($input['report']);
+    // dd($input);
     if (isset($input['_period_'])) {
       if (isset($input['_year_'])) {
         $this->year = $input['_year_'];
         $this->setPeriodLabels();
+        $this->setMonthLabels();
       }
       foreach ($data['reportColumns'] as &$reportColumn) {
         if ($reportColumn['alias'] == 'Period') {
@@ -239,23 +254,52 @@ class ReportController extends Controller
           $reportColumn['enumArr'] = $this->periodLabels[$input['_period_']];
 
           break;
+        } else if (isset($reportColumn['isMonth']) && $reportColumn['isMonth'] == '1'){
+          $reportColumn['type'] = 'enum';
+          $reportColumn['enumArr'] = $this->monthLabels[$input['_period_']];
         }
       }
+      
     }
+
     $role_names = [];
-    $roles = Role::select('display_name')->get();
+    // $level_names = [];
+    // $campaign_types = [];
+    $roles = Role::where('name', '!=', 'Admin')->select('name')->get();
     foreach ($roles as $key => $value) {
-      $role_names[] = $value->display_name;
+      $role_names[] = $value->name;
     }
-    // dd($user_data);
+    // $role_names[] = 'Prospect';
+
+    // $levels = MembershipLevel::select('name')->get();
+    // foreach ($levels as $key => $value) {
+    //   $level_names[] = $value->name;
+    // }
+    
+    // $ctypes = CampaignType::select('name')->get();
+    // foreach ($ctypes as $key => $value) {
+    //   $campaign_types[] = $value->name;
+    // }
+    // dd($data['reportColumns'] );
     foreach ($data['reportColumns'] as &$reportColumn) {
       if (isset($reportColumn['patron']) && $reportColumn['patron'] == 'Role') {
         $reportColumn['type'] = 'enum';
         $reportColumn['enumArr'] = $role_names;
 
-        break;
-      }
+        continue;
+      } 
+      // else if (isset($reportColumn['patron']) && $reportColumn['patron'] == 'Level'){
+      //   $reportColumn['type'] = 'enum';
+      //   $reportColumn['enumArr'] = $level_names;
+      //   continue;
+      // } else if (isset($reportColumn['patron']) && $reportColumn['patron'] == 'Campaign Type'){
+      //   $reportColumn['type'] = 'enum';
+      //   $reportColumn['enumArr'] = $campaign_types;
+      //   continue;
+      // }
     }
+
+    
     // dd($data);
     echo json_encode($data);
   }
@@ -266,6 +310,18 @@ class ReportController extends Controller
         // •	Today
         // •	next year today
         // •	previous year today
+      case 'yesterday':
+      case 'tomorrow':
+        $num = '0';
+        if ($timespan == "tomorrow")
+          $num = '+1';
+        else if ($timespan == "yesterday")
+          $num = '-1';
+        $start_date = date('Y-m-d', strtotime($num . ' day'));
+        $end_date = date('Y-m-d', strtotime($num . ' day'));
+        return (['sd' => $start_date, 'ed' => $end_date]);
+        break;
+
       case 'today':
       case 'next year today':
       case 'previous year today':
@@ -287,6 +343,7 @@ class ReportController extends Controller
       case 'previous year this week':
       case 'next year this week':
       case 'next week':
+      case 'last week':
         $dt = date("Y-m-d");
         $keyword = 'this';
         if ($timespan == "next week")
@@ -295,7 +352,8 @@ class ReportController extends Controller
           $dt = date("Y-m-d", strtotime('previous year'));
         if ($timespan == "next year this week")
           $dt = date("Y-m-d", strtotime('next year'));
-
+        if ($timespan == "last week")
+          $keyword = 'last';
 
         $start_date = date("Y-m-d", strtotime($dt . ' monday ' . $keyword . ' week'));
         $end_date = date("Y-m-d", strtotime($dt . ' sunday ' . $keyword . ' week'));
@@ -310,6 +368,7 @@ class ReportController extends Controller
       case 'previous year this month':
       case 'next year this month':
       case 'next month':
+      case 'last month':
         $dt = date("Y-m-d");
         $keyword = 'this';
         if ($timespan == "next month")
@@ -318,6 +377,8 @@ class ReportController extends Controller
           $dt = date("Y-m-d", strtotime('previous year'));
         if ($timespan == "next year this month")
           $dt = date("Y-m-d", strtotime('next year'));
+        if ($timespan == "last month")
+          $keyword = 'last';
 
         $start_date = date("Y-m-d", strtotime($dt . ' first day of ' . $keyword . ' month'));
         $end_date = date("Y-m-d", strtotime($dt . ' last day of ' . $keyword . ' month'));
@@ -454,8 +515,8 @@ class ReportController extends Controller
 
 
 
+// dd($input['selectedColumns']);
 
-// dd($reportQryInfo);
 
     if ($defaultConfig == '0') { //means selectedColumns, groupedColumns, searchGroups should be taken from the request
       if (isset($input['selectedColumns']))
@@ -475,9 +536,11 @@ class ReportController extends Controller
         //at this point code comes if column is a default column
         if (isset($column['aggregation'])) {
           $selectedColumns[$selectedColumnsCounter++] = (object)array('Name' => $column['name'], 'Alias' => $column['alias'], 'Type' => $column['type'], 'Aggregation' => $column['aggregation']);
+        } else if (isset($column['isPeriod'])) {
+          $selectedColumns[$selectedColumnsCounter++] = (object)array('Name' => $column['name'], 'Alias' => $column['alias'], 'isPeriod' => $column['isPeriod'], 'Type' => $column['type']);
         } else
           $selectedColumns[$selectedColumnsCounter++] = (object)array('Name' => $column['name'], 'Alias' => $column['alias'], 'Type' => $column['type']);
-
+        
         if (isset($column['group']) && $column['group'] == 1)
           $groupedColumns[$groupedColumnsCounter++] = (object)array('Name' => $column['name'], 'Alias' => $column['alias'], 'Type' => $column['type']);
       }
@@ -568,8 +631,8 @@ class ReportController extends Controller
         }
       }
     }
-
-
+   
+// dd($query->get());
     //Add the selected columns to the query...
     foreach ($selectedColumns as $column) {
       //get corresponding report column entry from constants...
@@ -585,23 +648,40 @@ class ReportController extends Controller
           break;
         }
       }
-
+      // dd($input, $constColumn);
       // print_r($constColumn->group);
       // if ($column->Type == 'date' && isset($constColumn->group))
       //   print_r('hello date');
       //print_r('hello'. && $constColumn->group == 1 && isset($input['period']));
-
-        if (isset($constColumn['custom'])) {
-          $query = $query->selectRaw($constColumn['custom'] . ' as \'' . $column->Alias . '\'');
-        } else if (isset($column->Aggregation))
-          $query = $query->selectRaw($column->Aggregation . '(' . $column->Name . ') as \'' . $column->Alias . '\'');
-        else if ($column->Type == 'date' && isset($constColumn['group']) && $constColumn['group'] == 1 && isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
-          $query = $query->selectRaw($this->getRawSelectForPeriod($column->Name, $input['period']) . ' as \'' . $column->Alias . '\'');
-        } else {
-          $query = $query->selectRaw($column->Name . ' as \'' . $column->Alias . '\'');
-        }
+      // dd($column);
+      if (isset($constColumn['custom'])) {
+        $query = $query->selectRaw($constColumn['custom'] . ' as \'' . $column->Alias . '\'');
+      } else if (isset($column->Aggregation)){
+        $query = $query->selectRaw($column->Aggregation . '(' . $column->Name . ') as \'' . $column->Alias . '\'');
+     } else if (isset($column->aggregation)){
+        $query = $query->selectRaw($column->aggregation . '(' . $column->Name . ') as \'' . $column->Alias . '\'');
+    //  }else if ($column->Type == 'date' && isset($constColumn['group']) && $constColumn['group'] == 1 && isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
+      //  }else if ($column->Type == 'date' && isset($constColumn['group'])  && isset($constColumn['isPeriod']) && $constColumn['group'] == 1 && isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
+     }else if (isset($constColumn['isPeriod']) &&  isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
+      // dd('in');  
+      $query = $query->selectRaw($this->getRawSelectForPeriod($column->Name, $input['period']) . ' as \'' . $column->Alias . '\'');
+      // } else if ($column->Type == 'date' && isset($constColumn['isPeriod']) && $constColumn['isPeriod'] == 1 && isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
+      //   // dd('in2');  
+      //   $query = $query->selectRaw($this->getRawSelectForPeriod($column->Name, $input['period']) . ' as \'' . $column->Alias . '\'');
+      } else if (isset($constColumn['isMonth'])) { //if type is date and group is 1 and period is defined in query string
+  
+        $query = $query->selectRaw($this->getRawSelectForMonth($column->Name) . ' as \'' . $column->Alias . '\'');
+        // dd($query->get());
+      } else{
+        // dd("in");
+        $query = $query->selectRaw($column->Name . ' as \'' . $column->Alias . '\'');
+      }
     }
+//     \DB::enableQueryLog(); // Enable query log
 
+// $data = $query->get();
+//     dd(\DB::getQueryLog()); // Show results of log
+// dd($query->get());
     //Add the join info to the query. Note that join info comes from constants.php only as it is not configurable in UI...
     if (isset($reportQryInfo['joins']) && count($reportQryInfo['joins']) > 0) {
 
@@ -632,7 +712,6 @@ class ReportController extends Controller
               //   dd($whereClause);
               foreach ($reportQryInfo['columns'] as $struct) {
                 // if ($whereClause->column->name == 'period')
-                //dd($struct);
                 if (isset($whereClause->column->alias) && strtolower($whereClause->column->alias) == strtolower($struct['alias'])) {
                   $constColumn = $struct;
                   break;
@@ -641,20 +720,22 @@ class ReportController extends Controller
                   break;
                 }
               }
+              // dd($whereClause, $constColumn);
+
               //print_r($constColumn['type']);
               // if ($constColumn['type'] == 'date')
               //   dd($constColumn['type'], $constColumn['group']);
               //print_r($constColumn['type']);
               // if ($constColumn['type'] == 'date')
               // if ($constColumn['type'] != 'string')
-              // dd($whereClause);
+              // dd($whereClause, $constColumn);
               // dd($whereClause->value);
               $timespan = $this->timespanConversion($whereClause->value);
-
+              // dd($timespan);
               if (isset($constColumn['where']) && $constColumn['where'] == 'date') {
                 // dd('inwhere');
                 $query->whereRaw($whereClause->column->name . $whereClause->operator . '\'' . date('Y-m-d', strtotime($whereClause->value)) . '\'');
-              } else if (isset($constColumn['type']) && $constColumn['type'] == 'date' && isset($constColumn['group']) && $timespan) {
+              } else if (isset($constColumn['type']) && $constColumn['type'] == 'date' && isset($constColumn['group']) && $timespan && $whereClause->operator == '==') {
                 // dd('in');
                 if ($whereClause->operator == '==') {
 
@@ -668,19 +749,20 @@ class ReportController extends Controller
                   $query->whereRaw($whereClause->column->name . ' BETWEEN ' . '\'' . $v1 . '\'' . ' AND ' . '\'' . $v2 . '\'');
                   // dd($query->get());
                 } else {
-
+// dd('in2');
                   $where = $this->getRawSelectForPeriod($constColumn['name'],  $input['period']);
 
                   $query->whereRaw($where . $whereClause->operator . '\'' . $whereClause->value . '\'');
                 }
-              } else if (isset($constColumn['type']) && $constColumn['type'] == 'date' && isset($constColumn['group'])) {
+              // } else if (isset($constColumn['type']) && $constColumn['type'] == 'date' && isset($constColumn['group']) && isset($constColumn['isPeriod'])) {
+              } else if (isset($constColumn['group']) && isset($constColumn['isPeriod'])) {
                 // dd('in');
                 $where = $this->getRawSelectForPeriod($constColumn['name'],  $input['period']);
-                //dd($where);
+                // dd($input['period']);
                 //print_r($where);
                 $query->whereRaw($where . $whereClause->operator . '\'' . $whereClause->value . '\'');
               } else if (isset($constColumn['type']) && $constColumn['type'] == 'date') {
-
+                // dd('in');
                 if ($whereClause->operator == '==') {
 
                   $start_dt = new DateTime($timespan['sd']);
@@ -696,15 +778,23 @@ class ReportController extends Controller
 
                   // dd($whereClause);
                   $query->whereRaw($whereClause->column->name . $whereClause->operator . '\'' . date('Y-m-d', strtotime($whereClause->value)) . '\'');
+                  // $query->whereRaw(DATE_FORMAT($whereClause->column->name, 'Y-m-d') . $whereClause->operator . '\'' . date('Y-m-d', strtotime($whereClause->value)) . '\'');
                 }
               } else if (isset($constColumn['type']) && $constColumn['type'] == 'time'){
 
                 $convertedValue = date('H:i:s', strtotime($whereClause->value));
-                // dd($convertedValue);
+                // dd('in2');
                 $query->whereRaw($whereClause->column->name . " " . $whereClause->operator . " '" . $convertedValue . "'");
               } else {
+                // dd($constColumn);
                 if ($whereClause->operator == 'contains')
                   $query->whereRaw($whereClause->column->name . ' like \'%' . $whereClause->value . '%\'');
+                else if (isset($constColumn['type']) && ($constColumn['type'] == 'number' || $constColumn['type'] == 'int' || $constColumn['type'] == 'float' || $constColumn['type'] == 'amount'))
+                  $query->whereRaw($whereClause->column->name . " " . $whereClause->operator . " " . $whereClause->value);     
+                else if (isset($constColumn['isMonth']) && ($constColumn['isMonth'] == '1')){
+                  // dd(date('n', strtotime($whereClause->value)));
+                  $query->whereRaw($whereClause->column->name . " " . $whereClause->operator . " " . date('n', strtotime($whereClause->value)));     
+                }
                 else
                   $query->whereRaw($whereClause->column->name . " " . $whereClause->operator . " '" . $whereClause->value . "'");
               }
@@ -714,6 +804,7 @@ class ReportController extends Controller
       }
     }
 
+    // dd($query->get());
 
 
     //Now add grouped columns info to the query...
@@ -733,9 +824,11 @@ class ReportController extends Controller
     if (strlen($groupedColumnsStr) > 0) {
       $query->groupBy(\DB::raw($groupedColumnsStr));
     }
-
+ // Add base where condition in query if exist
+    if (isset($reportQryInfo['base_where'])) {
+      $query->whereRaw($reportQryInfo['base_where']);
+    }
     $sql = $query->toSql();
-    // dd($sql);
     $countQ = \DB::select( \DB::raw("select count(*) as countAll from ($sql) as a"));
   //  $countQ =  \DB::raw("select count(*) from ($sql) as a");
 
@@ -765,7 +858,34 @@ class ReportController extends Controller
 
     //dd($data);
     //print_r('period is ' . $input['period']);
+    $checkString = true;
+    // dd($reportQryInfo['columns']);
+    foreach ($reportQryInfo['columns'] as $colLink) {
+      if (!$this->find_key_value($selectedColumns, 'Name', $colLink['name']))
+        continue; //skip processing if the column is not in the selected columns list
+      //processing of link type columns
+      if ($colLink['isDefault'] == 1 && isset($colLink['link'])) {
 
+
+        $link = $colLink['link'];
+        $link = str_replace('__period__', isset($input['period']) ? $input['period'] : 'Month', $link);
+        // dd($colLink['alias']);
+        for ($i = 0; $i < count($data); $i++) {
+          $prop = $colLink['alias'];
+          if (isset($data[$i]->{$prop})){
+            if (!is_numeric($data[$i]->{$prop})){
+              $checkString = false;
+              break;
+            }
+            
+              
+          }
+         
+          //$prop = strpos($colLink['alias'], ' ') ? '\'' . $colLink['alias'] . '\'' : $colLink['alias']; //add ' to property name if it has spaces
+          
+        }
+      }
+    }
     //Now process the columns for any link type columns...
     foreach ($reportQryInfo['columns'] as $colLink) {
       if (!$this->find_key_value($selectedColumns, 'Name', $colLink['name']))
@@ -773,6 +893,7 @@ class ReportController extends Controller
       //processing of link type columns
       if ($colLink['isDefault'] == 1 && isset($colLink['link'])) {
         $link = $colLink['link'];
+        // dd($input);
         $link = str_replace('__period__', isset($input['period']) ? $input['period'] : 'Month', $link);
         for ($i = 0; $i < count($data); $i++) {
           $linkUpdated = $link;
@@ -780,28 +901,50 @@ class ReportController extends Controller
           //now iterate all columns to update the values...
           foreach ($reportQryInfo['columns'] as $col) {
             //$prop = strpos($col['alias'], ' ') ? '\'' . $col['alias'] . '\'' : $col['alias']; //add ' to property name if it has spaces
+            // $link = str_replace('_year_=__period', '_year_='.date('Y', strtotime($col['alias'])), $link);
+
             $prop = $col['alias'];
+            // dd($prop);
             // if ($prop == '\'Patron Code\'')
-            //   dd($data[$i]->{$col['alias']});
+              // dd($linkUpdated);
             try {
-              if (isset($data[$i]->{$prop}))
-                $linkUpdated = str_replace(
-                  '__' . strtolower($col['alias']),
-                  $data[$i]->{$prop} == null ? '' : $data[$i]->{$prop},
-                  $linkUpdated
-                );
+              if (isset($data[$i]->{$prop})){
+                if(strpos($linkUpdated, '_year_=__period') !== false) {
+                    $linkUpdated = str_replace(
+                      '_year_=__'.strtolower($col['alias']), '_year_='.
+                      date('Y', strtotime($data[$i]->{$prop})),
+                    $linkUpdated
+                  );
+                  $linkUpdated = str_replace(
+                    '__' . strtolower($col['alias']),
+                    $data[$i]->{$prop} == null ? '' : $data[$i]->{$prop},
+                    $linkUpdated
+                  );
+                } else {
+                  $linkUpdated = str_replace(
+                    '__' . strtolower($col['alias']),
+                    $data[$i]->{$prop} == null ? '' : $data[$i]->{$prop},
+                    $linkUpdated
+                  );
+                }
+              }
             } catch (\ErrorException $e) {
               //dd(print_r($data[$i]) . $e);
             }
           }
           //$prop = strpos($colLink['alias'], ' ') ? '\'' . $colLink['alias'] . '\'' : $colLink['alias']; //add ' to property name if it has spaces
           $prop = $colLink['alias'];
-          if (isset($data[$i]->{$prop}))
-            $data[$i]->$prop = '<a href="' . site_url($linkUpdated.'&d=1') . '" >' . $data[$i]->$prop . '</a>';
+          // dd($linkUpdated);
+          if (isset($data[$i]->{$prop})){
+            if($checkString)
+              $data[$i]->$prop = '<a href="' . site_url($linkUpdated.'&d=1') . '" ><span class="float-right"> ' . $data[$i]->$prop . '</span></a>';
+            else
+              $data[$i]->$prop = '<a href="' . site_url($linkUpdated.'&d=1') . '" >' . $data[$i]->$prop . '</a>';
+          }
         }
       }
     }
-
+// dd($selectedColumns);
     //remove columns data that have Display set to 0
     foreach ($selectedColumns as $col1) {
       if (isset($col1->Display) && $col1->Display == '0') {
@@ -813,14 +956,19 @@ class ReportController extends Controller
     }
 
     //remove columns that have Display set to 0
-    for ($i = 0; $i < count($selectedColumns); $i++) {
-      if (isset($selectedColumns[$i]->Display) && $selectedColumns[$i]->Display == '0') {
-        unset($selectedColumns[$i]);
+    foreach ($selectedColumns as $key => $col1) {
+      if (isset($col1->Display) && $col1->Display == '0') {
+        unset($selectedColumns[$key]);
       }
     }
+    // for ($i = 0; $i < count($selectedColumns); $i++) {
+    //   if (isset($selectedColumns[$i]->Display) && $selectedColumns[$i]->Display == '0') {
+    //     unset($selectedColumns[$i]);
+    //   }
+    // }
 
-    // dd($data);
-    
+    // dd($selectedColumns);
+
     return json_encode([
       'totalRecords' => $TotalRecords,
       'result' => $data,
@@ -975,11 +1123,18 @@ class ReportController extends Controller
 
       if (isset($constColumn['custom'])) {
         $query = $query->selectRaw($constColumn['custom'] . ' as \'' . $column->Alias . '\'');
-      } else if (isset($column->Aggregation))
+      } else if (isset($column->Aggregation)){
         $query = $query->selectRaw($column->Aggregation . '(' . $column->Name . ') as \'' . $column->Alias . '\'');
-      else if ($column->Type == 'date' && isset($constColumn['group']) && $constColumn['group'] == 1 && isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
+     } else if (isset($column->aggregation)){
+        $query = $query->selectRaw($column->aggregation . '(' . $column->Name . ') as \'' . $column->Alias . '\'');
+     }else if ($column->Type == 'date' && isset($constColumn['group']) && $constColumn['group'] == 1 && isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
+      // dd('in');  
+      $query = $query->selectRaw($this->getRawSelectForPeriod($column->Name, $input['period']) . ' as \'' . $column->Alias . '\'');
+      } else if ($column->Type == 'date' && isset($constColumn['isPeriod']) && $constColumn['isPeriod'] == 1 && isset($input['period'])) { //if type is date and group is 1 and period is defined in query string
+        // dd('in');  
         $query = $query->selectRaw($this->getRawSelectForPeriod($column->Name, $input['period']) . ' as \'' . $column->Alias . '\'');
-      } else
+        } 
+      else
         $query = $query->selectRaw($column->Name . ' as \'' . $column->Alias . '\'');
     }
 
@@ -1130,8 +1285,20 @@ class ReportController extends Controller
     return false;
   }
 
+  private function getRawSelectForMonth(string $columnName)
+  {
+    // dd($columnName);
+    $sql = '';
+    // CONCAT(MONTHNAME(STR_TO_DATE(7,'%m')), ' ' ,YEAR(CURDATE()))
+    $sql = 'CONCAT(MONTHNAME(STR_TO_DATE('.$columnName.',\'%m\')), " ", YEAR(CURDATE()))';
+        
+    // dd($sql);
+    return $sql;
+  }
+
   private function getRawSelectForPeriod(string $columnName, string $period)
   {
+    // dd($columnName, $period);
     $sql = '';
     switch ($period) {
       case 'Year':
@@ -1147,6 +1314,7 @@ class ReportController extends Controller
         $sql = $columnName;
         break;
     }
+    // dd($sql);
     return $sql;
   }
 
@@ -1317,7 +1485,7 @@ class ReportController extends Controller
   {
 
     $validator = Validator::make($request->all(), [
-      'name' => 'required|unique:user_reports,name',
+      'name' => 'required',
     ]);
     if ($validator->fails()) {
       $response = [
@@ -1329,15 +1497,25 @@ class ReportController extends Controller
       return json_encode($response);
     }
 
+    $taken_name = UserReport::where('user_id',Auth::user()->id)->where('name', $request->name)->first();
+    if ($taken_name) {
+      $response = [
+        'success' => false,
+        'message' => [['The report name has already been taken']],
+        'msgtype' => 'danger'
+      ];
+
+      return json_encode($response);
+    }
+
+    // dd($taken_name);
     $input = $request->all();
     $input['user_id'] = Auth::user()->id;
     $userReport = new UserReport();
     if (!isset($input['module']))
       $input['module'] = '';
-
-    // \DB::enableQueryLog();
+    //dd($input);
     $userReport->save($input);
-    // dd(\DB::getQueryLog());
 
     $response = [
       'success' => true,
@@ -1350,23 +1528,85 @@ class ReportController extends Controller
   public function share_report_config(Request $request)
   {
     // dd($request->all());
-    $selected_role_ids = null;
-    if (isset($request->role_ids))
-      $selected_role_ids = implode(',', $request->role_ids);
-    // dd($selected_role_ids);
-    $user_reports = UserReport::findOrFail($request->save_report_id);
-    $data['module_id'] = $request->module_id;
-    $data['role_ids'] = $selected_role_ids;
-    $data['name'] = $request->name;
-    $data['description'] = $request->description;
-    $data['report_name'] = $request->report_name;
-    $data['criteria'] = $user_reports->criteria;
-    $data['columns'] = $user_reports->columns;
-    $data['grouped_columns'] = $user_reports->grouped_columns;
-    // $input = $request->all();
-    // $input['user_id'] = Auth::user()->id;
-    $moduleReport = new ModuleReport();
-    $moduleReport->save($data);
+    // ModuleReport::where('name',)
+
+    if(ModuleReport::where('module_id', $request->module_id)->where('name', $request->name)->exists()){
+      
+      if (isset($request->role_ids)){
+        
+        if(ModuleReport::where('module_id', $request->module_id)->where('name', $request->name)->whereNull('role_ids')->exists()){
+
+          $response = [
+            'success' => false,
+            'message' => [['The report name has already been taken']],
+            'msgtype' => 'danger'
+          ];
+          
+          return json_encode($response);
+        } else {
+          foreach ($request->role_ids as $key => $value) {
+            # code...
+            // dd($value);
+            $report = ModuleReport::where('module_id', $request->module_id)->where('name', $request->name)->first();
+            // dd($report);
+            $roleIds = explode(',',$report->role_ids);
+            // dd($roleIds);
+
+            if (in_array($value, $roleIds)) {
+              $response = [
+                'success' => false,
+                'message' => [['The report name has already been taken']],
+                'msgtype' => 'danger'
+              ];
+              
+              return json_encode($response);
+            } else {
+
+              $selected_role_ids = implode(',', $request->role_ids);
+              $existing_role_ids = $report->role_ids;
+              $new_role_ids = $existing_role_ids . "," . $selected_role_ids;
+              // dd($new_role_ids);
+              ModuleReport::where('module_id', $request->module_id)->where('name', $request->name)->update(['role_ids'=> $new_role_ids]);
+              $response = [
+                'success' => true,
+                'message' => ['Report Configuration shared successfully!'],
+                'msgtype' => 'success'
+              ];
+          
+              return json_encode($response);
+            }
+          }
+        }
+      // dd($report_exist);
+      } else {
+        $response = [
+          'success' => false,
+          'message' => [['The report name has already been taken']],
+          'msgtype' => 'danger'
+        ];
+  
+        return json_encode($response);
+      }
+    } else {
+      // dd('out');
+    
+      $selected_role_ids = null;
+      if (isset($request->role_ids))
+        $selected_role_ids = implode(',', $request->role_ids);
+      $user_reports = UserReport::findOrFail($request->save_report_id);
+      $data['module_id'] = $request->module_id;
+      $data['role_ids'] = $selected_role_ids;
+      $data['name'] = $request->name;
+      $data['description'] = $request->description;
+      $data['report_name'] = $request->report_name;
+      $data['criteria'] = $user_reports->criteria;
+      $data['columns'] = $user_reports->columns;
+      $data['grouped_columns'] = $user_reports->grouped_columns;
+      // $input = $request->all();
+      // $input['user_id'] = Auth::user()->id;
+      $moduleReport = new ModuleReport();
+      $moduleReport->save($data);
+    }
     // if (!isset($input['module']))
     //   $input['module'] = '';
     //dd($input);
@@ -1428,22 +1668,21 @@ class ReportController extends Controller
     // dd($data);
     $pdf = app('dompdf.wrapper');
     $pdf->getDomPDF()->set_option("enable_php", true);
-    // dd($pdf->stream());
+
     $pdf->loadView('report.exportpdf',  compact('data'));
 
-    // dd(view('report.exportpdf',  compact('data')));
 
 
     // $pdf = PDF::loadView('report.exportpdf', compact('data'));
     // $pdf->output();
     // If you want to store the generated pdf to the server then you can use the store function
     $filename = $report_name . ".pdf";
-    // dd('pdf/' . $filename);
 
     $pdf->save('pdf/' . $filename);
     // Finally, you can download the file using download function
     $pdf->download($report_name . ".pdf");
     // $userReport->save($input);
+
     return $response = [
       'success' => true,
       'filename' => $report_name,

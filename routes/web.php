@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-
-// Fahad Ahmed
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('student', StudentController::class);
 // Route::resource('company', 'CompanyController');
 // Route::resource('companies', 'CompaniesController');
-// fahad ahmed
 
 // Route::group(['middleware' => ['activity']], function () {
 Route::get('/', function () {
@@ -47,6 +43,16 @@ Route::get('/home', function () {
     return view('home');
 });
 
+// BLINQ PAYMENT ROUTES IN CUSTOMER PORTAL
+Route::post('order-confirmation/{invoice_number}', 'HouseKeepingController@order_confirmation');
+Route::post('blinqPayment', 'HouseKeepingController@blinqPayment');
+
+Route::get('default_setting', 'HomeController@default_setting');
+Route::get('getDefaultSetting', 'HomeController@getDefaultSetting');
+Route::post('saveDefaultSetting', 'HomeController@saveDefaultSetting');
+Route::post('saveDefaultKeys', 'HomeController@saveDefaultKeys');
+
+
 /* company routes */
 Route::get('companies', 'CompaniesController@index');
 Route::get('getCompanies', 'CompaniesController@getCompanies');
@@ -57,34 +63,33 @@ Route::get('companies/delete/{id}', 'CompaniesController@delete');
 
 /* bookings routes */
 Route::get('bookings', 'BookingsController@index')->middleware('permission:can-view-booking');
-Route::post('bookings/getData', 'BookingsController@getData')->middleware('permission:can-view-booking');
-Route::get('bookings/find/{id}', 'BookingsController@show')->middleware('permission:can-add-booking');
-Route::get('getBookings', 'BookingsController@getBookings')->middleware('permission:can-view-booking');
-Route::post('searchRooms', 'BookingsController@searchRooms')->middleware('permission:can-add-booking');
-Route::post('findCustomer', 'BookingsController@findCustomer')->middleware('permission:can-add-booking');
-// Route::post('findAgent', 'BookingsController@findAgent')->middleware('permission:can-add-booking');
-Route::post('searchPromotion', 'BookingsController@searchPromo')->middleware('permission:can-add-booking');
-Route::post('bookings/filter', 'BookingsController@filter')->middleware('permission:can-view-booking');
-Route::post('bookings', 'BookingsController@store')->middleware('permission:can-add-booking');
-Route::post('bookings/cancel/{id}', 'BookingsController@cancelBooking')->middleware('permission:can-cancel-booking');
-Route::post('resendBookingInvoice', 'BookingsController@resendInvoice')->middleware('permission:can-add-booking');
-Route::post('bookings/checkout', 'BookingsController@checkout')->middleware('permission:can-edit-booking');
-// Route::post('bookings/{id}', 'BookingsController@update')->middleware('permission:can-edit-booking');
-Route::post('findOccupant', 'BookingsController@findOccupant')->middleware('permission:can-add-booking');
-Route::post('bookings/changeStatus', 'BookingsController@changeStatus')->middleware('permission:can-edit-booking');
-Route::post('bookings/find_room_booking', 'BookingsController@findRoomBooking')->middleware('permission:can-view-booking');
-Route::post('bookings/resend_room_email', 'BookingsController@resendRoomEmail')->middleware('permission:can-view-booking');
-Route::post('bookings/request_or_complain', 'BookingsController@requestServiceComplain')->middleware('permission:can-view-booking');
-Route::post('bookings/extend', 'BookingsController@extendBooking')->middleware('permission:can-view-booking');
-Route::get('bookings/receipt/{id}', 'BookingsController@bookingReceipt')->middleware('permission:can-edit-booking');
-Route::post('bookings/payment/add', 'BookingsController@addTransaction')->middleware('permission:can-edit-booking');
-Route::post('bookings/transfer/search', 'BookingsController@searchForTransfer')->middleware('permission:can-edit-booking');
-Route::post('bookings/transfer/request', 'BookingsController@requestForTransfer')->middleware('permission:can-edit-booking');
-Route::post('checkRoomAvailability', 'BookingsController@checkRoomAvailability')->middleware('permission:can-edit-booking');
-Route::post('search-customers', 'BookingsController@searchCustomers')->middleware('permission:can-add-booking');
-
+Route::post('bookings/getData', 'BookingsController@getData')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::get('bookings/find/{id}', 'BookingsController@show');
+Route::get('getBookings', 'BookingsController@getBookings')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::post('searchRooms', 'BookingsController@searchRooms')->middleware('permission:can-add-booking||can-add-frontdesk-booking');
+Route::post('findCustomer', 'BookingsController@findCustomer')->middleware('permission:can-add-booking||can-add-frontdesk-booking');
+// Route::post('findAgent', 'BookingsController@findAgent')->middleware('permission:can-add-booking||can-add-frontdesk-booking');
+Route::post('searchPromotion', 'BookingsController@searchPromo')->middleware('permission:can-add-booking||can-add-frontdesk-booking');
+Route::post('bookings/filter', 'BookingsController@filter')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::post('bookings', 'BookingsController@store')->middleware('permission:can-add-booking||can-add-frontdesk-booking');
+Route::post('bookings/cancel/{id}', 'BookingsController@cancelBooking')->middleware('permission:can-cancel-booking||can-cancel-frontdesk-booking');
+Route::post('resendBookingInvoice', 'BookingsController@resendInvoice')->middleware('permission:can-add-booking||can-add-frontdesk-booking');
+Route::post('bookings/checkout', 'BookingsController@checkout')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+// Route::post('bookings/{id}', 'BookingsController@update')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::post('findOccupant', 'BookingsController@findOccupant')->middleware('permission:can-add-booking||can-add-frontdesk-booking');
+Route::post('bookings/changeStatus', 'BookingsController@changeStatus')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::post('bookings/find_room_booking', 'BookingsController@findRoomBooking')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::post('bookings/resend_room_email', 'BookingsController@resendRoomEmail')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::post('bookings/request_or_complain', 'BookingsController@requestServiceComplain')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::post('bookings/extend', 'BookingsController@extendBooking')->middleware('permission:can-view-booking||can-view-frontdesk-booking');
+Route::get('bookings/receipt/{id}', 'BookingsController@bookingReceipt')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::post('bookings/payment/add', 'BookingsController@addTransaction')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::post('bookings/transfer/search', 'BookingsController@searchForTransfer')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::post('bookings/transfer/request', 'BookingsController@requestForTransfer')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::post('checkRoomAvailability', 'BookingsController@checkRoomAvailability')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::post('send_sms', 'BookingsController@sendSms')->middleware('permission:can-send-sms-booking||can-send-sms-frontdesk-booking');
 // FrontDesk
-Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-booking');
+Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-frontdesk-booking');
 // Route::get('bookings/find/{id}', 'BookingsController@show')->middleware('permission:can-add-booking');
 // Route::get('getBookings','BookingsController@getBookings')->middleware('permission:can-view-booking');
 // Route::post('searchRooms', 'BookingsController@searchRooms')->middleware('permission:can-add-booking');
@@ -92,9 +97,9 @@ Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:
 // Route::post('searchPromotion', 'BookingsController@searchPromo')->middleware('permission:can-add-booking');
 // Route::post('bookings/filter', 'BookingsController@filter')->middleware('permission:can-view-booking');
 // Route::post('bookings', 'BookingsController@store')->middleware('permission:can-add-booking');
-// Route::post('bookings/cancel/{id}', 'BookingsController@cancelBooking')->middleware('permission:can-cancel-booking');
+// Route::post('bookings/cancel/{id}', 'BookingsController@cancelBooking')->middleware('permission:can-cancel-booking||can-add-frontdesk-booking');
 // Route::post('resendBookingInvoice', 'BookingsController@resendInvoice')->middleware('permission:can-add-booking');
-// Route::post('bookings/checkout', 'BookingsController@checkout')->middleware('permission:can-edit-booking');
+// Route::post('bookings/checkout', 'BookingsController@checkout')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
 // Route::post('bookings/{id}', 'BookingsController@update')->middleware('permission:can-edit-booking');
 // Route::post('findOccupant', 'BookingsController@findOccupant')->middleware('permission:can-add-booking');
 
@@ -104,7 +109,7 @@ Route::get('getUsers', 'UsersController@getUsers')->middleware('permission:can-v
 Route::post('users', 'UsersController@store')->middleware('permission:can-add-user');
 Route::post('users/del', 'UsersController@destroy')->middleware('permission:can-delete-user');
 Route::post('users/{id}', 'UsersController@update')->middleware('permission:can-edit-user');
-Route::post('admin/saveProfilePicture', 'UsersController@saveProfilePicture')->middleware('permission:can-add-user');
+Route::post('admin/saveProfilePicture', 'UsersController@saveProfilePicture');
 Route::post('resendPassword', 'UsersController@resendPassword')->middleware('permission:can-edit-user');
 Route::post('saveAddress', 'UsersController@saveAddress')->middleware('permission:can-edit-user');
 Route::post('removeAddress', 'UsersController@removeAddress')->middleware('permission:can-edit-user');
@@ -204,12 +209,12 @@ Route::post('categoryfacilities/{id}', 'CategoryFacilitiesController@update');
 Route::get('categoryfacilities/delete/{id}', 'CategoryFacilitiesController@delete');
 Route::get('getRoomCategories', 'CategoryFacilitiesController@getRoomCategories');
 
-Route::get('facilities', 'FacilitiesController@index');
-Route::get('getFacilities', 'FacilitiesController@getFacilities');
-Route::post('facilities', 'FacilitiesController@store');
-Route::post('facilities/del', 'FacilitiesController@destroy');
-Route::post('facilities/{id}', 'FacilitiesController@update');
-Route::get('facilities/delete/{id}', 'FacilitiesController@delete');
+Route::get('facilities', 'FacilitiesController@index')->middleware('permission:can-view-facility');
+Route::get('getFacilities', 'FacilitiesController@getFacilities')->middleware('permission:can-view-facility');
+Route::post('facilities', 'FacilitiesController@store')->middleware('permission:can-add-facility');
+Route::post('facilities/del', 'FacilitiesController@destroy')->middleware('permission:can-delete-facility');
+Route::post('facilities/{id}', 'FacilitiesController@update')->middleware('permission:can-edit-facility');
+Route::get('facilities/delete/{id}', 'FacilitiesController@delete')->middleware('permission:can-delete-facility');
 // Route::post('saveIconPath', 'FacilitiesController@saveIconPath');
 // Route::post("upload", "FacilitiesController@upload");
 Route::post("upload/file", "FacilitiesController@upload");
@@ -251,15 +256,15 @@ Route::post('departments/del', 'DepartmentsController@destroy');
 Route::post('departments/{id}', 'DepartmentsController@update');
 Route::get('departments/delete/{id}', 'DepartmentsController@delete');
 
-Route::get('hotels', 'HotelsController@index');
-Route::get('getHotels', 'HotelsController@getHotels');
-Route::get('getCurrentHotels', 'HotelsController@getCurrentHotels');
-Route::get('getCompanies', 'HotelsController@getCompanies');
-Route::get('getCities', 'HotelsController@getCities');
-Route::post('hotels', 'HotelsController@store');
-Route::post('hotels/del', 'HotelsController@destroy');
-Route::post('hotels/{id}', 'HotelsController@update');
-Route::get('hotels/delete/{id}', 'HotelsController@delete');
+// Route::get('hotels', 'HotelsController@index');
+// Route::get('getHotels', 'HotelsController@getHotels');
+// Route::get('getCurrentHotels', 'HotelsController@getCurrentHotels');
+// Route::get('getCompanies', 'HotelsController@getCompanies');
+// Route::get('getCities', 'HotelsController@getCities');
+// Route::post('hotels', 'HotelsController@store');
+// Route::post('hotels/del', 'HotelsController@destroy');
+// Route::post('hotels/{id}', 'HotelsController@update');
+// Route::get('hotels/delete/{id}', 'HotelsController@delete');
 
 Route::get('hotelcontacts', 'HotelContactsController@index');
 Route::get('getHotelContacts', 'HotelContactsController@getHotelContacts');
@@ -269,6 +274,7 @@ Route::post('hotelcontacts', 'HotelContactsController@store');
 Route::post('hotelcontacts/del', 'HotelContactsController@destroy');
 Route::post('hotelcontacts/{id}', 'HotelContactsController@update');
 Route::get('hotelcontacts/delete/{id}', 'HotelContactsController@delete');
+Route::get('getCurrentHotels', 'HotelsController@getCurrentHotels');
 
 Route::get('relations', 'RelationsController@index');
 Route::get('getRelations', 'RelationsController@getRelations');
@@ -284,27 +290,27 @@ Route::post('paymentmodes/del', 'PaymentModesController@destroy');
 Route::post('paymentmodes/{id}', 'PaymentModesController@update');
 Route::get('paymentmodes/delete/{id}', 'PaymentModesController@delete');
 
-Route::get('services', 'ServicesController@index');
-Route::get('getServices', 'ServicesController@getServices');
-Route::get('getDepartments', 'ServicesController@getDepartments');
+Route::get('services', 'ServicesController@index')->middleware('permission:can-view-service');
+Route::post('getServices', 'ServicesController@getServices');
+Route::get('getDepartments', 'ServicesController@getDepartments')->middleware('permission:can-view-service');
 Route::get('getServiceTypes', 'ServicesController@getServiceTypes');
-Route::post('services', 'ServicesController@store');
-Route::post('services/del', 'ServicesController@destroy');
-Route::post('services/{id}', 'ServicesController@update');
-Route::get('services/delete/{id}', 'ServicesController@delete');
+Route::post('services', 'ServicesController@store')->middleware('permission:can-add-service');
+Route::post('services/del', 'ServicesController@destroy')->middleware('permission:can-delete-service');
+Route::post('services/{id}', 'ServicesController@update')->middleware('permission:can-edit-service');
+Route::get('services/delete/{id}', 'ServicesController@delete')->middleware('permission:can-delete-service');
 
 // room category new routes
-Route::get('rcategories', 'RCategoriesController@index');
+Route::get('rcategories', 'RCategoriesController@index')->middleware('permission:can-view-room-category');
 Route::get('getrCategories', 'RCategoriesController@getrCategories');
-Route::post('rcategories', 'RCategoriesController@store');
-Route::post('rcategories/del', 'RCategoriesController@destroy');
-Route::post('rcategories/{id}', 'RCategoriesController@update');
-Route::get('rcategories/delete/{id}', 'RCategoriesController@delete');
+Route::post('rcategories', 'RCategoriesController@store')->middleware('permission:can-add-room-category');
+Route::post('rcategories/del', 'RCategoriesController@destroy')->middleware('permission:can-delete-room-category');
+Route::post('rcategories/{id}', 'RCategoriesController@update')->middleware('permission:can-edit-room-category');
+Route::get('rcategories/delete/{id}', 'RCategoriesController@delete')->middleware('permission:can-delete-room-category');
 
 // room new routes
 Route::get('nrooms', 'RoomController@index')->middleware('permission:can-view-room');
-Route::get('getnRooms', 'RoomController@getnRooms')->middleware('permission:can-view-room');
-Route::get('getRoomBookings', 'RoomController@getRoomBookings')->middleware('permission:can-view-room');
+Route::get('getnRooms', 'RoomController@getnRooms');
+Route::get('getRoomBookings', 'RoomController@getRoomBookings');
 Route::post('nrooms', 'RoomController@store')->middleware('permission:can-add-room');
 Route::post('nrooms/del', 'RoomController@destroy')->middleware('permission:can-delete-room');
 Route::post('nrooms/{id}', 'RoomController@update')->middleware('permission:can-edit-room');
@@ -319,12 +325,10 @@ Route::post('locale/deleteCity', 'LocaleController@deleteCity')->middleware('per
 Route::post('locale/saveCountry', 'LocaleController@storeCountry')->middleware('permission:can-add-locale');
 Route::post('locale/saveState', 'LocaleController@storeState')->middleware('permission:can-add-locale');
 Route::post('locale/saveCity', 'LocaleController@storeCity')->middleware('permission:can-add-locale');
-Route::post('locale/saveHotelCategory', 'LocaleController@storeHotelCategory')->middleware('permission:can-add-locale');
-Route::post('locale/deleteHotelCategory', 'LocaleController@deleteHotelCategory')->middleware('permission:can-delete-locale');
 
 // service new routes
 Route::get('ndepartments', 'DepartmentController@index')->middleware('permission:can-view-department');
-Route::get('getnDepartments', 'DepartmentController@getnDepartments')->middleware('permission:can-view-department');
+Route::get('getnDepartments', 'DepartmentController@getnDepartments');
 Route::post('ndepartments', 'DepartmentController@store')->middleware('permission:can-add-department');
 Route::post('ndepartments/del', 'DepartmentController@destroy')->middleware('permission:can-delete-department');
 Route::post('ndepartments/{id}', 'DepartmentController@update')->middleware('permission:can-edit-department');
@@ -358,29 +362,43 @@ Route::post('saveImages', 'RoomController@saveImages');
 
 // Hotel Management
 Route::get('hotel', 'HotelController@index')->middleware('permission:can-view-hotel');
-Route::post('hotel/get', 'HotelController@getData')->middleware('permission:can-view-hotel');
+Route::post('hotel/get', 'HotelController@getData');
+Route::post('mailImage', 'HotelController@mailImage');
+Route::post('posImage', 'HotelController@posImage');
+
 Route::post('hotel/deleteHotel', 'HotelController@deleteHotel')->middleware('permission:can-delete-hotel');
 Route::post('hotel/deleteContact', 'HotelController@deleteContact')->middleware('permission:can-delete-hotel');
-Route::post('hotel/saveHotel', 'HotelController@saveHotel')->middleware('permission:can-add-hotel');
-Route::post('hotel/saveContact', 'HotelController@saveContact')->middleware('permission:can-add-hotel');
-Route::get('hotel/testing', 'HotelController@testHotel')->middleware('permission:can-add-hotel');
+Route::post('hotel/saveHotel', 'HotelController@saveHotel')->middleware('permission:can-add-hotel-basic-info');
+Route::post('hotels', 'HotelController@getHotels')->middleware('permission:can-view-hotel');
 
-Route::post('hotel/get_account_gl_hotel_mappings', 'HotelController@get_account_gl_hotel_mappings')->middleware('permission:can-add-hotel');
-Route::post('hotel/saveHotelGlAccountMapping', 'HotelController@saveHotelGlAccountMapping');
-// ->middleware('permission:can-edit-gl-account-mapping');
+Route::post('hotel/saveContact', 'HotelController@saveContact')->middleware('permission:can-add-update-hotel-contacts');
+Route::post('get/hotel_contacts', 'HotelController@getHotelContacts');
 
 
+Route::post('save_hotel_room_categories', 'HotelController@saveHotelRoomCategories')->middleware('permission:can-add-update-hotel-room-categories');
+Route::post('get/hotel_room_categories', 'HotelController@getHotelRoomCategories');
+Route::post('hotel_room_category/room_count', 'HotelController@getRoomCount');
+
+Route::post('hotel/saveHotelGlAccountMapping', 'HotelController@saveHotelGlAccountMapping')->middleware('permission:can-add-update-hotel-accounts-mapping');
+Route::post('hotel/get_account_gl_hotel_mappings', 'HotelController@get_account_gl_hotel_mappings');
+
+
+Route::post('save_hotel_cin_cout_rule', 'HotelController@saveCheckInCheckOutRules')->middleware('permission:can-add-update-hotel-checkin-checkout-rules');
+Route::post('get/hotel_rules', 'HotelController@getHotelRules');
+
+Route::post('save_hotel_sms_configuration', 'HotelController@saveSmsConfiguration')->middleware('permission:can-add-update-hotel-sms-configuration');
+Route::post('get/hotel_sms_configuration', 'HotelController@getSmsConfiguration');
 
 // service new routes
 Route::get('promotions', 'PromotionsController@index')->middleware('permission:can-view-promotion');
-Route::get('getPromotions', 'PromotionsController@getPromotions')->middleware('permission:can-view-promotion');
+Route::get('getPromotions', 'PromotionsController@getPromotions');
 Route::post('promotions', 'PromotionsController@store')->middleware('permission:can-add-promotion');
 Route::post('promotions/del', 'PromotionsController@destroy')->middleware('permission:can-delete-promotion');
 Route::post('promotions/{id}', 'PromotionsController@update')->middleware('permission:can-edit-promotion');
 Route::get('promotions/delete/{id}', 'PromotionsController@delete')->middleware('permission:can-delete-promotion');
 
 // service new routes
-Route::get('dashboard', 'DashboardController@index')->middleware('permission:can-view-report');
+Route::get('dashboard', 'DashboardController@index')->middleware('permission:can-view-room-dashboard');
 Route::get('getRecords', 'DashboardController@getRecords')->middleware('permission:can-view-report');
 
 Route::get('getIcons', 'FacilitiesController@getIcons');
@@ -403,14 +421,15 @@ Route::post('shareReportConfig', 'ReportController@share_report_config')->middle
 
 // partners
 Route::get('partners', 'PartnersController@index')->middleware('permission:can-view-partner');
-Route::get('getPartners', 'PartnersController@getPartners')->middleware('permission:can-view-partner');
+Route::get('getPartners', 'PartnersController@getPartners');
 Route::post('partners', 'PartnersController@store')->middleware('permission:can-add-partner');
 Route::post('partners/del', 'PartnersController@destroy')->middleware('permission:can-delete-partner');
 Route::post('partners/{id}', 'PartnersController@update')->middleware('permission:can-edit-partner');
 Route::get('partners/delete/{id}', 'PartnersController@delete')->middleware('permission:can-delete-partner');
 
 // housekeeping and service requests
-Route::get('customerservices/{code}', 'HouseKeepingController@index');
+// Route::get('customerservices/{code}', 'HouseKeepingController@index');
+Route::get('cportal/{code}', 'HouseKeepingController@index');
 Route::get('getCustomer/{code}', 'HouseKeepingController@getCustomer');
 Route::post('saveComplain', 'HouseKeepingController@saveComplain');
 Route::post('saveRequest', 'HouseKeepingController@saveRequest');
@@ -423,7 +442,7 @@ Route::get('get_booking_services_count', 'BookingsController@getBooKingServiceCo
 
 // complain view
 Route::get('complains', 'ComplainController@index')->middleware('permission:can-view-complain');
-Route::get('complainsData', 'ComplainController@getData')->middleware('permission:can-view-complain');
+Route::get('complainsData', 'ComplainController@getData');
 Route::get('getComplains', 'ComplainController@getComplains')->middleware('permission:can-view-complain');
 Route::post('complain/setPriority', 'ComplainController@setPriority')->middleware('permission:can-view-complain');
 Route::post('complain/setDepartment', 'ComplainController@setDepartment')->middleware('permission:can-view-complain');
@@ -431,7 +450,6 @@ Route::post('complain/setStatus', 'ComplainController@setStatus')->middleware('p
 
 // requests view
 Route::get('discountrequests', 'DiscountRequestController@index')->middleware('permission:can-view-discount-request');
-Route::get('discountrequestsData', 'DiscountRequestController@getData')->middleware('permission:can-view-discount-request');
 Route::get('getDiscountRequests', 'DiscountRequestController@getDiscountRequests')->middleware('permission:can-view-discount-request|can-only-view-discount-request');
 Route::post('discountrequest/setStatus', 'DiscountRequestController@setStatus')->middleware('permission:can-edit-discount-request');
 Route::get('my_requests', 'DiscountRequestController@index')->middleware('permission:can-only-view-discount-request');
@@ -444,7 +462,7 @@ Route::post('saveTask', 'BookingServicesController@saveTask');
 // tasks
 Route::get('tasks', 'TaskManagementController@index')->middleware('permission:can-view-task');
 Route::post('getTasks', 'TaskManagementController@getTasks')->middleware('permission:can-view-task');
-Route::get('get_departments', 'TaskManagementController@getDepartments')->middleware('permission:can-view-task');
+Route::get('get_dropdowns', 'TaskManagementController@getddData')->middleware('permission:can-view-task');
 Route::post('task/updateStatus', 'TaskManagementController@updateStatus')->middleware('permission:can-edit-task');
 
 // inventory
@@ -486,7 +504,7 @@ Route::post('/importExcel', 'CorporateClientController@importExcel');
 
 // customers
 Route::get('customers', 'CustomersController@index')->middleware('permission:can-view-customers');
-Route::get('getCustomers', 'CustomersController@getCustomers')->middleware('permission:can-view-customers');
+Route::get('getCustomers', 'CustomersController@getCustomers');
 Route::post('customers', 'CustomersController@store')->middleware('permission:can-add-customers');
 Route::post('customers/del', 'CustomersController@destroy')->middleware('permission:can-delete-customers');
 Route::post('customers/{id}', 'CustomersController@update')->middleware('permission:can-edit-customers');
@@ -498,64 +516,64 @@ Route::get('customers/delete/{id}', 'CustomersController@delete')->middleware('p
 Route::get('room_dashboard', 'BookingsController@getRoomDashboard')->middleware('permission:can-view-room-dashboard');
 
 // account management lookups
-Route::get('account_lookups', 'AccountLookupController@index')->middleware('permission:can-view-accounts');
-Route::get('getAccountLookups', 'AccountLookupController@getAccountLookups')->middleware('permission:can-view-accounts');
+Route::get('account_lookups', 'AccountLookupController@index')->middleware('permission:can-view-account-lookup');
+Route::get('getAccountLookups', 'AccountLookupController@getAccountLookups');
 // account types
-Route::post('account/types', 'AccountLookupController@saveAccountType')->middleware('permission:can-add-accounts');
-Route::post('accounts/deleteType', 'AccountLookupController@deleteAccountType')->middleware('permission:can-delete-accounts');
+Route::post('account/types', 'AccountLookupController@saveAccountType')->middleware('permission:can-add-account-lookup');
+Route::post('accounts/deleteType', 'AccountLookupController@deleteAccountType')->middleware('permission:can-delete-account-lookup');
 // account types
-Route::post('account/subtypes', 'AccountLookupController@saveAccountSubType')->middleware('permission:can-add-accounts');
-Route::post('accounts/deleteSubType', 'AccountLookupController@deleteAccountSubType')->middleware('permission:can-delete-accounts');
+Route::post('account/subtypes', 'AccountLookupController@saveAccountSubType')->middleware('permission:can-add-account-lookup');
+Route::post('accounts/deleteSubType', 'AccountLookupController@deleteAccountSubType')->middleware('permission:can-delete-account-lookup');
 
 // voucher types
-Route::post('voucher/types', 'AccountLookupController@saveVoucherType')->middleware('permission:can-add-accounts');
-Route::post('vouchers/deleteType', 'AccountLookupController@deleteVoucherType')->middleware('permission:can-delete-accounts');
+Route::post('voucher/types', 'AccountLookupController@saveVoucherType')->middleware('permission:can-add-account-lookup');
+Route::post('vouchers/deleteType', 'AccountLookupController@deleteVoucherType')->middleware('permission:can-delete-account-lookup');
 // account levels
-Route::post('account/levels', 'AccountLookupController@saveAccountLevel')->middleware('permission:can-add-accounts');
-Route::post('accounts/deleteLevel', 'AccountLookupController@deleteAccountLevel')->middleware('permission:can-delete-accounts');
+Route::post('account/levels', 'AccountLookupController@saveAccountLevel')->middleware('permission:can-add-account-lookup');
+Route::post('accounts/deleteLevel', 'AccountLookupController@deleteAccountLevel')->middleware('permission:can-delete-account-lookup');
 // account natures
-Route::post('account/salestax', 'AccountLookupController@saveAccountSalesTax')->middleware('permission:can-add-accounts');
-Route::post('accounts/deleteSalesTax', 'AccountLookupController@deleteAccountSalesTax')->middleware('permission:can-delete-accounts');
+Route::post('account/salestax', 'AccountLookupController@saveAccountSalesTax')->middleware('permission:can-add-account-lookup');
+Route::post('accounts/deleteSalesTax', 'AccountLookupController@deleteAccountSalesTax')->middleware('permission:can-delete-account-lookup');
 
 // accounts fiscal years
-Route::get('account_fiscalyears', 'FiscalYearController@index');
+Route::get('account_fiscalyears', 'FiscalYearController@index')->middleware('permission:view-fiscal-year');
 Route::get('getFiscalYears', 'FiscalYearController@getFiscalYears');
-Route::post('fiscalyears', 'FiscalYearController@store');
-Route::post('fiscalyears/del', 'FiscalYearController@destroy');
-Route::post('fiscalyears/{id}', 'FiscalYearController@update');
+Route::post('fiscalyears', 'FiscalYearController@store')->middleware('permission:add-fiscal-year');
+Route::post('fiscalyears/del', 'FiscalYearController@destroy')->middleware('permission:delete-fiscal-year');
+Route::post('fiscalyears/{id}', 'FiscalYearController@update')->middleware('permission:edit-fiscal-year');
 
 // accounts general ledgers
-Route::get('account_general_ledgers', 'GeneralLedgerController@index');
-Route::get('getGeneralLedgers', 'GeneralLedgerController@getGeneralLedgers');
-Route::post('general_ledgers', 'GeneralLedgerController@store');
-Route::post('general_ledgers/del', 'GeneralLedgerController@destroy');
-Route::post('general_ledgers/{id}', 'GeneralLedgerController@update');
-Route::post('findGLCode', 'GeneralLedgerController@findGLCode');
+Route::get('account_general_ledgers', 'GeneralLedgerController@index')->middleware('permission:view-account-heads');
+Route::post('getGeneralLedgers', 'GeneralLedgerController@getGeneralLedgers');
+Route::post('general_ledgers', 'GeneralLedgerController@store')->middleware('permission:add-account-heads');
+Route::post('general_ledgers/del', 'GeneralLedgerController@destroy')->middleware('permission:delete-account-heads');
+Route::post('general_ledgers/{id}', 'GeneralLedgerController@update')->middleware('permission:edit-account-heads');
+Route::post('findGLCode', 'GeneralLedgerController@findGLCode')->middleware('permission:view-account-heads');
 
-Route::get('ledger', 'LedgerController@index');
-Route::get('getAccountGL', 'LedgerController@getAccountGL');
+Route::get('ledger', 'LedgerController@index')->middleware('permission:can-view-general-ledger');
+Route::get('getAccountGL', 'LedgerController@getAccountGL')->middleware('permission:can-view-general-ledger');
 // Route::get('get_status_and_accountGL', 'LedgerController@get_status_and_accountGL');
-Route::post('get_ledger', 'LedgerController@get_ledger');
-Route::post('pdfview', 'LedgerController@pdfview');
+Route::post('get_ledger', 'LedgerController@get_ledger')->middleware('permission:can-view-general-ledger');
+Route::post('pdfview', 'LedgerController@pdfview')->middleware('permission:can-view-general-ledger');
 
 // accounts vouchers
-Route::get('vouchers', 'VoucherController@index');
-Route::get('getVouchers', 'VoucherController@getVouchers');
-Route::post('vouchers', 'VoucherController@store');
-Route::post('vouchers/del', 'VoucherController@destroy');
-Route::post('voucher_detail/del', 'VoucherController@destroy_detail');
-Route::post('voucher_detail/add', 'VoucherController@add_single_detail');
-Route::post('vouchers/{id}', 'VoucherController@update');
+Route::get('vouchers', 'VoucherController@index')->middleware('permission:can-view-voucher-posting');
+Route::get('getVouchers', 'VoucherController@getVouchers')->middleware('permission:can-view-voucher-posting');
+Route::post('vouchers', 'VoucherController@store')->middleware('permission:can-add-voucher-posting');
+Route::post('vouchers/del', 'VoucherController@destroy')->middleware('permission:can-delete-voucher-posting');
+Route::post('voucher_detail/del', 'VoucherController@destroy_detail')->middleware('permission:can-view-voucher-posting');
+Route::post('voucher_detail/add', 'VoucherController@add_single_detail')->middleware('permission:can-view-voucher-posting');
+Route::post('vouchers/{id}', 'VoucherController@update')->middleware('permission:can-edit-voucher-posting');
 
 // posted vouchers
-Route::get('posted_vouchers', 'VoucherController@postedvouchers');
-Route::get('getPostedVouchers', 'VoucherController@getPostedVouchers');
-Route::post('voucher_approve', 'VoucherController@aproval');
+Route::get('posted_vouchers', 'VoucherController@postedvouchers')->middleware('permission:view-approve-vouchers');
+Route::get('getPostedVouchers', 'VoucherController@getPostedVouchers')->middleware('permission:view-approve-vouchers');
+Route::post('voucher_approve', 'VoucherController@aproval')->middleware('permission:view-approve-vouchers');
 
-Route::get('trialbalancesheet', 'TrialBalanceSheetController@index');
-Route::post('trial_balance_sheet', 'TrialBalanceSheetController@TrialBalanceSheet');
-Route::get('levels_fiscalyears', 'TrialBalanceSheetController@getLevels_FiscalYear');
-Route::post('tb_pdfview', 'TrialBalanceSheetController@tb_pdfview');
+Route::get('trialbalancesheet', 'TrialBalanceSheetController@index')->middleware('permission:can-view-trial-balance-sheet');
+Route::post('trial_balance_sheet', 'TrialBalanceSheetController@TrialBalanceSheet')->middleware('permission:can-view-trial-balance-sheet');
+Route::get('levels_fiscalyears', 'TrialBalanceSheetController@getLevels_FiscalYear')->middleware('permission:can-view-trial-balance-sheet');
+Route::post('tb_pdfview', 'TrialBalanceSheetController@tb_pdfview')->middleware('permission:can-view-trial-balance-sheet');
 
 // accept reject booking service
 
@@ -564,13 +582,13 @@ Route::post('cancel_booking_service', 'HouseKeepingController@cancelBookingServi
 
 // hotelbookingservices
 
-Route::get('hotel_booking_services', 'HotelBookingServicesController@index');
-Route::post('get_hotel_booking_services', 'HotelBookingServicesController@getData');
-Route::get('get_hotels', 'HotelBookingServicesController@getHotels');
-Route::post('get_filter_booking_services', 'HotelBookingServicesController@getFilterData');
-Route::post('accept_reject_booking_service', 'HotelBookingServicesController@acceptRejectBookingService');
+Route::get('hotel_booking_services', 'HotelBookingServicesController@index')->middleware('permission:can-view-hotel-booking-services');
+Route::post('get_hotel_booking_services', 'HotelBookingServicesController@getData')->middleware('permission:can-view-hotel-booking-services');
+Route::get('get_hotels', 'HotelBookingServicesController@getHotels')->middleware('permission:can-view-hotel-booking-services');
+Route::post('get_filter_booking_services', 'HotelBookingServicesController@getFilterData')->middleware('permission:can-view-hotel-booking-services');
+Route::post('accept_reject_booking_service', 'HotelBookingServicesController@acceptRejectBookingService')->middleware('permission:can-view-hotel-booking-services');
 // Route::post('cancel_booking_service', 'HotelBookingServicesController@cancelBookingService');
-Route::post('cancel_booking_service/{id}', 'HotelBookingServicesController@cancelBookingService');
+Route::post('cancel_booking_service/{id}', 'HotelBookingServicesController@cancelBookingService')->middleware('permission:can-view-hotel-booking-services');
 
 // leaveRequest
 Route::post('leave_request', 'ProfileController@saveLeaveRequest');
@@ -584,24 +602,25 @@ Route::get('get_approved_leaves', 'LeavesController@approvedLeave')->middleware(
 Route::get('all_users', 'LeavesController@getUsers')->middleware('permission:can-view-leaves-calendar');
 
 Route::post('third_party_booking', 'BookingsController@third_party_booking');
+Route::post('blinq_archive', 'BookingsController@blinq_archive');
 Route::get('get_third_party_bookings', 'BookingsController@get_third_party_bookings');
 Route::get('get_third_party_booking_count', 'BookingsController@get_third_party_booking_count');
 
 // Booking Mapping
-Route::get('booking_mappings', 'BookingMappingController@index');
-Route::post('booking_mappings', 'BookingMappingController@store');
-Route::post('booking_mappings/{id}', 'BookingMappingController@update');
-Route::post('getBookingMappings', 'BookingMappingController@getBookingMappings');
+Route::get('booking_mappings', 'BookingMappingController@index')->middleware('permission:can-view-booking-mappings');
+Route::post('booking_mappings', 'BookingMappingController@store')->middleware('permission:can-add-booking-mappings');
+Route::post('booking_mappings/{id}', 'BookingMappingController@update')->middleware('permission:can-edit-booking-mappings');
+Route::post('getBookingMappings', 'BookingMappingController@getBookingMappings')->middleware('permission:can-view-booking-mappings');
 
 //Income Statement
-Route::get('income_statement', 'IncomeStatementController@index');
-Route::post('get_income_statement', 'IncomeStatementController@get_income_statement');
-Route::post('income_pdf', 'IncomeStatementController@income_pdf');
+Route::get('income_statement', 'IncomeStatementController@index')->middleware('permission:can-view-income-statement');
+Route::post('get_income_statement', 'IncomeStatementController@get_income_statement')->middleware('permission:can-view-income-statement');
+Route::post('income_pdf', 'IncomeStatementController@income_pdf')->middleware('permission:can-view-income-statement');
 
 //Balance Sheet
-Route::get('balance_sheet', 'BalanceSheetController@index');
-Route::post('get_balance_sheet', 'BalanceSheetController@get_balance_sheet');
-Route::post('balance_sheet_pdf', 'BalanceSheetController@balance_sheet_pdf');
+Route::get('balance_sheet', 'BalanceSheetController@index')->middleware('permission:can-view-balance-sheet');
+Route::post('get_balance_sheet', 'BalanceSheetController@get_balance_sheet')->middleware('permission:can-view-balance-sheet');
+Route::post('balance_sheet_pdf', 'BalanceSheetController@balance_sheet_pdf')->middleware('permission:can-view-balance-sheet');
 
 // bookingscalendar
 
@@ -615,7 +634,7 @@ Route::get('get_auto_postings', 'AutoPostingController@getData')->middleware('pe
 Route::post('auto_postings', 'AutoPostingController@store')->middleware('permission:can-add-auto-posting');
 Route::post('auto_postings/del', 'AutoPostingController@destroy')->middleware('permission:can-view-auto-posting');
 Route::post('auto_postings/{id}', 'AutoPostingController@update')->middleware('permission:can-edit-auto-posting');
-
+Route::post('auto_posting_by_type', 'AutoPostingController@getAutoPostingByType')->middleware('permission:can-edit-auto-posting');
 // hotel dashboard
 Route::get('hotel_dashboard', 'HotelDashboardController@index')->middleware('permission:can-view-hotel-dashboard');
 Route::get('get_hotel_records', 'HotelDashboardController@getRecords')->middleware('permission:can-view-hotel-dashboard');
@@ -628,3 +647,23 @@ Route::get('shift_handover', 'ShiftHandOverController@index')->middleware('permi
 Route::get('get_shift_handover', 'ShiftHandOverController@getData')->middleware('permission:can-view-shift-handover');
 Route::post('shift_handover', 'ShiftHandOverController@store')->middleware('permission:can-view-shift-handover');
 Route::post('calculate_voucher_amount', 'ShiftHandOverController@calculateAmount')->middleware('permission:can-view-shift-handover');
+
+Route::post('customer_bookings','CustomerProfileController@getCustomerBookingsAll');
+Route::post('external_customer_bookings', 'CustomerProfileController@getCustomerBooking');
+
+
+/**
+Route::get('/clear-cache', function() {
+    //return 'abcd';
+   //Artisan::call('cache:clear');
+   //Artisan::call('config:cache');
+   //Artisan::call('config:clear');
+   //Artisan::call('route:cache');
+   //Artisan::call('route:clear');
+   Artisan::call('key:generate');
+   
+   
+    // return what you want
+});
+**/
+

@@ -43,7 +43,7 @@
                         <span>
                             <span class="badge badge-mark border-danger mr-2"></span>
                             Due:
-                            <span class="font-weight-semibold">[[complain.ResolveTime]]</span>
+                            <span class="font-weight-semibold">[[ complain.ComplainTime]]</span>
                         </span>
 
                         <ul class="list-inline list-inline-condensed mb-0 mt-2 mt-sm-0">

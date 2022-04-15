@@ -8,6 +8,7 @@ use App\Models\CustomerComplain;
 use App\Models\TaskPriority;
 use App\Models\ComplainStatus;
 use App\Models\Department;
+use Illuminate\Support\Facades\Auth;
 
 class ComplainController extends Controller
 {
@@ -34,6 +35,7 @@ class ComplainController extends Controller
 
     public function getComplains(Request $request)
     {
+        $user = Auth::user();
         $inputs = $request->all();
 
         $filters = json_decode($request->filters);
@@ -61,12 +63,15 @@ class ComplainController extends Controller
         }
 
         if(!auth()->user()->hasRole('Admin')) { 
-            $complains->where('hotel_id',auth()->user()->hotel_id);
+            $complains->whereIn('hotel_id',$user->HotelIds);
         }
 
         $count = $complains->count();
 
-        $complains = $complains->skip($inputs['page'] * $inputs['perPage'] - $inputs['perPage'])->take($inputs['page'] * $inputs['perPage'])->orderBy('created_at', $request->sorting);
+        $complains = $complains
+        ->skip($inputs['page'] * $inputs['perPage'] - $inputs['perPage'])
+        ->take($inputs['perPage'])
+        ->orderBy('created_at', $request->sorting);
 
         return response()->json([
             'success' => true,
@@ -105,7 +110,12 @@ class ComplainController extends Controller
     public function setStatus(Request $request)
     {
         $complain = CustomerComplain::find($request->complain_id);
-
+        $complain_status = ComplainStatus::find($request->status_id);
+        if($complain_status){
+            if($complain_status->ComplainStatus == 'Resolved'){
+                $complain->ResolveTime =  date('Y-m-d H:i:s');
+            }
+        }
         $complain->complain_status_id = $request->status_id;
         $complain->save();
 

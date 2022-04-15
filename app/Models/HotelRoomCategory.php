@@ -24,10 +24,7 @@ class HotelRoomCategory extends Model
         return $this->room_category->RoomCategory ?? null;
     }
     
-
-    // public function facil(Type $var = null)
-    // {
-    //     # code...
-    // }
-
+    public function rooms() {
+        return $this->hasMany(Room::class, 'hotel_id', 'hotel_id');
+    }
 }

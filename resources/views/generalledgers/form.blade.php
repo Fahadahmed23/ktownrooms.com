@@ -79,7 +79,7 @@ textarea.form-control {
                         <div class="col-md-4 parent_acount_typ mb-3" ng-show="general_ledger.account_level_id > 2" >
                             <label class="col-form-label"> Select Level [[general_ledger.account_level_id -1]] Parent Account <span class="text-danger">*</span></label>
                             <md-select ng-disabled="general_ledger.id" ng-change="getParentAccount(general_ledger.parent_acount)" ng-required="general_ledger.account_level_id > 2 && formType =='create'" name="parent_acount" md-no-asterisk  class="m-0" ng-model="general_ledger.parent_acount" placeholder="Second">
-                                <md-option ng-repeat="gl in filtered_general_ledgers" ng-value="gl.account_gl_code">([[gl.title]])[[gl.account_gl_code]]</md-option>
+                                <md-option ng-repeat="gl in filtered_general_ledgers | filter:{account_level_id:general_ledger.account_level_id-1}" ng-value="gl.account_gl_code">([[gl.title]])[[gl.account_gl_code]]</md-option>
                             </md-select>
                             <div ng-messages="general_ledgerForm.parent_acount.$error" ng-if='general_ledgerForm.parent_acount.$touched || general_ledgerForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required">Parent Account is required</div>

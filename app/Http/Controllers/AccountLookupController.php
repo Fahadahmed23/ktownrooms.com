@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountGeneralLedger;
 use App\Models\AccountLevel;
 use App\Models\AccountType;
 use App\Models\AccountSalesTax;
@@ -12,10 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
-// checking
-// hi
-// yes
 
 class AccountLookupController extends Controller
 {
@@ -50,20 +47,34 @@ class AccountLookupController extends Controller
      */
     public function getAccountLookups()
     {
-        $account_types= AccountType::all();
-        $account_sub_types = AccountSubType::all();
-        $voucher_types = VoucherType::all();
-        $account_levels = AccountLevel::all();
-        $account_sales_taxes = AccountSalesTax::all();
+        if(!auth()->user()->hasRole('Admin')){
+            $user = Auth::user();
+            if($user->self_manipulated()){
+                $account_types= AccountType::where('created_by', $user->id)->get();
+                $account_sub_types = AccountSubType::where('created_by', $user->id)->get();
+                $voucher_types = VoucherType::where('created_by', $user->id)->get();
+                $account_levels = AccountLevel::where('created_by', $user->id)->get();
+                $account_sales_taxes = AccountSalesTax::where('created_by', $user->id)->get();
+            }
+        }else{
+            $account_types= AccountType::all();
+            $account_sub_types = AccountSubType::all();
+            $voucher_types = VoucherType::all();
+            $account_levels = AccountLevel::all();
+            $account_sales_taxes = AccountSalesTax::all();
+        }
         // for dropdown
         $companies= Company::all();
+        $account_heads = AccountGeneralLedger::where('account_level_id',5)->get(['id','title','account_gl_code','account_type_id']);
+
         return response()->json([
             'account_types'=> $account_types,
             'account_sub_types'=>$account_sub_types,
             'voucher_types'=>$voucher_types,
             'account_levels'=>$account_levels,
             'account_sales_taxes'=>$account_sales_taxes,
-            'companies'=>$companies
+            'companies'=>$companies,
+            'account_heads'=>$account_heads
         ]);
     }
 
@@ -71,7 +82,7 @@ class AccountLookupController extends Controller
     public function saveAccountType(Request $request)
     {
         $accounTypeId = $request->account_type['id'] ?? null;
-        $accountTypeExist = AccountType::where(DB::raw("UPPER(title)"), strtoupper($request->channel['title']))
+        $accountTypeExist = AccountType::where(DB::raw("UPPER(title)"), strtoupper($request->account_type['title']))
         ->where('title', $request->account_type['title']) 
         ->where('id', '!=', $accounTypeId) 
         ->count();
@@ -131,7 +142,7 @@ class AccountLookupController extends Controller
     public function saveAccountSubType(Request $request)
     {
         $accountSubTypeId = $request->account_sub_type['id'] ?? null;
-        $accountSubTypeExist = AccountSubType::where(DB::raw("UPPER(title)"), strtoupper($request->channel['title']))
+        $accountSubTypeExist = AccountSubType::where(DB::raw("UPPER(title)"), strtoupper($request->account_sub_type['title']))
         ->where('title', $request->account_sub_type['title']) 
         ->where('id', '!=', $accountSubTypeId) 
         ->count();
@@ -193,7 +204,7 @@ class AccountLookupController extends Controller
     // for Voucher Type
     public function saveVoucherType(Request $request)
     {
-        // dd($request->all());
+        //  dd($request->all());
         $voucherTypeID = $request->voucher_type['id'] ?? null;
         $voucherTypeExist = VoucherType::where(DB::raw("UPPER(title)"), strtoupper($request->voucher_type['title']))
         ->where('title', $request->voucher_type['title']) 
@@ -211,6 +222,11 @@ class AccountLookupController extends Controller
             $voucher_type->title = $request->voucher_type['title'];
             $voucher_type->abbreviation = $request->voucher_type['abbreviation'];
             $voucher_type->description = $request->voucher_type['description'];
+            $voucher_type->is_configured = $request->voucher_type['is_configured'];
+            if($request->voucher_type['is_configured'] == '1'){
+                $voucher_type->debit_gl_id = $request->voucher_type['debit_gl_id'];
+                $voucher_type->credit_gl_id = $request->voucher_type['credit_gl_id'];
+            }
             $voucher_type->CreationIP = request()->ip();
             $voucher_type->created_by = Auth::id();
             $voucher_type->CreatedByModule = $this->module_name;

@@ -40,6 +40,8 @@ class BookingsCalendarController extends Controller
 
     public function getData(Request $request)
     {
+        // dd($request['filters']['hotel_id']);
+        
         $user = Auth::user();
       
         $request_date = $request['date'];
@@ -52,7 +54,34 @@ class BookingsCalendarController extends Controller
             $current_ed =Carbon::parse($request->date)->endOfMonth()->format('Y-m-d');
         }
         $bookingFromDate = isset($request_date) ? $request_date : Carbon::now()->format('Y-m-d');
-        $bookings = Booking::where('hotel_id', $user->hotel_id)->select('id','hotel_id','booking_no', 'status', 'BookingFrom AS start',  'BookingTo AS end', DB::raw('COUNT(*) as count'))->whereRaw('MONTH(BookingFrom) = MONTH("'.$bookingFromDate.'")')->groupBy('id')->with(['hotel:id,HotelName'])->get();
+        $bookings=Booking::whereNull('deleted_at');
+        // dd($request->all());
+
+        if(!empty($request['filters'])){
+            // dd($request['filters']);
+            if(!empty($request['filters']['booking_status'])){
+                $bookings->whereIn('status',$request['filters']['booking_status']);
+            }
+            if(!empty($request['filters']['hotel_id'])){
+                $bookings->whereIn('hotel_id',$request['filters']['hotel_id']);
+            }
+        }
+        
+        if (!Auth::user()->hasRole('Admin')) {
+            $bookings = $bookings->whereIn('hotel_id', $user->HotelIds)
+            ->select('id','hotel_id','booking_no', 'status', 'BookingFrom AS start',  'BookingTo AS end', DB::raw('COUNT(*) as count'))
+            ->whereRaw('MONTH(BookingFrom) = MONTH("'.$bookingFromDate.'")')
+            ->groupBy('id')->with(['hotel:id,HotelName'])->get();
+        }
+        else{
+            $bookings = $bookings->select('id','hotel_id','booking_no', 'status', 'BookingFrom AS start',  'BookingTo AS end', DB::raw('COUNT(*) as count'))
+            ->whereRaw('MONTH(BookingFrom) = MONTH("'.$bookingFromDate.'")')
+            ->groupBy('id')->with(['hotel:id,HotelName'])->get();
+            
+        }
+      
+        
+        //  $bookings->get();
 
         $getRangeDates = [];
         $bookingObject = [];
@@ -84,10 +113,14 @@ class BookingsCalendarController extends Controller
             $max_count = 0;
         }
 
+        $hotels = auth()->user()->user_hotels();
+        // dd($hotels->get(['id','HotelName']));
         return response()->json([
             'max_count'=>$max_count,
             'booking_counts'=>array_count_values($getRangeDates),
             'bookings'=>$bookingObject,
+            'hotels'=>$hotels->get(['id','HotelName']),
+            'hotel_count'=>$hotels->count()
         ]);
     }
      public function getEventData(Request $request)

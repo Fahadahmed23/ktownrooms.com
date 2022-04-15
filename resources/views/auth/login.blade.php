@@ -9,27 +9,27 @@
 
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-	<link href="{{asset('public/global_assets/css/icons/icomoon/styles.min.css')}}" rel="stylesheet" type="text/css">
-	<link href="{{asset('public/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-	<link href="{{asset('public/assets/css/bootstrap_limitless.min.css')}}" rel="stylesheet" type="text/css">
-	<link href="{{asset('public/assets/css/layout.min.css')}}" rel="stylesheet" type="text/css">
-	<link href="{{asset('public/assets/css/components.min.css')}}" rel="stylesheet" type="text/css">
-	<link href="{{asset('public/assets/css/colors.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('global_assets/css/icons/icomoon/styles.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/bootstrap_limitless.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/layout.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/components.min.css')}}" rel="stylesheet" type="text/css">
+	<link href="{{asset('assets/css/colors.min.css')}}" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->
 
 	<!-- Core JS files -->
-	<script src="{{asset('public/global_assets/js/main/jquery.min.js')}}"></script>
-	<script src="{{asset('public/global_assets/js/main/bootstrap.bundle.min.js')}}"></script>
-	<script src="{{asset('public/global_assets/js/plugins/loaders/blockui.min.js')}}"></script>
-	<script src="{{asset('public/global_assets/js/plugins/ui/ripple.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/main/jquery.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/main/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/plugins/loaders/blockui.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/plugins/ui/ripple.min.js')}}"></script>
 	<script src="https://kit.fontawesome.com/ff383a412e.js" crossorigin="anonymous"></script>
 	<!-- /core JS files -->
 
 	<!-- Theme JS files -->
-	<script src="{{asset('public/global_assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
+	<script src="{{asset('global_assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
 
-	<script src="public/assets/js/app.js"></script>
-	<script src="{{asset('public/global_assets/js/demo_pages/login.js')}}"></script>
+	<script src="assets/js/app.js"></script>
+	<script src="{{asset('global_assets/js/demo_pages/login.js')}}"></script>
 	<!-- /theme JS files -->
 
 	<style>
@@ -82,14 +82,23 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="col-md-3">
-											<img src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="" srcset="">
+						@php
+							$default_rule =  \App\Models\DefaultRule::first();
+							$img = $default_rule->picture;
+							$name = $default_rule->name;
+							@endphp
+							@if($img)
+							<img class="logo-icon img-fluid"  src="{{$img}}" alt="">
+							@else 
+							<img class="img-fluid" src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="" srcset="">
+							@endif
 						</div>
 					</div>
 				</div>
 				<div class="row" style="margin-top: 10%;">
 				<div class="col-md-6" style="text-align: right">
 					
-					<h1 style="font-size: 45px;line-height: 55px;font-weight: 800;">Come to <span style="color: #ea863b;">Ktown Rooms</span><br> & Experience Hospitality Beyond Borders!</h1>
+					<h1 style="font-size: 45px;line-height: 55px;font-weight: 800;">Welcome to <span style="color: #ea863b;">{{$name ?? 'Ktown Rooms'}}</span><br> & Experience Hospitality Beyond Borders!</h1>
 					<h3 style="font-weight: 400;">Affordability. Standardization. Predictability. Classification.</h3>
 				</div>
 				<div class="col-md-4">

@@ -8,7 +8,7 @@ app.controller('roleCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder
 
     first = true;
     $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDOM("<'row'<'col-sm-12'tr>>" +
-    "<'row p-2 '<'col-sm-5'i><'col-sm-7'p>>").withOption('stateSave', true);
+        "<'row p-2 '<'col-sm-5'i><'col-sm-7'p>>").withOption('stateSave', true);
     $scope.dtColumnDefs = [
         // DTColumnDefBuilder.newColumnDef([3]).notSortable()
     ];
@@ -24,12 +24,16 @@ app.controller('roleCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder
         $scope.myForm.$setPristine();
     }
 
-    $scope.hideForm = function(){
+    $scope.hideForm = function() {
         $('#role-form-section').hide('slow');
     }
-    
+
     $scope.createRole = function() {
-        // console.log($scope.roleForm);
+        console.log($scope.roleForm);
+        if ($scope.roleForm.id) {
+            delete $scope.roleForm.users_count;
+        }
+        // return;
         $scope.ajaxPost('addRole', JSON.parse(angular.toJson($scope.roleForm))).then(function(response) {
             if (response.success) {
 
@@ -131,6 +135,9 @@ app.controller('roleCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder
                 if (response.success) {
                     $scope.roles = response.payload;
                 }
+                setTimeout(() => {
+                    $('[data-popup="popover"]').popover();
+                }, 500);
 
             })
 

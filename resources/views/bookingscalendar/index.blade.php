@@ -33,6 +33,9 @@
     float: left !important;
     padding: 5px 10px !important;
 }
+.fc-button-primary {
+    margin: 0 1px !important;
+}
 .fc-view-container{
     margin-top: 15px;
 }
@@ -71,11 +74,13 @@
                 });
             } else {
                 bookingCalendarSlotsInit = new FullCalendar.Calendar(bookingCalendarSlotsElement, {
-                    plugins: ['dayGrid', 'interaction'],
+                    // plugins: ['dayGrid', 'interaction'],
+                    plugins: ['dayGrid', 'timeGrid', 'interaction'],
                     header: {
-                        left: 'prev',
+                        left: 'prev,next',
                         center: 'title,today',
-                        right: 'next'
+                        // right: 'next'
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
                     },
                     events: slots,
                     eventClick: function(info) {

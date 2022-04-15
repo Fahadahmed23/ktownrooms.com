@@ -35,14 +35,19 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
         $scope.vt = $scope.voucher_types.filter((v) => v.id == vid);
         console.log($scope.vt);
         let abr = $scope.vt[0].abbreviation;
-
-
         // for temp purpose to show the voucher num
         let d = new Date();
         let current_year = d.getFullYear();
 
         $scope.voucher.voucher_no = abr + '-' + current_year + '-XXX';
         console.log($scope.voucher.voucher_no);
+
+
+        if ($scope.vt[0].is_configured == '1') {
+            $scope.voucher.is_configured = '1';
+        } else {
+            $scope.voucher.is_configured = '0';
+        }
     }
 
 
@@ -52,6 +57,8 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
                 $scope.vouchers = response.vouchers;
 
                 // for drop downs
+                $scope.hotels = response.hotels;
+                $scope.account_types = response.account_types;
                 $scope.account_heads = response.account_heads;
                 $scope.voucher_types = response.voucher_types;
                 $scope.fiscal_years = response.fiscal_years;
@@ -63,6 +70,7 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
     }
 
     $scope.createVoucher = function() {
+
         window.scrollTop();
         $scope.voucherForm.$setPristine();
         $scope.voucherForm.$setUntouched();
@@ -78,8 +86,13 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
 
         $scope.dr_total = 0;
         $scope.cr_total = 0;
-    }
+        $scope.voucher.is_configured = '0';
+        $scope.field_disabled = false;
+        if ($scope.hotels.length == 1) {
+            $scope.voucher.hotel_id = $scope.hotels[0].id;
 
+        }
+    }
 
     $scope.editVoucher = function(v) {
         window.scrollTop();
@@ -93,12 +106,26 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
         console.log($scope.voucher);
         $scope.voucher.date = moment($scope.voucher.date).format('MM/DD/YYYY');
         $scope.voucher_details = $scope.voucher.voucher_details;
+        for (let i = 0; i < $scope.voucher_details.length; i++) {
+            $scope.voucher_details[i].account_type_name = $scope.voucher_details[i].account_head.account_type.title
+        }
+        // let acc_head_ids = [];
+        // for (let i = 0; i < $scope.voucher_details.length; i++) {
+        //     acc_head_ids.push($scope.voucher_details[i].account_gl_id);
+        //     $scope.account_type_ids = $scope.account_heads.filter((ah) => ah.id === acc_head_ids[0]).account_type_id;
+        // }
+        console.log($scope.account_type_ids);
         $scope.calculate_total_dr_cr($scope.voucher.voucher_details);
         $('.vd_push_btn').prop('disabled', true);
+        $scope.voucher.is_configured = '0';
+        if ($scope.voucher.post == 'approved') {
+            $scope.field_disabled = true;
+        } else {
+            $scope.field_disabled = false;
+        }
     }
 
     $scope.getAccountHead = function(ah) {
-        console.log(ah);
         $(".vd_push_btn").prop('disabled', false)
     }
 
@@ -142,9 +169,11 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
                     voucher_master_id: $scope.voucher.id,
                 }, false)
                 .then(function(response) {
-                    $scope.getVouchers();
+                    // $scope.getVouchers();
+                    response.voucher_detail.account_type_name = $scope.account_types.find((at) => at.id === voucher_detail.account_type_id).title;
                     $scope.voucher_details.push(response.voucher_detail);
                     $scope.calculate_total_dr_cr($scope.voucher_details);
+                    $scope.voucher.is_configured = '0';
                 })
                 .catch(function(e) {
                     toastr.error(e);
@@ -163,6 +192,8 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
             voucher_detail.AccountHeadCode = vd[0].account_gl_code;
 
             // $scope.voucher_details.push(angular.copy(voucher_detail));
+            voucher_detail.account_type_name = $scope.account_types.find((at) => at.id === voucher_detail.account_type_id).title;
+
             $scope.voucher_details.push(voucher_detail);
             $scope.calculate_total_dr_cr($scope.voucher_details);
         }
@@ -195,10 +226,11 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
                     if (result) {
                         $scope.ajaxPost('voucher_detail/del', { id: vd.id }, false)
                             .then(function(response) {
-                                $scope.getVouchers();
+                                // $scope.getVouchers();
                                 // $('#addNewVoucher').hide('slow');
                                 $scope.voucher_details.splice(i, 1);
                                 $scope.calculate_total_dr_cr($scope.voucher_details);
+                                $scope.voucher.is_configured = '0';
                             })
                             .catch(function(e) {
                                 toastr.error(e);
@@ -298,7 +330,7 @@ app.controller('vouchersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
 
     $scope.approveVoucher = function(pv) {
         bootbox.confirm({
-            title: 'Confirm Deletion',
+            title: 'Confirm',
             message: "Are you sure you want to approve this '" + pv.voucher_no + " voucher'?",
             buttons: {
                 confirm: {

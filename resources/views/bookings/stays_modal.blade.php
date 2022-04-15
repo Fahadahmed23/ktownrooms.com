@@ -14,7 +14,7 @@
                             <span class="input-group-prepend">
                                 <span class="input-group-text"><i class="icon-calendar"></i></span>
                             </span>
-                            <input ng-disabled="nBooking.status=='CheckedIn' && nBooking.id" ng-change="changeCheckinDate()"  type="text" name="start_date" placeholder="MM/DD/YYYY" ng-model="start_date" id="checkin_date" class="form-control pickadate startdate" required>
+                            <input ng-disabled="nBooking.status=='CheckedIn' && nBooking.id" ng-change="changeCheckinDate()"  type="text" name="start_date" placeholder="MM/DD/YYYY" ng-model="sdTemp" id="checkin_date" class="form-control pickadate startdate" required>
                         </div>
                     </div>
 
@@ -24,7 +24,7 @@
                             <span class="input-group-prepend">
                                 <span class="input-group-text"><i class="icon-calendar"></i></span>
                             </span>
-                            <input ng-change="changeCheckoutDate()" name="end_date" ng-model="end_date" date type="text" placeholder="MM/DD/YYYY" id="checkout_date" class="form-control pickadate enddate" required>
+                            <input ng-change="changeCheckoutDate()" name="end_date" ng-model="edTemp" date type="text" placeholder="MM/DD/YYYY" id="checkout_date" class="form-control pickadate enddate" required>
                         </div>
                     </div>
 

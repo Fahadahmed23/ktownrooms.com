@@ -1,5 +1,6 @@
 <?php
 
+
 return [
 
     /*
@@ -65,7 +66,8 @@ return [
     |
     */
 
-    'timezone' => 'Asia/Karachi',
+    //'timezone' => 'America/Chicago',
+    'timezone' => env('APP_TIMEZONE','Asia/Karachi'),
 
     /*
     |--------------------------------------------------------------------------
@@ -233,3 +235,7 @@ return [
     ],
 
 ];
+date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
+
+date_default_timezone_set("Asia/Karachi");
+

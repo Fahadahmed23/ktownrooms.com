@@ -1,8 +1,8 @@
 <style>
-    .table-responsive {
-        height: 100%;
-        min-height: 600px;
-    }
+.table-responsive {
+    height: 100%;
+    min-height: 600px;
+}
 </style>
 <div id="hotels-table" class="col-12 col-md-12 col-sm-12 left-tour-bar float-left p-0">
     <div class="card">
@@ -25,26 +25,30 @@
             <table id="dTable" class="table table-user table-striped hover display datatable-basic" datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs">
                 <thead>
                     <tr>
+                        <th>Hotel Code</th>
                         <th>Hotel</th>
                         <th>City</th>
                         <th>Address</th>
                         <th>Total Rooms </th>
                         <th>Total Booking </th>
                         <th>Total Revenue </th>
-                        <th>Ktown Commission % </th>
+
                         <th>Actions</th>
                         <th class="d-none"></th>
                     </tr>
                 </thead>
                 <tbody data-link="row" class="rowlink">
                     <tr ng-repeat="hotel in hotels | filter:{HotelName:searchName, CityName:searchCity}" class="unread">
+                        <td>[[hotel.Code]]</td>
                         <td>[[hotel.HotelName]]</td>
                         <td>[[hotel.city.CityName]]</td>
                         <td>[[hotel.Address]]</td>
                         <td>[[hotel.RoomCount]]</td>
                         <td>[[hotel.BookingCount]]</td>
                         <td>[[hotel.BookingRevenueSum | currency]]</td>
-                        <td>[[ hotel.KtownCommission ]]</td>
+
+
+
                         <td>
                             <div class="align-self-left">
                                 <div class="list-icons list-icons-extended">
@@ -59,6 +63,7 @@
                                 </div>
                             </div>
                         </td>
+
                         <td class="d-none"></td>
                     </tr>
                 </tbody>

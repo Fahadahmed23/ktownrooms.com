@@ -297,10 +297,35 @@
         .acpt_rjct_btn {
             cursor: pointer;
         }
-
+        .service-noti-pill div {
+            display: inline-block;
+        }
         /* .navbar a {
             color: #324148;
         } */
+
+
+
+
+        /* my navbar css */
+        /* .navbar-top-menu 
+        {
+            background: #ea883f;
+        } */
+        .navbar-top-menu .nav-item a {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .navbar-top-menu .navbar-brand {
+            padding: 0 ;
+        }
+        .navbar-nav.ml-xl-auto.d-inline{
+            display: inline-block !important;
+        }
+
+        .navbar-top-menu .nav-item .dropdown-item {
+            padding: 10px 15px;
+        }
     </style>
 
 </head>
@@ -309,11 +334,20 @@
 
     <!-- Main navbar -->
     @auth
-    <div class="navbar navbar-expand-xl navbar-dark bg-indigo navbar-component mb-0">
+    <div class="navbar navbar-expand-xl navbar-dark navbar-component mb-0 navbar-top-menu">
         {{-- <div class="navbar navbar-expand-xl border-bottom-orange border-bottom-2 navbar-component mb-0"> --}}
-        <div class="navbar-brand py-2">
+        <div class="navbar-brand">
             <a href="/" class="d-inline-block">
-                <img class="logo-icon" src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="">
+                {{-- <img class="logo-icon" src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt=""> --}}
+                @php
+                $img = \App\Models\DefaultRule::first()->picture;
+                @endphp
+                @if($img)
+                <img class="logo-icon"  src="{{$img}}" alt="">
+                @else 
+                <img class="logo-icon"  src="global_assets/images/new-ktr-logo.png" alt="">
+                @endif
+
 
             </a>
         </div>
@@ -327,7 +361,7 @@
         <div class="navbar-collapse collapse" id="navbar-demo-dark">
             <ul class="navbar-nav">
 
-                @permission('can-view-report')
+                @permission('can-view-room-dashboard')
                 <li class="nav-item">
                     <a href="/dashboard" class="navbar-nav-link">Dashboard</a>
                 </li>
@@ -344,11 +378,10 @@
                 </li>
                 @endpermission
 
-                @if (auth()->user()->can('can-view-booking') || auth()->user()->can('can-access-frontdesk') ||
-                auth()->user()->can('can-view-complain'))
-                @if (auth()->user()->hasRole('Frontdesk'))
+               
+                
                 <li class="nav-item">
-                    @permission('can-view-booking')
+                    @permission('can-view-frontdesk-booking')
                     <a href="/frontdesk" class="navbar-nav-link">Frontdesk</a>
                     @endpermission
                 </li>
@@ -364,36 +397,22 @@
                     <a href="/my_requests" class="navbar-nav-link">Discount Requests</a>
                     @endpermission
                 </li>
-                @endif
-                @if (auth()->user()->hasRole('Supervisor') || auth()->user()->hasRole('Admin'))
-                <li class="nav-item dropdown ">
-                    <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
-                        aria-expanded="true">Bookings</a>
-                    <div class="dropdown-menu ">
-                        @permission('can-view-booking')
-                        @if (auth()->user()->hasRole('Supervisor') || auth()->user()->hasRole('Admin'))
-                        <a href="/bookings" class="dropdown-item">Booking Management</a>
-                        @endif
-                        @endpermission
-                        @permission('can-view-booking-calendar')
-                        <a href="/bookings_calendar" class="dropdown-item">Bookings Calendar</a>
-                        @endpermission
-                        @permission('can-view-complain')
-                        <a href="/complains" class="dropdown-item">Complain View</a>
-                        @endpermission
-                        {{-- @permission('can-view-discount-request')
-                            <a href="/discountrequests" class="dropdown-item">Discount Requests</a>
-                            @endpermission  --}}
-                        @permission('can-view-room-dashboard')
-                        <a href="/room_dashboard" class="dropdown-item">Booking Dashboard</a>
-                        @endpermission
-                        <a href="/booking_mappings" class="dropdown-item">Mapping</a>
-
-
-                    </div>
-                </li>
-                @endif
-                @endif
+                               
+                @if (auth()->user()->can('can-view-booking')|| auth()->user()->can('can-view-booking-mappings') )
+                    <li class="nav-item dropdown ">
+                        <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
+                            aria-expanded="true">Bookings</a>
+                        <div class="dropdown-menu ">
+                            @permission('can-view-booking')
+                            <a href="/bookings" class="dropdown-item">Booking Management</a>
+                            @endpermission
+                        
+                            @permission('can-view-booking-mappings')
+                            <a href="/booking_mappings" class="dropdown-item">Mapping</a>
+                            @endpermission
+                        </div>
+                    </li>
+                @endif    
 
 
                 @permission('can-view-hotel')
@@ -402,47 +421,54 @@
                 </li>
                 @endpermission
 
-                @permission('can-view-room')
+                @if (auth()->user()->can('can-view-room')|| auth()->user()->can('can-view-room-category') )
                 <li class="nav-item dropdown">
                     <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
                         aria-expanded="true">Rooms</a>
                     <div class="dropdown-menu ">
+                        @permission('can-view-room')
                         <a href="/nrooms" class="dropdown-item">Rooms</a>
+                        @endpermission
+                        @permission('can-view-room-category')
                         <a href="/rcategories" class="dropdown-item">Room Categories</a>
+                        @endpermission
                     </div>
                 </li>
-                @endpermission
+                @endif
 
 
-                @permission('can-view-user')
+               
+                @if (auth()->user()->can('can-view-user')|| auth()->user()->can('can-view-role') )
                 <li class="nav-item dropdown">
                     <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
                         aria-expanded="true">Users</a>
                     <div class="dropdown-menu ">
+                        @permission('can-view-user')
                         <a href="/users" class="dropdown-item">User</a>
-                        <a href="Menu.html" class="dropdown-item d-none">Menu</a>
+                        @endpermission
                         @permission('can-view-role')
                         <a href="/roles" class="dropdown-item ">Role</a>
                         @endpermission
-                        <a href="user-role.html" class="dropdown-item d-none">User Role</a>
-                        <a href="role-menu.html" class="dropdown-item d-none">Role Menu</a>
                     </div>
                 </li>
-                @endpermission
+                @endif
 
 
 
 
 
-                @if (auth()->user()->can('can-view-department') || auth()->user()->can('can-view-company') ||
+                @if (auth()->user()->hasRole('Admin') || auth()->user()->can('can-view-department') || auth()->user()->can('can-view-company') ||
                 auth()->user()->can('can-view-facility') || auth()->user()->can('can-view-service') ||
                 auth()->user()->can('can-view-locale') || auth()->user()->can('can-view-lookup') ||
                 auth()->user()->can('can-view-promotion') || auth()->user()->can('can-view-partner') ||
-                auth()->user()->can('can-view-vendor') || auth()->user()->can('can-view-customers')) 
+                auth()->user()->can('can-view-vendor') || auth()->user()->can('can-view-customers')|| auth()->user()->can('can-view-corporate-client')) 
                 <li class="nav-item dropdown">
                     <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
                         aria-expanded="true">Setup</a>
                     <div class="dropdown-menu ">
+                        @if (auth()->user()->hasRole('Admin'))
+                        <a href="/default_setting" class="dropdown-item">Default Setting</a>
+                        @endif
                         @permission('can-view-department')
                         <a href="/ndepartments" class="dropdown-item">Departments</a>
                         @endpermission
@@ -475,7 +501,7 @@
                         <a href="/partners" class="dropdown-item">Partner</a>
                         @endpermission
 
-                        @permission('can-view-partner')
+                        @permission('can-view-corporate-client')
                         <a href="/corporate_clients" class="dropdown-item">Corporate Client</a>
                         @endpermission
 
@@ -486,84 +512,83 @@
                         @permission('can-view-vendor')
                         <a href="/vendors" class="dropdown-item">Vendors</a>
                         @endpermission
-
-                        {{-- <a href="/countries" class="dropdown-item">Country</a> --}}
-                        {{-- <a href="/states" class="dropdown-item">State</a> --}}
-                        {{-- <a href="/cities" class="dropdown-item">City</a> --}}
-                        {{-- <a href="/contacttypes" class="dropdown-item">Contact Type</a> --}}
-                        {{-- <a href="/servicetypes" class="dropdown-item">Service Type</a> --}}
-                        {{-- <a href="/rooms" class="dropdown-item">Room</a> --}}
-                        {{-- <a href="/roomtypes" class="dropdown-item">Room Type</a> --}}
-                        {{-- <a href="/roomcategories" class="dropdown-item">Room Category</a> --}}
-                        {{-- <a href="/roomservices" class="dropdown-item">Room Service</a> --}}
-                        {{-- <a href="/categoryfacilities" class="dropdown-item">Category Facility</a> --}}
-                        {{-- <a href="/taxrates" class="dropdown-item">Tax Rate</a> --}}
-                        {{-- <a href="/contacttypes" class="dropdown-item">Contact Type</a> --}}
-                        {{-- <a href="/departments" class="dropdown-item">Department</a> --}}
-                        {{-- <a href="/hotels" class="dropdown-item">Hotel</a> --}}
-                        {{-- <a href="/hotelcontacts" class="dropdown-item">Hotel Contact</a> --}}
-                        {{-- <a href="/paymentmodes" class="dropdown-item">Payment Mode</a> --}}
-                        {{-- <a href="/relations" class="dropdown-item">Relation</a> --}}
-                        {{-- <a href="/services" class="dropdown-item">Service</a> --}}
-                        {{-- <a href="/servicetypes" class="dropdown-item">Service Type</a> --}}
                     </div>
                 </li>
                 @endif
-                <li class="nav-item dropdown d-none">
-                    <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
-                        aria-expanded="true">Housekeeping</a>
-                    <div class="dropdown-menu ">
-                        <a href="housekeeping2.html" class="dropdown-item">Housekeeping</a>
-                        <a href="client-login.html" class="dropdown-item">Client Portal</a>
-                        <a href="department-dashboard.html" class="dropdown-item">Task Management</a>
-                    </div>
-                </li>
 
-                {{-- <li class="nav-item">
-                    <a href="/reports" class="navbar-nav-link">Reports</a>
-                </li> --}}
-                @permission('can-view-inventory')
-                <li class="nav-item dropdown">
-                    <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
-                        aria-expanded="true">Inventory Management</a>
-                    <div class="dropdown-menu ">
-                        <a href="/inventory" class="dropdown-item">Inventory</a>
-                        @permission('can-view-purchase-order')
-                        <a href="/purchase_orders" class="dropdown-item">Purchase Orders</a>
-                        @endpermission
-                        @permission('can-view-goods_receive_note')
-                        <a href="/goods_receive_notes" class="dropdown-item">Goods Recieve Notes</a>
-                        @endpermission
-                    </div>
-                </li>
-                @endpermission
+                @if (auth()->user()->can('can-view-inventory') || auth()->user()->can('can-view-purchase-order'))
+                    <li class="nav-item dropdown">
+                        <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
+                            aria-expanded="true">Inventory</a>
+                        <div class="dropdown-menu ">
+                            @permission('can-view-inventory')
+                            <a href="/inventory" class="dropdown-item">Inventory Management</a>
+                            @endpermission
+                            @permission('can-view-purchase-order')
+                            <a href="/purchase_orders" class="dropdown-item">Purchase Orders</a>
+                            @endpermission
+                        </div>
+                    </li>
+                @endif
 
 
-                @permission('can-view-accounts')
-                <li class="nav-item dropdown">
-                    <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
-                        aria-expanded="true">Accounts Management</a>
-                    <div class="dropdown-menu ">
-                        <a href="/account_general_ledgers" class="dropdown-item">Chart of accounts</a>
-                        <a href="/vouchers" class="dropdown-item">Voucher Posting</a>
-                        <a href="/trialbalancesheet" class="dropdown-item">Trial Balance Sheet</a>
-                        <a href="/posted_vouchers" class="dropdown-item">Approve Voucher</a>
-                        <a href="/account_fiscalyears" class="dropdown-item">Fiscal Years</a>
-                        <a href="/ledger" class="dropdown-item">General Ledger</a>
-                        <a href="/income_statement" class="dropdown-item">Income Statement</a>
-                        <a href="/balance_sheet" class="dropdown-item">Balance Sheet</a>
-                        <a href="/account_lookups" class="dropdown-item">Lookups</a>
-                        @permission('can-view-auto-posting')
-                        <a href="/auto_postings" class="dropdown-item">Auto Posting</a>
-                        @endpermission
-                    </div>
-                </li>
-                @endpermission
+                @if (auth()->user()->can('view-account-heads') || auth()->user()->can('can-view-voucher-posting') ||
+                        auth()->user()->can('can-view-trial-balance-sheet') || auth()->user()->can('view-approve-vouchers') ||
+                        auth()->user()->can('view-fiscal-year') || auth()->user()->can('can-view-account-lookup') ||
+                        auth()->user()->can('can-view-general-ledger') ||
+                        auth()->user()->can('can-view-income-statement') || auth()->user()->can('can-view-balance-sheet') ||
+                        auth()->user()->can('can-view-auto-posting'))
+                    <li class="nav-item dropdown">
+                        <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown"
+                            aria-expanded="true">Accounts </a>
+                        <div class="dropdown-menu ">
 
+                            @permission('view-account-heads')
+                            <a href="/account_general_ledgers" class="dropdown-item">Chart of accounts</a>
+                            @endpermission
+
+                            @permission('can-view-voucher-posting')
+                            <a href="/vouchers" class="dropdown-item">Voucher Posting</a>
+                            @endpermission
+
+                            @permission('can-view-trial-balance-sheet')
+                            <a href="/trialbalancesheet" class="dropdown-item">Trial Balance Sheet</a>
+                            @endpermission
+
+                            @permission('view-approve-vouchers')
+                            <a href="/posted_vouchers" class="dropdown-item">Approve Voucher</a>
+                            @endpermission
+
+                            @permission('view-fiscal-year')
+                            <a href="/account_fiscalyears" class="dropdown-item">Fiscal Years</a>
+                            @endpermission
+
+                            @permission('can-view-general-ledger')
+                            <a href="/ledger" class="dropdown-item">General Ledger</a>
+                            @endpermission
+                            
+                            @permission('can-view-income-statement')
+                            <a href="/income_statement" class="dropdown-item">Income Statement</a>
+                            @endpermission
+
+                            @permission('can-view-balance-sheet')
+                            <a href="/balance_sheet" class="dropdown-item">Balance Sheet</a>
+                            @endpermission
+
+                            @permission('can-view-account-lookup')
+                            <a href="/account_lookups" class="dropdown-item">Lookups</a>
+                            @endpermission
+
+                            @permission('can-view-auto-posting')
+                            <a href="/auto_postings" class="dropdown-item">Auto Posting</a>
+                            @endpermission
+                        </div>
+                    </li>
+                @endif
 
                 @permission('can-view-discount-request')
                 <li class="nav-item">
-                    <a href="/discountrequests" class="navbar-nav-link">Discount Requests</a>
+                    <a href="/discountrequests" class="navbar-nav-link">Discount Approval</a>
                 </li>
                 @endpermission
                 @permission('can-view-task')
@@ -578,28 +603,24 @@
                 </li>
                 @endpermission
 
-               
-
-
-                @if (auth()->user()->hasRole('Frontdesk'))
                 @permission('can-view-complain')
                 <li class="nav-item">
                     <a href="/complains" class="navbar-nav-link">Complain View</a>
                 </li>
                 @endpermission
-                @endif
 
-
-                <li class="nav-item d-none">
-                    <a href="billing.html" class="navbar-nav-link ">Billing</a>
+                @permission('can-view-hotel-booking-services')
+                <li class="nav-item">
+                    <a href="/hotel_booking_services" class="navbar-nav-link">Booking Services</a>
                 </li>
+                @endpermission
 
             </ul>
 
 
             <ul class="navbar-nav ml-xl-auto">
                 @if (auth()->user()->hasRole('Frontdesk'))
-                @permission('can-view-booking')
+                @permission('can-view-frontdesk-booking')
                 <li class="nav-item nav-item-dropdown-lg dropdown noti_icon">
                     <button ng-click="showNotifications()"
                         class="navbar-nav-link navbar-nav-link-toggler border-0 bg-transparent" data-toggle="dropdown"
@@ -609,79 +630,49 @@
                     </button>
 
                     <div class="dropdown-menu dropdown-menu-right dropdown-content wmin-lg-350">
-                        <div class="dropdown-content-header border-bottom mb-2">
+                        <div class="dropdown-content-header border-bottom mb-2 p-2">
                             <span class="font-weight-semibold">Notifications</span>
-                            <!--<a href="#" class="text-body"><i class="icon-compose"></i></a>-->
                         </div>
 
                         <div class="dropdown-content-body dropdown-scrollable">
-                            <ul class="media-list">
-                                <span ng-if="booking_services.length < 1">No Requested Service</span>
-                                <li id="service[[bs.id]]" ng-repeat="bs in booking_services" class="media">
-                                    <div class="mr-3 position-relative">
-                                        <img ng-src="[[ bs.icon_class!=null ? bs.icon_class : 'https://www.clipartmax.com/png/middle/140-1400037_food-service-icon-room-service-icon-png.png' ]]"
-                                            width="36" height="36" class="rounded-circle img-thumbnail" alt="">
-                                    </div>
-
-                                    <div class="media-body">
-                                        <div class="row media-title">
-                                            <div class="font-weight-semibold col-md-6">[[bs.service_name]]</div>
-                                            <div class="text-muted float-right font-size-sm col-md-6 text-right"> <i
-                                                    class="fa fa-clock mr-1"></i>[[bs.serving_time]]</div>
-
+                            <span ng-if="booking_services.length < 1">No Requested Service</span>
+                                <div class="row border-bottom" id="service[[bs.id]]" ng-repeat="bs in booking_services">
+                                    <div class="service-noti-pill">
+                                        <div class="service-quantity">
+                                            <span>[[bs.times]]</span>
                                         </div>
-                                        <div class="row">
-                                            <div class="text-muted col-md-6">[[bs.department_name]]</div>
-                                            <div class="text-muted col-md-6 text-right"><span
-                                                    class="badge badge-danger acpt_rjct_btn mx-2"
-                                                    ng-click="acceptRejectBService(bs.id ,'rejected')">Reject</span><span
-                                                    class="badge badge-success acpt_rjct_btn"
-                                                    ng-click="acceptRejectBService(bs.id ,'accepted')"> Accept</span>
-                                            </div>
+                                        <div class="service-title">
+                                            <span><b> [[bs.service_name]]</b></span>
+                                        </div>
+                                        <div class="service-room">
+                                            <span> at Room: <b>[[bs.RoomTitle]]</b> (Room# [[bs.RoomNumber]])</span>
                                         </div>
                                     </div>
-                                </li>
-
-                            </ul>
+                                    <div class="text-muted col-md-12 pb-1 px-0">
+                                            <span
+                                                class="badge badge-success acpt_rjct_btn"
+                                                ng-click="acceptRejectBService(bs.id ,'accepted')"> Accept
+                                            </span>
+                                            <span
+                                                class="badge badge-danger acpt_rjct_btn ml-1"
+                                                ng-click="acceptRejectBService(bs.id ,'rejected')">Reject
+                                            </span>
+                                           
+                                    </div>
+                                </div>
                         </div>
 
                         <div class="dropdown-content-footer justify-content-center p-0">
+                            @permission('can-view-hotel-booking-services')
                             <a href="/hotel_booking_services" target="_blank"
                                 class="btn btn-light btn-block border-0 rounded-top-0" data-popup="tooltip" title=""
                                 data-original-title="Load more"><i class="icon-menu7"></i> See All </a>
+                            @endpermission    
                         </div>
                     </div>
                 </li>
                 @endpermission
                 @endif
-                <li class="nav-item dropdown dropdown-user">
-                    <a href="javascript:void(0)" class="navbar-nav-link d-flex align-items-center dropdown-toggle"
-                        data-toggle="dropdown">
-                        <!-- <img src="global_assets/images/placeholders/placeholder.jpg" class="rounded-circle mr-2" height="34" alt=""> -->
-                        <span>{{ Auth::user()->name }}</span>
-                    </a>
-
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a href="/profile" class="dropdown-item"><i class="icon-user"></i> My profile</a>
-                        @permission('can-view-shift-handover')
-                        <a href="/shift_handover" class="dropdown-item"><i class="icon-transmission"></i>Shift Handover</a>
-                        @endpermission
-                        <a href="javascript:void(0)" class="dropdown-item d-none">
-                            <a href="javascript:void(0)" class="dropdown-item d-none">
-                                <i class="icon-comment-discussion"></i>
-                                My Tasks
-                                <span class="badge badge-pill bg-blue ml-auto">58</span>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="javascript:void(0)" class="dropdown-item d-none"><i class="icon-cog5"></i> Account
-                                settings</a>
-                            <form method="POST" action="/logout">
-                                {{ csrf_field() }}
-                                <button type="submit" class="dropdown-item"><i class="icon-switch2"></i> Logout
-                        </a>
-                        </form>
-                    </div>
-                </li>
             </ul>
 
         </div>
@@ -709,9 +700,42 @@
                         <a href="javascript:void(0)" class="header-elements-toggle text-default d-md-none"><i
                                 class="icon-more"></i></a>
                     </div>
+                    <div class="float-right">
+                        
+                        <ul class="navbar-nav ml-xl-auto d-inline">
+                            <li class="nav-item dropdown dropdown-user">
+                                <b class="navbar-nav-link d-flex align-items-center dropdown-toggle cursor-pointer" data-toggle="dropdown">
+                                    {{-- <img src="global_assets/images/placeholders/placeholder.jpg" class="rounded-circle mr-2" height="34" alt=""> --}}
+                                    <i class="icon-user mr-1"></i>
+                                    <span>{{ Auth::user()->name }}</span>
+                                </b>
+            
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="/profile" class="dropdown-item"><i class="icon-user"></i> My profile</a>
+                                    @permission('can-view-shift-handover')
+                                    <a href="/shift_handover" class="dropdown-item"><i class="icon-transmission"></i>Shift Handover</a>
+                                    @endpermission
+                                    <a href="javascript:void(0)" class="dropdown-item d-none">
+                                        <a href="javascript:void(0)" class="dropdown-item d-none">
+                                            <i class="icon-comment-discussion"></i>
+                                            My Tasks
+                                            <span class="badge badge-pill bg-blue ml-auto">58</span>
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="javascript:void(0)" class="dropdown-item d-none"><i class="icon-cog5"></i> Account
+                                            settings</a>
+                                        <form method="POST" action="/logout">
+                                            {{ csrf_field() }}
+                                            <button type="submit" class="dropdown-item"><i class="icon-switch2"></i> Logout
+                                    </a>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
 
                     <div class="header-elements d-none">
-                        <div class="breadcrumb justify-content-center">
+                        {{-- <div class="breadcrumb justify-content-center d-none">
                             <form action="#">
                                 <div class="input-group">
                                     <div class="form-group-feedback">
@@ -730,7 +754,7 @@
                                 </div>
                             </form>
 
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -883,11 +907,110 @@
                     },
                     error: function(response) {
                         toastr.error(response.responseJSON.errors.image[0]);
+                        HideLoader();
                     }
                 })
 
             } else {
                 toastr.warning('Please select a file to upload', 'Warning');
+                HideLoader();
+            }
+        })
+
+        $('.upload-mail-img').click(function(e) {
+            e.preventDefault();
+            elem = $(this);
+            logoctrl = elem.closest('.row').find('.logo');
+            if (logoctrl.val()) {
+                let formData = new FormData();
+                let file = logoctrl[0].files[0];
+                formData.append('image', file);
+                ShowLoader();
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // tell jQuery not to process the data
+                    contentType: false, // tell jQuery not to set contentType
+
+                    url: 'mailImage',
+                    success: function(response) {
+                        var response = JSON.parse(response);
+                        if (response.success) {
+                            toastr.success('File uploaded successfully', 'Success');
+                            var controllername = document.getElementById('main-content').getAttribute("ng-controller")
+                            var scope = angular.element(document.querySelector('[ng-controller="' + controllername + '"]')).scope();
+                            HideLoader()
+                            scope.$apply(function() {
+                                switch (controllername) {
+                                    case "hotelCtrl":
+                                    scope.hotel.mailimage = response.payload;
+                                    break;
+                                }
+                            })
+
+                        }
+                    },
+                    error: function(response) {
+                        toastr.error(response.responseJSON.errors.image[0]);
+                        HideLoader();
+                    }
+                })
+
+            } else {
+                toastr.warning('Please select a file to upload', 'Warning');
+                HideLoader();
+            }
+        })
+
+
+         $('.upload-pos-img').click(function(e) {
+            e.preventDefault();
+            elem = $(this);
+            logoctrl = elem.closest('.row').find('.logo');
+            if (logoctrl.val()) {
+                let formData = new FormData();
+                let file = logoctrl[0].files[0];
+                formData.append('image', file);
+                ShowLoader();
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // tell jQuery not to process the data
+                    contentType: false, // tell jQuery not to set contentType
+
+                    url: 'posImage',
+                    success: function(response) {
+                        var response = JSON.parse(response);
+                        if (response.success) {
+                            toastr.success('File uploaded successfully', 'Success');
+                            var controllername = document.getElementById('main-content').getAttribute("ng-controller")
+                            var scope = angular.element(document.querySelector('[ng-controller="' + controllername + '"]')).scope();
+                            HideLoader()
+                            scope.$apply(function() {
+                                switch (controllername) {
+                                    case "hotelCtrl":
+                                    scope.hotel.posimage = response.payload;
+                                    break;
+                                }
+                            })
+
+                        }
+                    },
+                    error: function(response) {
+                        toastr.error(response.responseJSON.errors.image[0]);
+                        HideLoader();
+                    }
+                })
+
+            } else {
+                toastr.warning('Please select a file to upload', 'Warning');
+                HideLoader();
             }
         })
 
@@ -1338,6 +1461,7 @@ $(document).on({
             $('.extension_us').mask('00000');
             $('.zip_us').mask('00000');
             $('.num3').mask('000');
+            $('.num4').mask('0000');
             $('.num2').mask('00');
             $('.percent').mask("99.9%");
             $('.cnic').mask('00000-0000000-0');
@@ -1347,6 +1471,7 @@ $(document).on({
             $('.date_format').mask('39-19-0000');
             // $('.chequenumber').mask('00000000-0000000-00000000000000000-000');
             $('.cheque').mask('00000000');
+            $('.gl_code').mask('00-00-00-00-000');
             //$('cheque_number'.mask(''))
             $('.latlng').mask('~00r.00000000', {
                 translation: {
@@ -1382,7 +1507,6 @@ $(document).on({
         applyMask()
         
         $('.flex-fill a[data-action="reload"]').click(function() {
-            // console.log('abcd');
             //$('.sidebar-content .btn:eq(1)').click();
             if ($(this).prev().hasClass('rotate-180'))
                 $(this).prev().click();

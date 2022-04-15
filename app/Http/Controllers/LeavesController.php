@@ -32,6 +32,7 @@ class LeavesController extends Controller
 
     public function getAllLeaves(Request $request)
     {
+
         if(!empty($request->date)){
             $from =Carbon::parse($request->date)->firstOfMonth()->format('Y-m-d');
             $to =Carbon::parse($request->date)->endOfMonth()->format('Y-m-d');
@@ -41,11 +42,21 @@ class LeavesController extends Controller
             $to =Carbon::now()->endOfMonth()->format('Y-m-d');
         }
         if (empty($request->user_id)) {
-            $leaves = Leave::with(['user.department'])->whereBetween('LeaveRequestFrom',[$from, $to])->get();
+            // $leaves = Leave::with(['user.department'])->whereBetween('LeaveRequestFrom',[$from, $to])->get();
+            $leaves=  Leave::join('users', 'leaves.user_id','users.id')->join('hotels', 'users.hotel_id','hotels.id')
+            ->with(['user.department'])->whereBetween('LeaveRequestFrom',[$from, $to]);
+                  
         }
         else{   
-            $leaves = Leave::with(['user.department'])->where('user_id',$request->user_id)->whereBetween('LeaveRequestFrom',[$from, $to])->get();
+            $leaves = Leave::join('users', 'leaves.user_id','users.id')->join('hotels', 'users.hotel_id','hotels.id')
+            ->with(['user.department'])->where('user_id',$request->user_id)->whereBetween('LeaveRequestFrom',[$from, $to]);
         }
+        if (!auth()->user()->hasRole('Admin')) {
+            $user = Auth::user();
+            $leaves->whereIn('hotels.id',$user->HotelIds);
+        }
+
+        $leaves= $leaves->get(['leaves.*', 'hotels.id as hotel_id']);  
 
        return response()->json([
         'leaves' => $leaves,

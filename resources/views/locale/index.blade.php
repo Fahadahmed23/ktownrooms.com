@@ -11,7 +11,6 @@
         @include('locale.country_form')
         @include('locale.state_form')
         @include('locale.city_form')
-        @include('locale.hotelcategory_form')
     </div>
     <div class="d-md-flex admin-panel-section align-items-md-start">
         <div class="flex-fill">

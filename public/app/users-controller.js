@@ -32,6 +32,7 @@ app.controller('usersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
     // discount privilege
     $scope.discount_priviledge = 0;
+    $scope.multiple_hotels = 0;
 
     // datatables
     $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers')
@@ -198,6 +199,9 @@ app.controller('usersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
                 for (let i = 0; i < $scope.users.length; i++) {
                     $scope.users[i].created_at = moment($scope.users[i].created_at).format('MM/DD/YYYY');
                 }
+
+
+                console.log($scope.users);
             })
             .catch(function(e) {
                 console.log(e);
@@ -219,6 +223,7 @@ app.controller('usersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         };
         $scope.user.roles = [];
         $scope.selectedRoles = [];
+        $scope.user.all_department = '1';
 
         $scope.refType = "";
         $scope.expType = "";
@@ -253,6 +258,9 @@ app.controller('usersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
         let formUrl = $scope.formType == "save" ? 'users' : 'users/' + $scope.user.id;
 
+        if ($scope.multiple_hotels == "0") {
+            $scope.user.hotel_id = [$scope.user.hotel_id];
+        }
         $scope.ajaxPost(formUrl, $scope.user, false)
             .then(function(response) {
                 if ($scope.formType == "save") {
@@ -297,6 +305,16 @@ app.controller('usersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.user = angular.copy(u);
 
         console.log($scope.user);
+        // select hotels ids
+        if ($scope.user.HotelIds.length == 1) {
+            $scope.user.hotel_id = $scope.user.HotelIds[0];
+        } else {
+            $scope.user.hotel_id = $scope.user.HotelIds;
+        }
+
+        if (!$scope.user.department_id) {
+            $scope.user.all_department = '1';
+        }
 
         // set addresses
         for (let i = 0; i < $scope.user.addresses.length; i++) {
@@ -463,7 +481,7 @@ app.controller('usersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         $scope.searchName = "";
         $scope.searchEmail = "";
         $scope.searchPhone = "";
-        scope.searchHotel = "";
+        $scope.searchHotel = "";
         $scope.getUsers();
     }
 
@@ -473,7 +491,13 @@ app.controller('usersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
         if (selected_role[0].has_discount_priviledge == "1") {
             $scope.discount_priviledge = "1";
         } else {
-            $scope.discount_priviledge = "0";
+            $scope.multiple_hotels = "0";
+        }
+
+        if (selected_role[0].has_multiple_hotels == "1") {
+            $scope.multiple_hotels = "1";
+        } else {
+            $scope.multiple_hotels = "0";
         }
     }
 });

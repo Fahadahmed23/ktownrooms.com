@@ -1,0 +1,16 @@
+[03-Sep-2021 19:34:13 Asia/Karachi] PHP Warning:  Uncaught ErrorException: require_once(/home3/katowoms/public_html/partners.ktownrooms.com\app\Helpers\DateFunctions.php): failed to open stream: No such file or directory in /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php:28
+Stack trace:
+#0 /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php(28): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(2, 'require_once(/h...', '/home3/katowoms...', 28, Array)
+#1 /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php(28): require_once()
+#2 /home3/katowoms/public_html/partners.ktownrooms.com/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(586): App\Providers\AppServiceProvider->register()
+#3 /home3/katowoms/public_html/partners.ktownrooms.com/vendor/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php(75): Illuminate\Foundation\Application->register(Object(App\Providers\AppServiceProvider))
+#4 /home3/katowoms/publ in /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php on line 28
+[03-Sep-2021 19:34:13 Asia/Karachi] PHP Fatal error:  App\Providers\AppServiceProvider::register(): Failed opening required '/home3/katowoms/public_html/partners.ktownrooms.com\app\Helpers\DateFunctions.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php on line 28
+[03-Sep-2021 19:35:45 Asia/Karachi] PHP Warning:  Uncaught ErrorException: require_once(/home3/katowoms/public_html/partners.ktownrooms.com\app\Helpers\DateFunctions.php): failed to open stream: No such file or directory in /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php:28
+Stack trace:
+#0 /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php(28): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(2, 'require_once(/h...', '/home3/katowoms...', 28, Array)
+#1 /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php(28): require_once()
+#2 /home3/katowoms/public_html/partners.ktownrooms.com/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(586): App\Providers\AppServiceProvider->register()
+#3 /home3/katowoms/public_html/partners.ktownrooms.com/vendor/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php(75): Illuminate\Foundation\Application->register(Object(App\Providers\AppServiceProvider))
+#4 /home3/katowoms/publ in /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php on line 28
+[03-Sep-2021 19:35:45 Asia/Karachi] PHP Fatal error:  App\Providers\AppServiceProvider::register(): Failed opening required '/home3/katowoms/public_html/partners.ktownrooms.com\app\Helpers\DateFunctions.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home3/katowoms/public_html/partners.ktownrooms.com/app/Providers/AppServiceProvider.php on line 28

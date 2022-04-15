@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountGeneralLedger;
 use App\Models\OpeningShiftHandover;
+use App\Models\Permission;
 use App\Models\ShiftHandover;
 use App\Models\User;
 use App\Models\VoucherDetail;
@@ -35,10 +36,32 @@ class ShiftHandOverController extends Controller
     public function getData()
     {
         $user = auth()->user();
-        $u =  OpeningShiftHandover::where('user_id',$user->id)->where('is_closed' , 0)->first(['opening_balance']);
+        $u =  OpeningShiftHandover::where('user_id',$user->id)->where('is_closed' , 0)->orderBy('created_at','desc')->first(['opening_balance']);
         $user_opening_balance = $u?$u['opening_balance']:0;
         // for droddown
-        $users = User::where('id','!=',$user->id)->where('hotel_id',$user->hotel_id)->get();
+        //  $users = User::where('id','!=',$user->id);
+        // ->where('hotel_id',$user->hotel_id)->get();
+
+        $hotel_ids = auth()->user()->getHotelIdsAttribute();
+        $permission_id = Permission::where('name', 'can-view-shift-handover')->first(['id'])->toArray();
+
+        $users = User::whereHas('hotels', function($query) use ($hotel_ids) {
+            $query->whereIn('hotel_id', $hotel_ids);
+        })->join('role_user', 'users.id','=' ,'role_user.user_id')
+        ->join('permission_role', 'role_user.role_id','=','permission_role.role_id')
+        ->where('permission_role.permission_id', $permission_id)
+        ->get(['users.id','users.name', 'users.hotel_id']);
+
+        //  $users = auth()->user()->hotel->allUsers()->where('users.id', '!=', auth()->id());
+        
+        // dd($users);
+        //permission id for shift handover
+        // dd($permission_id);
+        // $users =  $users->Join('role_user', 'users.id','=' ,'role_user.user_id')
+        // ->Join('permission_role', 'role_user.role_id','=','permission_role.role_id')
+        // ->where('permission_role.permission_id', $permission_id)->get(['users.id','users.name', 'users.hotel_id']);
+        // ->get(['users.id','users.name', 'users.hotel_id']);
+        // dd($users);
 
         $receive_account_id = AccountGeneralLedger::where('account_level_id' , 5)->where('is_active' , 1)
         ->where('account_type_id', 1)->where('title', 'Cash In Hand')->first(['id']);
@@ -46,7 +69,7 @@ class ShiftHandOverController extends Controller
             $created_by_ids = $this->getIncludedVouchers();
             //  dd($created_by_ids);
             $receive_account_id = $receive_account_id->id;
-            $vm = VoucherMaster::with(['voucher_details' => function($q) use ($receive_account_id){
+            $vm = VoucherMaster::whereIn('hotel_id', $hotel_ids)->with(['voucher_details' => function($q) use ($receive_account_id){
                 $q->where('account_gl_id', $receive_account_id)->where('is_concile',0);
             }])->whereIn('CreatedBy', $created_by_ids)->get();
             // dd($vm);
@@ -131,8 +154,18 @@ class ShiftHandOverController extends Controller
         OpeningShiftHandover::where('user_id',$user->id)->update(['is_closed' => 1]);
 
         $created_by_ids = $this->getIncludedVouchers();
+        $vd = VoucherDetail::whereIn('created_by',$created_by_ids)->get();
+        
+        foreach($vd as $v){
+            $v->is_concile = 1;
+            $v->update();
+        }
 
-        VoucherDetail::whereIn('created_by',$created_by_ids)->update(['is_concile' => 1]);
+        // $vd->each(function($item, $key) {
+        //     $item->is_concile = 1;
+        //     $item->save();
+        // });
+        // $vd->update(['is_concile' => 1]);
 
         \DB::commit();
     } 

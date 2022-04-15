@@ -60,7 +60,7 @@
                   </div>
                 </div> 
 
-                <div ng-hide="!is_admin" class="col-md-3"> 
+                <div class="col-md-3"> 
                   <label class="col-lg-6 col-form-label">Hotel</label>
                   <md-select name="HotelId" class="m-0" ng-model="inventory.hotel_id" placeholder="Select a Hotel" required>
                     <md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
@@ -116,7 +116,7 @@
 
                 <div class="col-md-3 ">
                   <label class="col-lg-6 col-form-label">Status </label>
-                  <md-switch ng-model="inventory.Status" ng-true-value="1" ng-false-value="0" style="display:block" >
+                  <md-switch ng-model="inventory.Status" ng-true-value="'1'" ng-false-value="'0'" style="display:block" >
                   <span class="">Active</span>
                 </md-switch>
                 </div>

@@ -1,3 +1,9 @@
+<style>
+  .md-select-menu-container,
+ md-backdrop {
+     z-index: 999999 !important;
+ }
+</style>
 <div class="sidebar sidebar-light bg-transparent sidebar-component  border-0 shadow-0 sidebar-expand-md">
 
     <!-- Sidebar content -->
@@ -22,15 +28,36 @@
                   <label>Hotel</label> 
                 </div>
 
+                <div class="floating-label">
+                  <md-select ng-model="filters.room_category_id" placeholder="Room Category" multiple>
+                      <md-option ng-repeat="rc in roomcategories" ng-value="[[rc.id]]">[[rc.RoomCategory]]</md-option>
+                  </md-select>
+                </div>
 
-                <div class="floating-label"> 
+                <div class="floating-label">
+                  <md-select ng-model="filters.room_type_id" placeholder="Room Type" multiple>
+                      <md-option ng-repeat="rt in roomtypes" ng-value="[[rt.id]]">[[rt.RoomType]]</md-option>
+                  </md-select>
+                </div>
+
+                <div class="floating-label">
+                  <input ng-model="filters.room_title" type="text" class="form-control" placeholder=" ">
+                  <span class="highlight"></span>
+                  <label>Room Title</label> 
+                </div>
+                
+                <div class="float-right">
+                  <button type="button" class="btn btn-primary float-right" ng-click="filterData(filters)">Filter</button>
+                </div>
+
+                {{-- <div class="floating-label"> 
                     <input ng-model="searchRoom" type="text" class="form-control" placeholder=" ">
                     <span class="highlight"></span>
                     <label>Room</label> 
-                  </div>
+                </div> --}}
 
 
-                  <div class="floating-label"> 
+                  {{-- <div class="floating-label"> 
                     <input ng-model="searchType" type="text" class="form-control" placeholder=" ">
                     <span class="highlight"></span>
                     <label>Type </label> 
@@ -40,7 +67,7 @@
                     <input ng-model="searchCategory" type="text" class="form-control" placeholder=" ">
                     <span class="highlight"></span>
                     <label>Room Category </label> 
-                  </div>
+                  </div> --}}
 
             </div>
         </div>

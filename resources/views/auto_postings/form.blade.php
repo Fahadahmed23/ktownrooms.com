@@ -62,7 +62,7 @@
 
                           <div class="col-md-3">
                             <div class="form-group py-2">
-                              <label class="col-lg-6 col-form-label">Posting Type</label>
+                              <label class="col-form-label">Posting Type</label>
                               <md-select required ng-change="getpostingTyp(posting_type.auto_posting_type_id)" name="auto_posting_type_id" class="m-0" ng-model="posting_type.auto_posting_type_id" placeholder="Select Posting type" >
                                 <md-option ng-repeat="apt in auto_posting_types" ng-value="apt.id" >[[apt.title]]</md-option>
                               </md-select>
@@ -76,8 +76,9 @@
                             <table class="table table-user table-striped hover display datatable-basic table-bordered">
                               <thead>
                                 <tr>
+                                  <th>Account Type</th>
                                   <th>Account Head</th>
-                                  <th>Level</th>
+                                  <th ng-hide="true">Level</th>
                                   <th>Debit</th>
                                   <th>Credit</th>
                                   <th></th>
@@ -85,33 +86,45 @@
                               </thead>
                               <tbody>
                                 <tr ng-repeat="a in auto_postings_arr track by $index">
+                                  <td>[[a.account_type_name]]</td>
                                   <td>[[a.account_gl_name]] ([[a.account_gl_code]])</td>
-                                  <td>[[a.account_level]]</td>
+                                  <td  ng-hide="true" >[[a.account_level]]</td>
                                   <td class="text-success text-right">[[a.is_dr=='1'?'Debit':'']]</td>
                                   <td class="text-danger text-right">[[a.is_cr=='1'?'Credit':'']]</td>
                                   <td><i ng-click="removeRecord($index , ap)" class="btn btn-danger fa fa-minus"></i></td>
                                 </tr>
                                 <tr>
                                   <td>
-                                    <md-select ng-change="getGl(auto_posting_arr.account_gl_id)" name="account_gl_id" class="m-0" ng-model="auto_posting_arr.account_gl_id" placeholder="Select Account head" >
-                                      <md-option ng-repeat="ah in account_heads" ng-value="ah.id" >[[ah.title]] ([[ah.account_gl_code]])</md-option>
+                                    <md-select name="account_type_id" class="m-0" ng-model="auto_posting_ar.account_type_id" placeholder="Select Account Type" >
+                                      <md-select-header>
+                                        <input ng-model="search_account_types"  class="_md-text w-100 border px-3 py-2" placeholder="Search Account Type"  onkeydown="event.stopPropagation()">
+                                      </md-select-header>
+                                      <md-option ng-repeat="at in account_types |filter:search_account_types" ng-value="at.id" >[[at.title]]</md-option>
+                                    </md-select>
+                                  </td>
+                                  <td>
+                                    <md-select ng-change="getGl(auto_posting_ar.account_gl_id)" name="account_gl_id" class="m-0" ng-model="auto_posting_ar.account_gl_id" placeholder="Select Account head" >
+                                      <md-select-header>
+                                        <input ng-model="search_account_heads"  class="_md-text w-100 border px-3 py-2" placeholder="Search Account Head"  onkeydown="event.stopPropagation()">
+                                      </md-select-header>
+                                      <md-option ng-repeat="ah in account_heads | filter: {account_type_id:auto_posting_ar.account_type_id, title:search_account_heads } | orderBy:'title'" ng-value="ah.id" >[[ah.title]] ([[ah.account_gl_code]])</md-option>
                                     </md-select>
                                   </td>
 
-                                  <td>
-                                    <input disabled type="text" name="account_level" ng-value="" ng-model="auto_posting_arr.account_level" class="form-control px-2" >
+                                  <td  ng-hide="true">
+                                    <input disabled type="text" name="account_level" ng-value="" ng-model="auto_posting_ar.account_level" class="form-control px-2" >
                                   </td>
 
                                   <td>
-                                    <md-switch ng-disabled="auto_posting_arr.is_cr == '1'" ng-model="auto_posting_arr.is_dr" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
+                                    <md-switch ng-disabled="auto_posting_ar.is_cr == '1'" ng-model="auto_posting_ar.is_dr" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
                                   </td>
 
                                   <td>
-                                    <md-switch ng-disabled="auto_posting_arr.is_dr == '1'" ng-value="1" ng-model="auto_posting_arr.is_cr" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
+                                    <md-switch ng-disabled="auto_posting_ar.is_dr == '1'" ng-value="1" ng-model="auto_posting_ar.is_cr" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
                                   </td>
                                   
                                   <td>
-                                  <button  class="vd_push_btn btn btn-info" ng-click="pushAutoPosting(auto_posting_arr)"><i class="fa fa-plus"></i> </button> 
+                                  <button  class="vd_push_btn btn btn-info" ng-click="pushAutoPosting(auto_posting_ar)"><i class="fa fa-plus"></i> </button> 
                                   </td>
                                   
                                 </tr>

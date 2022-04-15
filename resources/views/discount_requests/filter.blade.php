@@ -25,7 +25,7 @@
                 </div>
             </li>
 
-            {{-- <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown">
                     <i class="icon-sort-amount-desc mr-2"></i>
                     Status: [[statusName]]
@@ -34,11 +34,11 @@
                 <div class="dropdown-menu">
                     <a href="#" class="dropdown-item" ng-click="filterByStatus('')">Show all</a>
                     <div class="dropdown-divider"></div>
-                    <a href="javascript:void(0)" ng-repeat="status in complain_statuses" class="dropdown-item" ng-click="filterByStatus(status)">[[status.ComplainStatus]]</a>
+                    <a href="javascript:void(0)" ng-repeat="status in discount_request_statuses" class="dropdown-item" ng-click="filterByStatus(status)">[[status.DiscountRequestStatus]]</a>
                 </div>
             </li>
 
-            <li class="nav-item dropdown">
+            {{-- <li class="nav-item dropdown">
                 <a href="#" class="navbar-nav-link dropdown-toggle legitRipple" data-toggle="dropdown">
                     <i class="icon-sort-numeric-asc mr-2"></i>
                     Priority: [[priorityName]]

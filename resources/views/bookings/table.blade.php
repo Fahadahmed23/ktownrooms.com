@@ -47,7 +47,9 @@
                     <tr class="col-lg-12" dir-paginate="booking in bookings | itemsPerPage:perPage" current-page="currentPage" total-items="TotalRecords" pagination-id="bookingPagination" ng-cloak>
                         <td>[[booking.booking_no ? booking.booking_no : (booking.is_third_party ? booking.third_party_booking_no  : '')]]</td>
                         <td>[[booking.FullName]]</td>
-                        <td class="cursorShow" data-placement="left" data-popup="popover" data-title="" data-trigger="hover" data-html="true" data-content="[[booking.HotelName]]" data-original-title="">[[booking.HotelName | limitTo: 15]] [[booking.HotelName.length > 15 ? '...' : '']]</td>
+                        <td>[[booking.HotelName]]</td>
+                        <td>[[booking.RoomNumber]]</td>
+                        <!-- <td class="cursorShow" data-placement="left" data-popup="popover" data-title="" data-trigger="hover" data-html="true" data-content="[[booking.HotelName]]" data-original-title="">[[booking.HotelName | limitTo: 15]] [[booking.HotelName.length > 15 ? '...' : '']]</td> -->
                         {{-- <td>[[booking.Phone]]</td> --}}
                         <td style="display: inline-grid">
                             <a href="javascript:void(0)" ng-hide="booking.status == 'CheckedIn' || booking.status == 'CheckedOut' || booking.status=='Cancelled'" ng-click="changeRoomStatus(booking.id)" class="badge" ng-class="getStatusClass(booking.status)">[[booking.status]]</a>
@@ -62,10 +64,11 @@
 
                                 {{-- <a href="javascript:void(0)" class="dropdown-item"></i>Discount: [[booking.DiscountStatus]]</a> --}}
                         </td>
-                        <td>[[booking.BookingDate | date]]</td>
+                        <td>[[booking.created_at | date]]</td>
                         <td>[[booking.BookingFrom | date]]</td>
                         <td>[[booking.BookingTo | date]]</td>
-                        <th>[[booking.num_occupants]]</th>
+                        {{-- <th>[[booking.num_occupants]]</th> --}}
+                        <th>[[booking.created_by]]</th>
                         <th ng-hide="true">[[booking.created_at | date]]</th>
                         <td>
                             <div class="align-self-left">

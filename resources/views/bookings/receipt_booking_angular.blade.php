@@ -1,5 +1,23 @@
 
 <style>
+.posimg {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0 0 0;
+} 
+.posimg img {
+    width: 60% !important;
+    margin: 0 auto;
+}
+.defaultimg {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0 0 0;
+} 
+.defaultimg img {
+    width: 60% !important;
+    margin: 0 auto;
+}
 
 .slect_printerDD {
     border-left: 2px solid #ea863b;
@@ -247,6 +265,9 @@ font-size: 10px !important;
             <button ng-click="printBookingReceipt()" id="btnPrint" type="button" class="btn btn-xs btn-info"><i class="fa fa-print"></i></button>
         </div>
         <div id='actionbtnformodal' class="button text-right print" ng-hide="inPrint">
+             @if (auth()->user()->can('can-add-checkout-discount') || auth()->user()->can('can-add-frontdesk-checkout-discount'))
+                <button ng-click="showcheckoutDiscountForm()" class="btn btn-success" data-placement="top" data-popup="popover" data-trigger="hover" data-html="true" data-content="Checkout Discount"><i class="mi-payment"></i></button>
+             @endif
             <button id="redirectReceiptPage" ng-click="hideBookingReceipt(); bookingReceiptRedirect(Invoice.id)" class="btn btn-warning"  data-placement="top" data-popup="popover" data-trigger="hover" data-html="true"
             data-content="Printable Invoices"><i class="icon-printer2"></i></button>
             <button ng-click="hideBookingReceipt(); showPartialPay(Invoice.id)" class="btn btn-info" data-placement="top" data-popup="popover" data-trigger="hover" data-html="true"
@@ -256,13 +277,20 @@ font-size: 10px !important;
             <button ng-click="hideBookingReceipt()" class="btn btn-xs btn-danger" data-placement="top" data-popup="popover" data-trigger="hover" data-html="true"
             data-content="Cancel"><i class="fa fa-close"></i></button>
         </div>
-        <div class="pos-receipt-container">
+        <div class="pos-receipt-container pt-3">
+                
                 <div ng-show="Invoice.invoice.is_corporate == '0' && Invoice.invoice.net_total > Invoice.invoice.payment_amount && 1==2">
                     @include('bookings.partial_payment_form')
                     <button type="button" ng-click="checkoutFromReceipt()" class="btn btn-success"><i class=" mr-2 icon-floppy-disk mr-2"></i>Pay and Checkout</button>
                 </div>
                 <div class="pos-sale-ticket">
-                    <img src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="ktown Rooms & Homes">
+                    <div class="posimg" ng-if="Invoice.hotel.posimage">
+                        <img src="[[Invoice.hotel.posimage]]" alt="ktown Rooms & Homes">
+                    </div>
+                   
+                    <div class="defaultimg" ng-if="!Invoice.hotel.posimage">
+                        <img src="[[default_rule_img]]" alt="ktown Rooms & Homes">
+                    </div>
                     <br>
                     <br>
                     <br><span class="boldre">Booking # </span><span class="ordernum">[[Invoice.booking_no]]</span>
@@ -281,22 +309,26 @@ font-size: 10px !important;
                             <tr>
                                 <th ng-if="invoice_detail.type == 'payment'">Payment</th>
                                 <th ng-if="invoice_detail.type == 'service'">Service</th>
+                                <th ng-if="invoice_detail.type == 'checkout discount'">Remarks</th>
                                 <th>Type</th>
                                 <th ng-if="invoice_detail.quantity">Quantity</th>
                                 <th ng-if="invoice_detail.rate" class="text-right" >Rate</th>
-                                <th ng-if="invoice_detail.type == 'payment'">Total</th>
-                                <th ng-if="invoice_detail.type == 'refund'|| invoice_detail.type == 'early checkin' || invoice_detail.type == 'late checkout'">Total</th>
+                                <th>Total</th>
+                                {{-- <th ng-if="invoice_detail.type == 'payment'">Total</th>
+                                <th ng-if="invoice_detail.type == 'refund'|| invoice_detail.type == 'early checkin' || invoice_detail.type == 'late checkout' || invoice_detail.type == 'checkout '">Total</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td ng-if="invoice_detail.type == 'payment'">Payment Received</td>
                                 <td ng-if="invoice_detail.type == 'service'" >[[invoice_detail.title]]</td>
+                                <td ng-if="invoice_detail.type == 'checkout discount'" >[[invoice_detail.title]]</td>
                                 <td>[[invoice_detail.type | camelCase]]</td>
                                 <td ng-if="invoice_detail.quantity" class="text-center">[[invoice_detail.quantity]]</td>
                                 <td ng-if="invoice_detail.rate" class="text-right" >[[invoice_detail.rate | currency]]</td>
-                                <td ng-if="invoice_detail.type == 'payment'">[[invoice_detail.amount | currency]]</td>
-                                <td ng-if="invoice_detail.type == 'refund'|| invoice_detail.type == 'early checkin' || invoice_detail.type == 'late checkout'">[[invoice_detail.amount | currency]]</td>
+                                <td>[[invoice_detail.amount | currency]]</td>
+                                {{-- <td ng-if="invoice_detail.type == 'payment'">[[invoice_detail.amount | currency]]</td>
+                                <td ng-if="invoice_detail.type == 'refund'|| invoice_detail.type == 'early checkin' || invoice_detail.type == 'late checkout'">[[invoice_detail.amount | currency]]</td> --}}
                             </tr>
                         </tbody>
                     </table>
@@ -393,13 +425,15 @@ font-size: 10px !important;
                                                 </tr>
                                             </tbody>
                     </table>
+                    
+                    @include('bookings.add_checkout_discount')
 
                             <br>
                             <br>
                             <hr><span class="boldre">User: </span>[[user.name]]
                             <hr>
-                            <div class="thnote" style="font-size: 14px;">Thankyou for choosing Ktown Rooms & Homes </div>
-                            <hr><span style="font-size: 12px;">Powered by Manhattan Datanet INC.</span>
+                            <div class="thnote" style="font-size: 14px;">Thankyou for choosing [[default_rule.name]]</div>
+                           {{--<hr><span style="font-size: 12px;">Powered by Manhattan Datanet INC.</span>--}}
                 </div>
         </div>
     </div>
@@ -416,13 +450,20 @@ font-size: 10px !important;
             <button ng-click="hideBookingReceipt()" class="btn btn-xs btn-danger" data-placement="top" data-popup="popover" data-trigger="hover" data-html="true"
             data-content="Cancel"><i class="fa fa-close"></i></button>
         </div>
-        <div class="pos-receipt-container">
+        <div class="pos-receipt-container pt-3">
                 <div ng-show="Invoice.invoice.is_corporate == '0' && Invoice.invoice.net_total > Invoice.invoice.payment_amount && 1==2">
                     @include('bookings.partial_payment_form')
                     <button type="button" ng-click="checkoutFromReceipt()" class="btn btn-success"><i class=" mr-2 icon-floppy-disk mr-2"></i>Pay and Checkout</button>
                 </div>
                 <div class="pos-sale-ticket">
-                    <img src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="ktown Rooms & Homes">
+                    <div class="posimg" ng-if="Invoice.hotel.posimage">
+                        <img src="[[Invoice.hotel.posimage]]" alt="ktown Rooms & Homes">
+                    </div>
+                   
+                    <div class="defaultimg" ng-if="!Invoice.hotel.posimage">
+                        <img src="[[default_rule_img]]" alt="ktown Rooms & Homes">
+                    </div>
+                    <!-- <img src="https://www.ktownrooms.com/resources/assets/web/img/logo.png" alt="ktown Rooms & Homes"> -->
                     <br>
                     <br>
                     <br><span class="boldre">Bookig # </span><span class="ordernum">[[Invoice.booking_no]]</span>
@@ -544,7 +585,7 @@ font-size: 10px !important;
                             <br>
                             <hr><span class="boldre">User: </span>[[user.name]]
                             <hr>
-                            <div class="thnote footernote" style="font-size: 14px;">Thankyou for choosing Ktown Rooms & Homes </div>
+                            <div class="thnote footernote" style="font-size: 14px;">Thankyou for choosing [[default_rule.name]] </div>
                             <hr><span  class="footernote" style="font-size: 12px;">Software Developed by Manhattan Datanet INC.</span>
                 </div>
         </div>

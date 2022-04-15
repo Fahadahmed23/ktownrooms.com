@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CustomerComplain extends Model
 {
     use SoftDeletes;
-    protected $appends = ['CalculateHoursAgo'];
+    protected $appends = ['CalculateHoursAgo', 'ComplainT', 'ResolveT'];
 
     public function customer()
     {
@@ -54,4 +54,13 @@ class CustomerComplain extends Model
         $diffHours = $created_at->diffInHours($now);
         return $diffHours ?? null;
     }
+
+    public function getComplainTAttribute(){
+        return viewDateTime($this->ComplainTime);
+    }
+
+    public function getResolveTAttribute(){
+        return viewDateTime($this->ResolveTime);
+    }
+
 }

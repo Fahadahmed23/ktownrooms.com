@@ -19,9 +19,10 @@ use App\Mail\WelcomeEmail;
 use App\Mail\PasswordReset;
 use App\Models\Role;
 use App\Models\State;
+use App\Models\UserHotel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
-
+use PhpParser\Node\Stmt\Foreach_;
 
 class UsersController extends Controller
 {
@@ -38,28 +39,27 @@ class UsersController extends Controller
     public function getUsers()
     {
         $filters = json_decode(request()->filters);
-
-        //  dd($filters->hotel_id);
-
         $users = User::with(['addresses', 'addresses.city:id,CityName,state_id', 'addresses.state:id,StateName', 'experiences', 'roles'])
-        ->whereDoesntHave('roles', function($q){
-            $q->whereIn('name', ['Admin']);
-        })
-        ->where('id', '!=', Auth::user()->id );
-        // dd($users->get());
+                        ->whereDoesntHave('roles', function($q){
+                        $q->whereIn('name', ['Admin']);
+        })->where('id', '!=', Auth::user()->id);
+
         $cities = City::get(['id', 'CityName', 'state_id']);
-        if (auth()->user()->hasRole('Admin')) {
-            $hotels = Hotel::all();            
-            $is_admin = true;
-        }
-        else{
-            $hotels = Hotel::where('id', auth()->user()->hotel_id)->get(); 
-            $is_admin = false;
-        }
+        $hotels = auth()->user()->user_hotels();
         $departments = Department::all();
         $designations = Designation::all();
         $states = State::get(['id', 'StateName']);
         $roles = Role::all();
+
+        if (auth()->user()->hasRole('Admin')) {
+            $is_admin = true;
+        }
+        else{
+            $is_admin = false;
+            $c_ids= $hotels->get()->pluck(['city_id']);
+            $city_ids= $c_ids->unique();
+            $cities =  $cities->whereIn('id',$city_ids);
+        }
 
         if ($filters->name != "") {
             $users = $users->where('name', 'LIKE', '%' . $filters->name . '%');
@@ -74,17 +74,49 @@ class UsersController extends Controller
         }
 
         if ($filters->hotel_id != "") {
-            $users = $users->where('hotel_id', $filters->hotel_id);
+              $user_ids =  UserHotel::where('hotel_id', $filters->hotel_id)->get(['user_id']);
+              $users = $users->whereIn('id', $user_ids->toArray());
+        }
+
+        if(!auth()->user()->hasRole('Admin')) {
+            $user_ids = $users->pluck('id');
+            
+            $users = collect([]);
+            $user = auth()->user();
+            
+            foreach ($user->hotels->toArray() as $hotel) {
+                $h = Hotel::find($hotel['hotel_id']);
+                $u = $h->allUsers;
+                
+                if ($u) {
+                    $users = $users->concat($u);
+                }
+                
+            }
+            
+            $users = $users->whereIn('id', $user_ids)->unique('id');
+            
+            $users = User::with(['addresses', 'addresses.city:id,CityName,state_id', 'addresses.state:id,StateName', 'experiences', 'roles'])
+                        ->whereDoesntHave('roles', function($q){
+                        $q->whereIn('name', ['Admin']);
+                    })->where('id', '!=', Auth::user()->id)->whereIn('id', $users->map(function($u) {
+                        return $u->id;
+                    }))->get();
+            
+            // $userss = auth()->user()->hotel->allUsers()->where('users.id', '!=', auth()->id());
+        } else {
+            $users = $users->get();
         }
 
         return  response()->json([
-            'users'=> $users->get(),
+            'users'=> $users,
             'cities'=> $cities,
             'states' => $states,
-            'hotels'=> $hotels,
+            'hotels'=> $hotels->get(),
             'departments'=> $departments,
             'designations'=> $designations,
             'roles' => $roles,
+            'is_admin' => $is_admin
         ]);
     }
 
@@ -110,8 +142,16 @@ class UsersController extends Controller
             $user->picture = $request->picture;
             $user->phone_no = $request->phone_no;
             $user->city_id = $request->city_id;
-            $user->hotel_id = $request->hotel_id;
-            $user->department_id = $request->department_id;
+            // $user->hotel_id = $request->hotel_id;
+            // $user->department_id = $request->department_id;
+
+            if($request->all_department == '1'){
+                $user->department_id = Null;
+            }
+            else{
+                $user->department_id = $request->department_id;
+            }
+
             $user->designation_id = $request->designation_id;
             $user->reference_name = $request->reference_name;
             $user->reference_department = $request->reference_department;
@@ -119,6 +159,18 @@ class UsersController extends Controller
             $user->max_allowed_discount = empty($request->max_allowed_discount) ? 0 : $request->max_allowed_discount;
             $user->save();
 
+            if (!empty($request->hotel_id))
+            {
+                foreach ($request->hotel_id as $key => $h_id) {
+                $userHotel = new UserHotel();
+                $userHotel->user_id = $user->id;
+                $userHotel->hotel_id = $h_id;
+                $userHotel->save();
+                }
+            }
+
+            
+            
             if (!empty($request->experiences)){
                 foreach ($request->experiences as $exp) {
                     $userExp = new UserExperience();
@@ -231,7 +283,7 @@ class UsersController extends Controller
      */
     public function update(AddUserRequest $request, $id)
     {
-        // dd($request->all());   
+        //  dd($request->hotel_id);   
         DB::beginTransaction();
         try{        
         $user = User::find($request->id);
@@ -242,8 +294,16 @@ class UsersController extends Controller
         $user->email = $request->email;
         $user->phone_no = $request->phone_no;
         $user->city_id = $request->city_id;
-        $user->hotel_id = $request->hotel_id;
-        $user->department_id = $request->department_id;
+        // $user->hotel_id = $request->hotel_id;
+        // $user->department_id = $request->department_id;
+        
+        if($request->all_department == '1'){
+            $user->department_id = Null;
+        }
+        else{
+            $user->department_id = $request->department_id;
+        }
+
         $user->designation_id = $request->designation_id;
         $user->reference_name = $request->reference_name;
         $user->reference_department = $request->reference_department;
@@ -251,6 +311,19 @@ class UsersController extends Controller
         $user->picture = $request->picture;
         $user->max_allowed_discount = empty($request->max_allowed_discount) ? 0 : $request->max_allowed_discount;
         $user->save();
+
+        UserHotel::where('user_id',$request->id)->delete();
+
+        if (!empty($request->hotel_id))
+        {
+            foreach ($request->hotel_id as $key => $h_id) {
+                $userHotel = new UserHotel();
+                $userHotel->user_id = $user->id;
+                $userHotel->hotel_id = $h_id;
+                $userHotel->save();
+            }
+        }
+
         UserExperience::where('user_id','=',$request->id)->delete();
         if (!empty($request->experiences)){
             foreach ($request->experiences as $exp) {

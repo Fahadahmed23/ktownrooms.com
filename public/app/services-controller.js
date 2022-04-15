@@ -53,8 +53,19 @@ app.controller('servicesCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
     $scope.hideFilter = function() {
         $('.sidebar').hide();
     }
+
+    $scope.filterData = function(searchFields, check) {
+        if (check == 'clear') {
+            $scope.filters = {};
+        } else {
+            $scope.filters = angular.copy(searchFields);
+        }
+        $scope.getServices($scope.filters);
+    }
     $scope.getServices = function() {
-        $scope.ajaxGet('getServices', {}, true)
+        $scope.ajaxPost('getServices', {
+                filters: $scope.filters,
+            }, true)
             .then(function(response) {
 
                 $scope.user = response.user;
@@ -81,19 +92,24 @@ app.controller('servicesCtrl', function($scope, DTColumnDefBuilder, DTOptionsBui
         window.scrollTop();
         $('#addNewService').show('slow');
         $('#searchService').hide();
-        $scope.service.service_start_time = moment($scope.service.service_start_time, ["HH:mm:ss"]).format('h:mm A');
-        $scope.service.service_end_time = moment($scope.service.service_end_time, ["HH:mm:ss"]).format('h:mm A');
+        if ($scope.service.is_24hrs == '1') {
+            $scope.service.service_start_time = "";
+            $scope.service.service_end_time = "";
+        } else {
+            $scope.service.service_start_time = moment($scope.service.service_start_time, ["HH:mm:ss"]).format('h:mm A');
+            $scope.service.service_end_time = moment($scope.service.service_end_time, ["HH:mm:ss"]).format('h:mm A');
+        }
     }
-
 
     $scope.createService = function() {
         $scope.myForm.$setUntouched();
         $scope.myForm.$setPristine();
         $scope.service = {};
 
-        if (!$scope.is_admin) {
-            $scope.service.hotel_id = $scope.user.hotel_id;
-        }
+        // if (!$scope.is_admin) {
+        //     $scope.service.hotel_id = $scope.user.hotel_id;
+        // }
+        $scope.service.is_24hrs = '1';
         $scope.formType = "save";
         window.scrollTop();
         $('#addNewService').show('slow');

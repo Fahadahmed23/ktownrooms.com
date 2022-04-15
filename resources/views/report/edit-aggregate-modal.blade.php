@@ -15,16 +15,16 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr ng-cloak ng-if="col.Type == 'number' || col.Type == 'amount' || col.Type == 'date'" ng-repeat="col in selectedColumnsP">
+                  <tr ng-cloak ng-if="col.Type == 'number' || col.Type == 'amount' || (col.Type == 'date' && col.isPeriod != '1') " ng-repeat="col in selectedColumnsP">
                      <td>[[col.Alias]]</td>
                      <td>
                         <select ng-model="col.Aggregation" class="form-control">
                            <option value="">None</option>
-                           <option value="sum">sum</option>
-                           <option value="min">minimum</option>
-                           <option value="max">maximum</option>
-                           <option value="avg">average</option>
-                           <option value="count">count</option>
+                           <option ng-hide="col.Type == 'date'" value="sum">sum</option>
+                           <option ng-hide="col.Type == 'date'"  value="min">minimum</option>
+                           <option ng-hide="col.Type == 'date'" value="max">maximum</option>
+                           <option ng-hide="col.Type == 'date'" value="avg">average</option>
+                           <option ng-hide="col.Type == 'date'" value="count">count</option>
                         </select>
                      </td>
                   </tr>

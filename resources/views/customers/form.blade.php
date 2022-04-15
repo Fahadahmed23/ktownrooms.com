@@ -49,7 +49,7 @@
                   </div>
 
                   <div class="col-md-4">
-                    <label class="col-lg-6 col-form-label">Email <span class="text-danger">*</span></label>
+                    <label class="col-lg-6 col-form-label">Email  <span class="text-danger">*</span></label>
                     <input name="Email" maxlength="50"  type="email" class="form-control px-2 email_mask" ng-model="customer.Email" placeholder="abc01@gmail.com" required>
                     
                     <div ng-messages="customerForm.Email.$error" ng-if='customerForm.Email.$touched || customerForm.$submitted' ng-cloak style="color:#e9322d;">
@@ -79,7 +79,7 @@
                   </div>
 
                   <div class="col-md-4">
-                    <label class="col-lg-6 col-form-label">Nationality</label>
+                    <label class="col-lg-6 col-form-label">Nationality <span class="text-danger">*</span></label>
                         <md-select name="nationality" md-no-asterisk required class="m-0" ng-model="customer.nationality" placeholder="Pakistani ">
                             <md-option ng-repeat="nationality in nationalities" ng-value="nationality">[[nationality]]</md-option>
                         </md-select>

@@ -1,7 +1,7 @@
 <style>
-.tool-tip-list-item {
+/* .tool-tip-list-item {
     padding-left: 10px;
-}
+} */
 .services-boxes-row{
     margin-top: 0px;
     max-height: 250px;
@@ -137,55 +137,17 @@
                                         </a>
                                     </div>
                                     <div class="col-md-8 mt-3 service-count-col">
-                                        <div class="media-body text-center text-md-left inc_dec_btns">
+                                        <div ng-show="service.IsQuantitative=='1'" class="media-body text-center text-md-left inc_dec_btns">
                                             <div class="def-number-input number-input safari_only">
                                                 <button ng-click="decrementTimes(service)" class="minus text-danger p-2 cursor-[[service.enable?'':'no']]" ng-disabled="!service.enable"></button>
                                                 <input ng-required="" readonly ng-model="service.times" class="quantity form-control cursor-[[service.enable?'':'no']]" min="0" name="quantity" type="number" ng-disabled="!service.enable">
                                                 <button ng-click="incrementTimes(service)" class="plus text-success p-2 cursor-[[service.enable?'':'no']]" ng-disabled="!service.enable"></button> 
                                             </div>
                                         </div>
-                                    </div>
-
-
-                                    {{-- <div class="col-md-6 border-bottom">
-                                        <span class="title-service">
-                                            <strong>[[service.Service]]</strong>
-                                        </span>
-                                    </div> --}}
-
-                                    {{-- <div class="col-md-6 text-right  border-bottom">
-                                        <span>
-                                            <small class="badge badge-[[service.enable?'success':'danger']] mb-2" data-popup="popover" data-trigger="hover" data-html="true" data-content="[[service.msg]]" >
-                                                [[service.enable?'Available':'Not Available']]
-                                            </small>
-                                        </span>
-                                        <span>
-                                            <i class="icon-info22" data-placement="right" data-popup="popover" title="Service Detail" data-trigger="hover" data-html="true"
-                                                data-content="
-                                                <ul class='tool-tip-list-item'>
-                                                    <li><span>Charges : [[service.Charges | currency]]</span></li>
-                                                    <li><span>Serving Time : [[service.ServingTime]]</span></li>
-                                                </ul>" data-original-title="Popover title">
-                                            </i>
-                                        </span>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4 mt-1">
-                                        <a class="text-teal mr-md-3 mb-3 mb-md-0">
-                                            <img class="img-thumbnail img-fluid" src="[[service.IconPath]]" alt="[[service.Service]]">
-                                        </a>
-                                    </div>
-                                    <div class="col-md-5 offset-md-3 mt-3">
-                                        <div class="media-body text-center text-md-left inc_dec_btns">
-                                            <div class="def-number-input number-input safari_only">
-                                                <button ng-click="decrementTimes(service)" class="minus text-danger p-2 cursor-[[service.enable?'':'no']]" ng-disabled="!service.enable"></button>
-                                                <input ng-required="" readonly ng-model="service.times" class="quantity form-control cursor-[[service.enable?'':'no']]" min="0" name="quantity" type="number" ng-disabled="!service.enable">
-                                                <button ng-click="incrementTimes(service)" class="plus text-success p-2 cursor-[[service.enable?'':'no']]" ng-disabled="!service.enable"></button> 
-                                            </div>
+                                        <div ng-hide="service.IsQuantitative=='1'">
+                                            <button ng-click="addNotQuantitativeService(service)" class="btn btn-info p-2 float-right"> Add <i class="icon-plus3 ml-2"></i></button>
                                         </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-12">
-                                        <h6 class="media-title font-weight-semibold mt-2">[[service.Service]]</h6>
-                                    </div> --}}
+                                    </div>
                                 </div>     
                             </div>
                         </div>

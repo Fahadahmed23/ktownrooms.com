@@ -22,8 +22,8 @@
                     <div class="row text-center">
                         <div class="col-4">
                             <p><i class="icon-watch2 icon-2x d-inline-block text-info"></i></p>
-                            <h5 class="font-weight-semibold mb-0">[[records.bookingPendingCount]]</h5>
-                            <span class="font-size-sm">Pending</span>
+                            <h5 class="font-weight-semibold mb-0">[[records.rooms_occupied]]</h5>
+                            <span class="font-size-sm">Occupied Rooms</span>
                         </div>
 
                         <div class="col-4">
@@ -57,7 +57,7 @@
 
             <!-- Pie with progress -->
             <div class="card card-body text-center flex-fill">
-                <h6 class="font-weight-semibold mb-0 mt-1">Booking statistics</h6>
+                <h6 class="font-weight-semibold mb-0 mt-1">Rooms Statistics</h6>
                 <div class="font-size-sm text-muted mb-3">[[current_date]]</div>
                 <div class="svg-center" id="pie_progress_bar">
                 </div>

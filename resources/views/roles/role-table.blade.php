@@ -23,6 +23,7 @@
                 <tr>
                     <th>Role</th>
                     <th>Display Name</th>
+                    <th>Users Count</th>
                     <th>Description</th>
                     <th>Action</th>
                 </tr>
@@ -31,7 +32,8 @@
                 <tr ng-cloak ng-repeat="role in roles" >
                     <td>[[role.name]]</td>
                     <td>[[role.display_name]]</td>
-                    <td>[[role.description]]</td>
+                    <td>[[role.users_count]]</td>
+                    <td class="cursor-default" data-placement="left" data-popup="popover" data-title="" data-trigger="hover" data-html="true" data-content="[[role.description]]" data-original-title="">[[role.description | limitTo: 15]] [[role.description.length > 15 ? '...' : '']]</td>
                     <td>
                         <div class="align-self-center">
                             <div class="list-icons list-icons-extended">

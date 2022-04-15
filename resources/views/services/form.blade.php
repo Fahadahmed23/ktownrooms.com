@@ -42,7 +42,7 @@ span.input-group-text {
 
                                 <div class="col-md-6">        
                                     <label class="col-lg-6 col-form-label">Hotels <span class="text-danger">*</span></label>
-                                    <md-select ng-disabled="!is_admin" md-no-asterisk="true" aria-invalid="true" name="hotel_id" class="m-0" ng-model="service.hotel_id" placeholder="Select Hotel" required>
+                                    <md-select md-no-asterisk="true" aria-invalid="true" name="hotel_id" class="m-0" ng-model="service.hotel_id" placeholder="Select Hotel" required>
                                         <md-option ng-repeat="h in hotels" ng-value="h.id">[[h.HotelName]]</md-option>
                                     </md-select>
                                     <div ng-messages="myForm.hotel_id.$error" ng-if="myForm.hotel_id.$touched || myForm.$submitted">
@@ -72,7 +72,7 @@ span.input-group-text {
 
                                 <div class="col-md-6 mt-2">        
                                     <label class="col-lg-6 col-form-label">Service <span class="text-danger">*</span></label>
-                                    <input maxlength="15" ng-required="true" name="serviceName" id="serviceName" type="text" class="form-control px-2 alphabets" ng-model="service.Service" placeholder="Enter Service">
+                                    <input maxlength="150" ng-required="true" name="serviceName" id="serviceName" type="text" class="form-control px-2" ng-model="service.Service" placeholder="Enter Service">
                                     <div ng-messages="myForm.serviceName.$error" ng-if="myForm.serviceName.$touched || myForm.$submitted">
                                     <div class="text-danger" ng-message="required">Please enter Service Name</div>
                                     </div>
@@ -90,7 +90,7 @@ span.input-group-text {
                                     <div class="col-md-4">        
                                         <label class="col-lg-12 col-form-label">Serving Time <span class="text-danger">*</span> <small class="text-info">(Minutes)</small></label>
                                         <div class="input-group">
-                                            <input maxlength="15" ng-required="true" name="ServingTime" id="ServingTime" type="text" class="form-control px-2 num3" ng-model="service.ServingTime" placeholder="5" >
+                                            <input maxlength="15" ng-required="true" name="ServingTime" id="ServingTime" type="text" class="form-control px-2 num4" ng-model="service.ServingTime" placeholder="5" >
                                             {{-- <span class="input-group-append m-0">
                                                 <span class="input-group-text p-0 m-0 text-info">(Minutes)</span>
                                             </span> --}}
@@ -99,15 +99,15 @@ span.input-group-text {
                                            <div ng-message="required" class="text-danger">Please enter Serving Time</div>
                                        </div>
                                     </div>
-    
-                                    <div class="col-md-4">
+                                    
+                                    <div ng-hide="service.is_24hrs == '1'" class="col-md-3">
                                         <label  class="label  col-form-label">Service Start Time</label>
                     
                                         <div class="input-group">
                                             <span class="input-group-prepend">
                                                 <span class="input-group-text"><i class="icon-alarm"></i></span>
                                             </span>
-                                            <input ng-required="true" name="service_start_time" id="service_start_time" placeholder="12:30 AM" readonly type="text" class="form-control px-2 pickatime-startTime pickatime" ng-model="service.service_start_time" placeholder="">
+                                            <input ng-required="service.is_24hrs == '0'" name="service_start_time" id="service_start_time" placeholder="12:30 AM" readonly type="text" class="form-control px-2 pickatime-startTime pickatime" ng-model="service.service_start_time" placeholder="">
                                             
                                         </div>
                                         <div ng-messages="myForm.service_start_time.$error" ng-if="myForm.service_start_time.$touched || myForm.$submitted">
@@ -116,19 +116,24 @@ span.input-group-text {
                                         
                                     </div>
                     
-                                    <div class="col-md-4">
+                                    <div ng-hide="service.is_24hrs == '1'" class="col-md-3">
                                         <label  class="label  col-form-label">Service End Time </label>
                                         <div class="input-group">
                                             <span class="input-group-prepend">
                                                 <span class="input-group-text"><i class="icon-alarm"></i></span>
                                             </span>
-                                            <input ng-required="true" name="service_end_time" id="service_end_time" placeholder="1:00 AM" type="text" class="form-control px-2 pickatime-endTime pickatime" ng-model="service.service_end_time" placeholder="">
+                                            <input ng-required="service.is_24hrs == '0'" name="service_end_time" id="service_end_time" placeholder="1:00 AM" type="text" class="form-control px-2 pickatime-endTime pickatime" ng-model="service.service_end_time" placeholder="">
                                             
                                         </div>
                                         <div ng-messages="myForm.service_end_time.$error" ng-if="myForm.service_end_time.$touched || myForm.$submitted">
                                             <div ng-message="required" class="text-danger">Please enter service end time</div>
                                         </div>
                                         
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label for="" class="label col-form-label">24 Hours Available</label>
+                                        <md-switch ng-change="is24hrs(service.is_24hrs)" ng-model="service.is_24hrs" ng-selected ng-true-value="'1'" ng-false-value="'0'" style="display:block"></md-switch>
                                     </div>
                                 </div>
                         </div>
@@ -192,12 +197,12 @@ span.input-group-text {
                         <div class="form-group row">
                             <div class="col-md-2">        
                                 <label class="col-form-label">Is Quantitative?</label>
-                                <md-switch ng-model="service.IsQuantitative" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
+                                <md-switch ng-model="service.IsQuantitative" ng-true-value="'1'" ng-false-value="'0'" style="display:block"></md-switch>
                             </div>
 
                             <div class="col-md-2">        
                                 <label class="col-form-label">Is Inventory?</label>
-                                <md-switch ng-model="service.IsInventory" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
+                                <md-switch ng-model="service.IsInventory" ng-true-value="'1'" ng-false-value="'0'" style="display:block"></md-switch>
                             </div>
                             <div ng-if="service.IsInventory == '1'"class="col-md-4">        
                                 <label class="col-form-label">Inventory <span class="text-danger">*</span></label>

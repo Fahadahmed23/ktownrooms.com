@@ -104,9 +104,9 @@ app.controller('roomCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder
         //     });
         // }
 
-        if ($scope.roomcategories.length < 1) {
-            $scope.roomcategories = angular.copy($scope.temp_room_categories);
-        }
+        // if ($scope.roomcategories.length < 1) {
+        //     $scope.roomcategories = angular.copy($scope.temp_room_categories);
+        // }
 
 
 
@@ -183,8 +183,6 @@ app.controller('roomCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder
 
         $scope.roomForm.$setPristine();
         $scope.roomForm.$setUntouched();
-
-
         for (let i = 0; i < $scope.services.length; i++) {
             $scope.servicetemp[$scope.services[i].id] = {
                 id: $scope.services[i].id,
@@ -199,13 +197,14 @@ app.controller('roomCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder
             services: [],
             images: []
         };
-        if (!$scope.is_admin) {
-            $scope.room.hotel_id = $scope.user.hotel_id;
-        }
+        // if (!$scope.is_admin) {
+        //     $scope.room.hotel_id = $scope.user.hotel_id;
+        // }
         $scope.formType = "save";
         window.scrollTop();
         $('#addNewRoom').show('slow');
         $('#searchRoom').hide();
+        $scope.roomcategories = {};
     }
 
     $scope.modalClose = function() {

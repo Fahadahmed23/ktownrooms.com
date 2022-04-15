@@ -41,6 +41,20 @@ app.controller('trialbalancesheetCtrl', function($scope, DTColumnDefBuilder, DTO
                 console.log(e);
             })
     }
+    $scope.selectAllHotels = function(){
+        for (let i = 0; i < $scope.hotels.length; i++) {
+            $scope.trial_balance.hotel_id.push($scope.hotels[i].id);
+        }
+    }
+    $scope.hideZeroValue = function(val){
+        console.log(val);
+        if(val == 1){
+            $scope.account_heads = $scope.account_heads.filter((bs) => bs.Credit != 0 || bs.Debit != 0);
+        }
+        else{
+            $scope.TrialBalanceSheet();
+        }
+    }
 
     $scope.TrialBalanceSheet = function() {
 

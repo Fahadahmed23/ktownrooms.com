@@ -138,43 +138,6 @@
            
            
         </div>
-
-        <div class="row">
-    
-            <div class="col-md-4">
-                <!-- Hotel Categories -->
-                <div class="card">
-                    <div class="card-header bg-transparent header-elements-inline">
-                        <span class="card-title font-weight-semibold">Hotel Categories</span>
-                        <input type="text" ng-model="searchHotelCategory" class="srch form-control form-control-lg alpha-grey col-md-8" placeholder="Search">
-                        <div class="header-elements">
-                            <span class="badge bg-info badge-pill">[[hotel_categories.length]]</span>
-                            <a class="list-icons-item ml-1" data-action="collapse"></a>
-                            <a class="list-icons-item" data-action="reload" ng-click="init()"></a>
-                        </div>
-                    </div>
-    
-                    <div class="list-group list-group-flush">
-                        <div class="list">
-                            <a ng-repeat="hotel_category in hotel_categories | filter:searchHotelCategory" class="list-group-item list-group-item-action legitRipple">
-                                <div class="lblbx"><i class="fa fa-angle-right mr-3 fa-1x"></i>[[hotel_category.name]]</div>
-                                <div class="icnbx">
-                                <span  ng-click="editHotelCategory(hotel_category)" class="badge bg-success icn"><i class="fa fa-pencil" style="color: white"></i></span>
-                                <span  ng-click="deleteHotelCategory(hotel_category)" class="badge bg-danger icn"><i class="fa fa-trash" style="color: white"></i></span>
-                                </div>
-                            </a>
-                        </div>    
-                        <a class="list-group-item list-group-item-action legitRipple" ng-click="addHotelCategory()">
-                            <i class="fa fa-plus mr-3"></i>
-                            <strong>Add Hotel Category</strong>
-                        </a>
-                    </div>
-                </div>
-                <!-- /Hotel Categories -->
-            </div>
-
-        
-        </div>
     </div>
     
     

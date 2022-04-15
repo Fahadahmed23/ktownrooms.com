@@ -59,20 +59,28 @@ class RoomController extends Controller
     public function getnRooms()
     {
         $user = Auth::user();
+        $rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings']);
+        if (!auth()->user()->hasRole('Admin')) 
+            {
+                if($user->self_manipulated()){
+                    $rooms = $rooms->where('created_by',$user->id);
+                }else{
+                    $rooms = $rooms->whereIn('hotel_id',$user->HotelIds);
+                }
+                $is_admin = false;
+            }
+        else
+            {
+                $is_admin = true;
+            }
 
-       if (auth()->user()->hasRole('Admin')) {
-        $rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings'])->get();
-        $is_admin = true;
-        }
-        else{
-            $rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings'])->where('hotel_id',$user->hotel_id)->get();
-            $is_admin = false;
-        }
+            
         // $rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings'])->get();   
         // get data for dropdown
         $facilities = Facility::orderBy('Facility', 'ASC')->get();
         $services=  Service::orderBy('Service', 'ASC')->where('services.deleted_at', Null)->get();
-        $hotels = Hotel::with(['hotelroomcategories'])->orderBy('HotelName', 'ASC')->get();
+        // $hotels = Hotel::with(['hotelroomcategories'])->orderBy('HotelName', 'ASC')->get();
+        $hotels = auth()->user()->user_hotels();
         $roomtypes = RoomType::orderBy('RoomType', 'ASC')->get();
         $roomcategories = RoomCategory::with(['facilities'])->orderBy('RoomCategory', 'ASC')->get();
         $hotelroomcategories=HotelRoomCategory::get();
@@ -81,8 +89,8 @@ class RoomController extends Controller
             'user'=>$user,
             'is_admin'=>$is_admin,
             'hotelroomcategories'=>$hotelroomcategories,
-            'hotels'=>$hotels,
-            'rooms'=> $rooms,
+            'hotels'=>$hotels->with(['hotelroomcategories'])->orderBy('HotelName', 'ASC')->get(),
+            'rooms'=> $rooms->get(),
             'facilities' => $facilities,
             'roomtypes'=>$roomtypes,
             'roomcategories'=>$roomcategories,
@@ -120,7 +128,7 @@ class RoomController extends Controller
         // $nroom->tax_rate_id         =       $room['tax_rate_id'];
         $nroom->is_available        =       $room['is_available'];
         $nroom->CreationIP          =       request()->ip();
-        $nroom->created_by          =       1;
+        $nroom->created_by          =       Auth::id();
         $nroom->CreatedByModule     =       "model";     
         $nroom->save();
         if (!empty($room['facilities'])) {
@@ -184,7 +192,7 @@ class RoomController extends Controller
                 $nroom->RoomCharges         =       $room['RoomCharges'];
                 $nroom->is_available        =       $room['is_available'];
                 $nroom->CreationIP          =       request()->ip();
-                $nroom->created_by          =       1;
+                $nroom->created_by          =       Auth::id();
                 $nroom->CreatedByModule     =       "model";     
                 $nroom->save(); 
                 if (!empty($room->services->toArray())) {

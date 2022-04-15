@@ -14,18 +14,36 @@
 
         <div class="card-body mt-3">
             <form name="incomeStatementForm" action="javascript:void(0)" style="display:flex; width:100%" class="row" confirm-on-exit>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4 text-right">
+                            <label class="mt-2">Select <span class="font-weight-semibold">Level</span><span class="text-danger"> * </span></label>
+                        </div>
+                        <div class="col-md-4">
+                            <md-select ng-change="changeLevel()" md-no-asterisk  name="level_no" class="m-0" ng-model="income_statement.level_no" placeholder="Select a Level" required>
+                                <md-option ng-repeat="level in levels" ng-value="level.level_no">[[level.name]]</md-option>
+                            </md-select>
+                            <div ng-messages="incomeStatementForm.level_no.$error" ng-if='incomeStatementForm.level_no.$touched || incomeStatementForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required">Level is required</div>
+                            </div>
+                        </div>
+                    </div>        
+                </div> 
+
                 <div class="col-md-12 mt-2" ng-show="is_admin">
                     <div class="row">
                         <div class="col-md-4 text-right">
                             <label class="mt-2">Hotel </label>
                         </div>
                         <div class="col-md-4">
-                            <md-select md-no-asterisk  name="hotel_id" class="m-0" ng-model="income_statement.hotel_id" placeholder="Select a Hotel ">
-                                <md-option ng-repeat="hotel in hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
+                            <md-select md-no-asterisk  name="hotel_id" class="m-0" ng-model="income_statement.hotel_id" placeholder="Select a Hotel " multiple>
+                                <md-select-header>
+                                    <input ng-model="search_hotels"  class="_md-text w-100 border px-3 py-2" placeholder="Search Hotels"  onkeydown="event.stopPropagation()">
+                                </md-select-header>
+                                <md-option ng-repeat="hotel in hotels | filter:search_hotels" ng-value="hotel.id">[[hotel.HotelName]]</md-option>
+                                <md-button class="border-top" layout-fill value="all" ng-click="selectAllHotels()">Select All</md-button>
                             </md-select>
-                            {{-- <div ng-messages="incomeStatementForm.hotel_id.$error" ng-if='incomeStatementForm.hotel_id.$touched || incomeStatementForm.$submitted' ng-cloak style="color:#e9322d;">
-                                <div class="text-danger" ng-message="required">Hotel is requiured</div>
-                            </div> --}}
+                         
                         </div>
                     </div>        
                 </div>
@@ -82,7 +100,7 @@
 
 
                 <div class="text-right mt-3 col-md-8">
-                    <button ng-click="income_statement()" type="button" class="btn bg-success srch-rooms legitRipple"><i class="icon-paperplane mr-1"></i>Search Income Statement</button>
+                    <button ng-click="incomeStatement()" type="button" class="btn bg-success srch-rooms legitRipple"><i class="icon-paperplane mr-1"></i>Generate Income Statement</button>
                     
                 </div>
             </form>

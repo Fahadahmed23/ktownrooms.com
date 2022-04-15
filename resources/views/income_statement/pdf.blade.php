@@ -45,26 +45,10 @@ table th, table td{
             @foreach ($income_statements as $is)
 
             <tr>
-                <td style="padding:5px; @if($is->AccountLevel == 3) padding-left:5px !important; @elseif ($is->AccountLevel == 4) padding-left:20px !important; @elseif ($is->AccountLevel == 5) padding-left:60px !important;  @endif"><u style="@if($is->AccountLevel == 5) text-decoration: none; font-weight: initial; @else font-style: italic; font-weight: 700; @endif">{{ $is->AccountTitle }}</u></td>
-                @if($is->OrderNo == 0)
-                <td></td>
-                <td></td>
-                <td></td>
-                @elseif ($is->OrderNo == 1)
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Total</td>
-                @else
-                    @if($is->AccountLevel == 5 )
-                        <td colspan="1">Rs.{{ number_format($is->Debit, 2) }}</td>
-                        <td>Rs.{{ number_format($is->Credit, 2) }}</td>
-                    @else
-                        @if($is->OrderNo != 0 && $is->OrderNo != 1 && $is->OrderNo != 5 && $is->OrderNo != 6 && $is->OrderNo != 10)
-                        <td colspan="2"></td>
-                        <td>Rs.{{ number_format($is->Total, 2) }}</td>
-                        @endif
-                    @endif
-                @endif
+                <td style="padding:0px; @if($is->AccountLevel == 1 && $is->OrderNo == 0) padding-left:0px !important; @elseif ($is->AccountLevel == 1) padding-left:5px !important; @elseif ($is->AccountLevel == 2) padding-left:20px !important; @elseif ($is->AccountLevel == 3) padding-left:45px !important; @elseif ($is->AccountLevel == 4) padding-left:65px !important; @elseif ($is->AccountLevel == 5) padding-left:80px !important; @endif"><u style="@if($is->AccountLevel == 5) text-decoration: none; font-weight: initial; @elseif($is->OrderNo == 0) font-weight: 900; font-size:larger;@else font-weight: 700; @endif">{{ $is->AccountTitle }}</u></td>
+       
+                <td colspan="2"></td>
+                <td style="@if($is->OrderNo == 0) font-weight:900; font-size:larger @endif">Rs.{{ number_format($is->Total, 2) }}</td>
             </tr>
             
         @endforeach

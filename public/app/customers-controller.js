@@ -44,6 +44,7 @@ app.controller('customersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBu
         $scope.customerForm.$setUntouched();
         $scope.customer = {};
         $scope.customer.is_cnic = 1;
+        $scope.customer.nationality = 'Pakistani';
         $scope.formType = "save";
         window.scrollTop();
         $('#addNewCustomer').show('slow');
@@ -55,6 +56,7 @@ app.controller('customersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBu
         $scope.customerForm.$setPristine();
         $scope.customerForm.$setUntouched();
         $scope.customer = angular.copy(c);
+        $scope.customer.nationality = 'Pakistani';
 
         iti.setCountry(($scope.customer.iso).toString());
         iti.setNumber(($scope.customer.Phone).toString());
@@ -103,7 +105,7 @@ app.controller('customersCtrl', function($scope, DTColumnDefBuilder, DTOptionsBu
     $scope.saveCustomer = function() {
 
         // $scope.customer.Phone = iti.getNumber();
-        $scope.customer.Phone = iti.getNumber(intlTelInputUtils.numberFormat.E164);
+        // $scope.customer.Phone = iti.getNumber(intlTelInputUtils.numberFormat.E164);
         $scope.customer.iso = iti.selectedCountryData.iso2;
 
         $scope.customerForm.$submitted = true;
