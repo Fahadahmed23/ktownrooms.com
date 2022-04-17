@@ -377,6 +377,31 @@
                     <a href="/reports" class="navbar-nav-link">Reports</a>
                 </li>
                 @endpermission
+                
+                {{-- New Reports View - Start - Arman Ahmad 18-03-2022 --}}
+
+
+                @permission('can-view-report')
+                <li class="nav-item">
+                    <a href="/reports_new_main" class="navbar-nav-link">Reports-New</a>
+                </li>
+                @endpermission
+
+
+                {{-- New Reports View - End - Arman Ahmad 18-03-2022 --}}
+
+                {{-- New Reports View FDO - Start - Arman Ahmad 12-04-2022 --}}
+
+                @permission('can-view-hotel-dashboard')
+                <li class="nav-item">
+
+                    <a href="/reports_new_main" class="navbar-nav-link">Reports-New</a>
+
+                </li>
+                @endpermission
+
+
+                {{-- New Reports View FDO - End - Arman Ahmad 12-04-2022 --}}
 
                
                 
