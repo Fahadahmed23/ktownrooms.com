@@ -1782,6 +1782,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.params.status = [statuses];
         $scope.ajaxGet('getBookings', $scope.params, true)
             .then(function(response) {
+                console.log('Developer Checking');
+                console.log(response);
+
                 $scope.bookings = response.bookings;
                 $scope.paymenttypes = response.paymenttypes;
                 $scope.cities = response.cities;
