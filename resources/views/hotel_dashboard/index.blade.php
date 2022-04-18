@@ -96,18 +96,19 @@
     }
 
 
-    // Mr Optimist 16 Dec 2021
-    function loadBookingStatistics(data, element, size) {
 
+    function loadBookingStatistics(data, element, size) {
+    
+    
         // Pie with progress bar
         if (typeof d3 == 'undefined') {
-            console.warn('    Warning - d3.min.js is not loaded.');
+            console.warn('Warning - d3.min.js is not loaded.');
             return;
         }
 
         // Initialize chart only if element exsists in the DOM
         if (element) {
-
+            console.log(data);
             // Demo dataset
             var dataset = [
                 { name: 'Occupied', count: data.rooms_occupied },
@@ -227,7 +228,7 @@
 
 
             //
-            // Line path
+            // Line path 
             //
 
             // Line
@@ -236,7 +237,7 @@
                 .attr('d', arcLine)
                 .style({
                     fill: color('New')
-                 });
+                });
 
             // Line animation
             pathLine.transition()
@@ -561,9 +562,9 @@
                 $(document).on('click', '.sidebar-control', messagesAreaResize);
 
                 // Resize function
-                //
+                // 
                 // Since D3 doesn't support SVG resize by default,
-                // we need to manually specify parts of the graph that need to
+                // we need to manually specify parts of the graph that need to 
                 // be updated on window resize
                 function messagesAreaResize() {
 
@@ -575,10 +576,10 @@
                     // -------------------------
 
                     // Main svg width
-                    container.attr("width", width +  margin.left + margin.right);
+                    container.attr("width", width + margin.left + margin.right);
 
                     // Width of appended group
-                    svg.attr("width", width + margin.left + margin.righ t);
+                    svg.attr("width", width + margin.left + margin.right);
 
                     // Horizontal range
                     x.range([0, width]);
@@ -844,7 +845,7 @@
             })();
         }
     }
-
+    
 </script>
 
 
