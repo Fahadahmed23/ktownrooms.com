@@ -20,6 +20,12 @@ use App\Models\CinCoutRule;
 use App\Models\DefaultRule;
 use App\Models\HotelCinCoutRule;
 use App\Models\HotelRoomCategory;
+
+// Mr Optimist 15 Nov 2021
+use App\Models\HotelCategory;
+use App\Models\HotelCategories;
+use App\Models\HotelCobranding;
+
 use App\Models\PartnerRequest;
 use App\Models\Room;
 use App\Models\RoomCategory;
@@ -72,8 +78,24 @@ class HotelController extends Controller
                 $hotels = $hotels->whereIn('id', $user->HotelIds);
             }
         }
+
         return response()->json([
+
             'hotels' => $hotels->with(['city:id,CityName'])->get(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','mailimage','mailimage','ZipCode','AgreStartDate','AgreEndDate','posimage', 'mapimage','mailimage'])
+
+            // 'hotels' => $hotels->with(['city:id,CityName'])->get(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','mailimage','mailimage','ZipCode','AgreStartDate','AgreEndDate','posimage', 'mapimage','mailimage'])
+            
+            /*
+            'hotels' => $hotels->with(['city:id,CityName','hotel_cobrandings' => function($q){
+                $q->select('id','hotel_id','status','software_fee','percentage_amount')->latest()->first();
+            }])->with(['hotel_categories' => function($rl){
+                $rl->select('hotel_categories.id','hotel_categories.name','hotel_categories.status','hotel_category.created_at');
+                $rl->orderBy('hotel_category.created_at','Desc');
+                $rl->limit(1); 
+             }])->get()
+             */
+        
+        
         ]);
     }
     public function getData()
@@ -84,6 +106,8 @@ class HotelController extends Controller
         $partners = PartnerRequest::get(['id','FullName']);
         $contact_types = ContactType::get(['id','ContactType']);
         $room_categories = RoomCategory::get(['id','RoomCategory','AdditionalGuestCharges','AllowedOccupants','MaxAllowedOccupants','Color']);
+        // Mr Optimist 15 Nov 2021
+        $hotel_categories = HotelCategories::all();
         $tax_rates=TaxRate::whereNull('deleted_at')->get(['id','Tax','TaxValue']);
         $check_in_rules=CinCoutRule::where('rule_type', 'early_check_in')->get(['charges','start_time','end_time','rule_type']);
         $check_out_rules=CinCoutRule::where('rule_type', 'late_check_out')->get(['charges','start_time','end_time','rule_type']);
@@ -201,6 +225,50 @@ class HotelController extends Controller
                 $hotel->updated_by = Auth::id();
 
                 $hotel->save();
+
+                 /**
+                 * Hotel Categories and Cobranding
+                 */
+
+                
+                if (!empty($request->hotel['hotelcateogry_id'])) { 
+
+                    $hotell = Hotel::findOrFail($hotel->id);
+                    //$hotell->hotel_categories()->attach($request->hotel['hotelcateogry_id']);
+                    
+                    $hotell->hotel_categories()->attach($request->hotel['hotelcateogry_id'],['created_by' => Auth::id(),'updated_by' => Auth::id() ]);
+                  
+                }
+                if (!empty($request->hotel['has_cobranding'])) { 
+
+                    $has_cobranding = $request->hotel['has_cobranding'];
+                    
+                    $hotel_cobranding = new HotelCobranding();
+                    $hotel_cobranding->hotel_id = $hotel->id;
+                    $hotel_cobranding->status = $has_cobranding;
+                    $hotel_cobranding->software_fee	 =  !empty($request->hotel['software_fees']) ? $request->hotel['software_fees'] : 0;
+                    $hotel_cobranding->percentage_amount = !empty($request->hotel['percentage_amount']) ? $request->hotel['percentage_amount'] : 0;
+                    $hotel_cobranding->created_by= Auth::id();
+                    $hotel_cobranding->updated_by= Auth::id();
+                    $hotel_cobranding->save();
+                    
+                    
+                    
+                    /*
+                    $hotell = Hotel::findOrFail($hotel->id);
+                    $hotel_cobrandings = $hotell->hotel_cobrandings()->create([
+                        'hotel_id' => $hotel->id,
+                        'status' => $has_cobranding,
+                        'software_fee' => !empty($request->hotel['software_fees']) ? $request->hotel['software_fees'] : 0,
+                        'percentage_amount' => !empty($request->hotel['percentage_amount']) ? $request->hotel['percentage_amount'] : 0,
+                        'created_by' => Auth::id(),
+                        'updated_by' => Auth::id()
+                    ]);
+                    **/
+                
+                }
+
+
                 $hotel = Hotel::with(['city:id,CityName'])->where('id', '=', $hotel->id)
                 ->first(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','posimage', 'mapimage','mailimage','ZipCode','AgreStartDate','AgreEndDate']);
 
@@ -216,6 +284,10 @@ class HotelController extends Controller
             }
 
             \DB::commit();
+
+
+
+
 
             return response()->json([
                 'success' => true,
@@ -464,6 +536,44 @@ class HotelController extends Controller
         $hotel_sms_config->use_default_messages = $request['use_default_messages'];
         $hotel_sms_config->save();
 
+        if (!empty($request['hotel_rules_checkin'])){
+            foreach ($request['hotel_rules_checkin'] as $value) {
+                
+                $hotelRule = new HotelCinCoutRule();
+                $hotelRule->hotel_id = $request['hotel_id'];
+                $hotelRule->rule_type = 'early_check_in';
+                // $hotelRule->threshold_time = date('H:i:s', strtotime($request->hotel['checkin_time']));
+                 $hotelRule->check_in_limit = date('H:i:s', strtotime($request['check_in_limit']));
+                $hotelRule->start_time = date('H:i:s', strtotime($value['start_time']));
+                $hotelRule->end_time = date('H:i:s', strtotime($value['end_time']));
+                $hotelRule->charges = $value['charges'];
+                $hotelRule->CreationIP= request()->ip();
+                $hotelRule->created_by= Auth::id();
+                $hotelRule->CreatedByModule= $this->module_name;
+                $hotelRule->updated_by= Auth::id();
+                $hotelRule->save();
+                
+            }
+        }
+        if (!empty($request['hotel_rules_checkout'])){
+            foreach ($request['hotel_rules_checkout'] as $value) {
+
+                $hotelRule = new HotelCinCoutRule();
+                $hotelRule->hotel_id = $request['hotel_id'];
+                $hotelRule->rule_type = 'late_check_out';
+                // $hotelRule->threshold_time = date('H:i:s', strtotime($request->hotel['checkout_time']));
+                $hotelRule->check_out_limit = date('H:i:s', strtotime($request['check_out_limit']));
+                $hotelRule->start_time = date('H:i:s', strtotime($value['start_time']));
+                $hotelRule->end_time = date('H:i:s', strtotime($value['end_time']));
+                $hotelRule->charges = $value['charges'];
+                $hotelRule->CreationIP= request()->ip();
+                $hotelRule->created_by= Auth::id();
+                $hotelRule->CreatedByModule= $this->module_name;
+                $hotelRule->updated_by= Auth::id();
+                $hotelRule->save();
+                
+            }
+        }
         return response()->json([
             'success' => true,
             'message' => ["Sms configuration applied"],
@@ -481,7 +591,7 @@ class HotelController extends Controller
             'hotel_sms_config' => $hotel_sms_config,
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
-
+    
 
     // public function saveHotel(Request $request)
     // {

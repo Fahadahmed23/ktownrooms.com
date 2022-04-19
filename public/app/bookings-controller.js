@@ -50,6 +50,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.hotel = {};
 
+
+
     // extend checkout
     $scope.extend = 1;
 
@@ -110,6 +112,14 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         { Name: 'action', Alias: 'Action', isSort: false, isShow: true },
     ]
 
+
+
+    $scope.Addmislisoin={
+
+        Id:0,
+        Name:null,
+        Amount: null
+    }
 
     // sorting
     $scope.sorting_type = "desc";
@@ -529,6 +539,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.checkCustAvl = function(s) {
+
+
         if (s == 'e') {
             if (!$scope.myForm.Email.$valid) {
                 return;
@@ -548,6 +560,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
             // check whether the customer CNIC is unique or not
             if ($scope.nBooking.booking_occupants.length > 0) {
+
                 found = $scope.nBooking.booking_occupants.find((o) => o.CNIC == $scope.nBooking.customer.CNIC);
 
                 if (found) {
@@ -1738,6 +1751,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.nBooking.channel = 'Walk-In';
         $scope.nBooking.invoice.is_corporate = 0;
 
+        // Mr Optimist | 28 Oct 2021
+        $scope.nBooking.invoice.corporate_type = 0;
+
         $scope.enableControls();
         $scope.inBooking = true;
 
@@ -1766,6 +1782,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.params.status = [statuses];
         $scope.ajaxGet('getBookings', $scope.params, true)
             .then(function(response) {
+                console.log('Developer Checking');
+                console.log(response);
+
                 $scope.bookings = response.bookings;
                 $scope.paymenttypes = response.paymenttypes;
                 $scope.cities = response.cities;
@@ -1774,6 +1793,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.user = response.user;
                 $scope.clients = response.clients;
                 $scope.channels = response.channels;
+                // Mr Optimist | 29 Oct 2021
+                $scope.corporate_types = response.corporate_types;
                 $scope.nationalities = response.nationalities;
                 $scope.user_discount_limit = $scope.user.max_allowed_discount;
 
@@ -2580,7 +2601,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             booked_to: sBookedTo,
             occupants: searchFields.Occupants
         }, true).then(function(response) {
-            console.log(response);
+            //console.log(response);
             if (response.success) {
                 $scope.bookings = response.bookings;
                 $scope.TotalRecords = response.totalRecords;
@@ -3002,6 +3023,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             $scope.taxrates = response.taxrates;
             $scope.clients = response.clients;
             $scope.channels = response.channels;
+            // Mr Optimist | 28 Oct 2021
+            $scope.corporate_types = response.corporate_types;
             $scope.nationalities = response.nationalities;
             $scope.user = response.user;
             $scope.records = response;
@@ -3431,6 +3454,33 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.current_timestamp = $scope.getCurrentTimestamp();
         $scope.Invoice = angular.copy(booking);
 
+        console.log('All Bookings');
+        console.log($scope.Invoice);
+
+        $scope.Invoice.cservice_total = 0;
+
+
+        if ($scope.Invoice.is_corporate == 1) {
+
+            if ($scope.Invoice.invoice.corporate_type == 1) {
+                $scope.Invoice.invoice.corporate_type_name = 'Full Board';
+                $scope.Invoice.corporate_type_total = 0;
+            }
+            else if($scope.Invoice.invoice.corporate_type == 2){
+                $scope.Invoice.invoice.corporate_type_name = 'Half Board';
+                $scope.Invoice.corporate_type_total = $scope.Invoice.invoice.net_total/2;
+            }
+            else if($scope.Invoice.invoice.corporate_type == 3){
+                $scope.Invoice.invoice.corporate_type_name = 'Room Only';
+                // Calculate Service Total
+                for (i = 0; i < $scope.Invoice.services.length; i++) {
+                    $scope.Invoice.cservice_total += $scope.Invoice.services[i].amount;
+                }
+                $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
+            }
+
+        }
+
         // console.log($scope.Invoice);
         if ($scope.Invoice.invoice.net_total > $scope.Invoice.invoice.payment_amount && $scope.Invoice.invoice.is_corporate == 0) {
             $scope.partial_payment_typ = angular.copy($scope.paymenttypes[0]);
@@ -3539,6 +3589,70 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
 
+    // Misc Amount Start - 14-March-2022
+
+    $scope.showmiscamount = function(b) {
+        // $scope.paymentCleared = false;
+        $("#addpymntbtn").attr("disabled", false);
+        $("#showaddedAmount").hide('slow');
+        $("#checkoutbtn").hide('slow');
+        $("#invPrintBtn").hide('slow');
+        $scope.findBooking(b, function() {
+
+            $('#addmiscamount').modal();
+
+
+            // $scope.addmiscamount();
+            if ($scope.formType == 'view') {
+                $scope.max_payment = $scope.fBooking.invoice.net_total - $scope.fBooking.invoice.payment_amount;
+                // if ($scope.max_payment == 0)
+                //     $scope.paymentCleared = true;
+            }
+        })
+    }
+
+
+    $scope.getmisAcountlist = function() {
+
+        $.get('getBookingsMiscellaneousAmount').done(function(response) {
+            $scope.misAmountList = response.result.booking_miscellaneous_amounts;
+            })
+
+    }
+
+
+
+    $scope.savemislinsonPayment = function() {
+
+        console.log($scope.Addmislisoin.Amount);
+        console.log($scope.Addmislisoin.Name);
+
+        
+        $scope.ajaxPost('saveBookingsMiscellaneousAmount', {
+            booking_id: $scope.fBooking.id,
+            amount: $scope.Addmislisoin.Amount,
+            name:$scope.Addmislisoin.Name,
+            is_complementary:$scope.Addmislisoin.is_complementary,
+            status:$scope.Addmislisoin.status
+        }, false).then(function(response) {
+            if (response.success) {
+
+                $('#addmiscamount').modal('hide');
+                // if ($scope.formType == 'view' && !$scope.user.is_frontdesk) {
+                //     $scope.showBookDetailRBox($scope.fBooking.id);
+                // }
+            }
+        });
+        
+    }
+
+
+
+
+
+    // Misc Amount End - 14-March-2022
+
+
     $scope.showStagingPay = function(b) {
         $scope.paymentCleared = false;
         $("#addpymntbtn").attr("disabled", false);
@@ -3635,6 +3749,11 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             }
         })
     }
+// $scope.name=null;
+//     $scope.savepayment = function() {
+//         debugger;
+//         alert($scope.name);
+//     }
 
     $scope.bookingReceiptRedirect = function(booking_id) {
         window.open('bookings/receipt/' + booking_id);
@@ -3644,6 +3763,31 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.findBooking(booking_id, function() {
             // $scope.invoice_details = $scope.invoice_details;
             $scope.Invoice = $scope.fBooking;
+
+            // Mr Optimist 23 Nov 2021
+            $scope.Invoice.cservice_total = 0;
+            if ($scope.Invoice.is_corporate == 1) {
+
+                if ($scope.Invoice.invoice.corporate_type == 1) {
+                    $scope.Invoice.invoice.corporate_type_name = 'Full Board';
+                    $scope.Invoice.corporate_type_total = 0;
+                }
+                else if($scope.Invoice.invoice.corporate_type == 2){
+                    $scope.Invoice.invoice.corporate_type_name = 'Half Board';
+                    $scope.Invoice.corporate_type_total = $scope.Invoice.invoice.net_total/2;
+                }
+                else if($scope.Invoice.invoice.corporate_type == 3){
+                    $scope.Invoice.invoice.corporate_type_name = 'Room Only';
+                    // Calculate Service Total
+                    for (i = 0; i < $scope.Invoice.services.length; i++) {
+                        $scope.Invoice.cservice_total += $scope.Invoice.services[i].amount;
+                    }
+                    $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
+                }
+
+            }
+
+
             $scope.Invoice.service_total = 0;
             // Calculate Service Total
             for (i = 0; i < $scope.Invoice.services.length; i++) {
@@ -3664,16 +3808,36 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 
     $scope.getInvoiceDetailReceipt = function(inv) {
+
         $scope.invoice_detail = angular.copy(inv);
-        console.log($scope.invoice_detail);
+        $scope.corporate_type_exists = false;
+        //console.log('Get Invoice Details');
+        //console.log($scope.invoice_detail);
         $scope.urlparam = window.location.search.substring(1);
-        console.log($scope.urlparam);
+        //console.log($scope.urlparam);
+
 
     }
 
     $scope.showMainReceipt = function() {
         $scope.invoice_detail = false;
+        $scope.corporate_type_exists = false;
     }
+
+    $scope.getCorporateDetailReceipt = function() {
+
+       // $scope.invoice_detail = false;
+        $scope.corporate_type_exists = true;
+
+        $scope.invoice_detail = {
+            type: 'corporate',
+        };
+        $scope.urlparam = window.location.search.substring(1);
+
+
+    }
+
+
 
     $scope.changePartialPayment = function(p) {
         if (p == '1') {
@@ -3733,7 +3897,13 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         return true;
     }
 
+
+
+
+
+
     $scope.savePayment = function() {
+        debugger;
         if ($scope.formType != 'view') {
             $scope.myForm.$submitted = true;
 
@@ -4045,17 +4215,85 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }
     }
 
+    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - Start
+
+    $scope.GetCustomerByemail = function(e) { //Serch and get user information from db by email
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                email: e,
+
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
+    }
+
+    $scope.GetCustomerBycnic = function(e) { //Serch and get user information from db by cnic
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                cnic: e,
+
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
+    }
+
+    $scope.GetCustomerByPhone = function(e) { //Serch and get user information from db by phone
+        if(e!=="" && e!==null)
+        {
+            $scope.ajaxPost('search-customers', {
+                phoneNo: e,
+
+            }, ).then(function(response) {
+                $scope.CustomerCount = response.result.totalCustomers
+                $scope.CustomerList = response.result.customers;
+                if($scope.CustomerCount>0)
+                {
+                    $('#showcustomerList').modal();
+                }
+            }).catch(function(ex) {
+                console.log(ex);
+            });
+        }
+    }
+    $scope.GetCustomerById = function(e) { //customer search results list
+        var cus = $scope.CustomerList.filter(x => x.id == e);
+
+        $scope.nBooking.customer.CNIC = cus[0].CNIC;
+        $scope.nBooking.customer.FirstName = cus[0].FirstName;
+        $scope.nBooking.customer.LastName = cus[0].LastName;
+        $scope.nBooking.customer.Phone = cus[0].Phone;
+        $scope.nBooking.customer.Email = cus[0].Email;
+        $('#showcustomerList').modal('hide');
+    }
+    //comment yes yes kt-old
+
+    //Get User Information from DB in User Contact Form of New Bookings - Arman Ahmad - End
+
     $interval($scope.getBooKingServiceCount, 5000);
 
     $rootScope.showNotifications = function() {
         $rootScope.new_service_available = false;
     }
-
-    $scope.editNumCustomer = function() {
-        $(".customer_num_label").hide();
-        $(".customer_num_input").show('slow');
-
-    }
+    
     $scope.getPortallink = function(code) {
         console.log(code);
         let base_url = window.location.origin;
@@ -4067,9 +4305,14 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }, function(err) {
             console.error('Async: Could not copy text: ', err);
         });
+    }
 
+    $scope.editNumCustomer = function() {
+        $(".customer_num_label").hide();
+        $(".customer_num_input").show('slow');
 
     }
+
 
     $scope.sendSMSmodal = function(b_id) {
         console.log(b_id);

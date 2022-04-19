@@ -39,6 +39,7 @@ use App\Models\BookingMappingStatus;
 use App\Models\BookingThirdParty;
 use App\Models\BookingThirdPartyDetail;
 use App\Models\Channel;
+use App\Models\CorporateType;
 use App\Models\HotelRoomCategory;
 use App\Models\InvoiceDetail;
 use App\Models\RoomCategory;
@@ -48,6 +49,8 @@ use App\Models\CronLog;
 use App\Models\DefaultRule;
 use App\Models\SmsLog;
 use App\Models\Role;
+use App\Models\BookingMiscellaneousAmount;
+
 class BookingsController extends Controller
 {
     protected $booking;
@@ -68,7 +71,7 @@ class BookingsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except(['third_party_booking', 'blinq_archive']);
+        $this->middleware('auth')->except(['third_party_booking','blinq_archive','getBookingsMiscellaneousAmount','deleteBookingsMiscellaneousAmount','saveBookingsMiscellaneousAmount']);
     }
     /**
      * Display base page for companies.
@@ -116,6 +119,8 @@ class BookingsController extends Controller
         $clients = CorporateClient::get(['id', 'FullName']);
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
+        // Mr Optimist | 29 Oct 2021
+        $corporate_types = CorporateType::get();
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
         // dd($nationalities);
@@ -252,9 +257,83 @@ class BookingsController extends Controller
             'paymenttypes'=> $paymenttypes,
             'taxrates'=> $taxrates,
             'is_frontdesk' => $this->is_frontdesk,
+            'corporate_types' => $corporate_types,
             'user' => $user
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
+
+
+    /**
+     * Mr Optimist
+     * Get Miscellaneous Amount
+     */
+    public function getBookingsMiscellaneousAmount(Request $request)
+    {
+
+        
+        $booking_id = !empty($request->booking_id) ? $request->booking_id : ''; 
+        $get_booking_miscellaneous_amounts = BookingMiscellaneousAmount::where('booking_id','=',$booking_id)->get();
+        return response()->json([
+            'success' => true,
+            'booking_miscellaneous_amounts' => $get_booking_miscellaneous_amounts,
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+    
+    
+    }
+    
+    public function deleteBookingsMiscellaneousAmount(Request $request) {
+
+        $booking_miscellaneous_amount = BookingMiscellaneousAmount::find($request->id);
+        if(isset($booking_miscellaneous_amount)) {
+            $message = ["'$booking_miscellaneous_amount->name' is deleted successfully!"];
+            $booking_miscellaneous_amount->delete();
+    
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'msgtype' => 'success',
+                'id' => $request->id
+            ]);
+        }
+        else {
+            $message = ["'$booking_miscellaneous_amount->name' is not deleted"];
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+                'msgtype' => 'danger',
+                'id' => $request->id
+            ]);
+        }
+
+       
+    }
+    
+    public function saveBookingsMiscellaneousAmount(Request $request)
+    {
+        
+        // $miscellaneousamount_id = $request->miscellaneousamount['id'] ?? null;
+        $miscellaneousamount_id = $request->id ?? null;
+
+        $miscellaneous_amount = BookingMiscellaneousAmount::find($miscellaneousamount_id);
+        
+        if(!isset($miscellaneous_amount)) {
+            $miscellaneous_amount = new BookingMiscellaneousAmount();  
+        }
+        $miscellaneous_amount->booking_id = $request->booking_id;
+        $miscellaneous_amount->name = $request->name;
+        $miscellaneous_amount->amount = $request->amount;
+        $miscellaneous_amount->is_complementary = $request->is_complementary;
+        $miscellaneous_amount->status = $request->status;
+        $miscellaneous_amount->save();
+        return response()->json([
+            'success' => true,
+            'message' => ["$miscellaneous_amount->name added successfully"],
+            'msgtype' => 'success',
+            'miscellaneous_amount' => $miscellaneous_amount
+        ]);
+        
+    }
+    
 
     public function getData() {
         // Get Cities
@@ -271,6 +350,9 @@ class BookingsController extends Controller
         // $channels = Channel::get(['Channel']);
         $channels = Channel::get();
         
+        // Mr Optimist | 28 Oct 2021
+        $corporate_types = CorporateType::get();
+
         $path = public_path('/json/nationalities.json');
         $nationalities = json_decode(file_get_contents($path), true);
      
@@ -321,6 +403,7 @@ class BookingsController extends Controller
             'user' => $user,
             'greeting_message' => $greeting_message,
             'greeting_description' => $greeting_description,
+            'corporate_types' => $corporate_types,
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
 
@@ -440,6 +523,23 @@ class BookingsController extends Controller
                     return $r->room_id == $rooms[$i]->id;
                 });
 
+                // Mr Optimist
+                if(isset($room_schedule[$i]->booking->customer_id) && $room_schedule[$i]->booking->customer_id > 0 ){
+                    $customer_book_count = Customer::withCount('bookings')->where('id', '=',$room_schedule[$i]->booking->customer_id)->first();
+                    if (!empty($customer_book_count)) {
+
+                        if(isset($customer_book_count->bookings_count) && $customer_book_count->bookings_count > 1 ){
+                            $is_klc = 'yes';
+                        }
+                        else{
+                            $is_klc = 'no';
+                        }
+                    }
+                    else{
+                        $is_klc = 'no';
+                    }
+                }
+
                 if ($rooms[$i]->is_available == '0') {
                     $rooms[$i]->st = [
                         'name' => 'Not Available',
@@ -448,6 +548,7 @@ class BookingsController extends Controller
                         'cursor'=>'no-cursor',
                         'show_menu' => $show_menu,
                         'is_checkedout' => $is_checkedout,
+                        'is_klc' => $is_klc,
                     ];
                 }
 
@@ -478,7 +579,8 @@ class BookingsController extends Controller
                             'show_menu' => $show_menu,
                             'is_checkedout' => $is_checkedout,
                             // 'is_confirmed' => $room_schedule[$j]->booking->status == 'Confirmed' ? '1' : '0'
-                            'is_confirmed' => $rs->booking->status == 'Confirmed' ? '1' : '0'
+                            'is_confirmed' => $rs->booking->status == 'Confirmed' ? '1' : '0',
+                            'is_klc' => $is_klc,
                         ];
                     }
                     // $booking_no = $room_schedule[$j]->booking->booking_no;
@@ -1410,6 +1512,11 @@ class BookingsController extends Controller
         // $invoice->payment_amount = $invoiceData['paid'] == 1 ? $invoiceData['net_total'] : 0;
 
         $invoice->is_corporate = $invoiceData['is_corporate'];
+
+        // Mr Optimist | 28 Oct 2021
+        if($invoice->is_corporate == 1) {
+            $invoice->corporate_type = $invoiceData['corporate_type'];
+        }
         
         if ($invoiceData['is_corporate'] == 1) {
             // find the corporate client by name
@@ -1435,7 +1542,8 @@ class BookingsController extends Controller
         if(!empty($this->booking['invoice']['checkout_discount'])){
             $invoice->checkout_discount = $this->booking['invoice']['checkout_discount'];
         }
-// dd($invoice);
+        
+        // dd($invoice);
         $this->invoice = $invoice;
         // $invoice->save();
     }
@@ -3087,6 +3195,9 @@ class BookingsController extends Controller
 
     }
 
+    
+
+
     public function checkInvoiceStatus($paymentCode){
         $authenticate = $this->makeAuthentication();
         if(!$authenticate){
@@ -3255,6 +3366,31 @@ class BookingsController extends Controller
     protected function formatCellNumber($no) {
         return str_replace(['-', '(', ')', '+'], '', $no);
     }
+    
+    protected function searchCustomers(Request $request)
+    {
+        // dd($request->all());
+
+        $user = Auth::user();
+        $contact_no =$this->formatCellNumber($request['sms']['customer_num']);
+        $booking = Booking::find($request['sms']['booking_id']);
+        $booking->sendCustomSms($contact_no, $request['sms']['message']);
+
+        $smslog = new SmsLog();
+        $smslog->booking_id = $request['sms']['booking_id'];
+        $smslog->sender_id = $user->id;
+        $smslog->receiver_id = $request['sms']['customer_id'];
+        $smslog->receiver_phone = $contact_no;
+        $smslog->sent_message = $request['sms']['message'];
+        $smslog->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Message send successfully',
+        ]);
+      
+    }
+  
     public function sendSms(Request $request)
     {
         // dd($request->all());

@@ -450,7 +450,9 @@
 
                                         <div class="input-group" style="">
                                             {{-- <input ng-change="checkCustAvl('e')" ng-required="nBooking.status == 'CheckedIn'" type="email" ng-model="nBooking.customer.Email" name="Email" placeholder="Email" value="" class="form-control email_mask" maxlength="50" style="background: none;"> --}}
-                                            <input ng-required="nBooking.status == 'CheckedIn'" type="email" ng-model="nBooking.customer.Email" name="Email" placeholder="Email" value="" class="form-control email_mask" maxlength="50" style="background: none;">                                           
+                                            {{-- <input ng-required="nBooking.status == 'CheckedIn'" type="email" ng-model="nBooking.customer.Email" name="Email" placeholder="Email" value="" class="form-control email_mask" maxlength="50" style="background: none;"> --}}
+                                            <input ng-required="nBooking.status == 'CheckedIn'" type="email" ng-model="nBooking.customer.Email" ng-change="GetCustomerByemail(nBooking.customer.Email)" ng-model-options="{debounce:1000}" name="Email" placeholder="Email" value="" class="form-control email_mask" maxlength="50" style="background: none;">
+
                                             <span class="" style="margin: 0;">
                                                 <span ng-click="checkCustAvl('e')" class="customerfindbtn btn " style="padding: 0; background:#eee;" data-placement="top" data-popup="popover" title="Find Customer by Email" data-trigger="hover" data-html="true"
                                                 data-content="Please enter valid email address & click on the search icon." data-original-title="Popover title"><i class="icon-search4"></i>
@@ -468,7 +470,9 @@
                                 <div class="form-group row">
                                     <label class="col-md-4 col-form-label">Phone <span class="text-danger">*</span></label>
                                     <div class="col-md-8">
-                                        <input aria-invalid="true" required type="tel" ng-model="nBooking.customer.Phone" name="Phone"  value="" id="phone_int" class="form-control phone_int">
+                                    {{-- <input aria-invalid="true" required type="tel" ng-model="nBooking.customer.Phone" name="Phone"  value="" id="phone_int" class="form-control phone_int"> --}}
+                                        <input aria-invalid="true" required type="tel" ng-model="nBooking.customer.Phone" name="Phone" ng-change="GetCustomerByPhone(nBooking.customer.Phone)" ng-model-options="{debounce:1000}"  value="" id="phone_int" class="form-control phone_int">
+
                                         <div ng-messages="myForm.Phone.$error" ng-if="myForm.Phone.$touched || myForm.$submitted">
                                                 <div class="text-danger" ng-message="required">Phone is required</div>
                                                 {{-- <div class="text-danger" ng-message="pattern">Please enter Phone in correct format (e.g., 0323-8228708)</div> --}}
@@ -484,7 +488,9 @@
                                     <div class="col-md-8">
                                         <div class="input-group" style="">
                                             {{-- <input ng-change="checkCustAvl('c')" aria-invalid="true" pattern="[\d]{5}-[\d]{7}-[\d]{1}" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.CNIC" name="CNIC" placeholder="42101-099099-152" value="" class="form-control cnic" > --}}
-                                            <input aria-invalid="true" ng-pattern="cnicPattern(nBooking.customer.is_cnic)" ng-class="getcustomer(nBooking.customer.is_cnic)" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.CNIC" name="CNIC" placeholder="[[nBooking.customer.is_cnic == '0'?'PK123456789':'42201-6562366-3']]" value="" class="form-control" style="background:none;">
+                                            <!-- <input aria-invalid="true" ng-pattern="cnicPattern(nBooking.customer.is_cnic)" ng-class="getcustomer(nBooking.customer.is_cnic)" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.CNIC" name="CNIC" placeholder="[[nBooking.customer.is_cnic == '0'?'PK123456789':'42201-6562366-3']]" value="" class="form-control" style="background:none;"> -->
+                                            <input aria-invalid="true" ng-pattern="cnicPattern(nBooking.customer.is_cnic)" ng-class="getcustomer(nBooking.customer.is_cnic)" ng-required="nBooking.status == 'CheckedIn'" type="text" ng-model="nBooking.customer.CNIC" ng-model-options="{debounce:1000}" name="CNIC" placeholder="[[nBooking.customer.is_cnic == '0'?'PK123456789':'42201-6562366-3']]" value="" class="form-control" style="background:none;" ng-change="GetCustomerBycnic(nBooking.customer.CNIC)">
+
                                             <span class="" style=" margin: 0">
                                                 <span ng-click="checkCustAvl('c')" class="customerfindbtn btn" style="padding: 0; background:#eee;" data-placement="top" data-popup="popover" title="Find Customer by CNIC" data-trigger="hover" data-html="true"
                                                 data-content="Please enter valid cnic & click on the search icon." data-original-title="Popover title"><i class="icon-search4"></i>
@@ -584,7 +590,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-group row" ng-show="nBooking.invoice.is_corporate == '1'">
+                                            <label class="col-md-4 col-form-label">Corporate Type </label>
+                                            <div class="col-md-8">
+                                                <md-select md-no-asterisk name="corporate_type" class="m-0" ng-model="nBooking.invoice.corporate_type" placeholder="Select a Corporate Type" required>
+                                                    <md-option ng-repeat="corporate_type in corporate_types" ng-value="corporate_type.id">[[corporate_type.name]]</md-option>
+                                                </md-select>
 
+                                                <div ng-messages="myForm.corporate_type.$error" ng-if='myForm.corporate_type.$touched || myForm.$submitted' ng-cloak style="color:#e9322d;">
+                                                    <div class="text-danger" ng-message="required">Corporate Type is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group row">
                                             <label class="col-lg-4 col-form-label">Purpose of stay:</label>

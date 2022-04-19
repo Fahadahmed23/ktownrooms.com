@@ -165,6 +165,35 @@ app.controller('localeCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuild
         });
     }
 
+    $scope.saveHotelCategory = function() {
+
+    
+        // let f = $('#v_country');
+
+        // if (!f.valid()) {
+        //     return;
+        // }
+
+        $scope.hotelcategoryForm.$submitted = true;
+        if (!$scope.hotelcategoryForm.$valid) {
+            return;
+        }
+
+        $scope.ajaxPost('locale/saveHotelCategory', { hotelcategory: $scope.hotelcategory, formType: $scope.formType }, false).then(function(response) {
+            if (response.success == true) {
+                if ($scope.formType == "save") {
+                    $scope.hotel_categories.push(response.hotel);
+                } else {
+                    $scope.hotel_categories = $scope.hotel_categories.map((c) => c.id == response.hotel.id ? response.hotel : c);
+                }
+
+                $('#hotelcategory_form').modal('hide');
+            }
+        }).catch(function(e) {
+            console.log(e);
+        });
+    }
+
     $scope.saveState = function() {
         // let f = $('#v_state');
 

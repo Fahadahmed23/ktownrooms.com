@@ -67,6 +67,7 @@
                                                     <a class="list-icons-item" style="position: absolute; right: 20px;"><i class="icon-backspace2"></i></a>
                                                 </div> --}}
                                                 <div class="col-md-12">
+                                                {{--
                                                     <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom bg-light pt-3">
                                                         <i class="icon-user mx-2"></i>
                                                         Profile Image
@@ -88,7 +89,7 @@
                                                             </div>
                                                     
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                                 <div class="col-md-12">
                                                     <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom  bg-light pt-3">

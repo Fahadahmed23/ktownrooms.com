@@ -124,6 +124,52 @@ class LocaleController extends Controller
         
     }
 
+    /*
+    * Mr Optimist
+    * HotelCategories
+    **/
+    public function storeHotelCategory(Request $request)
+    {
+        
+        $hotelcategoryId = $request->hotelcategory['id'] ?? null;
+        $hotelcategoryExist = HotelCategories::where('name', $request->hotelcategory['name']) 
+        ->where('id', '!=', $hotelcategoryId) 
+        ->count();
+
+        // $countryExist = Country::where('CountryName' ,$request->country['CountryName'])->get();
+        if ($hotelcategoryExist == 0) {
+            if ($request->formType == "save") {
+                $hotel_category = new HotelCategories();
+                $hotel_category->created_by = Auth::id();
+            } else {
+                $hotel_category = HotelCategories::find($request->hotelcategory['id']);
+                $hotel_category->updated_by = Auth::id();
+            }
+    
+            $hotel_category->name = $request->hotelcategory['name'];
+            $hotel_category->status = $request->hotelcategory['status'];
+            
+            $hotel_category->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => ["$hotel_category->name added successfully"],
+                'msgtype' => 'success',
+                'hotel' => $hotel_category
+            ]);
+        }
+        else{
+            return response()->json([
+                'success' => false,
+                'message' => ["Hotel Category '".$request->hotelcategory['name']."' already exists."],
+                'msgtype' => 'error',
+               
+                ]);
+        }
+
+    }
+
+
     public function storeState(Request $request)
     {
 
