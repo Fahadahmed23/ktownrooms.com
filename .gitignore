@@ -14,4 +14,3 @@ yarn-error.log
 .htaccess
 /public/error_log
 /storage/logs/laravel.log
-storage/logs/laravel.log
