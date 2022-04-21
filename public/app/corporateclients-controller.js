@@ -67,6 +67,10 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
         }
 
         let formUrl = $scope.formType == "save" ? 'clients' : 'clients/' + $scope.client.id;
+        console.log('Form Url');
+        console.log(formUrl);
+
+        return;
         $scope.ajaxPost(formUrl, $scope.client, false)
             .then(function(response) {
                 if ($scope.formType == "save") {

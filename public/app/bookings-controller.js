@@ -1937,6 +1937,12 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         // calculate required occupants
         $scope.required_occupants = 0;
 
+        // Mr Optimist
+
+        var hotel_id =$scope.nBooking.hotel;
+        console.log('Scope nBooking');
+        console.log(hotel_id);
+        
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
             // if (i < $scope.nBooking.rooms.length - 1) {
             //     $scope.nBooking.rooms[i].occupants = $scope.nBooking.rooms[i].hotel_room_category.max_allowed;
