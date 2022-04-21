@@ -575,7 +575,8 @@
 
 
                                         <div class="form-group row"> 
-                                            <label class="col-md-4 col-form-label">Corporate Booking</label>
+                                            <!-- <label class="col-md-4 col-form-label">Corporate Booking</label> -->
+                                            <label class="col-md-4 col-form-label"> BTC</label>
                                                 <div class="col-md-1 mt-1">
                                                     <md-switch ng-model="nBooking.invoice.is_corporate" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
                                                 </div>
