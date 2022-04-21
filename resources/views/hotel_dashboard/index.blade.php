@@ -110,7 +110,7 @@
 
             // Demo dataset
             var dataset = [
-                { name: 'Occupied', count: data.room       s_occupied },
+                { name: 'Occupied', count: data.rooms_occupied },
                 { name: 'Reserved', count: data.rooms_reserved },
                 { name: 'Available', count: data.rooms_available },
                 { name: 'Blocked', count: data.rooms_blocked },
@@ -577,7 +577,7 @@
                     container.attr("width", width +  margin.left + margin.right);
 
                     // Width of appended group
-                    svg.attr("width", width + margin.left + margin.righ t);
+                    svg.attr("width", width + margin.left + margin.right);
 
                     // Horizontal range
                     x.range([0, width]);
