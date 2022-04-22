@@ -105,7 +105,7 @@ class CorporateClientController extends Controller
         
         $hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
         $clients = CorporateClient::where('hotel_id',$hotel_id)->where('status',1)->orderBY('FullName', 'ASC')->get();
-        //$clients = CorporateClient::where('hotel_id',$hotel_id)->orderBY('FullName', 'ASC')->get();
+        // $clients = CorporateClient::where('hotel_id',$hotel_id)->orderBY('FullName', 'ASC')->get();
         return response()->json([
             'clients'=> $clients,
             'hotel_id'=> $hotel_id,

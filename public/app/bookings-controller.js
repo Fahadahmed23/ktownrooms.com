@@ -1946,7 +1946,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                                 .catch(function(e) {
                                     console.log(e);
                                 });
-        // Mr Optimist 22 April 2022 emds
+                                
     
     
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
