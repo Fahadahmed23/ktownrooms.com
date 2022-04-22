@@ -568,6 +568,9 @@ Route::post('vendors/{id}', 'VendorController@update')->middleware('permission:c
 Route::post('getVendors', 'VendorController@getVendors')->middleware('permission:can-view-vendor');
 
 // corporate_clients
+// Mr Optimist 22 April 2022
+Route::post('getClients_id', 'CorporateClientController@getClients_id'); //->middleware('permission:can-view-corporate-client');
+
 Route::get('corporate_clients', 'CorporateClientController@index')->middleware('permission:can-view-corporate-client');
 Route::get('getClients', 'CorporateClientController@getClients')->middleware('permission:can-view-corporate-client');
 Route::post('clients', 'CorporateClientController@store')->middleware('permission:can-add-corporate-client');

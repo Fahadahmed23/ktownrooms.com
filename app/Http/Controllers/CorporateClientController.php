@@ -93,6 +93,28 @@ class CorporateClientController extends Controller
 
     }
 
+    public function getClients_id(Request $request)
+    {
+
+        // Mr optimist 21 April 2022
+
+        $user = \Auth::user();
+        $username = $user->name;
+        $role_name =$user->roles->first()->name;
+        $userr = auth()->user();
+        
+        $hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
+        $clients = CorporateClient::where('hotel_id',$hotel_id)->where('status',1)->orderBY('FullName', 'ASC')->get();
+        //$clients = CorporateClient::where('hotel_id',$hotel_id)->orderBY('FullName', 'ASC')->get();
+        return response()->json([
+            'clients'=> $clients,
+            'hotel_id'=> $hotel_id,
+        ]);
+
+    }
+
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -106,6 +128,10 @@ class CorporateClientController extends Controller
         $clientExists = CorporateClient::where('FullName', $request->FullName)->get();
 
             $client = new CorporateClient();
+            
+            // Mr Optimist 22 April 2022
+            $client->hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
+            
             $client->FullName = $request['FullName'];
             $client->EmailAddress = $request['EmailAddress'];
             $client->ContactNo = $request['ContactNo'];

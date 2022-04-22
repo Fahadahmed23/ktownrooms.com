@@ -1556,9 +1556,6 @@ $scope.filterData_cashflowcashin = function(searchFields, check) {
         console.log(e);
     });
 
-
-
-
 }
 
 $scope.filterData_cashflowcashout = function(searchFields, check) { 
