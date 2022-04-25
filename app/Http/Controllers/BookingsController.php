@@ -51,6 +51,11 @@ use App\Models\SmsLog;
 use App\Models\Role;
 use App\Models\BookingMiscellaneousAmount;
 
+
+use App\Models\HotelCategories;
+use App\Models\HotelCategory;
+use App\Models\HotelCobranding;
+
 class BookingsController extends Controller
 {
     protected $booking;
@@ -523,8 +528,57 @@ class BookingsController extends Controller
                     return $r->room_id == $rooms[$i]->id;
                 });
 
-                // Mr Optimist
+                // Mr Optimist 26 April 2022
+
+                if(Auth::user()->can('can-show-klc'))
+                {
+                    if(isset($room_schedule[$i]->booking->id) && $room_schedule[$i]->booking->id > 0 ){
+
+                        $hotel_id = $room_schedule[$i]->booking->hotel_id;
+                        $booking_id = $room_schedule[$i]->booking->id;
+           
+                        $customer_id = $room_schedule[$i]->booking->customer_id;
+                        $customer_bookings = Customer::with(['bookings'])->where('id','=',$customer_id)->first();
+                        $customer_bookings_hotel_id = $customer_bookings->bookings[0]->hotel_id;
+    
+                        $hotel_cateogry = HotelCategory::with(['hotelCategories'])->where('hotel_id','=',$customer_bookings_hotel_id)->orderBy('created_at', 'desc')->limit(1)->get();
+    
+    
+                        if($customer_bookings_hotel_id == $hotel_id){
+                            $hotel_type = 'Same Hotel';
+                        }
+                        elseif(count($hotel_cateogry)==0) {
+                            $hotel_type = 'Not Found';
+                        }
+                        elseif(count($hotel_cateogry) >0 ) {
+    
+                            $hotel_type = $hotel_cateogry[0]->hotelCategories['name'];
+                        }
+                        else {
+                            $hotel_type = 'Not Found';
+                        }
+    
+                        if($hotel_type == 'Partner Hotels'){
+                            $is_klc = 'yes';
+                        }
+                        else {
+
+                            $is_klc = Auth::user()->can('can-add-klc') ?'yes':'no';
+                        }
+    
+                    }
+                }
+                else {
+                    $is_klc = 'no';  
+                }
+
+
+                
+
+
+                /*
                 if(isset($room_schedule[$i]->booking->customer_id) && $room_schedule[$i]->booking->customer_id > 0 ){
+                
                     $customer_book_count = Customer::withCount('bookings')->where('id', '=',$room_schedule[$i]->booking->customer_id)->first();
                     if (!empty($customer_book_count)) {
 
@@ -539,7 +593,7 @@ class BookingsController extends Controller
                         $is_klc = 'no';
                     }
                 }
-
+                **/
                 if ($rooms[$i]->is_available == '0') {
                     $rooms[$i]->st = [
                         'name' => 'Not Available',
@@ -551,12 +605,20 @@ class BookingsController extends Controller
                         'is_klc' => $is_klc,
                     ];
                 }
-
                 else if (!empty($rs)) {
+
+             
                     $show_menu = true;
     
                     // if ($room_schedule[$j]->booking->status == 'CheckedIn') {
                     if ($rs->booking->status == 'CheckedIn') {
+
+                        // echo "<pre>";
+                        // var_dump('Fahad Ahmed Zindabad');
+                        // var_dump('CheckedIn true');
+                        // var_dump($rooms);
+                        // echo "</pre>";
+                        // die;
                         $rooms[$i]->st = [
                             'name' => 'Booked',
                             'card_style' => 'bg-success',
@@ -564,6 +626,7 @@ class BookingsController extends Controller
                             'cursor'=>'no-cursor',
                             'show_menu' => $show_menu,
                             'is_checkedout' => $is_checkedout,
+                            'is_klc' => $is_klc,
                         ];
     
                     } else {
@@ -857,6 +920,9 @@ class BookingsController extends Controller
         
         // get hotel cin_cout rules
         $hotel = Hotel::with(['checkin', 'checkout'])->find($request->hotel);
+
+
+        
 
         return response()->json([
             'success' => true,
