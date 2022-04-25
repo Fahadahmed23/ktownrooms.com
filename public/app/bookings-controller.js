@@ -340,8 +340,12 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.showOccupantsModal = function() {
+<<<<<<< Updated upstream
         
         $('#addOccupant').show();
+=======
+        debugger;
+>>>>>>> Stashed changes
         $scope.bulk_edit_occupants = false;
 debugger;
         $scope.occupant_form.$setPristine();
