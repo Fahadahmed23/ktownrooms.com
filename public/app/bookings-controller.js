@@ -340,8 +340,10 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.showOccupantsModal = function() {
+        
+        $('#addOccupant').show();
         $scope.bulk_edit_occupants = false;
-
+debugger;
         $scope.occupant_form.$setPristine();
         $scope.occupant_form.$setUntouched();
 
@@ -383,7 +385,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
             $scope.occu_form_type = "create";
 
-            $('#addOccupant').modal();
+            $('#addOccupant').show();
         } else {
             bootbox.alert('You can only add ' + ($scope.required_occupants - 1) + ' occupants');
         }
