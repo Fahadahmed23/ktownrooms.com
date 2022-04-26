@@ -1788,9 +1788,7 @@ debugger;
         $scope.params.status = [statuses];
         $scope.ajaxGet('getBookings', $scope.params, true)
             .then(function(response) {
-                console.log('Developer Checking');
-                console.log(response);
-
+            
                 $scope.bookings = response.bookings;
                 $scope.paymenttypes = response.paymenttypes;
                 $scope.cities = response.cities;
@@ -1943,6 +1941,20 @@ debugger;
         // calculate required occupants
         $scope.required_occupants = 0;
 
+        // Mr Optimist 22 April 2022
+        var hotel_id =$scope.nBooking.hotel;
+        $scope.getClients_id =  $scope.ajaxPost('getClients_id',{
+                                    hotel_id: hotel_id,
+                                }, true)
+                                .then(function(response) {
+                                    $scope.clients = response.clients;
+                                })
+                                .catch(function(e) {
+                                    console.log(e);
+                                });
+                                
+    
+    
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
             // if (i < $scope.nBooking.rooms.length - 1) {
             //     $scope.nBooking.rooms[i].occupants = $scope.nBooking.rooms[i].hotel_room_category.max_allowed;

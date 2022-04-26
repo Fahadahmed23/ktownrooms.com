@@ -80,12 +80,8 @@ class HotelController extends Controller
         }
 
         return response()->json([
-
-            'hotels' => $hotels->with(['city:id,CityName'])->get(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','mailimage','mailimage','ZipCode','AgreStartDate','AgreEndDate','posimage', 'mapimage','mailimage'])
-
             // 'hotels' => $hotels->with(['city:id,CityName'])->get(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','mailimage','mailimage','ZipCode','AgreStartDate','AgreEndDate','posimage', 'mapimage','mailimage'])
             
-            /*
             'hotels' => $hotels->with(['city:id,CityName','hotel_cobrandings' => function($q){
                 $q->select('id','hotel_id','status','software_fee','percentage_amount')->latest()->first();
             }])->with(['hotel_categories' => function($rl){
@@ -93,7 +89,7 @@ class HotelController extends Controller
                 $rl->orderBy('hotel_category.created_at','Desc');
                 $rl->limit(1); 
              }])->get()
-             */
+
         
         
         ]);
@@ -133,6 +129,7 @@ class HotelController extends Controller
             'contact_types' => $contact_types,
             'partners'=>$partners,
             'room_categories'=>$room_categories,
+            'hotel_categories'=>$hotel_categories,
             'tax_rates'=>$tax_rates,
             'check_in_rules'=>$check_in_rules,
             'check_out_rules'=>$check_out_rules,

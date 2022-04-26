@@ -673,15 +673,9 @@
                         </div>
 
 
-        </ul>
-        <div class="tab-content hotel-tabs">
-            @permission('can-add-hotel')
-                <div class="tab-pane fade show active" id="basic_info">
-                    @include('hotel.basic_info')
-                </div>
-            @endpermission
+                        @include('hotel.check_in')
+                        @include('hotel.check_out')
 
-            @permission('can-add-update-hotel-room-categories')
 
                         
                     </div>
@@ -699,29 +693,17 @@
 <script>
     
 
-            @permission('can-add-update-hotel-sms-configuration')
-                <div class="tab-pane fade" id="default_msgs">
-                    @include('hotel.sms_configuration')
-                </div>
-            @endpermission
-           
-        </div>
-   
-</div>
 
-<script>
     
-    
-//  $(".pickadate").pickadate({
-//      min: true
-//  });
+// $(".pickadate").pickadate({
+//     min: true
+//         });
 
-    $.extend($.fn.pickadate.defaults, {
-        // min:true,
-        // formatSubmit: 'yyyy-mm-dd',
-        format: 'mm/dd/yyyy',
-        // hiddenName: true,
-        // hiddenSuffix: '_submit',
-    })
+        $.extend($.fn.pickadate.defaults, {
+            // min:true,
+            // formatSubmit: 'yyyy-mm-dd',
+            format: 'mm/dd/yyyy',
+            // hiddenName: true,
+            // hiddenSuffix: '_submit',
+        })
 </script>
-

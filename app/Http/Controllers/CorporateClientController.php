@@ -2,6 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\State;
+use App\Models\UserHotel;
+use App\Models\User;
+use App\Models\City;
+use App\Models\Hotel;
+use App\Models\UserExperience;
+use App\Models\Department;
+use App\Models\Designation;
+use App\Models\UserAddress;
+
+
 use App\Imports\ClientsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\CorporateClient;
@@ -34,12 +46,74 @@ class CorporateClientController extends Controller
      */
     public function getClients()
     {
-        $clients = CorporateClient::orderBY('FullName', 'ASC')->get();
+
+        // Mr optimist 21 April 2022
+
+        $user = \Auth::user();
+        $username = $user->name;
+        $role_name =$user->roles->first()->name;
+        $userr = auth()->user();
+        $hotel_ids = array();
+        
+        $hotel_array = array();
+
+        foreach ($user->hotels->toArray() as $hotel) {
+
+            $h = Hotel::find($hotel['hotel_id']);
+            $hotel_id   =   $h['id'];
+            $hotel_name =   $h['HotelName'];
+            $hotel_array[$hotel_id] = $hotel_name;
+            $hotel_ids[] = $hotel['hotel_id'];
+        }
+
+        if($role_name=='Admin') {
+
+            unset($hotel_array); // $foo is gone
+            $hotel_array = array();
+
+            $hotels = Hotel::get();
+            $all_hotels = count($hotels);
+            foreach($hotels as $single_hotel) {
+
+                $hotel_id    = $single_hotel['id'];
+                $hotel_name  = $single_hotel['HotelName'];
+                $hotel_array[$hotel_id] = $hotel_name;
+            }
+
+            $clients = CorporateClient::orderBY('FullName', 'ASC')->get();
+        }
+        else {
+            $clients = CorporateClient::whereIn('hotel_id',$hotel_ids)->orderBY('FullName', 'ASC')->get();
+        }
+        
         return response()->json([
             'clients'=> $clients,
+            'hotels'=> $hotel_array,
         ]);
 
     }
+
+    public function getClients_id(Request $request)
+    {
+
+        // Mr optimist 21 April 2022
+
+        $user = \Auth::user();
+        $username = $user->name;
+        $role_name =$user->roles->first()->name;
+        $userr = auth()->user();
+        
+        $hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
+        $clients = CorporateClient::where('hotel_id',$hotel_id)->where('status',1)->orderBY('FullName', 'ASC')->get();
+        // $clients = CorporateClient::where('hotel_id',$hotel_id)->orderBY('FullName', 'ASC')->get();
+        return response()->json([
+            'clients'=> $clients,
+            'hotel_id'=> $hotel_id,
+        ]);
+
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -54,6 +128,10 @@ class CorporateClientController extends Controller
         $clientExists = CorporateClient::where('FullName', $request->FullName)->get();
 
             $client = new CorporateClient();
+            
+            // Mr Optimist 22 April 2022
+            $client->hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
+            
             $client->FullName = $request['FullName'];
             $client->EmailAddress = $request['EmailAddress'];
             $client->ContactNo = $request['ContactNo'];
