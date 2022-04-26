@@ -339,13 +339,30 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }
     }
 
+
+
+    $scope.GetHotels= function()
+    {
+        debugger;
+     $scope.ajaxGet('getClients', {}, true)
+     .then(function(response) {
+         debugger;
+         $scope.client = response.clients;
+         $scope.hotallist = response.hotels;
+        
+     })
+     .catch(function(e) {
+         console.log(e);
+     })
+    }
+ 
+ 
+
     $scope.showOccupantsModal = function() {
-<<<<<<< Updated upstream
+
         
         $('#addOccupant').show();
-=======
-        debugger;
->>>>>>> Stashed changes
+
         $scope.bulk_edit_occupants = false;
 debugger;
         $scope.occupant_form.$setPristine();
@@ -1366,6 +1383,7 @@ debugger;
     }
 
     $scope.showInvoice = function(bookingInvoice) {
+        debugger;
         if ($scope.is_partial == 1) {
             if (!$scope.paymentIsValid()) {
                 return;
