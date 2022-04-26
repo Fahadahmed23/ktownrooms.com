@@ -346,7 +346,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         // debugger;
      $scope.ajaxGet('getClients', {}, true)
      .then(function(response) {
-         debugger;
+         //debugger;
          $scope.client = response.clients;
          $scope.hotallist = response.hotels;
 

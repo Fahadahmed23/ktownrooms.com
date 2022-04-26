@@ -26,14 +26,12 @@
 
 
 
-                 <md-select name="FullName"  md-no-asterisk class="m-0" ng-model="client.FullName" ng-init="GetHotels()">
-                    <md-option ng-repeat="x in client" ng-value='x.Id'>[[x.FullName]]</md-option>
+                 <md-select name="FullName"  md-no-asterisk class="m-0" ng-model="clients.FullName" ng-init="GetHotels()">
+                    <md-option ng-repeat="x in clients" ng-value="x">[[x.FullName]]</md-option>
                 </md-select>
                 <div ng-messages="clientForm.FullName.$error" ng-if='clientForm.FullName.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
                     <div class="text-danger" ng-message="required">Name is required</div>
                 </div>
-
-
                 </div>
 
                 <div class="col-md-3">

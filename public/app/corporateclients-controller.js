@@ -90,7 +90,7 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
         // debugger;
      $scope.ajaxGet('getClients', {}, true)
      .then(function(response) {
-         debugger;
+         //debugger;
          $scope.client = response.clients;
          $scope.hotallist = response.hotels;
 
