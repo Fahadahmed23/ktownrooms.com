@@ -524,7 +524,7 @@
                         @include('bookings.customer_card')
                     </div>
 
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <div class="card p-3">
                             <fieldset>
                                 <legend class="font-weight-semibold"> <i class="icon-price-tag2 mr-2"></i> Booking Information</legend>
@@ -580,71 +580,69 @@
                                                 <div class="col-md-1 mt-1">
                                                     <md-switch ng-model="nBooking.invoice.is_corporate" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
                                                 </div>
+                                                <br>
                                             <label class="col-md-2 col-form-label text-right" ng-show="nBooking.invoice.is_corporate == '1'">Client Name </label>
                                             <div class="col-lg-5" ng-show="nBooking.invoice.is_corporate == '1'">
                                                 <!-- {{-- <input ng-disabled="formType=='edit' && nBooking.invoice.corporate_client_id" class="form-control alphabets" name="corporate_client" ng-required="nBooking.invoice.is_corporate=='1'" ng-model="nBooking.invoice.corporate_client_name"> --}} -->
                                                <!-- Arman Ahmad -->
                                                 <md-select name="corporate_client"  md-no-asterisk ng-required="nBooking.invoice.is_corporate=='1'" class="m-0" ng-model="nBooking.invoice.corporate_client_id" ng-init="GetHotels()">
                                                     <md-option ng-repeat="x in client" ng-value='x.Id'><div>[[x.FullName]]</div></md-option>
-                                                  
+
                                                 </md-select>
                                                 <div ng-messages="myForm.corporate_client.$error">
                                                     <div class="text-danger" ng-message="required">Please enter Client Name</div>
                                                 </div>
                                             </div>
-                                        <div class="form-group row" ng-show="nBooking.invoice.is_corporate == '1'">
-                                            <label class="col-md-4 col-form-label">Corporate Type </label>
-                                            <div class="col-md-8">
-                                                <md-select md-no-asterisk name="corporate_type" class="m-0" ng-model="nBooking.invoice.corporate_type" placeholder="Select a Corporate Type" required>
-                                                    <md-option ng-repeat="corporate_type in corporate_types" ng-value="corporate_type.id">[[corporate_type.name]]</md-option>
-                                                </md-select>
+                                            <div class="form-group row" ng-show="nBooking.invoice.is_corporate == '1'">
+                                                <label class="col-md-4 col-form-label">Corporate Type </label>
+                                                <div class="col-md-8">
+                                                    <md-select md-no-asterisk name="corporate_type" class="m-0" ng-model="nBooking.invoice.corporate_type" placeholder="Select a Corporate Type" required>
+                                                        <md-option ng-repeat="corporate_type in corporate_types" ng-value="corporate_type.id">[[corporate_type.name]]</md-option>
+                                                    </md-select>
 
-                                                <div ng-messages="myForm.corporate_type.$error" ng-if='myForm.corporate_type.$touched || myForm.$submitted' ng-cloak style="color:#e9322d;">
-                                                    <div class="text-danger" ng-message="required">Corporate Type is required</div>
+                                                    <div ng-messages="myForm.corporate_type.$error" ng-if='myForm.corporate_type.$touched || myForm.$submitted' ng-cloak style="color:#e9322d;">
+                                                        <div class="text-danger" ng-message="required">Corporate Type is required</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Purpose of stay:</label>
+                                                <div class="col-lg-8">
+                                                    <input ng-model="nBooking.purpose_of_stay" type="text" name="" placeholder="Touring" value="" class="form-control alphabets" maxlength="100">
+                                                </div>
+                                            </div>
+                                            <!-- Arman ahmad -->
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">General Client:</label>
+                                                <div class="col-lg-8">
+                                                    <input type="text" name="" placeholder="General Client Name" class="form-control alphabets" maxlength="100">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Special Request:</label>
+                                                <div class="col-lg-8">
+                                                    <input ng-model="nBooking.special_request" type="text" name="" placeholder="Special Request" value="" class="form-control alphabets" maxlength="100">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Origin</label>
+                                                <div class="col-lg-8">
+                                                    <input ng-model="nBooking.origin" type="text" name="" placeholder="Origin" value="" class="form-control alphabets" maxlength="100">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Additional Comments</label>
+                                                <div class="col-lg-8">
+                                                    <textarea class="form-control" name="additional_comments" ng-model="nBooking.additional_comments" placeholder="Any additional comments"></textarea>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="form-group row">
-                                            <label class="col-lg-4 col-form-label">Purpose of stay:</label>
-                                            <div class="col-lg-8">
-                                                <input ng-model="nBooking.purpose_of_stay" type="text" name="" placeholder="Touring" value="" class="form-control alphabets" maxlength="100">
-                                            </div>
-                                        </div>
-                            <!-- Arman ahmad -->
-                                        <div class="form-group row">
-                                            <label class="col-lg-4 col-form-label">General Client:</label>
-                                            <div class="col-lg-8">
-                                                <input type="text" name="" placeholder="General Client Name" class="form-control alphabets" maxlength="100">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-lg-4 col-form-label">Special Request:</label>
-                                            <div class="col-lg-8">
-                                                <input ng-model="nBooking.special_request" type="text" name="" placeholder="Special Request" value="" class="form-control alphabets" maxlength="100">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-lg-4 col-form-label">Origin</label>
-                                            <div class="col-lg-8">
-                                                <input ng-model="nBooking.origin" type="text" name="" placeholder="Origin" value="" class="form-control alphabets" maxlength="100">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-lg-4 col-form-label">Additional Comments</label>
-                                            <div class="col-lg-8">
-                                                <textarea class="form-control" name="additional_comments" ng-model="nBooking.additional_comments" placeholder="Any additional comments"></textarea>
-                                            </div>
-                                        </div>
-
-
-
-                                    </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group row">
                                             <label class="col-md-4 col-form-label">Discount Type</label>
                                             <div class="col-md-8 mt-2">
@@ -750,7 +748,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="card p-3">
                              <fieldset class="">
                                 <legend class="font-weight-semibold"> <i class="icon-cash4 mr-2"></i> Payment Information</legend>
