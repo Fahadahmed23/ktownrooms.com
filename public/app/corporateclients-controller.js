@@ -83,21 +83,23 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
             });
     }
 
-    
-     
-   $scope.GetHotels= function()
-   {
-    $scope.ajaxGet('getClients', {}, true)
-    .then(function(response) {
-        debugger;
-        $scope.client = response.clients;
-        $scope.hotallist = response.hotels;
-       
-    })
-    .catch(function(e) {
-        console.log(e);
-    })
-   }
+
+
+    $scope.GetHotels= function()
+    {
+        // debugger;
+     $scope.ajaxGet('getClients', {}, true)
+     .then(function(response) {
+         debugger;
+         $scope.client = response.clients;
+         $scope.hotallist = response.hotels;
+
+     })
+     .catch(function(e) {
+         console.log(e);
+     })
+    }
+
 
 
 

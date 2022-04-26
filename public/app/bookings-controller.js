@@ -343,24 +343,24 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.GetHotels= function()
     {
-        debugger;
+        // debugger;
      $scope.ajaxGet('getClients', {}, true)
      .then(function(response) {
          debugger;
          $scope.client = response.clients;
          $scope.hotallist = response.hotels;
-        
+
      })
      .catch(function(e) {
          console.log(e);
      })
     }
- 
- 
+
+
 
     $scope.showOccupantsModal = function() {
 
-        
+
         $('#addOccupant').show();
 
         $scope.bulk_edit_occupants = false;
@@ -1806,7 +1806,7 @@ debugger;
         $scope.params.status = [statuses];
         $scope.ajaxGet('getBookings', $scope.params, true)
             .then(function(response) {
-            
+
                 $scope.bookings = response.bookings;
                 $scope.paymenttypes = response.paymenttypes;
                 $scope.cities = response.cities;
@@ -1970,9 +1970,9 @@ debugger;
                                 .catch(function(e) {
                                     console.log(e);
                                 });
-                                
-    
-    
+
+
+
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
             // if (i < $scope.nBooking.rooms.length - 1) {
             //     $scope.nBooking.rooms[i].occupants = $scope.nBooking.rooms[i].hotel_room_category.max_allowed;
@@ -3091,7 +3091,7 @@ debugger;
         })
     }
 
-    //dropdown for booking status in search by bookings 
+    //dropdown for booking status in search by bookings
     $scope.booking_statuses = [
         'All',
         'Cancelled',
@@ -3663,7 +3663,7 @@ debugger;
         console.log($scope.Addmislisoin.Amount);
         console.log($scope.Addmislisoin.Name);
 
-        
+
         $scope.ajaxPost('saveBookingsMiscellaneousAmount', {
             booking_id: $scope.fBooking.id,
             amount: $scope.Addmislisoin.Amount,
@@ -3679,7 +3679,7 @@ debugger;
                 // }
             }
         });
-        
+
     }
 
 
@@ -4329,7 +4329,7 @@ debugger;
     $rootScope.showNotifications = function() {
         $rootScope.new_service_available = false;
     }
-    
+
     $scope.getPortallink = function(code) {
         console.log(code);
         let base_url = window.location.origin;
