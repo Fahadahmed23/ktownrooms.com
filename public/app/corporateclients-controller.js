@@ -81,8 +81,27 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
             .catch(function(e) {
                 console.log(response);
             });
-
     }
+
+
+
+    $scope.GetHotels= function()
+    {
+        // debugger;
+     $scope.ajaxGet('getClients', {}, true)
+     .then(function(response) {
+         //debugger;
+         $scope.client = response.clients;
+         $scope.hotallist = response.hotels;
+
+     })
+     .catch(function(e) {
+         console.log(e);
+     })
+    }
+
+
+
 
     $scope.deleteClient = function(c) {
         $scope.client = angular.copy(c);

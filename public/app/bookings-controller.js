@@ -339,9 +339,32 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }
     }
 
-    $scope.showOccupantsModal = function() {
-        $scope.bulk_edit_occupants = false;
 
+
+    $scope.GetHotels= function()
+    {
+        // debugger;
+     $scope.ajaxGet('getClients', {}, true)
+     .then(function(response) {
+         //debugger;
+         $scope.client = response.clients;
+         $scope.hotallist = response.hotels;
+
+     })
+     .catch(function(e) {
+         console.log(e);
+     })
+    }
+
+
+
+    $scope.showOccupantsModal = function() {
+
+
+        $('#addOccupant').show();
+
+        $scope.bulk_edit_occupants = false;
+debugger;
         $scope.occupant_form.$setPristine();
         $scope.occupant_form.$setUntouched();
 
@@ -383,7 +406,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
             $scope.occu_form_type = "create";
 
-            $('#addOccupant').modal();
+            $('#addOccupant').show();
         } else {
             bootbox.alert('You can only add ' + ($scope.required_occupants - 1) + ' occupants');
         }
@@ -1360,6 +1383,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.showInvoice = function(bookingInvoice) {
+        debugger;
         if ($scope.is_partial == 1) {
             if (!$scope.paymentIsValid()) {
                 return;
@@ -1782,7 +1806,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.params.status = [statuses];
         $scope.ajaxGet('getBookings', $scope.params, true)
             .then(function(response) {
-            
+
                 $scope.bookings = response.bookings;
                 $scope.paymenttypes = response.paymenttypes;
                 $scope.cities = response.cities;
@@ -1946,9 +1970,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                                 .catch(function(e) {
                                     console.log(e);
                                 });
-                                
-    
-    
+
+
+
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
             // if (i < $scope.nBooking.rooms.length - 1) {
             //     $scope.nBooking.rooms[i].occupants = $scope.nBooking.rooms[i].hotel_room_category.max_allowed;
@@ -3067,7 +3091,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         })
     }
 
-    //dropdown for booking status in search by bookings 
+    //dropdown for booking status in search by bookings
     $scope.booking_statuses = [
         'All',
         'Cancelled',
@@ -3639,7 +3663,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         console.log($scope.Addmislisoin.Amount);
         console.log($scope.Addmislisoin.Name);
 
-        
+
         $scope.ajaxPost('saveBookingsMiscellaneousAmount', {
             booking_id: $scope.fBooking.id,
             amount: $scope.Addmislisoin.Amount,
@@ -3655,7 +3679,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 // }
             }
         });
-        
+
     }
 
 
@@ -4305,7 +4329,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     $rootScope.showNotifications = function() {
         $rootScope.new_service_available = false;
     }
-    
+
     $scope.getPortallink = function(code) {
         console.log(code);
         let base_url = window.location.origin;
