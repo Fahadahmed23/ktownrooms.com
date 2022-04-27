@@ -343,10 +343,10 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.GetHotels= function()
     {
-        // debugger;
+  
      $scope.ajaxGet('getClients', {}, true)
      .then(function(response) {
-         //debugger;
+      
          $scope.client = response.clients;
          $scope.hotallist = response.hotels;
 
@@ -360,11 +360,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     $scope.showOccupantsModal = function() {
 
-
-        $('#addOccupant').show();
-
         $scope.bulk_edit_occupants = false;
-debugger;
+
         $scope.occupant_form.$setPristine();
         $scope.occupant_form.$setUntouched();
 
@@ -3939,7 +3936,7 @@ debugger;
 
 
     $scope.savePayment = function() {
-        debugger;
+  
         if ($scope.formType != 'view') {
             $scope.myForm.$submitted = true;
 
