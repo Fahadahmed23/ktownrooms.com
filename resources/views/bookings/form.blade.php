@@ -587,7 +587,6 @@
                                                <!-- Arman Ahmad -->
                                                 <md-select name="corporate_client"  md-no-asterisk ng-required="nBooking.invoice.is_corporate=='1'" class="m-0" ng-model="nBooking.invoice.corporate_client_id" ng-init="GetHotels()">
                                                     <md-option ng-repeat="x in client" ng-value='x.Id'><div>[[x.FullName]]</div></md-option>
-
                                                 </md-select>
                                                 <div ng-messages="myForm.corporate_client.$error">
                                                     <div class="text-danger" ng-message="required">Please enter Client Name</div>
@@ -616,7 +615,10 @@
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">General Client:</label>
                                                 <div class="col-lg-8">
-                                                    <input type="text" name="" placeholder="General Client Name" class="form-control alphabets" maxlength="100">
+                                                    {{-- <input type="text" name="" placeholder="General Client Name" class="form-control alphabets" maxlength="100"> --}}
+                                                    <md-select name="corporate_client"  class="m-0" ng-model="nBooking.invoice.corporate_client_id" ng-init="GetHotels()">
+                                                        <md-option ng-repeat="x in hotallist" ng-value='x.Id'><div>[[x.hotel_name]]</div></md-option>
+                                                    </md-select>
                                                 </div>
                                             </div>
 
