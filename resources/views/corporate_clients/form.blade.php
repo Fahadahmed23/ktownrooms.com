@@ -27,8 +27,10 @@
 
 
                  <md-select name="FullName"  md-no-asterisk class="m-0" ng-model="clients.FullName" ng-init="GetHotels()">
-                    <md-option ng-repeat="x in clients" ng-value="x">[[x.FullName]]</md-option>
+                    <md-option ng-repeat="x in hotallist" ng-value="x">[[x.hotel_name]]</md-option>
                 </md-select>
+
+                [[hotallist]]
                 <div ng-messages="clientForm.FullName.$error" ng-if='clientForm.FullName.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
                     <div class="text-danger" ng-message="required">Name is required</div>
                 </div>

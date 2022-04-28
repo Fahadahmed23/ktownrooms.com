@@ -581,14 +581,14 @@ Route::get('clients/delete/{id}', 'CorporateClientController@delete')->middlewar
 
 // general_clients
 // Arman Ahmad 28 April 2022
-Route::post('getClients_id', 'GeneralClientController@getClients_id'); //->middleware('permission:can-view-corporate-client');
+// Route::post('getClients_id', 'GeneralClientController@getClients_id'); //->middleware('permission:can-view-corporate-client');
 
-Route::get('general_clients', 'GeneralClientController@index')->middleware('permission:can-view-corporate-client');
-Route::get('getClients', 'GeneralClientController@getClients')->middleware('permission:can-view-corporate-client');
-Route::post('clients', 'GeneralClientController@store')->middleware('permission:can-add-corporate-client');
-Route::post('clients/del', 'GeneralClientController@destroy')->middleware('permission:can-delete-corporate-client');
-Route::post('clients/{id}', 'GeneralClientController@update')->middleware('permission:can-edit-corporate-client');
-Route::get('clients/delete/{id}', 'GeneralClientController@delete')->middleware('permission:can-delete-corporate-client');
+// Route::get('general_clients', 'GeneralClientController@index')->middleware('permission:can-view-corporate-client');
+// Route::get('getClients', 'GeneralClientController@getClients')->middleware('permission:can-view-corporate-client');
+// Route::post('clients', 'GeneralClientController@store')->middleware('permission:can-add-corporate-client');
+// Route::post('clients/del', 'GeneralClientController@destroy')->middleware('permission:can-delete-corporate-client');
+// Route::post('clients/{id}', 'GeneralClientController@update')->middleware('permission:can-edit-corporate-client');
+// Route::get('clients/delete/{id}', 'GeneralClientController@delete')->middleware('permission:can-delete-corporate-client');
 
 // excel upload clients
 Route::post('/importExcel', 'CorporateClientController@importExcel');

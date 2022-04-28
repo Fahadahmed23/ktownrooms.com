@@ -54,16 +54,23 @@ class CorporateClientController extends Controller
         $role_name =$user->roles->first()->name;
         $userr = auth()->user();
         $hotel_ids = array();
-        
+
         $hotel_array = array();
 
         foreach ($user->hotels->toArray() as $hotel) {
 
+            $inner_array = array();
+
             $h = Hotel::find($hotel['hotel_id']);
             $hotel_id   =   $h['id'];
             $hotel_name =   $h['HotelName'];
-            $hotel_array[$hotel_id] = $hotel_name;
+            //$hotel_array[$hotel_id] = $hotel_name;
             $hotel_ids[] = $hotel['hotel_id'];
+
+            $inner_array['hotel_id'] = $hotel_id;
+            $inner_array['hotel_name'] = $hotel_name;
+            $hotel_array[] = $inner_array;
+
         }
 
         if($role_name=='Admin') {
@@ -75,9 +82,18 @@ class CorporateClientController extends Controller
             $all_hotels = count($hotels);
             foreach($hotels as $single_hotel) {
 
+                $inn_array = array();
+
                 $hotel_id    = $single_hotel['id'];
                 $hotel_name  = $single_hotel['HotelName'];
-                $hotel_array[$hotel_id] = $hotel_name;
+
+                //$hotel_array[$hotel_id] = $hotel_name;
+
+                $inn_array['hotel_id'] = $hotel_id;
+                $inn_array['hotel_name'] = $hotel_name;
+                $hotel_array[] = $inn_array;
+
+
             }
 
             $clients = CorporateClient::orderBY('FullName', 'ASC')->get();
@@ -85,7 +101,7 @@ class CorporateClientController extends Controller
         else {
             $clients = CorporateClient::whereIn('hotel_id',$hotel_ids)->orderBY('FullName', 'ASC')->get();
         }
-        
+
         return response()->json([
             'clients'=> $clients,
             'hotels'=> $hotel_array,
@@ -102,7 +118,7 @@ class CorporateClientController extends Controller
         $username = $user->name;
         $role_name =$user->roles->first()->name;
         $userr = auth()->user();
-        
+
         $hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
         $clients = CorporateClient::where('hotel_id',$hotel_id)->where('status',1)->orderBY('FullName', 'ASC')->get();
         // $clients = CorporateClient::where('hotel_id',$hotel_id)->orderBY('FullName', 'ASC')->get();
@@ -122,16 +138,16 @@ class CorporateClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
         // dd($request->all());
-        
+
         $clientExists = CorporateClient::where('FullName', $request->FullName)->get();
 
             $client = new CorporateClient();
-            
+
             // Mr Optimist 22 April 2022
             $client->hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
-            
+
             $client->FullName = $request['FullName'];
             $client->EmailAddress = $request['EmailAddress'];
             $client->ContactNo = $request['ContactNo'];
@@ -168,7 +184,7 @@ class CorporateClientController extends Controller
     public function update(Request $request, $id)
     {
             $client = CorporateClient::find($request->id);
-            
+
             $client->FullName = $request['FullName'];
             $client->EmailAddress = $request['EmailAddress'];
             $client->ContactNo = $request['ContactNo'];
@@ -190,7 +206,7 @@ class CorporateClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
-    { 
+    {
         $client = CorporateClient::where('id',$request->id)->first();
         $client->delete();
         return response()->json([
@@ -210,7 +226,7 @@ class CorporateClientController extends Controller
 
         public function importExcel(Request $request)
         {
-    
+
             // dd($request->all());
             $this->validate(
                 $request,
@@ -227,12 +243,12 @@ class CorporateClientController extends Controller
             return back()->with('success', 'Excel Data Imported successfully.');
             dd("out");
 
-        
 
 
 
 
-           
+
+
         }
 
 
