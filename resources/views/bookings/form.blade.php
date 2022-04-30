@@ -643,8 +643,8 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                    <div class="col-md-12">
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="form-group row">
                                             <label class="col-md-4 col-form-label">Discount Type</label>
                                             <div class="col-md-8 mt-2">
