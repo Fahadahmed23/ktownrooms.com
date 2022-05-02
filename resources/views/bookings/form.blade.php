@@ -583,12 +583,16 @@
                                                 <br>
                                             <label class="col-md-2 col-form-label text-right" ng-show="nBooking.invoice.is_corporate == '1'">Client Name </label>
                                             <div class="col-lg-5" ng-show="nBooking.invoice.is_corporate == '1'">
-                                                <!-- {{-- <input ng-disabled="formType=='edit' && nBooking.invoice.corporate_client_id" class="form-control alphabets" name="corporate_client" ng-required="nBooking.invoice.is_corporate=='1'" ng-model="nBooking.invoice.corporate_client_name"> --}} -->
-                                               <!-- Arman Ahmad -->
-                                                <md-select name="corporate_client"  md-no-asterisk ng-required="nBooking.invoice.is_corporate=='1'" class="m-0" ng-model="nBooking.invoice.corporate_client_id" ng-init="GetHotels()">
-                                                    <md-option ng-repeat="x in client" ng-value='x.Id'><div>[[x.FullName]]</div></md-option>
+                                                <!-- <input ng-disabled="formType=='edit' && nBooking.invoice.corporate_client_id" class="form-control alphabets" name="corporate_client" ng-required="nBooking.invoice.is_corporate=='1'" ng-model="nBooking.invoice.corporate_client_name"> -->
+                                               <!-- Arman Ahmad --> 
+                                               <!--
+                                                <md-select name="corporate_client_namee" class="m-0" ng-model="nBooking.corporate_client_namee" ng-init="GetHotels()">
+                                                    <md-option ng-repeat="x in client" ng-value='x.Id'>[[x.FullName]]</md-option>
+                                                </md-select> -->
+                                                <md-select md-no-asterisk name="corporate_client_name" class="m-0" ng-model="nBooking.invoice.corporate_client_name" placeholder="Select a Corporate Type" required>
+                                                    <md-option ng-repeat="cc in clients" ng-value="cc.id">[[cc.FullName]]</md-option>
                                                 </md-select>
-                                                <div ng-messages="myForm.corporate_client.$error">
+                                                <div ng-messages="myForm.corporate_client_name.$error">
                                                     <div class="text-danger" ng-message="required">Please enter Client Name</div>
                                                 </div>
                                             </div>
@@ -615,10 +619,7 @@
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">General Client:</label>
                                                 <div class="col-lg-8">
-                                                    <input type="text" name="" placeholder="General Client Name" class="form-control alphabets" maxlength="100"> 
-                                                    {{--  <md-select name="corporate_client"  class="m-0" ng-model="nBooking.invoice.corporate_client_id" ng-init="GetHotels()">
-                                                        <md-option ng-repeat="x in hotallist" ng-value='x.Id'><div>[[x.hotel_name]]</div></md-option>
-                                                    </md-select> --}}
+                                                    <input ng-model="nBooking.invoice.general_client" type="text" name="general_client" placeholder="General Client" value="" class="form-control alphabets ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched" maxlength="900" aria-invalid="false" style="">
                                                 </div>
                                             </div>
 

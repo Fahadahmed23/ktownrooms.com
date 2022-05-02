@@ -1955,17 +1955,17 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
         // Mr Optimist 22 April 2022
         var hotel_id =$scope.nBooking.hotel;
-        $scope.getClients_id =  $scope.ajaxPost('getClients_id',{
-                                    hotel_id: hotel_id,
-                                }, true)
-                                .then(function(response) {
-                                    $scope.clients = response.clients;
-                                })
-                                .catch(function(e) {
-                                    console.log(e);
-                                });
-                                
-    
+        $scope.ajaxPost('getClients_id',{
+            hotel_id: hotel_id,
+        }, true)
+        .then(function(response) {
+            $scope.clients = response.clients;
+        })
+        .catch(function(e) {
+            console.log(e);
+        });
+
+
     
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
             // if (i < $scope.nBooking.rooms.length - 1) {

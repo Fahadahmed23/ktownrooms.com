@@ -581,6 +581,20 @@ Route::get('clients/delete/{id}', 'CorporateClientController@delete')->middlewar
 // excel upload clients
 Route::post('/importExcel', 'CorporateClientController@importExcel');
 
+
+// general_clients
+// Mr Optimist 2 May 2022
+Route::post('getGeneralClients_id', 'GeneralClientController@getClients_id'); //->middleware('permission:can-view-corporate-client');
+Route::get('general_clients', 'GeneralClientController@index'); //->middleware('permission:can-view-corporate-client');
+Route::get('general_getClients', 'GeneralClientController@getClients'); //->middleware('permission:can-view-corporate-client');
+Route::post('gen_clients', 'GeneralClientController@store'); //->middleware('permission:can-add-corporate-client');
+Route::post('gen_clients/del', 'GeneralClientController@destroy'); //->middleware('permission:can-delete-corporate-client');
+Route::post('gen_clients/{id}', 'GeneralClientController@update'); //->middleware('permission:can-edit-corporate-client');
+Route::get('gen_clients/delete/{id}', 'GeneralClientController@delete'); //->middleware('permission:can-delete-corporate-client');
+// excel upload clients
+//Route::post('/general_importExcel', 'CorporateClientController@importExcel');
+
+
 // customers
 Route::get('customers', 'CustomersController@index')->middleware('permission:can-view-customers');
 Route::get('getCustomers', 'CustomersController@getCustomers');

@@ -62,7 +62,7 @@ class Hotel extends Model
         return $this->hasMany(HotelContact::class);
     }
 
-    public function city () {
+    public function city() {
         return $this->belongsTo(City::class, 'city_id', 'id');
     }
 

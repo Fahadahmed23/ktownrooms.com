@@ -24,6 +24,7 @@ use App\Models\BookingOccupant;
 use App\Models\BookingRoom;
 use App\Models\DiscountRequest;
 use App\Models\CorporateClient;
+use App\Models\GeneralClient;
 use App\Models\TransactionLog;
 
 use Illuminate\Support\Facades\Mail;
@@ -613,12 +614,7 @@ class BookingsController extends Controller
                     // if ($room_schedule[$j]->booking->status == 'CheckedIn') {
                     if ($rs->booking->status == 'CheckedIn') {
 
-                        // echo "<pre>";
-                        // var_dump('Fahad Ahmed Zindabad');
-                        // var_dump('CheckedIn true');
-                        // var_dump($rooms);
-                        // echo "</pre>";
-                        // die;
+                       
                         $rooms[$i]->st = [
                             'name' => 'Booked',
                             'card_style' => 'bg-success',
@@ -1038,6 +1034,12 @@ class BookingsController extends Controller
             }
         }
         // dd(request()->all());
+
+
+        //echo "<pre>";
+        //var_dump($this->booking);
+        //echo "</pre>";
+        //die;
 
         DB::beginTransaction();
             
@@ -1586,16 +1588,20 @@ class BookingsController extends Controller
         
         if ($invoiceData['is_corporate'] == 1) {
             // find the corporate client by name
-            $client = CorporateClient::where('FullName', 'LIKE', "%".$invoiceData['corporate_client_name']."%")->first();
+            //$client = CorporateClient::where('FullName', 'LIKE', "%".$invoiceData['corporate_client_name']."%")->first();
+            
+            // Mr Optimist 2 May 2022 
+            $client = CorporateClient::where('id',$invoiceData['corporate_client_name'])->first();
 
+            /*
             if (empty($client)){
                 $client = new CorporateClient();
-
                 $client->FullName = $invoiceData['corporate_client_name'];
                 $client->Status = 1;
 
                 $client->save();
             }
+            **/
 
             $invoice->corporate_client_id = $client->id;
             $invoice->corporate_client_name = $client->FullName;
@@ -1607,6 +1613,23 @@ class BookingsController extends Controller
 
         if(!empty($this->booking['invoice']['checkout_discount'])){
             $invoice->checkout_discount = $this->booking['invoice']['checkout_discount'];
+        }
+
+
+        // Mr Optimist
+        $invoice_general_client = empty($invoiceData['general_client']) ? null : $invoiceData['general_client'];
+        if(!empty($invoice_general_client)) {
+
+            $general_client = new GeneralClient();
+        
+            // Mr Optimist 22 April 2022
+            $general_client->hotel_id = $this->booking['hotel_id'];  
+            $general_client->name = $invoice_general_client;
+            $general_client->status = 1;
+            $general_client->save();
+
+            $invoice->general_client_id = $general_client->id;
+          
         }
         
         // dd($invoice);
