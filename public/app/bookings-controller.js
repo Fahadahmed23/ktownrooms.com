@@ -339,6 +339,24 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }
     }
 
+    $scope.GetHotels= function()
+    {
+        // debugger;
+     $scope.ajaxGet('getClients', {}, true)
+     .then(function(response) {
+         //debugger;
+         $scope.client = response.clients;
+         $scope.hotallist = response.hotels;
+
+     })
+     .catch(function(e) {
+         console.log(e);
+     })
+    }
+
+
+
+
     $scope.showOccupantsModal = function() {
         $scope.bulk_edit_occupants = false;
 

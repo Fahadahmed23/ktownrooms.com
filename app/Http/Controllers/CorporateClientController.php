@@ -59,11 +59,18 @@ class CorporateClientController extends Controller
 
         foreach ($user->hotels->toArray() as $hotel) {
 
+            $inner_array = array();
+
             $h = Hotel::find($hotel['hotel_id']);
             $hotel_id   =   $h['id'];
             $hotel_name =   $h['HotelName'];
-            $hotel_array[$hotel_id] = $hotel_name;
+            //$hotel_array[$hotel_id] = $hotel_name;
             $hotel_ids[] = $hotel['hotel_id'];
+
+            $inner_array['hotel_id'] = $hotel_id;
+            $inner_array['hotel_name'] = $hotel_name;
+            $hotel_array[] = $inner_array;
+
         }
 
         if($role_name=='Admin') {
@@ -75,9 +82,18 @@ class CorporateClientController extends Controller
             $all_hotels = count($hotels);
             foreach($hotels as $single_hotel) {
 
+                $inn_array = array();
+
                 $hotel_id    = $single_hotel['id'];
                 $hotel_name  = $single_hotel['HotelName'];
-                $hotel_array[$hotel_id] = $hotel_name;
+                
+                //$hotel_array[$hotel_id] = $hotel_name;
+
+                $inn_array['hotel_id'] = $hotel_id;
+                $inn_array['hotel_name'] = $hotel_name;
+                $hotel_array[] = $inn_array;
+
+
             }
 
             $clients = CorporateClient::orderBY('FullName', 'ASC')->get();
@@ -123,30 +139,34 @@ class CorporateClientController extends Controller
      */
     public function store(Request $request)
     { 
-        // dd($request->all());
-        
-        $clientExists = CorporateClient::where('FullName', $request->FullName)->get();
 
-            $client = new CorporateClient();
-            
-            // Mr Optimist 22 April 2022
-            $client->hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
-            
-            $client->FullName = $request['FullName'];
-            $client->EmailAddress = $request['EmailAddress'];
-            $client->ContactNo = $request['ContactNo'];
-            $client->Status = $request['Status'];
+
+        $clientExists = CorporateClient::where('hotel_id',$request['hotel_id'])->where('FullName', $request->FullName)->get();
+        $client = new CorporateClient();
+        
+        // Mr Optimist 22 April 2022
+        $client->hotel_id = isset($request['hotel_id']) ? $request['hotel_id'] : 0;   
+        $client->FullName = $request['FullName'];
+        $client->EmailAddress = $request['EmailAddress'];
+        $client->ContactNo = $request['ContactNo'];
+        $client->Status = $request['Status'];
 
         if(count($clientExists) == 0)
         {
-         $client->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => ["Client '$request->FullName' created successfully."],
-            'msgtype' => 'success',
-            'client' => $client
-        ]);
+         
+           
+            $client->save();
+
+            
+
+
+            return response()->json([
+                'success' => true,
+                'message' => ["Client '$request->FullName' created successfully."],
+                'msgtype' => 'success',
+                'client' => $client
+            ]);
        }
        else
        {

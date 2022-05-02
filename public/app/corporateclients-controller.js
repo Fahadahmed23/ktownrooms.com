@@ -66,6 +66,7 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
             return;
         }
 
+
         let formUrl = $scope.formType == "save" ? 'clients' : 'clients/' + $scope.client.id;
         $scope.ajaxPost(formUrl, $scope.client, false)
             .then(function(response) {
@@ -82,6 +83,21 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
                 console.log(response);
             });
 
+    }
+
+    $scope.GetHotels= function()
+    {
+        // debugger;
+     $scope.ajaxGet('getClients', {}, true)
+     .then(function(response) {
+         //debugger;
+         $scope.client = response.clients;
+         $scope.hotallist = response.hotels;
+
+     })
+     .catch(function(e) {
+         console.log(e);
+     })
     }
 
     $scope.deleteClient = function(c) {
