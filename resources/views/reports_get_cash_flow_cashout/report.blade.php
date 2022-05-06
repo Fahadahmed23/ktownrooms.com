@@ -56,7 +56,7 @@ $title = ucfirst(isset($parsedQuery['title']) ? $parsedQuery['title'] : $parsedQ
     <div class="content-wrapper">
 
         <!-- Page header -->
-        @include('reports_get_guest_detail.header')
+        @include('reports_get_cash_flow_cashout.header')
         <!--/page header-->
 
         <!-- Content area -->
