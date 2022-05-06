@@ -439,25 +439,27 @@ Route::post('shareReportConfig', 'ReportController@share_report_config')->middle
 
 
 //Reports View Controller - Arman Ahmad - 19-March-2022 - Start
-Route::get('reports_new_main', 'ReportControllerTwo@index_reports_new_main');
+Route::get('reports_new_main', 'ReportControllerTwo@index_reports_new_main')->middleware('permission:can-see-reports-main-page');
+
 Route::get('reports_get_guest_detail', 'ReportControllerTwo@index_reports_get_guest_detail');
 Route::get('reports_get_checkout_list', 'ReportControllerTwo@index_reports_get_checkout_list');
 
-Route::get('reports_get_btc_pending_list', 'ReportControllerTwo@index_reports_get_btc_pending_list');
-Route::get('reports_get_invoice_search', 'ReportControllerTwo@index_reports_get_invoice_search');
-Route::get('reports_get_expenses_report', 'ReportControllerTwo@index_reports_get_expenses_report');
-Route::get('reports_get_daily_sales_report', 'ReportControllerTwo@index_reports_get_daily_sales_report');
-Route::get('reports_get_sales_summary_report', 'ReportControllerTwo@index_reports_get_sales_summary_report');
+Route::get('reports_get_btc_pending_list', 'ReportControllerTwo@index_reports_get_btc_pending_list')->middleware('permission:can-see-btc-pending-list');
+Route::get('reports_get_invoice_search', 'ReportControllerTwo@index_reports_get_invoice_search')->middleware('permission:can-see-invoice-search');
+Route::get('reports_get_expenses_report', 'ReportControllerTwo@index_reports_get_expenses_report')->middleware('permission:can-see-expenses-report');
+Route::get('reports_get_daily_sales_report', 'ReportControllerTwo@index_reports_get_daily_sales_report')->middleware('permission:can-see-daily-sales-report');
+Route::get('reports_get_sales_summary_report', 'ReportControllerTwo@index_reports_get_sales_summary_report')->middleware('permission:can-see-sales-summary');
 
-Route::get('reports_get_receivable_report', 'ReportControllerTwo@index_reports_get_receivable_report');
-Route::get('reports_get_cash_flow_report', 'ReportControllerTwo@index_reports_get_cash_flow_report');
+Route::get('reports_get_receivable_report', 'ReportControllerTwo@index_reports_get_receivable_report')->middleware('permission:can-see-receivable-report');
 
-Route::get('reports_get_cash_flow_cashin', 'ReportControllerTwo@index_reports_get_cash_flow_cashin');
-Route::get('reports_get_cash_flow_cashout', 'ReportControllerTwo@index_reports_get_cash_flow_cashout');
+//Route::get('reports_get_cash_flow_report', 'ReportControllerTwo@index_reports_get_cash_flow_report');
+
+Route::get('reports_get_cash_flow_cashin', 'ReportControllerTwo@index_reports_get_cash_flow_cashin')->middleware('permission:can-see-cashin-report');
+Route::get('reports_get_cash_flow_cashout', 'ReportControllerTwo@index_reports_get_cash_flow_cashout')->middleware('permission:can-see-cashout-report');
 
 
 
-Route::get('reports_get_klc_report','ReportControllerTwo@index_reports_get_klc_report');
+Route::get('reports_get_klc_report','ReportControllerTwo@index_reports_get_klc_report')->middleware('permission:can-see-klc-report');
 
 
 //Reports View Controller - Arman Ahmad - 19-March-2022 - End
