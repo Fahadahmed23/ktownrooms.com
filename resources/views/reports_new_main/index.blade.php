@@ -39,6 +39,7 @@
                         <br>
                         <br/>
                         <div class="row">
+                            @permission('can-see-btc-pending-list')
                             <div class="col-md-3">
 
                                 <form action="reports_get_btc_pending_list" method="GET" target="_blank">
@@ -46,6 +47,7 @@
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="BTC Pending List" /> --}}
                                 </form>
                             </div>
+                            @endpermission
                             <div class="col-md-3">
                                 <form action="reports_get_cash_flow_cashin" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Cash In Report</button>
