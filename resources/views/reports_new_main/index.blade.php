@@ -48,62 +48,84 @@
                                 </form>
                             </div>
                             @endpermission
+
+                            @permission('can-see-cashin-report')
                             <div class="col-md-3">
                                 <form action="reports_get_cash_flow_cashin" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Cash In Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Cash Flow Report" /> --}}
                                 </form>
                             </div>
+                            @endpermission
+
+                            @permission('can-see-daily-sales-report')
                             <div class="col-md-3">
                                 <form action="reports_get_daily_sales_report" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Daily Sales Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Daily Sales Report" /> --}}
                                 </form>
                             </div>
+                            @endpermission
+
+                            @permission('can-see-sales-summary')
                             <div class="col-md-3">
                                 <form action="reports_get_sales_summary_report" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Sale Summary</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Sale Summary" /> --}}
                                 </form>
                             </div>
+                            @endpermission
                         </div>
                         <br>
                         <br/>
                         <div class="row">
+                            @permission('can-see-expenses-report')
                             <div class="col-md-3">
                                 <form action="reports_get_expenses_report" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Expenses Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Expenses Report" /> --}}
                                 </form>
                             </div>
+                            @endpermission
+
+                            @permission('can-see-invoice-search')
                             <div class="col-md-3">
                                 <form action="reports_get_invoice_search" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Invoice Search Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Invoice Search Report" /> --}}
                                 </form>
                             </div>
+                            @endpermission
+
+                            @permission('can-see-klc-report')
                             <div class="col-md-3">
                                 <form action="reports_get_klc_report" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>KLC Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="KLC Report" /> --}}
                                 </form>
                             </div>
+                            @endpermission
+
+                            @permission('can-see-receivable-report')
                             <div class="col-md-3">
                                 <form action="reports_get_receivable_report" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Receivable Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Receivable Report" /> --}}
                                 </form>
                             </div>
+                            @endpermission
                         </div>
                         <br>
                         <br>
                         <div class="row">
+                            @permission('can-see-cashout-report')
                             <div class="col-md-3">
                                 <form action="reports_get_cash_flow_cashout" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Cash Out Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Expenses Report" /> --}}
                                 </form>
                             </div>
+                            @endpermission
                         </div>
                         <br>
                         <br>
