@@ -47,8 +47,8 @@
                                 </form>
                             </div>
                             <div class="col-md-3">
-                                <form action="reports_get_cash_flow_report" method="GET" target="_blank">
-                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Cash Flow Report</button>
+                                <form action="reports_get_cash_flow_cashin" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Cash In Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Cash Flow Report" /> --}}
                                 </form>
                             </div>
@@ -90,6 +90,16 @@
                                 <form action="reports_get_receivable_report" method="GET" target="_blank">
                                     <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Receivable Report</button>
                                     {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Receivable Report" /> --}}
+                                </form>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <form action="reports_get_cash_flow_cashout" method="GET" target="_blank">
+                                    <button type="submit" class="btn btn-sm btn-primary legitRipple"><i class="mr-1 icon-plus22"></i>Cash Out Report</button>
+                                    {{-- <input type="submit" class="btn btn-sm btn-primary legitRipple" value="Expenses Report" /> --}}
                                 </form>
                             </div>
                         </div>
