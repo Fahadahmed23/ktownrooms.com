@@ -2709,6 +2709,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.checkout = function() {
+
+
+
         // release rooms
         // check the user has paid or not
 
@@ -2728,6 +2731,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             });
             return;
         }
+
+        
+       
 
         $scope.nBooking.start_date = moment($scope.sdTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
         $scope.nBooking.end_date = moment($scope.edTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
@@ -2777,6 +2783,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             // delete $scope.tempBooking2.services;
         }
 
+     
         $scope.ajaxPost('bookings', {
             'booking': $scope.tempBooking,
             'formType': 'edit',
@@ -2788,6 +2795,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }).catch(function(e) {
             console.log(e);
         })
+    
     }
 
     $scope.changeStatus = function(booking, status) {
@@ -3484,8 +3492,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.current_timestamp = $scope.getCurrentTimestamp();
         $scope.Invoice = angular.copy(booking);
 
-        console.log('All Bookings');
-        console.log($scope.Invoice);
 
         $scope.Invoice.cservice_total = 0;
 
@@ -3933,7 +3939,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 
     $scope.savePayment = function() {
-        debugger;
+        
         if ($scope.formType != 'view') {
             $scope.myForm.$submitted = true;
 

@@ -8,7 +8,7 @@
             <label class="col-form-label">Amount</label>
             <input type="text" ng-model="Addmislisoin.Amount">
             <br>
-            <label for="">Complementary</label>
+            <label for="">Is BTC</label>
             <select id="is_complementary" name="is_complementary" ng-model="Addmislisoin.is_complementary">
                 <option value="1">Yes / True</option>
                 <option value="0">No / False</option>

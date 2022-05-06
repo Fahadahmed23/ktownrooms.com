@@ -589,10 +589,10 @@
                                                 <md-select name="corporate_client_namee" class="m-0" ng-model="nBooking.corporate_client_namee" ng-init="GetHotels()">
                                                     <md-option ng-repeat="x in client" ng-value='x.Id'>[[x.FullName]]</md-option>
                                                 </md-select> -->
-                                                <md-select md-no-asterisk name="corporate_client_name" class="m-0" ng-model="nBooking.invoice.corporate_client_name" placeholder="Select a Corporate Type" required>
+                                                <md-select md-no-asterisk name="corporate_client_id" class="m-0" ng-model="nBooking.invoice.corporate_client_id" placeholder="Select a Corporate Type" required>
                                                     <md-option ng-repeat="cc in clients" ng-value="cc.id">[[cc.FullName]]</md-option>
                                                 </md-select>
-                                                <div ng-messages="myForm.corporate_client_name.$error">
+                                                <div ng-messages="myForm.corporate_client_id.$error">
                                                     <div class="text-danger" ng-message="required">Please enter Client Name</div>
                                                 </div>
                                             </div>

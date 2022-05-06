@@ -960,6 +960,13 @@ class BookingsController extends Controller
      */
     public function store(AddBookingRequest $request)
     {
+
+        //echo "<pre>";
+        //var_dump($request);
+        //echo "</pre>";
+        //die;
+
+
         // dd($request->all());
         $this->booking = $request->booking;
         
@@ -1591,7 +1598,8 @@ class BookingsController extends Controller
             //$client = CorporateClient::where('FullName', 'LIKE', "%".$invoiceData['corporate_client_name']."%")->first();
             
             // Mr Optimist 2 May 2022 
-            $client = CorporateClient::where('id',$invoiceData['corporate_client_name'])->first();
+            //$client = CorporateClient::where('id',$invoiceData['corporate_client_name'])->first();
+            $client = CorporateClient::where('id',$invoiceData['corporate_client_id'])->first();
 
             /*
             if (empty($client)){
