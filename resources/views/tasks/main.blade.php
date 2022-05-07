@@ -93,12 +93,16 @@
                             <div id="todo" class="card-body dropdown-men dropdown-menu-sortable" style="display: block; position: static; width: 100%; margin-top: 0; float: none;">
                 
                                 <div id="[[task]]" ng-repeat="task in tasks | filter :{status:'todo'} " href="#" class="py-1 px-0  my-1 task-container">
+                                    
                                     <div class="row border-bottom pb-2">
                                         <div class="col-md-8">
                                             <span ng-if="[[task.booking_service.icon_class]]"><img src="[[task.booking_service.icon_class]]" width="40" height="40" alt="" class="img-thumnbnail img-fluid"></span>
                                             <strong class="d-inline-block">
                                                 [[task.service]]<span ng-if="[[task.room_id]]"> | [[task.room_title]] (Room# [[task.RoomNumber]])</span> <span ng-if="[[task.service_id]]"> | Qty :[[task.booking_service.times]]</span>
                                             </strong>
+
+                                            
+
                                         </div>
                                         <div class="col-md-4 text-right">
                                             <span class="cursor-pointer" data-popup="popover" title="" data-trigger="hover" data-html="true"
@@ -119,6 +123,14 @@
                                                 </div>
                                             </div>                                            
                                         </div>
+                                        <div class="col-md-12">
+                                            <label class="col-md-4 col-form-label"> BTC</label>
+                                            
+                                                <md-switch ng-model="nBooking.invoice.is_corporate" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
+                                         
+                                        </div>
+                                 
+
                                     </div>
                                 </div>
                             </div>

@@ -139,30 +139,34 @@ class CorporateClientController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
 
-        $clientExists = CorporateClient::where('FullName', $request->FullName)->get();
 
-            $client = new CorporateClient();
+        $clientExists = CorporateClient::where('hotel_id',$request['hotel_id'])->where('FullName', $request->FullName)->get();
+        $client = new CorporateClient();
 
-            // Mr Optimist 22 April 2022
-            $client->hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
-
-            $client->FullName = $request['FullName'];
-            $client->EmailAddress = $request['EmailAddress'];
-            $client->ContactNo = $request['ContactNo'];
-            $client->Status = $request['Status'];
+        // Mr Optimist 22 April 2022
+        $client->hotel_id = isset($request['hotel_id']) ? $request['hotel_id'] : 0;
+        $client->FullName = $request['FullName'];
+        $client->EmailAddress = $request['EmailAddress'];
+        $client->ContactNo = $request['ContactNo'];
+        $client->Status = $request['Status'];
 
         if(count($clientExists) == 0)
         {
-         $client->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => ["Client '$request->FullName' created successfully."],
-            'msgtype' => 'success',
-            'client' => $client
-        ]);
+
+
+            $client->save();
+
+
+
+
+            return response()->json([
+                'success' => true,
+                'message' => ["Client '$request->FullName' created successfully."],
+                'msgtype' => 'success',
+                'client' => $client
+            ]);
        }
        else
        {

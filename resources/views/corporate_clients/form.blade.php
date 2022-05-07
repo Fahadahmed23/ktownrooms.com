@@ -50,14 +50,14 @@
                 </div>
                 <div class="col-md-3">
                     <label class="col-lg-6 col-form-label">Hotel Name<span class="text-danger">*</span></label>
-                    {{-- <input name="FullName" maxlength="50"  type="text" class="form-control px-2 alphabets" ng-model="client.FullName" placeholder="Asad Ali" required> --}}
 
-                       <md-select name="FullName"  md-no-asterisk class="m-0" ng-model="clients.FullName" ng-init="GetHotels()">
-                           <md-option ng-repeat="x in hotallist" ng-value="x">[[x.hotel_name]]</md-option>
+                       <md-select name="hotel_id"  md-no-asterisk class="m-0" ng-model="client.hotel_id" ng-init="GetHotels()" required>
+                           <md-option ng-repeat="x in hotallist" ng-value="x.hotel_id">[[x.hotel_name]]</md-option>
                        </md-select>
-                       <div ng-messages="clientForm.FullName.$error" ng-if='clientForm.FullName.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
-                           <div class="text-danger" ng-message="required">Name is required</div>
-                       </div>
+
+                      <div ng-messages="clientForm.hotel_id.$error" ng-if='clientForm.hotel_id.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
+                        <div class="text-danger" ng-message="required">Hotel Name is required</div>
+                      </div>
                 </div>
                 <div class="col-md-3">
                   <label class="col-lg-6 col-form-label">Status <span class="text-danger">*</span></label>
@@ -75,4 +75,3 @@
 
 
 </div>
-

@@ -16,7 +16,7 @@ use App\Models\UserAddress;
 
 use App\Imports\ClientsImport;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Models\CorporateClient;
+use App\Models\GeneralClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +31,6 @@ class GeneralClientController extends Controller
 
     /**
      * Display base page for facilities.
-     *
      *
      * @return \Illuminate\Http\Response
      */
@@ -48,7 +47,7 @@ class GeneralClientController extends Controller
     public function getClients()
     {
 
-        // Mr optimist 21 April 2022a
+        // Mr optimist 21 April 2022
 
         $user = \Auth::user();
         $username = $user->name;
@@ -60,11 +59,18 @@ class GeneralClientController extends Controller
 
         foreach ($user->hotels->toArray() as $hotel) {
 
+            $inner_array = array();
+
             $h = Hotel::find($hotel['hotel_id']);
             $hotel_id   =   $h['id'];
             $hotel_name =   $h['HotelName'];
-            $hotel_array[$hotel_id] = $hotel_name;
+            //$hotel_array[$hotel_id] = $hotel_name;
             $hotel_ids[] = $hotel['hotel_id'];
+
+            $inner_array['hotel_id'] = $hotel_id;
+            $inner_array['hotel_name'] = $hotel_name;
+            $hotel_array[] = $inner_array;
+
         }
 
         if($role_name=='Admin') {
@@ -76,15 +82,24 @@ class GeneralClientController extends Controller
             $all_hotels = count($hotels);
             foreach($hotels as $single_hotel) {
 
+                $inn_array = array();
+
                 $hotel_id    = $single_hotel['id'];
                 $hotel_name  = $single_hotel['HotelName'];
-                $hotel_array[$hotel_id] = $hotel_name;
+
+                //$hotel_array[$hotel_id] = $hotel_name;
+
+                $inn_array['hotel_id'] = $hotel_id;
+                $inn_array['hotel_name'] = $hotel_name;
+                $hotel_array[] = $inn_array;
+
+
             }
 
-            $clients = CorporateClient::orderBY('FullName', 'ASC')->get();
+            $clients = GeneralClient::orderBY('name', 'ASC')->get();
         }
         else {
-            $clients = CorporateClient::whereIn('hotel_id',$hotel_ids)->orderBY('FullName', 'ASC')->get();
+            $clients = GeneralClient::whereIn('hotel_id',$hotel_ids)->orderBY('name', 'ASC')->get();
         }
 
         return response()->json([
@@ -105,7 +120,7 @@ class GeneralClientController extends Controller
         $userr = auth()->user();
 
         $hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
-        $clients = CorporateClient::where('hotel_id',$hotel_id)->where('status',1)->orderBY('FullName', 'ASC')->get();
+        $clients = GeneralClient::where('hotel_id',$hotel_id)->where('status',1)->orderBY('name', 'ASC')->get();
         // $clients = CorporateClient::where('hotel_id',$hotel_id)->orderBY('FullName', 'ASC')->get();
         return response()->json([
             'clients'=> $clients,
@@ -124,36 +139,42 @@ class GeneralClientController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
 
-        $clientExists = CorporateClient::where('FullName', $request->FullName)->get();
 
-            $client = new CorporateClient();
+        $clientExists = GeneralClient::where('hotel_id',$request['hotel_id'])->where('name', $request->FullName)->get();
+        $client = new GeneralClient();
 
-            // Mr Optimist 22 April 2022
-            $client->hotel_id = isset($request['hotel_id']) ?$request['hotel_id']:0;
-
-            $client->FullName = $request['FullName'];
-            $client->EmailAddress = $request['EmailAddress'];
-            $client->ContactNo = $request['ContactNo'];
-            $client->Status = $request['Status'];
+        // Mr Optimist 22 April 2022
+        $client->hotel_id = isset($request['hotel_id']) ? $request['hotel_id'] : 0;
+        $client->name = $request['name'];
+        $client->poc = $request['poc'];
+        $client->email = $request['email'];
+        $client->phone = $request['phone'];
+        $client->status = $request['status'];
+        //$client->action = $request['action'];
 
         if(count($clientExists) == 0)
         {
-         $client->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => ["Client '$request->FullName' created successfully."],
-            'msgtype' => 'success',
-            'client' => $client
-        ]);
+
+
+            $client->save();
+
+
+
+
+            return response()->json([
+                'success' => true,
+                'message' => ["Client '$request->name' created successfully."],
+                'msgtype' => 'success',
+                'client' => $client
+            ]);
        }
        else
        {
         return response()->json([
             'success' => false,
-            'message' => ["Client '$request->FullName' already exists."],
+            'message' => ["Client '$request->name' already exists."],
             'msgtype' => 'error',
             'client' => $client
             ]);
@@ -168,17 +189,19 @@ class GeneralClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-            $client = CorporateClient::find($request->id);
-
-            $client->FullName = $request['FullName'];
-            $client->EmailAddress = $request['EmailAddress'];
-            $client->ContactNo = $request['ContactNo'];
-            $client->Status = $request['Status'];
+            $client = GeneralClient::find($request->id);
+            $client->hotel_id = $request['hotel_id'];
+            $client->name = $request['name'];
+            $client->poc = $request['poc'];
+            $client->email = $request['email'];
+            $client->phone = $request['phone'];
+            $client->status = $request['status'];
+            //$client->action = $request['action'];
             $client->save($request->all());
 
         return response()->json([
             'success' => true,
-            'message' => ["Client '$request->FullName' updated successfully."],
+            'message' => ["Client '$request->name' updated successfully."],
             'msgtype' => 'success'
         ]);
     }
@@ -192,11 +215,11 @@ class GeneralClientController extends Controller
      */
     public function destroy(Request $request)
     {
-        $client = CorporateClient::where('id',$request->id)->first();
+        $client = GeneralClient::where('id',$request->id)->first();
         $client->delete();
         return response()->json([
             'success' => true,
-            'message' => ["Client ".$client->FullName."  deleted successfully."],
+            'message' => ["Client ".$client->name."  deleted successfully."],
             'msgtype' => 'success',
             'id' => $request->id
         ]);
@@ -227,10 +250,6 @@ class GeneralClientController extends Controller
             Excel::import(new ClientsImport, $excelfile);
             return back()->with('success', 'Excel Data Imported successfully.');
             dd("out");
-
-
-
-
 
 
 

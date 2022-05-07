@@ -1,7 +1,7 @@
 
 <div id="addNewClient" class="card" style="display:none;">
     <div class="card-header bg-white header-elements-inline">
-		  <h5 class="card-title" style="text-transform:capitalize;">[[room.id?'Update':'Add New']] Corporate Client</h5>
+		  <h5 class="card-title" style="text-transform:capitalize;">[[client.id?'Update':'Add New']] General Client</h5>
       <div class="header-elements">
         <div class="list-icons">
                   <a class="list-icons-item" data-action="collapse"></a>
@@ -15,30 +15,25 @@
                 <div class="col-md-12">
                   <legend class="font-weight-semibold text-uppercase font-size-sm border-0 ml-2 mt-3">
                     <i class="icon-city mr-2"></i>
-                    Corporate Client Information
+                    General Client Information
                   </legend>
                 </div>
 
-
                 <div class="col-md-3">
-                 <label class="col-lg-6 col-form-label">Name<span class="text-danger">*</span></label>
-                 {{-- <input name="FullName" maxlength="50"  type="text" class="form-control px-2 alphabets" ng-model="client.FullName" placeholder="Asad Ali" required> --}}
+                    <label class="col-lg-6 col-form-label">Name<span class="text-danger">*</span></label>
+                    <input name="name" maxlength="50"  type="text" class="form-control px-2 alphabets" ng-model="client.name" placeholder="Asad Ali" required>
 
-
-
-                 <md-select name="FullName"  md-no-asterisk class="m-0" ng-model="clients.FullName" ng-init="GetHotels()">
-                    <md-option ng-repeat="x in clients" ng-value="x">[[x.FullName]]</md-option>
-                </md-select>
-                <div ng-messages="clientForm.FullName.$error" ng-if='clientForm.FullName.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
-                    <div class="text-danger" ng-message="required">Name is required</div>
+                    <div ng-messages="clientForm.name.$error" ng-if='clientForm.name.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
+                     <div class="text-danger" ng-message="required">Name is required</div>
+                    </div>
                 </div>
-                </div>
+
 
                 <div class="col-md-3">
                  <label class="col-lg-6 col-form-label">Email <span class="text-danger">*</span></label>
-                 <input name="EmailAddress" maxlength="50"  type="email" class="form-control px-2 email_mask" ng-model="client.EmailAddress" placeholder="abc01@gmail.com" required>
+                 <input name="email" maxlength="50"  type="email" class="form-control px-2 email_mask" ng-model="client.email" placeholder="abc01@gmail.com" required>
 
-                 <div ng-messages="clientForm.EmailAddress.$error" ng-if='clientForm.EmailAddress.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
+                 <div ng-messages="clientForm.email.$error" ng-if='clientForm.email.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
                   <div class="text-danger" ng-message="required">Email is required</div>
                  </div>
 
@@ -46,17 +41,38 @@
 
                 <div class="col-md-3">
                   <label class="col-lg-6 col-form-label">Phone <span class="text-danger">*</span></label>
-                  <input name="ContactNo" type="text" class="form-control px-2 phone_us" ng-model="client.ContactNo" placeholder="0336-3636657" required>
+                  <input name="phone" type="text" class="form-control px-2 phone_us" ng-model="client.phone" placeholder="0336-3636657" required>
 
-                  <div ng-messages="clientForm.ContactNo.$error" ng-if='clientForm.ContactNo.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
+                  <div ng-messages="clientForm.phone.$error" ng-if='clientForm.phone.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
                     <div class="text-danger" ng-message="required">Phone is required</div>
                    </div>
 
                 </div>
 
                 <div class="col-md-3">
+                    <label class="col-lg-6 col-form-label">POC<span class="text-danger">*</span></label>
+                    <input name="poc" maxlength="50"  type="text" class="form-control px-2 alphabets" ng-model="client.poc" placeholder="Asad Ali" required>
+
+                    <div ng-messages="clientForm.poc.$error" ng-if='clientForm.poc.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
+                     <div class="text-danger" ng-message="required">POC is required</div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <label class="col-lg-6 col-form-label">Hotel Name<span class="text-danger">*</span></label>
+
+                       <md-select name="hotel_id"  md-no-asterisk class="m-0" ng-model="client.hotel_id" ng-init="GetHotels()" required>
+                           <md-option ng-repeat="x in hotallist" ng-value="x.hotel_id">[[x.hotel_name]]</md-option>
+                       </md-select>
+
+                      <div ng-messages="clientForm.hotel_id.$error" ng-if='clientForm.hotel_id.$touched || clientForm.$submitted' ng-cloak style="color:#e9322d;">
+                        <div class="text-danger" ng-message="required">Hotel Name is required</div>
+                      </div>
+                </div>
+                <div class="col-md-3">
                   <label class="col-lg-6 col-form-label">Status <span class="text-danger">*</span></label>
-                  <md-switch ng-model="client.Status" ng-true-value="1" ng-false-value="0" style="display:block" >
+                  <md-switch ng-model="client.status" ng-true-value="1" ng-false-value="0" style="display:block">
                   <span class="">Active</span>
                 </md-switch>
                 </div>
@@ -70,4 +86,3 @@
 
 
 </div>
-

@@ -530,6 +530,8 @@
                         <a href="/corporate_clients" class="dropdown-item">Corporate Client</a>
                         @endpermission
 
+                        <a href="/general_clients" class="dropdown-item">General Client</a>
+
                         @permission('can-view-customers')
                         <a href="/customers" class="dropdown-item">Customers</a>
                         @endpermission

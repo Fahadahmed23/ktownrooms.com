@@ -1,4 +1,4 @@
-app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder, $http) {
+app.controller('generalclientsCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilder, $http) {
 
     // variables
     $scope.clients = [];
@@ -28,7 +28,7 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
     }
 
     $scope.getClients = function() {
-        $scope.ajaxGet('getClients', {}, true)
+        $scope.ajaxGet('general_getClients', {}, true)
             .then(function(response) {
                 $scope.clients = response.clients;
             })
@@ -67,7 +67,7 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
         }
 
 
-        let formUrl = $scope.formType == "save" ? 'clients' : 'clients/' + $scope.client.id;
+        let formUrl = $scope.formType == "save" ? 'gen_clients' : 'gen_clients/' + $scope.client.id;
         $scope.ajaxPost(formUrl, $scope.client, false)
             .then(function(response) {
                 if ($scope.formType == "save") {
@@ -82,12 +82,13 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
             .catch(function(e) {
                 console.log(response);
             });
+
     }
 
     $scope.GetHotels= function()
     {
         // debugger;
-     $scope.ajaxGet('getClients', {}, true)
+     $scope.ajaxGet('general_getClients', {}, true)
      .then(function(response) {
          //debugger;
          $scope.client = response.clients;
@@ -117,7 +118,7 @@ app.controller('corporateclientsCtrl', function($scope, DTColumnDefBuilder, DTOp
             },
             callback: function(result) {
                 if (result) {
-                    $scope.ajaxPost('clients/del', { id: $scope.client.id }, false)
+                    $scope.ajaxPost('gen_clients/del', { id: $scope.client.id }, false)
                         .then(function(response) {
                             $scope.clients = $scope.clients.filter((client) => client.id != response.id);
                             window.scrollTop();
