@@ -11,7 +11,6 @@
 
 
 <div class="content" ng-controller='reportCtrl' ng-init='GetCashFlowOutReport()'>
-    <h2>Cash Flow Cash Out</h2>
     <div class="d-md-flex admin-panel-section align-items-md-start">
         <!-- Left sidebar component -->
         @include('reports_get_cash_flow_cashout.filter')
