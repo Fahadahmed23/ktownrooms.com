@@ -150,14 +150,23 @@ app.controller('taskmanagementCtrl', function($scope) {
 
     $scope.statusUpdatebtc = function(e) {
         debugger;
-        $scope.isSelected =e;
+         
+        if(e==false){
+            $scope.isSelected =1;
+
+        }
+        else if(e==true){
+            $scope.isSelected =0;
+
+        }
+        
         alert($scope.isSelected);
         $scope.ajaxPost('task/updateStatus', {
-            debugger,
+            
             task: column,
             source_status: column.status,
             target_status: target,
-            is_btc :is_btc
+            is_btc : $scope.isSelected
         }, false).then(function(response) {
             if (response.success) {
                 $scope.getTasks();

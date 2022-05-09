@@ -127,13 +127,13 @@
                                         <div class="col-md-12">
                                             <label class="col-md-4 col-form-label"> BTC</label>
                                             
-                                                <md-switch ng-model="is_btc"  style="display:block" ></md-switch>
+                                                <md-switch ng-model="data.isSelected" ng-click="statusUpdatebtc(data.isSelected)"  style="display:block" ></md-switch>
                                          
                                         </div>
                                  
-                                        <md-switch ng-model="data.isSelected" aria-label="Switch 1" ng-click="statusUpdatebtc(data.isSelected)" ng-class="data.cssClass">
-                                       
-  </md-switch>
+                                        <!-- <md-switch  aria-label="Switch 1"  ng-class="data.cssClass">
+                                        -->
+  <!-- </md-switch> -->
 
                                     </div>
                                 </div>
