@@ -127,7 +127,7 @@
                                         <div class="col-md-12">
                                             <label class="col-md-4 col-form-label"> BTC</label>
                                             
-                                                <md-switch ng-model="data.isSelected" ng-click="statusUpdatebtc(data.isSelected)"  style="display:block" ></md-switch>
+                                                <md-switch ng-model="task.isSelected" ng-class="task.cssClass" ng-click="statusUpdatebtc(task.isSelected ,task ,task.service_id)"  style="display:block" ></md-switch>
                                          
                                         </div>
                                  

@@ -77,7 +77,13 @@ app.controller('taskmanagementCtrl', function($scope) {
                 filters: $scope.filters,
             }, true)
             .then(function(response) {
-                $scope.tasks = response.tasks;
+                $scope.tasks = response?.tasks?.map(t => {
+                    return {
+                        ...t,
+                        isSelected: false,
+                        cssClass: 'md-amber'
+                    }
+                });
                 $scope.counts = response.counts;
                 $scope.user_is_admin = response.user_is_admin;
                 $scope.isSelectHotel = response.isSelectHotel;
@@ -143,12 +149,12 @@ app.controller('taskmanagementCtrl', function($scope) {
         })
     }
    
-    $scope.data = {
-        isSelected: false,
-        cssClass: 'md-amber'
-      };
+    // $scope.data = {
+    //     isSelected: false,
+    //     cssClass: 'md-amber'
+    //   };
 
-    $scope.statusUpdatebtc = function(e) {
+    $scope.statusUpdatebtc = function(e,column,service_id) {
         debugger;
          
         if(e==false){
@@ -159,13 +165,14 @@ app.controller('taskmanagementCtrl', function($scope) {
             $scope.isSelected =0;
 
         }
-        
+       
+        alert(service_id);
         alert($scope.isSelected);
         $scope.ajaxPost('task/updateStatus', {
             
             task: column,
             source_status: column.status,
-            target_status: target,
+            // target_status: target,
             is_btc : $scope.isSelected
         }, false).then(function(response) {
             if (response.success) {
@@ -176,5 +183,7 @@ app.controller('taskmanagementCtrl', function($scope) {
         })
     }
 
+
+    
    
 });
