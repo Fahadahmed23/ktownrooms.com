@@ -142,5 +142,30 @@ app.controller('taskmanagementCtrl', function($scope) {
             console.log(e);
         })
     }
+   
+    $scope.data = {
+        isSelected: false,
+        cssClass: 'md-amber'
+      };
 
+    $scope.statusUpdatebtc = function(e) {
+        debugger;
+        $scope.isSelected =e;
+        alert($scope.isSelected);
+        $scope.ajaxPost('task/updateStatus', {
+            debugger,
+            task: column,
+            source_status: column.status,
+            target_status: target,
+            is_btc :is_btc
+        }, false).then(function(response) {
+            if (response.success) {
+                $scope.getTasks();
+            }
+        }).catch(function(e) {
+            console.log(e);
+        })
+    }
+
+   
 });

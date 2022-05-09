@@ -539,6 +539,7 @@ Route::post('saveTask', 'BookingServicesController@saveTask');
 Route::get('tasks', 'TaskManagementController@index')->middleware('permission:can-view-task');
 Route::post('getTasks', 'TaskManagementController@getTasks')->middleware('permission:can-view-task');
 Route::get('get_dropdowns', 'TaskManagementController@getddData')->middleware('permission:can-view-task');
+//this
 Route::post('task/updateStatus', 'TaskManagementController@updateStatus')->middleware('permission:can-edit-task');
 
 // inventory
