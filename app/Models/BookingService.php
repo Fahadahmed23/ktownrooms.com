@@ -15,6 +15,13 @@ class BookingService extends Model
     ];
 
     protected $table = 'booking_service';
+
+    // Mr Optimist 9 May 2022
+    public function bookingservicebtc()
+    {
+        return $this->hasOne(BookingServiceBtc::class,'booking_service_id');
+    }
+
     public function room () {
         return $this->belongsTo(Room::class, 'room_id', 'id');
     }

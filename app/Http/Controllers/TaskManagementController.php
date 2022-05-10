@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Room;
 use App\Models\Task;
+use App\Models\BookingService;
+use App\Models\BookingServiceBtc;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -130,5 +132,56 @@ class TaskManagementController extends Controller
             'msgtype' => 'success'
         ]);
     }
+
+
+    // Mr Optimist 9 May 2022
+    public function updateStatusBtc(Request $request)
+    {
+
+
+    
+
+        $booking_service_id = $request->task['service_id'];
+        $booking_id =  $request->task['booking_id'];
+        $is_btc_status = $request->is_btc;
+
+        //return response()->json([
+        //    $booking_service_id,
+        //    $booking_id,
+        //    $is_btc_status
+        //]);
+
+        //DB::table('booking_service')->where('id',$booking_service_id)->update(array('is_btc' => $is_btc_status));  
+
+        //$booking_service = BookingService::find($booking_service_id);
+        //$booking_service->is_btc = $is_btc_status;
+        //$booking_service->save();
+
+        $BookingServiceBtcExist = BookingServiceBtc::where('booking_service_id',$booking_service_id)->count();
+
+
+        if ($BookingServiceBtcExist==0) {
+            $booking_service_btc = new BookingServiceBtc();
+        }
+
+        else {
+            $booking_service_btc = BookingServiceBtc::where('booking_service_id',$booking_service_id)->first();
+  
+        }
+        
+        $booking_service_btc->booking_service_id = $booking_service_id; 
+        $booking_service_btc->booking_id = $booking_id; 
+        $booking_service_btc->is_btc = $is_btc_status;
+        $booking_service_btc->save();
+        
+
+        return response()->json([
+            'success' => true,
+            'message' => ["BTC Status has been updated successfully"],
+            'msgtype' => 'success'
+        ]);
+    }
+
+
  
 }

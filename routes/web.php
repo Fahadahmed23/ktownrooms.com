@@ -542,6 +542,7 @@ Route::get('tasks', 'TaskManagementController@index')->middleware('permission:ca
 Route::post('getTasks', 'TaskManagementController@getTasks')->middleware('permission:can-view-task');
 Route::get('get_dropdowns', 'TaskManagementController@getddData')->middleware('permission:can-view-task');
 Route::post('task/updateStatus', 'TaskManagementController@updateStatus')->middleware('permission:can-edit-task');
+Route::post('task/updateStatusBtc', 'TaskManagementController@updateStatusBtc');
 
 // inventory
 Route::get('inventory', 'InventoryController@index')->middleware('permission:can-view-inventory');

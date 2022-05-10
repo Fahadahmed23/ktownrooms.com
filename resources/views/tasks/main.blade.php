@@ -124,9 +124,11 @@
                                             </div>                                            
                                         </div>
                                         <div class="col-md-12">
-                                            <label class="col-md-4 col-form-label"> BTC</label>
+                                            <label class="col-md-4 col-form-label">BTC</label>
                                             
-                                                <md-switch ng-model="nBooking.invoice.is_corporate" ng-true-value="1" ng-false-value="0" style="display:block"></md-switch>
+                                            <!-- <md-switch ng-model="data.isSelected" ng-click="statusUpdatebtc(data.isSelected,task)"  style="display:block" ></md-switch> -->
+                                            <md-switch ng-model="task.isSelected" ng-class="task.cssClass" ng-click="statusUpdatebtc(task.isSelected,task)"  style="display:block" ></md-switch>
+
                                          
                                         </div>
                                  

@@ -77,7 +77,15 @@ app.controller('taskmanagementCtrl', function($scope) {
                 filters: $scope.filters,
             }, true)
             .then(function(response) {
-                $scope.tasks = response.tasks;
+                //$scope.tasks = response.tasks;
+                $scope.tasks = response?.tasks?.map(t => {
+                    return {
+                        ...t,
+                        isSelected: false,
+                        cssClass: 'md-amber'
+                    }
+                });
+                
                 $scope.counts = response.counts;
                 $scope.user_is_admin = response.user_is_admin;
                 $scope.isSelectHotel = response.isSelectHotel;
@@ -135,12 +143,57 @@ app.controller('taskmanagementCtrl', function($scope) {
             source_status: column.status,
             target_status: target
         }, false).then(function(response) {
+            
             if (response.success) {
                 $scope.getTasks();
             }
         }).catch(function(e) {
             console.log(e);
         })
+    }
+    
+    //$scope.data = {
+    //    isSelected: false,
+    //    cssClass: 'md-amber'
+    //};
+
+    $scope.statusUpdatebtc = function(e,column) {
+         
+        if(e==false){
+            $scope.isSelected =1;
+
+        }
+        else if(e==true){
+            $scope.isSelected =0;
+
+        }
+        
+        console.log('Column');
+        console.log(column);
+        console.log('Selected  Status');
+        console.log($scope.isSelected);
+        
+        //alert($scope.isSelected);
+
+
+        
+        $scope.ajaxPost('task/updateStatusBtc', {
+            
+            task: column,
+            is_btc : $scope.isSelected
+
+        }, false).then(function(response) {
+            
+            //console.log('Update Status Btc');
+            console.log(response);
+            //if (response.success) {
+                //$scope.getTasks();
+            //}
+        }).catch(function(e) {
+            console.log(e);
+        })
+        
+    
     }
 
 });
