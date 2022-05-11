@@ -3769,6 +3769,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.default_rule_img = response.default_rule_img;
                 $scope.default_rule = response.default_rule;
                 $scope.invoice_details = response.booking.invoice_details;
+                $scope.miscellaneous_amounts = response.miscellaneous_amounts;
+                $scope.booking_no = response.booking.booking_no;
                 $scope.user.name = response.user.name;
                 $scope.old_status = $scope.fBooking.status;
                 $scope.checkin_rules = $scope.fBooking.hotel.checkin;
@@ -3823,6 +3825,16 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
             }
 
+            // Is Btc and Is not btc
+            console.log('BOOKING miscellaneous');
+            console.log($scope.miscellaneous_amounts);
+        
+            console.log('BOOKING Services');
+            console.log($scope.Invoice.services);
+            console.log('All BTC Services');
+            console.log($scope.Invoice.booking_services_btc);
+
+
 
             $scope.Invoice.service_total = 0;
             // Calculate Service Total
@@ -3833,7 +3845,6 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             $scope.inNewPage = true;
             $scope.urlparam = window.location.search.substring(1);
             $scope.invoice_no = $scope.urlparam.split('=')[1];
-            console.log($scope.invoice_no);
             setTimeout(() => {
                 $('li[data-inv="' + $scope.invoice_no + '"]').click()
             }, 500);
@@ -3847,6 +3858,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
         $scope.invoice_detail = angular.copy(inv);
         $scope.corporate_type_exists = false;
+        $scope.miscellaneous_amount = false;
         //console.log('Get Invoice Details');
         //console.log($scope.invoice_detail);
         $scope.urlparam = window.location.search.substring(1);
@@ -3855,9 +3867,29 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     }
 
+    $scope.getMiscellaneousAmountReceipt = function(ma) {
+
+        $scope.miscellaneous_amount = angular.copy(ma);
+        $scope.miscellaneous_amount.btc = ($scope.miscellaneous_amount.is_complementary==1) ? 'Yes' : 'No';
+        $scope.miscellaneous_amount.type = 'miscellaneous amount';
+        $scope.corporate_type_exists = false;
+        $scope.invoice_detail = true;
+       
+        //console.log('Get Invoice Details');
+        //console.log($scope.invoice_detail);
+        $scope.urlparam = window.location.search.substring(1);
+        console.log('URL PARAM PARAM');
+        console.log($scope.urlparam);
+
+
+    }
+
+
     $scope.showMainReceipt = function() {
         $scope.invoice_detail = false;
+        $scope.miscellaneous_amount = false;
         $scope.corporate_type_exists = false;
+
     }
 
     $scope.getCorporateDetailReceipt = function() {

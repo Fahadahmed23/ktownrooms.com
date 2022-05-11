@@ -1964,6 +1964,7 @@ class BookingsController extends Controller
     {
         $booking = $this->getBooking($id);
         $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
+        $miscellaneous_amounts = BookingMiscellaneousAmount::where('booking_id',$booking->id)->where('status',1)->get();
         $default_rule_img = DefaultRule::first()->picture;
         $default_rule = DefaultRule::first();
         $msg = "";
@@ -1997,6 +1998,7 @@ class BookingsController extends Controller
                 'default_rule'=>$default_rule,
                 'lockdown' => $this->lockdown && false,
                 'invoice_details'=>$invoice_details,
+                'miscellaneous_amounts'=>$miscellaneous_amounts,
                 'msg' => $msg
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         }
@@ -2462,7 +2464,7 @@ class BookingsController extends Controller
     }
 
     private function getBooking($id) {
-        $booking = Booking::with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){
+        $booking = Booking::with(['booking_occupants', 'agent', 'booking_third_party.details', 'booking_third_party.mapping_statuses', 'discount_request','discount_request.supervisor','services','booking_services_btc','hotel', 'hotel.checkin', 'hotel.checkout','customer' => function($q){
             $q->withCount('bookings');
         }, 'rooms', 'rooms.category','rooms.hotel', 'invoice', 'invoice_details', 'promotion','tax_rate','invoice.payment_mode', 'status_history'])->find($id);
         

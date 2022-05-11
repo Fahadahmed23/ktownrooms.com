@@ -50,6 +50,11 @@ class Booking extends Model
         ->where('booking_service.excludes','!=', 0)->where('booking_service.status','completed');
     }
 
+    public function booking_services_btc()
+    {
+        return $this->hasMany(BookingServiceBtc::class);
+    }
+
     public function invoice() {
         return $this->hasOne(BookingInvoice::class, 'booking_id', 'id');
     }
