@@ -3834,7 +3834,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             console.log('All BTC Services');
             console.log($scope.Invoice.booking_services_btc);
 
-
+            
 
             $scope.Invoice.service_total = 0;
             // Calculate Service Total
@@ -3905,7 +3905,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
     }
 
-
+   
 
     $scope.changePartialPayment = function(p) {
         if (p == '1') {

@@ -274,6 +274,7 @@ ul.invoice-list-ul {
                     <div class="iner-div"><strong>Receipt No:</strong> <span> </span></div>
                     <div class="iner-div"> <strong>Type: </strong> <span>Corporate</span> </div>
                     <div class="iner-div"><strong>Booking No: </strong> <span>[[Invoice.booking_no]]</span></div>
+                    <!-- <div class="iner-div"><strong>Booking No: </strong> <span>[[Invoice.booking_no]]</span></div> -->
                 </div>
             </li>
             <div class="inv_heading">
@@ -373,11 +374,13 @@ ul.invoice-list-ul {
                 </span>[[invoice_detail.invoice_no]]<br>
                 <br>
                 <br>
+
+                
                 <table ng-show="invoice_detail Invoice.is_corporate == '1' && Invoice.is_corporate != null"
                     class="receipt-orderlines corporate-type">
                     <tbody ng-if="invoice_detail.type == 'corporate'">
                         <tr>
-                            <th>Booking Type</th>
+                            <th>Booking Type1</th>
                             <td>[[Invoice.invoice.corporate_type_name ]]</td>
                         </tr>
                         <tr>
@@ -386,8 +389,85 @@ ul.invoice-list-ul {
                         </tr>
                     </tbody>
                 </table>
+
+
+
+                <!-- My work start -->
+                <table ng-show="invoice_detail Invoice.is_corporate == '1' && Invoice.is_corporate != null"
+                    class="receipt-orderlines corporate-type">
+                    <tbody ng-if="invoice_detail.type == 'corporate'">
+                        <td>
+                        
+                    <div  ng-repeat="item in Invoice.booking_services_btc">
+
+
+                        <div ng-show="[[item.is_btc]]==1"> 
+                        
+                            <div ng-repeat="service in Invoice.services">
+                                [[service |json]]
+                            <!-- <p>[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]</p>
+                                <p class="pos-right-align">[[service.amount | currency]]</p> -->
+                            
+                            </div>
+                        </div>
+                    </div>
+
+                  
+
+
+
+                        <!-- <tr ng-repeat="sds in Invoice.booking_services_btc">
+                        [[sds]]
+                        <tr >
+                            <th>[[sds.is_btc]]</th>
+                            <td>shoc</td>
+
+                        </tr>
+                         <tr ng-if ="ms.is_btc=='1'">    
+                        
+                        <tr ng-repeat="service in Invoice.services">
+                            <td ng-hide="ms.is_btc==1">[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]
+                            </td>
+                            <td class="pos-right-align" ng-if="ms.is_btc==1">[[service.amount | currency]]</td>
+                        </tr>
+                </tr> -->
+                    
+                   
+
+                    </tbody>
+                </table>
+
+
+
+                <!-- end my -->
+                <table ng-hide="invoice_detail" class="receipt-orderlines">
+                    <thead>
+                        <tr>
+                            <th>Room</th>
+                            <th>Rate</th>
+                            <th class="pos-right-align">shoaib(s)</th>
+                            <th class="pos-right-align">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="room in Invoice.rooms">
+                            <td>[[room.room_title]] (Room# [[room.RoomNumber]])</td>
+                            <td>[[room.pivot.room_charges_onbooking | currency]]</td>
+                            <td class="pos-center-align"> [[Invoice.invoice.nights]]</td>
+                            <td class="pos-center-align">[[Invoice.invoice.nights * room.pivot.room_charges_onbooking |
+                                currency]]</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+
+
+
+
+
+
                 <br ng-show="Invoice.is_corporate == '1'">
-                <br ng-show="Invoice.is_corporate == '1'">
+                <br ng-show="Invoice.is_corporate == '1 '">
                 <table ng-show="invoice_detail" class="receipt-orderlines invoice_detail_table">
                     <thead>
                         <tr>
