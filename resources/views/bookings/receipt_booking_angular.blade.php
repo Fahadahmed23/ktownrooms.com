@@ -391,24 +391,25 @@ ul.invoice-list-ul {
                 </table>
 
 
-
+ 
                 <!-- My work start -->
                 <table ng-show="invoice_detail Invoice.is_corporate == '1' && Invoice.is_corporate != null"
                     class="receipt-orderlines corporate-type">
                     <tbody ng-if="invoice_detail.type == 'corporate'">
                         <td>
-                        
-                    <div  ng-repeat="item in Invoice.booking_services_btc">
+ <?php $onr=0; ?>                       
+                    <div  ng-repeat="item in Invoice.booking_services_btc" >
+                        item.isb
+                        <div ng-if="[[item.is_btc]]==1">     
 
-
-                        <div ng-show="[[item.is_btc]]==1"> 
-                        
-                            <div ng-repeat="service in Invoice.services">
-                                [[service |json]]
-                            <!-- <p>[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]</p>
-                                <p class="pos-right-align">[[service.amount | currency]]</p> -->
-                            
+                            <div  ng-repeat="service in Invoice.services">
+                            <div>
+                             <p>[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]</p>
+                                <p class="pos-right-align">[[service.amount | currency]]</p> 
+                             </div>
                             </div>
+
+                            
                         </div>
                     </div>
 
@@ -436,11 +437,15 @@ ul.invoice-list-ul {
 
                     </tbody>
                 </table>
+                
+               
+
+
 
 
 
                 <!-- end my -->
-                <table ng-hide="invoice_detail" class="receipt-orderlines">
+                <!-- <table ng-hide="invoice_detail" class="receipt-orderlines">
                     <thead>
                         <tr>
                             <th>Room</th>
@@ -458,15 +463,28 @@ ul.invoice-list-ul {
                                 currency]]</td>
                         </tr>
                     </tbody>
-                </table>
-                
+                </table> -->
+                <!-- <div class="inv_heading">
+                <h4>Miscellaneous Amount</h4>
+            </div>
+            <div class="inv_btn [[ma.id == miscellaneous_amount.id?'active':'']]" ng-repeat="ma in miscellaneous_amounts"
+                ng-click="getMiscellaneousAmountReceipt(ma)">
+                <div class="inv-detail">
+                  
+                    <div class="iner-div"><strong>Name: </strong><span>[[ma.name]]</span> </div>
+                    <div class="iner-div"><strong>Amount: </strong> <span>[[ma.amount]]</span></div>
+                </div>
+                </div>
+       
+    </div>
+                -->
 
 
 
 
 
 
-                <br ng-show="Invoice.is_corporate == '1'">
+                <!-- <br ng-show="Invoice.is_corporate == '1'"> -->
                 <br ng-show="Invoice.is_corporate == '1 '">
                 <table ng-show="invoice_detail" class="receipt-orderlines invoice_detail_table">
                     <thead>
@@ -481,10 +499,10 @@ ul.invoice-list-ul {
                             <th ng-if="invoice_detail.rate" class="text-right">Rate</th>
                             <th ng-if="miscellaneous_amount.type == 'miscellaneous amount'">Rate</th>
                             <!-- <th ng-if="invoice_detail.type != 'corporate'">Total</th> -->
-                            {{-- 
+                            <!-- {{-- 
                      <th ng-if="invoice_detail.type == 'payment'">Total</th>
                      <th ng-if="invoice_detail.type == 'refund'|| invoice_detail.type == 'early checkin' || invoice_detail.type == 'late checkout' || invoice_detail.type == 'checkout '">Total</th>
-                     --}}
+                     --}} -->
                         </tr>
                     </thead>
                     <tbody>
@@ -543,6 +561,30 @@ ul.invoice-list-ul {
                         </tr>
                     </tbody>
                 </table>
+                <br>
+<!-- My Work Start -->
+
+                <div class="inv_heading">
+                    <h4>Miscellaneous Amount</h4>
+                </div>
+                <table class="receipt-orderlines">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Is Btc</th>
+                            <th class="pos-right-align">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="ma in miscellaneous_amounts">
+                            <td><span>[[ma.name]]</span></td>
+                           
+                            <td><span>[[ma.is_btc]]</span></td>
+                            <td><span>[[ma.amount]]</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
                 <br>
                 <table ng-hide="invoice_detail" class="receipt-orderlines" ng-if="Invoice.services.length > 0">
                     <thead>
