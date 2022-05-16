@@ -784,11 +784,12 @@ class ReportControllerTwo extends Controller
               $miscellaneous_amount_extra = 0;
               foreach($obj->booking_miscellaneous_amount as $single_miscellaneous){
 
-                $miscellaneous_amount_extra += $single_miscellaneous['amount'];
+                //$miscellaneous_amount_extra += $single_miscellaneous['amount'];
+                $miscellaneous_amount_extra += isset($single_miscellaneous['amount']) ? $single_miscellaneous['amount'] : 0;
 
               }
 
-              $obj->miscellaneous_amount = $miscellaneous_amount_extra;
+              $obj->miscellaneous_amount = isset($miscellaneous_amount_extra) ? $miscellaneous_amount_extra : 0;
               unset($obj->booking_miscellaneous_amount);
 
             }
@@ -1463,11 +1464,13 @@ class ReportControllerTwo extends Controller
               $miscellaneous_amount_extra = 0;
               foreach($obj->booking_miscellaneous_amount as $single_miscellaneous){
 
-                $miscellaneous_amount_extra += $single_miscellaneous['amount'];
+               
+                //$miscellaneous_amount_extra += $single_miscellaneous['amount'];
+                $miscellaneous_amount_extra += isset($single_miscellaneous['amount']) ? $single_miscellaneous['amount'] : 0;
 
               }
 
-              $obj->miscellaneous_amount = $miscellaneous_amount_extra;
+              $obj->miscellaneous_amount = isset($miscellaneous_amount_extra) ? $miscellaneous_amount_extra : 0;            
               unset($obj->booking_miscellaneous_amount);
 
             }
@@ -3966,13 +3969,14 @@ class ReportControllerTwo extends Controller
               });
 
               $miscellaneous_amount_extra = 0;
-              foreach($obj->booking_miscellaneous_amount as $single_miscellaneous){
+              foreach($obj->booking_miscellaneous_amount as $single_miscellaneous) {
 
-                $miscellaneous_amount_extra += $single_miscellaneous['amount'];
+                //$miscellaneous_amount_extra += $single_miscellaneous['amount'];
+                $miscellaneous_amount_extra += isset($single_miscellaneous['amount']) ? $single_miscellaneous['amount'] : 0;
 
               }
 
-              $obj->miscellaneous_amount = $miscellaneous_amount_extra;
+              $obj->miscellaneous_amount = isset($miscellaneous_amount_extra) ? $miscellaneous_amount_extra : 0;
               unset($obj->booking_miscellaneous_amount);
             }
             else {
