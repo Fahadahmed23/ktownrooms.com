@@ -665,12 +665,30 @@ class ReportControllerTwo extends Controller
       $date_two_next = $next_date.' 06:00';
 
 
-
+      /*
       $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
         ->where('hotel_id',$hotel_id)
         ->whereIn('status', ['CheckedIn','CheckedOut'])
         ->whereBetween('checkin_time', [$date_one,$date_two_next])
         ->orderBy('created_at', 'desc')->get();
+
+      **/
+
+      $booking1 = Booking::with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
+        ->where('hotel_id',$hotel_id)
+        ->whereIn('status', ['CheckedIn','CheckedOut'])
+        ->whereBetween('checkin_time', [$date_one,$date_two_next])
+        ->orderBy('created_at', 'desc')->get();
+
+
+      $booking2 = Booking::with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
+      ->where('hotel_id',$hotel_id)
+      ->where('status', 'CheckedIn')
+      ->where('BookingFrom', '<=', $loop_date)
+      ->where('BookingTo', '>=', $loop_date)
+      ->orderBy('created_at', 'desc')->get();
+
+      $bookings = $booking1->merge($booking2);
 
       if(!empty($bookings)) {
 

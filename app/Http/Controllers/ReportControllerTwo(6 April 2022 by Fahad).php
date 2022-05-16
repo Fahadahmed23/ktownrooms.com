@@ -473,7 +473,7 @@ class ReportControllerTwo extends Controller
     $total_checkedins_today = 0;
     $total_checkedouts_today = 0;
 
-    if(preg_match('/am$/i', $newDateTime)){
+    if(preg_match('/am$/i', $newDateTime)) {
 
       //$previous_date =  date('Y-m-d', strtotime(' -1 day'));
 
