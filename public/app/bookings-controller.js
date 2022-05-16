@@ -3801,7 +3801,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.findBooking(booking_id, function() {
             // $scope.invoice_details = $scope.invoice_details;
             $scope.Invoice = $scope.fBooking;
-
+           
             // Mr Optimist 23 Nov 2021
             $scope.Invoice.cservice_total = 0;
             if ($scope.Invoice.is_corporate == 1) {

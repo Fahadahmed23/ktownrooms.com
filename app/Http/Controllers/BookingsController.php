@@ -1963,6 +1963,26 @@ class BookingsController extends Controller
     public function show($id)
     {
         $booking = $this->getBooking($id);
+
+        if(count($booking->services) > 0){
+
+            foreach($booking->services as $single_service_key => $single_service){
+
+                $booking->services[$single_service_key]["is_btc"] = 0;
+                if(count($booking->booking_services_btc) > 0){
+                    foreach($booking->booking_services_btc as $skb => $single_service_btc){
+            
+                        if($single_service_btc->booking_service_id==$single_service->id && $single_service_btc->is_btc==1){
+                            $booking->services[$single_service_key]["is_btc"] = 1;
+                        }
+
+                    }
+
+                }
+            }        
+        }
+        
+
         $invoice_details = InvoiceDetail::where('booking_id',$booking->id)->get();
         $miscellaneous_amounts = BookingMiscellaneousAmount::where('booking_id',$booking->id)->where('status',1)->get();
         $default_rule_img = DefaultRule::first()->picture;
