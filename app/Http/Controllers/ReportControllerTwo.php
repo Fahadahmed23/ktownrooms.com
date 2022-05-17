@@ -1354,12 +1354,32 @@ class ReportControllerTwo extends Controller
       $rooms_adr = 0;
 
 
-
+      /*
       $rooms_occupied = Booking::with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
       ->where('hotel_id',$hotel_id)
       ->whereIn('status', ['CheckedIn','CheckedOut'])
       ->whereBetween('checkin_time', [$date_one,$date_two_next])
       ->orderBy('created_at', 'desc')->get();
+
+      **/
+
+      $rooms_occupied1 = Booking::with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
+      ->where('hotel_id',$hotel_id)
+      ->whereIn('status', ['CheckedIn','CheckedOut'])
+      ->whereBetween('checkin_time', [$date_one,$date_two_next])
+      ->orderBy('created_at', 'desc')->get();
+
+      $rooms_occupied2 = Booking::with(['hotel','rooms', 'rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
+      ->where('hotel_id',$hotel_id)
+      ->where('status', 'CheckedIn')
+      ->where('BookingFrom', '<=', $loop_date)
+      ->where('BookingTo', '>=', $loop_date)
+      ->orderBy('created_at', 'desc')->get();
+
+
+      $rooms_occupied = $rooms_occupied1->merge($rooms_occupied2);
+
+      
 
       /*
       $rooms_occupied =  Booking::with(['rooms'])->where('hotel_id', $hotel_id)
@@ -2183,16 +2203,52 @@ class ReportControllerTwo extends Controller
       ->orderBy('id','desc')->get();
 
       $user_opening_balance = count($u)>0 ? $u[0]['opening_balance'] :0;
-
+      
+      /*
       $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice','tax_rate','created_by_user'])
       ->where('hotel_id',$hotel_id)
       ->whereIn('status', ['CheckedIn','CheckedOut'])
       ->whereBetween('checkin_time', [$date_one,$date_two_next])
       ->orderBy('created_at', 'desc')->get();
-
+      **/
     
-      // Bookings Mapping
-      if(!empty($bookings)){
+      
+      /*
+      $booking1 = Booking::with(['hotel','rooms', 'rooms.category','services','invoice','invoice_details','tax_rate','created_by_user'])
+      ->where('hotel_id',$hotel_id)
+      ->whereIn('status', ['CheckedIn','CheckedOut'])
+      ->whereBetween('checkin_time', [$date_one,$date_two_next])
+      ->orderBy('created_at', 'desc')->get();
+
+      $booking2 = Booking::with(['hotel','rooms', 'rooms.category','services','invoice','invoice_details','tax_rate','created_by_user'])
+      ->where('hotel_id',$hotel_id)
+      ->where('status', 'CheckedIn')
+      ->whereIn('status', ['CheckedIn','CheckedOut'])
+      ->where('BookingFrom', '<=', $loop_date)
+      ->where('BookingTo', '>=', $loop_date)
+      ->orderBy('created_at', 'desc')->get();
+
+      $bookings = $booking1->merge($booking2);
+
+      **/
+      
+      $bookings = Booking::whereHas('invoice_details', function ($q1) use($date_one,$date_two_next)  {
+
+        $q1->where('type','payment');
+        $q1->whereBetween('created_at', [$date_one,$date_two_next]);
+
+      })->with(['hotel','rooms', 'rooms.category','services','invoice','invoice_details'=> function($aa){
+        $aa->where('type','payment');
+        $aa->with('created_by_user:id,name');  
+      
+      },'tax_rate','created_by_user'])
+      ->where('hotel_id',$hotel_id)
+      ->whereIn('status', ['CheckedIn','CheckedOut'])
+      //->whereBetween('checkin_time', [$date_one,$date_two_next])
+      ->orderBy('created_at','desc')->get();
+
+       // Bookings Mapping
+       if(!empty($bookings)){
 
 
         $count = $bookings->count();
@@ -2220,6 +2276,16 @@ class ReportControllerTwo extends Controller
 
             $obj->roomNumber =$ex->rooms[0]->RoomNumber;
 
+            $obj->invoice_details = $ex->invoice_details->map(function ($invoice_detail) {
+
+              $obj['amount'] = $invoice_detail->amount;
+              $obj['created_at'] = $invoice_detail->created_at;
+              $obj['created_by_user'] = $invoice_detail->created_by_user->name;
+              return $obj;
+            });
+
+            //$obj->invoice_details = $ex->invoice_details;
+
             $obj->checkin_time = $ex->checkin_time ?? "";
             $obj->checkout_time = $ex->checkout_time ?? "";
 
@@ -2235,21 +2301,63 @@ class ReportControllerTwo extends Controller
 
           });
 
+          $invoice_details_arr = array();
+
           if(count($bookings_map) > 0){
-            foreach($bookings_map as $bookings_map_single){
+            foreach($bookings_map as $bookings_map_single) {
 
-              //$net_total_revenue += $bookings_map_single->net_total;
-              //$payment_amount_revenue += $bookings_map_single->payment_amount;
-              //$balance_outstanding_revenue += $bookings_map_single->balance_outstanding;
 
-              $total_amount_received += $bookings_map_single->payment_amount;
+              foreach($bookings_map_single->invoice_details as $single_invoicedetail){
+                  $inner_id_arr = array();
+
+                  $inner_id_arr['id'] = $bookings_map_single->id;
+                  $inner_id_arr['booking_no']  = $bookings_map_single->booking_no ?? "";
+                  $inner_id_arr['booking_date']  = $single_invoicedetail['created_at'] ?? "";
+                  $inner_id_arr['customer_first_name']  = $bookings_map_single->customer_first_name ?? "";
+                  $inner_id_arr['customer_last_name']  = $bookings_map_single->customer_last_name ?? "";
+                  $inner_id_arr['HotelName'] = $bookings_map_single->HotelName ?? "";
+                  $inner_id_arr['rooms'] = $bookings_map_single->rooms;
+                  $inner_id_arr['opening_balance'] = $bookings_map_single->opening_balance;
+                  $inner_id_arr['cash_in'] = $bookings_map_single->cash_in;
+                  $inner_id_arr['roomNumber'] = $bookings_map_single->roomNumber;
+                  $inner_id_arr['checkin_time'] = $bookings_map_single->checkin_time;
+                  $inner_id_arr['checkout_time'] = $bookings_map_single->checkout_time;
+                  $inner_id_arr['BookingDate'] = $single_invoicedetail['created_at'] ?? "";
+                  $inner_id_arr['BookingFrom'] = $bookings_map_single->BookingFrom;
+                  $inner_id_arr['BookingTo'] = $bookings_map_single->BookingTo;
+                  $inner_id_arr['net_total'] = $bookings_map_single->net_total;
+                  $inner_id_arr['payment_amount'] = $single_invoicedetail['amount'];
+                  $inner_id_arr['user_name'] = $single_invoicedetail['created_by_user'] ?? "";
+                  $inner_id_arr['status'] = $bookings_map_single->status;
+
+                  $invoice_details_arr[] = $inner_id_arr;
+
+              }
 
             }
           }
 
+          
 
-          $bookings_exec = $bookings_map;
-          //$bookings_exec = [];
+          if(count($invoice_details_arr) > 0){
+            foreach($invoice_details_arr as $bookings_map_single){
+
+              //$net_total_revenue += $bookings_map_single->net_total;
+              //$payment_amount_revenue += $bookings_map_single->payment_amount;
+              //$balance_outstanding_revenue += $bookings_map_single->balance_outstanding;
+             
+              //$total_amount_received += $bookings_map_single->payment_amount;
+              $total_amount_received += $bookings_map_single['payment_amount'];
+
+            }
+          }
+
+        
+
+
+          //$bookings_exec = $bookings_map;
+
+          $bookings_exec = $invoice_details_arr;
 
         }
         else {
@@ -2261,7 +2369,7 @@ class ReportControllerTwo extends Controller
         $bookings_exec = [];
       }
 
-    
+
     
       $bookings_exec_array = array();
       

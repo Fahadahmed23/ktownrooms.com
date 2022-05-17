@@ -9,7 +9,7 @@
         <div class="card bookingTable">
             <div class="card-header header-elements-inline">
                 <h5 class="card-title">
-                    CashFlow Cash In
+                    CashFlow Cash Out
                         <span><a href="#" class="" ng-click="showFilter()">
                             <i id="" class="icon-search4 " style="font-size: 12px;"></i>
                        </a></span>

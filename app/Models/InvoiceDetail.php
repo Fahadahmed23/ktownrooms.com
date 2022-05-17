@@ -24,4 +24,10 @@ class InvoiceDetail extends Model
             'created_by'=> $created_by,    
         ]);
     }
+
+    // Mr Optimist 18-05-2022
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }
