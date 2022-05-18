@@ -405,7 +405,7 @@ ul.invoice-list-ul {
                         <tr ng-repeat="ma in miscellaneous_amounts">
                             <td ng-if="ma.is_complementary=='1'"><span>[[ma.name]]</span></td>
                             <td ng-if="ma.is_complementary=='1'"><span>Yes</span></td>
-                            <td ng-if="ma.is_complementary=='1'"><span>[[ma.amount]]</span></td>
+                            <td class="pos-right-align"ng-if="ma.is_complementary=='1'"><span>[[ma.amount | currency]]</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -426,12 +426,12 @@ ul.invoice-list-ul {
                             <td ng-if="service.is_btc== '1'" class="pos-right-align">[[service.amount | currency]]</td>
                         </tr>
                     </tbody>
-                    {{-- <tfoot ng-if="invoice_detail.type == 'corporate'">
+                    <tfoot ng-if="invoice_detail.type == 'corporate'">
                         <tr>
                             <th class="pos-right-align">Total:</th>
                             <th class="pos-right-align">[[Invoice.service_total | currency]]</th>
                         </tr>
-                    </tfoot> --}}
+                    </tfoot>
                 </table>
 
 
@@ -532,7 +532,7 @@ ul.invoice-list-ul {
                         <tr ng-repeat="mi in miscellaneous_amounts">
                             <td ng-if="[[mi.is_complementary]]=='0'"><span>[[mi.name]]</span></td>
                             <td ng-if="[[mi.is_complementary]]=='0'"><span>No</span></td>
-                            <td ng-if="[[mi.is_complementary]]=='0'"><span>[[mi.amount]]</span></td>
+                            <td class="pos-right-align" ng-if="[[mi.is_complementary]]=='0'"><span>[[mi.amount | currency]]</span></td>
                         </tr>
                     </tbody>
                 </table>
