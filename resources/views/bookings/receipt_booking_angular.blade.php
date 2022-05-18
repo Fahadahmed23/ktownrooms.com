@@ -1,5 +1,5 @@
 {{-- [[miscellaneous_amounts]] --}}
-[[Invoice.services]]
+{{-- [[Invoice.services]] --}}
 <style>
 .posimg {
     width: 100%;
@@ -403,11 +403,9 @@ ul.invoice-list-ul {
                     <tbody ng-if="invoice_detail.type == 'corporate'">
 
                         <tr ng-repeat="ma in miscellaneous_amounts">
-                            <div ng-if="[[ma.is_complementary]]=='1'">
-                            <td><span>[[ma.name]]</span></td>
-                            <td><span>[[ma.is_btc]]</span></td>
-                            <td><span>[[ma.amount]]</span></td>
-                            </div>
+                            <td ng-if="ma.is_complementary=='1'"><span>[[ma.name]]</span></td>
+                            <td ng-if="ma.is_complementary=='1'"><span>Yes</span></td>
+                            <td ng-if="ma.is_complementary=='1'"><span>[[ma.amount]]</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -423,19 +421,17 @@ ul.invoice-list-ul {
                     </thead>
                     <tbody ng-if="invoice_detail.type == 'corporate'">
                         <tr ng-repeat="service in Invoice.services">
-                            <div ng-if="service.is_btc=='1'">
-                            <td>[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]
+                            <td ng-if="service.is_btc== '1'">[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]
                             </td>
-                            <td class="pos-right-align">[[service.amount | currency]]</td>
-                            </div>
+                            <td ng-if="service.is_btc== '1'" class="pos-right-align">[[service.amount | currency]]</td>
                         </tr>
                     </tbody>
-                    <tfoot ng-if="invoice_detail.type == 'corporate'">
+                    {{-- <tfoot ng-if="invoice_detail.type == 'corporate'">
                         <tr>
                             <th class="pos-right-align">Total:</th>
                             <th class="pos-right-align">[[Invoice.service_total | currency]]</th>
                         </tr>
-                    </tfoot>
+                    </tfoot> --}}
                 </table>
 
 
@@ -534,11 +530,9 @@ ul.invoice-list-ul {
                     <tbody>
 
                         <tr ng-repeat="mi in miscellaneous_amounts">
-                            <div ng-if="[[mi.is_complementary]]=='0'">
-                            <td><span>[[mi.name]]</span></td>
-                            <td><span>[[mi.is_btc]]</span></td>
-                            <td><span>[[mi.amount]]</span></td>
-                            </div>
+                            <td ng-if="[[mi.is_complementary]]=='0'"><span>[[mi.name]]</span></td>
+                            <td ng-if="[[mi.is_complementary]]=='0'"><span>No</span></td>
+                            <td ng-if="[[mi.is_complementary]]=='0'"><span>[[mi.amount]]</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -553,19 +547,19 @@ ul.invoice-list-ul {
                     </thead>
                     <tbody>
                         <tr ng-repeat="service in Invoice.services">
-                            <div ng-if = "service.is_btc == '0'">
-                                <td>[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]
+                            <div>
+                                <td ng-if = "service.is_btc == '0'">[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]
                                 </td>
-                                <td class="pos-right-align">[[service.amount | currency]]</td>
+                                <td ng-if = "service.is_btc == '0'" class="pos-right-align">[[service.amount | currency]]</td>
                             </div>
                         </tr>
                     </tbody>
-                    <tfoot>
+                    {{-- <tfoot>
                         <tr>
                             <th class="pos-right-align">Total:</th>
                             <th class="pos-right-align">[[Invoice.service_total | currency]]</th>
                         </tr>
-                    </tfoot>
+                    </tfoot> --}}
                 </table>
                 <br>
                 <table ng-hide="invoice_detail" class="receipt-total">
