@@ -1,4 +1,5 @@
-[[miscellaneous_amounts]]
+{{-- [[miscellaneous_amounts]] --}}
+[[Invoice.services]]
 <style>
 .posimg {
     width: 100%;
@@ -344,8 +345,7 @@ ul.invoice-list-ul {
                     class="fa fa-close"></i></button>
         </div>
         <div class="pos-receipt-container pt-3">
-            <div
-                ng-show="Invoice.invoice.is_corporate == '0' && Invoice.invoice.net_total > Invoice.invoice.payment_amount && 1==2">
+            <div ng-show="Invoice.invoice.is_corporate == '0' && Invoice.invoice.net_total > Invoice.invoice.payment_amount && 1==2">
                 @include('bookings.partial_payment_form')
                 <button type="button" ng-click="checkoutFromReceipt()" class="btn btn-success"><i
                         class=" mr-2 icon-floppy-disk mr-2"></i>Pay and Checkout</button>
@@ -372,8 +372,6 @@ ul.invoice-list-ul {
                     [[Invoice.rooms[0].room_title]] (Room# [[Invoice.rooms[0].RoomNumber]])</div>
                 <span ng-if="invoice_detail.invoice_no" class="boldre">Receipt No:
                 </span>[[invoice_detail.invoice_no]]<br>
-                <br>
-                <br>
 
                 {{-- Corporate Type Invoice Start --}}
                 <table ng-hide="invoice_detail Invoice.is_corporate == '1' && Invoice.is_corporate != null"
@@ -393,15 +391,16 @@ ul.invoice-list-ul {
                 <br>
                 <br>
                 {{-- My Work Start Cor Report --}}
-                <table ng-show="invoice_detail" class="receipt-orderlines">
-                    <thead>
+                <table ng-show="invoice_detail Invoice.is_corporate == '1' && Invoice.is_corporate != null"
+                    class="receipt-orderlines corporate-type">
+                    <thead ng-if="invoice_detail.type == 'corporate'">
                         <tr>
                             <th>Type</th>
                             <th>Is Btc</th>
                             <th class="pos-right-align">Amount</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody ng-if="invoice_detail.type == 'corporate'">
 
                         <tr ng-repeat="ma in miscellaneous_amounts">
                             <div ng-if="[[ma.is_complementary]]=='1'">
@@ -412,26 +411,26 @@ ul.invoice-list-ul {
                         </tr>
                     </tbody>
                 </table>
-                <br>
-                <br>
 
-                <table ng-show="invoice_detail" class="receipt-orderlines" ng-if="Invoice.services.length > 0">
-                    <thead>
+
+                <table ng-show="invoice_detail Invoice.is_corporate == '1' && Invoice.is_corporate != null"
+                    class="receipt-orderlines corporate-type">
+                    <thead ng-if="invoice_detail.type == 'corporate'">
                         <tr>
                             <th>Services</th>
                             <th class="pos-right-align">Amount</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody ng-if="invoice_detail.type == 'corporate'">
                         <tr ng-repeat="service in Invoice.services">
-                            <div ng-if="[[service.is_btc]]=='1'">
+                            <div ng-if="service.is_btc=='1'">
                             <td>[[service.excludes]] [[service.service_name]] @ [[service.service_charges | currency]]
                             </td>
                             <td class="pos-right-align">[[service.amount | currency]]</td>
                             </div>
                         </tr>
                     </tbody>
-                    <tfoot>
+                    <tfoot ng-if="invoice_detail.type == 'corporate'">
                         <tr>
                             <th class="pos-right-align">Total:</th>
                             <th class="pos-right-align">[[Invoice.service_total | currency]]</th>
@@ -523,7 +522,7 @@ ul.invoice-list-ul {
                     </tbody>
                 </table>
                 <br>
-<!-- My Work Start Main Report-->
+                <!-- My Work Start Main Report-->
                 <table ng-hide="invoice_detail" class="receipt-orderlines">
                     <thead>
                         <tr>
@@ -534,11 +533,11 @@ ul.invoice-list-ul {
                     </thead>
                     <tbody>
 
-                        <tr ng-repeat="ma in miscellaneous_amounts">
-                            <div ng-if="[[ma.is_complementary]]=='0'">
-                            <td><span>[[ma.name]]</span></td>
-                            <td><span>[[ma.is_btc]]</span></td>
-                            <td><span>[[ma.amount]]</span></td>
+                        <tr ng-repeat="mi in miscellaneous_amounts">
+                            <div ng-if="[[mi.is_complementary]]=='0'">
+                            <td><span>[[mi.name]]</span></td>
+                            <td><span>[[mi.is_btc]]</span></td>
+                            <td><span>[[mi.amount]]</span></td>
                             </div>
                         </tr>
                     </tbody>
