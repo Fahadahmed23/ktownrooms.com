@@ -2237,9 +2237,10 @@ class ReportControllerTwo extends Controller
         $q1->where('type','payment');
         $q1->whereBetween('created_at', [$date_one,$date_two_next]);
 
-      })->with(['hotel','rooms', 'rooms.category','services','invoice','invoice_details'=> function($aa){
+      })->with(['hotel','rooms', 'rooms.category','services','invoice','invoice_details'=> function($aa) use($date_one,$date_two_next){
         $aa->where('type','payment');
-        $aa->with('created_by_user:id,name');  
+        $aa->with('created_by_user:id,name');
+        $aa->whereBetween('created_at', [$date_one,$date_two_next]);
       
       },'tax_rate','created_by_user'])
       ->where('hotel_id',$hotel_id)
