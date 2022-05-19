@@ -1,4 +1,4 @@
-[[miscellaneous_amounts]]
+
 <style>
 .posimg {
     width: 100%;
@@ -360,7 +360,9 @@ ul.invoice-list-ul {
                 <br>
                 <br><span class="boldre">Booking # </span><span class="ordernum">[[Invoice.booking_no]]</span>
                 <br>
-                <span class="boldre">Date &amp; Time: </span>[[current_timestamp]]
+                <span ng-show="!invoice_detail" class="boldre">Date &amp; Time: [[current_timestamp]]</span>
+                <span ng-show="invoice_detail" class="boldre">Date &amp; Time: [[invoice_detail.created_at]]</span>
+
                 <br>
                 <span class="boldre">Customer: </span>[[Invoice.customer.FirstName+'
                 '+Invoice.customer.LastName]]</span><br>

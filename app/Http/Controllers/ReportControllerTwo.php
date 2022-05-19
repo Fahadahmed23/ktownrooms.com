@@ -2178,12 +2178,31 @@ class ReportControllerTwo extends Controller
 
       // $receiving_date = $request->receiving_date;
       $date_one = $loop_date.' 06:01:00';
+
+      //echo "<pre>";
+      //var_dump("Date One");
+      //var_dump($date_one);
+      
+      //$date_one_new = date('Y-m-d H:i:s',strtotime('-10 hours',strtotime($date_one)));
+      
+      //var_dump("Date One New");
+      //var_dump($date_one_new);
+
+
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
       $date_one_next = $next_date.' 00:00';
       $date_two_next = $next_date.' 06:00';
+
+      //$date_two_new = date('Y-m-d H:i:s',strtotime('-10 hours',strtotime($date_two_next)));
+      
+      //var_dump("Date Two");
+      //var_dump($date_two_next);
+
+      //var_dump("Date One New");
+      //var_dump($date_two_new);
 
 
       // Opening Balance
@@ -2231,7 +2250,76 @@ class ReportControllerTwo extends Controller
       $bookings = $booking1->merge($booking2);
 
       **/
+
+
+      // Cashout Work
+      $invoice_details_arr = array();
+
+      $voucher_master = VoucherMaster::where('hotel_id', $hotel_id)
+                        ->with(['voucher_details' => function($q) {
+                          
+                          $q->where('dr_amount', '>',  0);
+                          $q->where('account_gl_id',191);
+
+                          //$q->orderBy('id','desc');
+                          //$q->first();
+                          
+                          $q->orderBy('id','desc');
+                          $q->get();
+                          
+                        }])
+                        ->whereHas('voucher_details', function ($q2) {
+                            $q2->where('dr_amount', '>',  0);
+                            $q2->where('account_gl_id',191);
+                        })
+                        ->with(['createdByUser'])
+                        //->whereIn('CreatedBy', $created_by_ids)
+                        //->whereBetween('post_date', [$date_one,$date_two_next])
+                        ->whereBetween('created_at', [$date_one,$date_two_next])
+                        ->where('voucher_type_id',3)
+                        ->get();
+
+
+          
+      if(count($voucher_master)) {
+
+        foreach($voucher_master as $single_vouchers_master){
+
+          $inner_idd_arr = array();
+
+          $voucher_details =  $single_vouchers_master->voucher_details;
+          $voucher_debit_amount = $voucher_details[0]->dr_amount;
+          $voucher_narration = $voucher_details[0]->narration;
+
+          $inner_idd_arr['id'] = $single_vouchers_master->id;
+          $inner_idd_arr['booking_no']  = $single_vouchers_master->voucher_no ?? "";
+          $inner_idd_arr['booking_date']  = $single_vouchers_master->created_at->format('y-m-d');
+          $inner_idd_arr['customer_first_name']  = "Voucher";
+          $inner_idd_arr['customer_last_name']  = "";
+          $inner_idd_arr['HotelName'] = "";
+          $inner_idd_arr['rooms'] = "";
+          $inner_idd_arr['details'] = $voucher_narration; 
+          $inner_idd_arr['opening_balance'] = "";
+          $inner_idd_arr['cash_in'] = "";
+          $inner_idd_arr['roomNumber'] = "";
+          $inner_idd_arr['checkin_time'] = "";
+          $inner_idd_arr['checkout_time'] = "";
+          $inner_idd_arr['BookingDate'] = $single_vouchers_master->created_at->format('y-m-d');
+          $inner_idd_arr['BookingFrom'] = "";
+          $inner_idd_arr['BookingTo'] = "";
+          $inner_idd_arr['net_total'] = $voucher_debit_amount;
+          $inner_idd_arr['payment_amount'] = $voucher_debit_amount;
+          $inner_idd_arr['user_name'] =  $single_vouchers_master->post_user->name  ?? "";
+          $inner_idd_arr['status'] = "";
+
+
+          $invoice_details_arr[] = $inner_idd_arr;
+
+        }
       
+      }
+
+
       $bookings = Booking::whereHas('invoice_details', function ($q1) use($date_one,$date_two_next)  {
 
         $q1->where('type','payment');
@@ -2302,7 +2390,7 @@ class ReportControllerTwo extends Controller
 
           });
 
-          $invoice_details_arr = array();
+          //$invoice_details_arr = array();
 
           if(count($bookings_map) > 0){
             foreach($bookings_map as $bookings_map_single) {
@@ -2318,6 +2406,7 @@ class ReportControllerTwo extends Controller
                   $inner_id_arr['customer_last_name']  = $bookings_map_single->customer_last_name ?? "";
                   $inner_id_arr['HotelName'] = $bookings_map_single->HotelName ?? "";
                   $inner_id_arr['rooms'] = $bookings_map_single->rooms;
+                  $inner_id_arr['details'] = ""; 
                   $inner_id_arr['opening_balance'] = $bookings_map_single->opening_balance;
                   $inner_id_arr['cash_in'] = $bookings_map_single->cash_in;
                   $inner_id_arr['roomNumber'] = $bookings_map_single->roomNumber;
@@ -2338,8 +2427,7 @@ class ReportControllerTwo extends Controller
             }
           }
 
-          
-
+       
           if(count($invoice_details_arr) > 0){
             foreach($invoice_details_arr as $bookings_map_single){
 
@@ -2426,11 +2514,6 @@ class ReportControllerTwo extends Controller
     }
 
 
-
-    //echo "<pre>";
-    //var_dump($get_cash_flow_whole);
-    //echo "</pre>";
-    //die;
 
     return response()->json([
       'success' => true,
