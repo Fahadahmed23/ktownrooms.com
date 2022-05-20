@@ -121,6 +121,17 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         Amount: null
     }
 
+
+   app.filter('total', function () {
+       debugger;
+        return function (input, property) {
+            var i =  input.length;
+                var total = 0;
+                while (i--)
+                    total += input[i][property];
+                return total;
+            }
+    });
     // sorting
     $scope.sorting_type = "desc";
 
@@ -3770,11 +3781,34 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.default_rule = response.default_rule;
                 $scope.invoice_details = response.booking.invoice_details;
                 $scope.miscellaneous_amounts = response.miscellaneous_amounts;
+debugger;
                 $scope.booking_no = response.booking.booking_no;
                 $scope.user.name = response.user.name;
                 $scope.old_status = $scope.fBooking.status;
                 $scope.checkin_rules = $scope.fBooking.hotel.checkin;
                 $scope.checkout_rules = $scope.fBooking.hotel.checkout;
+
+                $scope.miscellaneous_amounts_totalds = 0;
+                $scope.miscellaneous_amounts_totalew =0;
+                // Calculate Service Total
+                for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+                   
+                    if( $scope.miscellaneous_amounts[i].is_complementary==0)
+                    {
+                        $scope.miscellaneous_amounts_totalds += $scope.miscellaneous_amounts[i].amount;
+
+                    }
+                    else 
+                    {
+
+                        $scope.miscellaneous_amounts_totalew += $scope.miscellaneous_amounts[i].amount;
+                        alert($scope.miscellaneous_amounts_totalew);
+
+
+                    }
+                    
+                }
+               
 
                 $scope.show_discount = true;
                 for (i = 0; i < $scope.fBooking.rooms.length; i++) {
@@ -3782,6 +3816,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                         $scope.show_discount = false;
                         break;
                     }
+
+
+
                 }
                 callback();
             }
