@@ -27,6 +27,7 @@
                             <th scope="col">Guest Name</th>
                             <th scope="col">Room No.</th>
                             <th scope="col">Booking No</th>
+                            <th scope="col">Detail</th>
                             <th scope="col">Opening Balance</th>
                             <th scope="col">Amount Received</th>
                             <th scope="col">Cash In</th>
@@ -40,6 +41,7 @@
                                 <td>[[d.customer_first_name]] [[d.customer_last_name]]</td>
                                 <td>[[d.roomNumber]]</td>
                                 <td>[[d.booking_no]]</td>
+                                <td>[[d.details]]</td>
                                 <td>[[d.opening_balance]]</td>
                                 <td>[[d.payment_amount]]</td>
                                 <td>[[d.cash_in]]</td>
