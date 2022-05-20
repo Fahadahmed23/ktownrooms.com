@@ -2320,6 +2320,16 @@ class ReportControllerTwo extends Controller
       }
 
 
+      //return response()->json([
+      //  'success' => true,
+      //  'count' => $invoice_details_arr,
+      //  'msgtype' => 'success',
+      //]);
+     
+
+      
+
+
       $bookings = Booking::whereHas('invoice_details', function ($q1) use($date_one,$date_two_next)  {
 
         $q1->where('type','payment');
@@ -2341,6 +2351,7 @@ class ReportControllerTwo extends Controller
 
 
         $count = $bookings->count();
+
         if($count > 0) {
 
           $bookings_map = $bookings->map(function ($ex) {
@@ -2427,6 +2438,8 @@ class ReportControllerTwo extends Controller
             }
           }
 
+          
+
        
           if(count($invoice_details_arr) > 0){
             foreach($invoice_details_arr as $bookings_map_single){
@@ -2441,16 +2454,26 @@ class ReportControllerTwo extends Controller
             }
           }
 
-        
-
-
+      
           //$bookings_exec = $bookings_map;
-
           $bookings_exec = $invoice_details_arr;
 
         }
         else {
-          $bookings_exec = [];
+
+
+          if(count($invoice_details_arr) > 0){
+
+            foreach($invoice_details_arr as $bookings_map_single){
+              $total_amount_received += $bookings_map_single['payment_amount'];
+
+            }
+            $bookings_exec = $invoice_details_arr;
+          
+          }
+          else {
+            $bookings_exec = [];
+          }  
         }
 
       }
@@ -2459,7 +2482,8 @@ class ReportControllerTwo extends Controller
       }
 
 
-    
+     
+
       $bookings_exec_array = array();
       
       $objj_opening_balance = new stdClass();
@@ -2504,6 +2528,8 @@ class ReportControllerTwo extends Controller
 
     $get_cash_flow_whole = array();
 
+ 
+
   
     foreach($get_cash_flow_arr as $single_get_cash_flow){
 
@@ -2512,6 +2538,8 @@ class ReportControllerTwo extends Controller
       }
 
     }
+
+    
 
 
 
@@ -2617,21 +2645,30 @@ class ReportControllerTwo extends Controller
 
       $user_opening_balance = count($u)>0 ? $u[0]['opening_balance'] : 0;
 
-      
-
+    
       // Cashout Work
       $voucher_master = VoucherMaster::where('hotel_id', $hotel_id)
       ->with(['voucher_details' => function($q) {
-          // $q->where('account_gl_id', $receive_account_id)->where('is_concile',0);
+            // $q->where('account_gl_id', $receive_account_id)->where('is_concile',0);
 
             $q->where('cr_amount', '>',  0);
+            $q->where('account_gl_id',191);
             $q->orderBy('id','desc');
             $q->get();
 
+
+            //$q->where('cr_amount', '>',  0);
+            //$q->orderBy('id','desc');
+            //$q->get();
             //$q->orderBy('id','desc')->limit(1);
 
           }])
+          ->whereHas('voucher_details', function ($q2) {
+            $q2->where('cr_amount', '>',  0);
+            $q2->where('account_gl_id',191);
+        })
         ->with(['post_user'])
+        //->with(['createdByUser'])
         //->whereIn('CreatedBy', $created_by_ids)
         ->whereBetween('created_at', [$date_one,$date_two_next])
         ->get();
@@ -3592,10 +3629,15 @@ class ReportControllerTwo extends Controller
       $voucher_master = VoucherMaster::where('hotel_id', $hotel_id)
                         ->with(['voucher_details' => function($q) {
                           $q->where('cr_amount', '>',  0);
+                          $q->where('account_gl_id',191);
                           $q->orderBy('id','desc');
                           $q->get();
                           //$q->orderBy('id','desc')->limit(1);
                         }])
+                        ->whereHas('voucher_details', function ($q2) {
+                          $q2->where('cr_amount', '>',  0);
+                          $q2->where('account_gl_id',191);
+                        })
                         ->with(['createdByUser'])
                         //->whereIn('CreatedBy', $created_by_ids)
                         //->whereBetween('post_date', [$date_one,$date_two_next])
