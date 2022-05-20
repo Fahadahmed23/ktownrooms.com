@@ -1811,7 +1811,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.params.status = [statuses];
         $scope.ajaxGet('getBookings', $scope.params, true)
             .then(function(response) {
-            
+
                 $scope.bookings = response.bookings;
                 $scope.paymenttypes = response.paymenttypes;
                 $scope.cities = response.cities;
@@ -1977,7 +1977,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         });
 
 
-    
+
         for (let i = 0; i < $scope.nBooking.rooms.length; i++) {
             // if (i < $scope.nBooking.rooms.length - 1) {
             //     $scope.nBooking.rooms[i].occupants = $scope.nBooking.rooms[i].hotel_room_category.max_allowed;
@@ -2743,8 +2743,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             return;
         }
 
-        
-       
+
+
 
         $scope.nBooking.start_date = moment($scope.sdTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
         $scope.nBooking.end_date = moment($scope.edTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
@@ -2794,7 +2794,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             // delete $scope.tempBooking2.services;
         }
 
-     
+
         $scope.ajaxPost('bookings', {
             'booking': $scope.tempBooking,
             'formType': 'edit',
@@ -2806,7 +2806,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         }).catch(function(e) {
             console.log(e);
         })
-    
+
     }
 
     $scope.changeStatus = function(booking, status) {
@@ -3104,7 +3104,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         })
     }
 
-    //dropdown for booking status in search by bookings 
+    //dropdown for booking status in search by bookings
     $scope.booking_statuses = [
         'All',
         'Cancelled',
@@ -3674,7 +3674,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         console.log($scope.Addmislisoin.Amount);
         console.log($scope.Addmislisoin.Name);
 
-        
+
         $scope.ajaxPost('saveBookingsMiscellaneousAmount', {
             booking_id: $scope.fBooking.id,
             amount: $scope.Addmislisoin.Amount,
@@ -3690,7 +3690,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 // }
             }
         });
-        
+
     }
 
 
@@ -3781,35 +3781,52 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 $scope.default_rule = response.default_rule;
                 $scope.invoice_details = response.booking.invoice_details;
                 $scope.miscellaneous_amounts = response.miscellaneous_amounts;
-debugger;
                 $scope.booking_no = response.booking.booking_no;
                 $scope.user.name = response.user.name;
                 $scope.old_status = $scope.fBooking.status;
                 $scope.checkin_rules = $scope.fBooking.hotel.checkin;
                 $scope.checkout_rules = $scope.fBooking.hotel.checkout;
 
-                $scope.miscellaneous_amounts_totalds = 0;
-                $scope.miscellaneous_amounts_totalew =0;
-                // Calculate Service Total
+                // Sum Non BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+                $scope.miscellaneous_amounts_total_non_btc =0;
+                // Calculate Non BTC Misc Amount Total
                 for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
-                   
-                    if( $scope.miscellaneous_amounts[i].is_complementary==0)
+
+                    if( $scope.miscellaneous_amounts[i].is_complementary=='0')
                     {
-                        $scope.miscellaneous_amounts_totalds += $scope.miscellaneous_amounts[i].amount;
+                        $scope.miscellaneous_amounts_total_non_btc += $scope.miscellaneous_amounts[i].amount;
 
                     }
-                    else 
+                    else
                     {
 
-                        $scope.miscellaneous_amounts_totalew += $scope.miscellaneous_amounts[i].amount;
-                        alert($scope.miscellaneous_amounts_totalew);
+                        //$scope.miscellaneous_amounts_total_non_btc += $scope.miscellaneous_amounts[i].amount;
+                        // alert($scope.miscellaneous_amounts_totalew);
 
 
                     }
-                    
+
                 }
-               
+                // Sum Non BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
 
+                // Sum BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+                $scope.miscellaneous_amounts_total_btc =0;
+                // Calculate BTC Misc Amount Total
+                for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+
+                    if( $scope.miscellaneous_amounts[i].is_complementary=='1')
+                    {
+                        $scope.miscellaneous_amounts_total_btc += $scope.miscellaneous_amounts[i].amount;
+
+                    }
+                    else
+                    {
+                        // $scope.miscellaneous_amounts_total_btc += $scope.miscellaneous_amounts[i].amount;
+                        // alert($scope.miscellaneous_amounts_totalew);
+                    }
+
+                }
+                // Sum BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
                 $scope.show_discount = true;
                 for (i = 0; i < $scope.fBooking.rooms.length; i++) {
                     if ($scope.fBooking.rooms[i].pivot.room_charges != $scope.fBooking.rooms[i].pivot.room_charges_onbooking) {
@@ -3865,13 +3882,15 @@ debugger;
             // Is Btc and Is not btc
             console.log('BOOKING miscellaneous');
             console.log($scope.miscellaneous_amounts);
-        
+
             console.log('BOOKING Services');
             console.log($scope.Invoice.services);
             console.log('All BTC Services');
             console.log($scope.Invoice.booking_services_btc);
 
-            
+
+
+
 
             $scope.Invoice.service_total = 0;
             // Calculate Service Total
@@ -3911,7 +3930,7 @@ debugger;
         $scope.miscellaneous_amount.type = 'miscellaneous amount';
         $scope.corporate_type_exists = false;
         $scope.invoice_detail = true;
-       
+
         //console.log('Get Invoice Details');
         //console.log($scope.invoice_detail);
         $scope.urlparam = window.location.search.substring(1);
@@ -3942,7 +3961,7 @@ debugger;
 
     }
 
-   
+
 
     $scope.changePartialPayment = function(p) {
         if (p == '1') {
@@ -4008,7 +4027,7 @@ debugger;
 
 
     $scope.savePayment = function() {
-        
+
         if ($scope.formType != 'view') {
             $scope.myForm.$submitted = true;
 
@@ -4398,7 +4417,7 @@ debugger;
     $rootScope.showNotifications = function() {
         $rootScope.new_service_available = false;
     }
-    
+
     $scope.getPortallink = function(code) {
         console.log(code);
         let base_url = window.location.origin;
