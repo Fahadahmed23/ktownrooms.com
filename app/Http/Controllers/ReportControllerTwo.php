@@ -2386,6 +2386,7 @@ class ReportControllerTwo extends Controller
           $inner_idd_arr['BookingTo'] = "";
           $inner_idd_arr['net_total'] = $voucher_debit_amount;
           $inner_idd_arr['payment_amount'] = $voucher_debit_amount;
+          $inner_idd_arr['payment_amount_formatted'] = number_format($voucher_debit_amount);
           $inner_idd_arr['user_name'] =  $single_vouchers_master->post_user->name  ?? "";
           $inner_idd_arr['status'] = "";
 
@@ -2404,9 +2405,7 @@ class ReportControllerTwo extends Controller
       //]);
      
 
-      
-
-
+    
       $bookings = Booking::whereHas('invoice_details', function ($q1) use($date_one,$date_two_next)  {
 
         $q1->where('type','payment');
@@ -2472,6 +2471,9 @@ class ReportControllerTwo extends Controller
             $obj->net_total = $ex->invoice->net_total ?? "";
             $obj->payment_amount = $ex->invoice->payment_amount ?? "";
 
+            $obj->payment_amount_formatted = isset($ex->invoice->payment_amount) ? number_format($ex->invoice->payment_amount):"";
+       
+
             $obj->user_name = $ex->created_by_user->name ?? "";
             $obj->status = $ex->status ?? "";
             return $obj;
@@ -2505,6 +2507,8 @@ class ReportControllerTwo extends Controller
                   $inner_id_arr['BookingTo'] = $bookings_map_single->BookingTo;
                   $inner_id_arr['net_total'] = $bookings_map_single->net_total;
                   $inner_id_arr['payment_amount'] = $single_invoicedetail['amount'];
+                  $inner_id_arr['payment_amount_formatted'] = isset($single_invoicedetail['amount']) ? number_format($single_invoicedetail['amount']):"";
+                  
                   $inner_id_arr['user_name'] = $single_invoicedetail['created_by_user'] ?? "";
                   $inner_id_arr['status'] = $bookings_map_single->status;
 

@@ -43,7 +43,7 @@
                                 <td>[[d.booking_no]]</td>
                                 <td>[[d.details]]</td>
                                 <td>[[d.opening_balance]]</td>
-                                <td>[[d.payment_amount]]</td>
+                                <td>[[d.payment_amount_formatted]]</td>
                                 <td>[[d.cash_in]]</td>
                                 <td>[[d.user_name]]</td>
                           </tr>
