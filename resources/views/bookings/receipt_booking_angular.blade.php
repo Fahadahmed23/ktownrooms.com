@@ -433,12 +433,13 @@ ul.invoice-list-ul {
                             <td ng-if="service.is_btc== '1'" class="pos-right-align">[[service.amount | currency]]</td>
                         </tr>
                     </tbody>
-                    {{-- <tfoot ng-if="invoice_detail.type == 'corporate'">
+                    <tfoot ng-if="invoice_detail.type == 'corporate'">
                         <tr>
                             <th class="pos-right-align">Total:</th>
                             <th class="pos-right-align">[[Invoice.service_total_btc | currency]]</th>
                         </tr>
-                    </tfoot> --}}
+                    </tfoot>
+                    [[service_total_btc]]
                 </table>
 
 
@@ -571,12 +572,12 @@ ul.invoice-list-ul {
                             </div>
                         </tr>
                     </tbody>
-                    {{-- <tfoot>
+                    <tfoot>
                         <tr>
                             <th class="pos-right-align">Total:</th>
                             <th class="pos-right-align">[[Invoice.service_total_non_btc | currency]]</th>
                         </tr>
-                    </tfoot> --}}
+                    </tfoot>
                 </table>
                 <br>
                 <table ng-hide="invoice_detail" class="receipt-total">

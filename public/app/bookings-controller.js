@@ -3890,6 +3890,42 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
 
 
 
+            // Sum BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+                $scope.Invoice.service_total_btc = 0;
+                // Calculate BTC Service Amount Total
+                for (i = 0; i < $scope.Invoice.services.length; i++) {
+
+                    if( $scope.Invoice.services[i].is_btc==1)
+                    {
+                        $scope.Invoice.service_total_btc += $scope.Invoice.services[i].amount;
+                        alert($scope.Invoice.service_total_btc);
+                    }
+                    else
+                    {
+                        // $scope.miscellaneous_amounts_total_btc += $scope.miscellaneous_amounts[i].amount;
+                        // alert($scope.miscellaneous_amounts_totalew);
+                    }
+                }
+
+                // Sum BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+
+
+                    // Sum Non BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+                $scope.Invoice.service_total_non_btc = 0;
+                // Calculate non BTC Service Amount Total
+                    for (i = 0; i < $scope.Invoice.services.length; i++) {
+                        if( $scope.Invoice.services[i].is_btc==0)
+                        {
+                            $scope.Invoice.service_total_non_btc += $scope.Invoice.services[i].amount;
+
+                        }
+                        else
+                        {
+                            // $scope.miscellaneous_amounts_total_btc += $scope.miscellaneous_amounts[i].amount;
+                            // alert($scope.miscellaneous_amounts_totalew);
+                        }
+                    }
+                // Sum Non BTC Services - Arman Ahmad - End - Saturday 21-May-2022
 
 
             $scope.Invoice.service_total = 0;
