@@ -616,7 +616,7 @@ ul.invoice-list-ul {
                         </tr>
                         <tr class="emph">
                             <td><span class="boldre">Total:</span></td>
-                            <td class="pos-right-align"><span class="boldre">[[Invoice.invoice.net_total |
+                            <td class="pos-right-align"><span class="boldre">[[Invoice.invoice.net_total + Invoice.service_total_non_btc + miscellaneous_amounts_total_non_btc |
                                     currency]]</span></td>
                         </tr>
                     </tbody>
