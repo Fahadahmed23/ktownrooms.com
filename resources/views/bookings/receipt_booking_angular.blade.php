@@ -378,7 +378,7 @@ ul.invoice-list-ul {
                     class="receipt-orderlines corporate-type">
                     <tbody ng-if="invoice_detail.type == 'corporate'">
                         <tr>
-                            <th>Booking Type1</th>
+                            <th>Booking Type</th>
                             <td>[[Invoice.invoice.corporate_type_name ]]</td>
                         </tr>
                         <tr>
@@ -496,7 +496,7 @@ ul.invoice-list-ul {
                 <table ng-hide="invoice_detail" class="receipt-orderlines corporate-type">
                     <tbody>
                         <tr>
-                            <th>Booking Type2</th>
+                            <th>Booking Type</th>
                             <td>[[Invoice.invoice.corporate_type_name ]]</td>
                         </tr>
                         <tr>

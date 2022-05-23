@@ -3898,7 +3898,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                     if( $scope.Invoice.services[i].is_btc==1)
                     {
                         $scope.Invoice.service_total_btc += $scope.Invoice.services[i].amount;
-                        alert($scope.Invoice.service_total_btc);
+                        //alert($scope.Invoice.service_total_btc);
                     }
                     else
                     {
