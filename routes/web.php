@@ -539,6 +539,7 @@ Route::post('saveTask', 'BookingServicesController@saveTask');
 
 // tasks
 Route::get('tasks', 'TaskManagementController@index')->middleware('permission:can-view-task');
+Route::get('tasks-list', 'TaskManagementController@index_tasks_list')->middleware('permission:can-view-task');
 Route::post('getTasks', 'TaskManagementController@getTasks')->middleware('permission:can-view-task');
 Route::get('get_dropdowns', 'TaskManagementController@getddData')->middleware('permission:can-view-task');
 Route::post('task/updateStatus', 'TaskManagementController@updateStatus')->middleware('permission:can-edit-task');
@@ -753,8 +754,8 @@ Route::get('/clear-cache', function() {
    //Artisan::call('route:cache');
    //Artisan::call('route:clear');
    Artisan::call('key:generate');
-   
-   
+
+
     // return what you want
 });
 **/

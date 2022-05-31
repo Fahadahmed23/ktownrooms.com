@@ -33,6 +33,13 @@ class TaskManagementController extends Controller
             'breadcrumb' => 'Tasks Management'
         ]);
     }
+    public function index_tasks_list()
+    {
+        return view ('tasks-list.index', [
+            'breadcrumb' => 'Tasks List'
+        ]);
+    }
+
 
     public function getTasks(Request $request)
     {
@@ -44,7 +51,7 @@ class TaskManagementController extends Controller
             $timespan = $request['date'];
         }
         $tasks = Task::whereNull('deleted_at');
-      
+
         if(auth()->user()->hasRole('Admin')){
             $isSelectHotel = true;
             $isSelectDepartment = true;
@@ -78,21 +85,21 @@ class TaskManagementController extends Controller
         else if($timespan == 'previous') {
             $tasks->whereDate('created_at', '<', $taskDate);
         }
-        
+
         $tasks = $tasks->with(['task_history' ,'booking_service:id,times,icon_class,created_at'])->get();
 
         // for counts a/c to task status
         $counts['todo'] = $tasks->filter(
-            function($request){ 
+            function($request){
                return  $request->status == 'todo';
         })->count();
         $counts['inprogress'] = $tasks->filter(
-            function($request){ 
+            function($request){
                return  $request->status == 'inprogress';
         })->count();
 
         $counts['completed'] = $tasks->filter(
-            function($request){ 
+            function($request){
                return  $request->status == 'completed';
         })->count();
 
@@ -139,7 +146,7 @@ class TaskManagementController extends Controller
     {
 
 
-    
+
 
         $booking_service_id = $request->task['service_id'];
         $booking_id =  $request->task['booking_id'];
@@ -151,7 +158,7 @@ class TaskManagementController extends Controller
         //    $is_btc_status
         //]);
 
-        //DB::table('booking_service')->where('id',$booking_service_id)->update(array('is_btc' => $is_btc_status));  
+        //DB::table('booking_service')->where('id',$booking_service_id)->update(array('is_btc' => $is_btc_status));
 
         //$booking_service = BookingService::find($booking_service_id);
         //$booking_service->is_btc = $is_btc_status;
@@ -166,14 +173,14 @@ class TaskManagementController extends Controller
 
         else {
             $booking_service_btc = BookingServiceBtc::where('booking_service_id',$booking_service_id)->first();
-  
+
         }
-        
-        $booking_service_btc->booking_service_id = $booking_service_id; 
-        $booking_service_btc->booking_id = $booking_id; 
+
+        $booking_service_btc->booking_service_id = $booking_service_id;
+        $booking_service_btc->booking_id = $booking_id;
         $booking_service_btc->is_btc = $is_btc_status;
         $booking_service_btc->save();
-        
+
 
         return response()->json([
             'success' => true,
@@ -183,5 +190,5 @@ class TaskManagementController extends Controller
     }
 
 
- 
+
 }
