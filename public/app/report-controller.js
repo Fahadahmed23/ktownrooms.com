@@ -2087,7 +2087,7 @@ $scope.filterData_klc = function(searchFields, check) { //Function for Dates
 
 }
 
-$scope.GetKlcReprot = function() { // Function for hotel
+$scope.GetKlcReport = function() { // Function for hotel
     $scope.ajaxGet('get_user_hotels', {}, true) // Filter controller
         .then(function(response) {
             //console.log('All hotels response');

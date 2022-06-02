@@ -10,7 +10,7 @@
 @section('content')
 
 
-<div class="content" ng-controller='reportCtrl' ng-init='GetKlcReprot()'>
+<div class="content" ng-controller='reportCtrl' ng-init='GetKlcReport()'>
 
     <div class="d-md-flex admin-panel-section align-items-md-start">
         <!-- Left sidebar component -->

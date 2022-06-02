@@ -4198,14 +4198,14 @@ class ReportControllerTwo extends Controller
         ->orderBy('created_at', 'desc')->get();
       **/
 
-      $booking1 = Booking::with(['customer','hotel','rooms','rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
+      $booking1 = Booking::with(['booking_klc','customer','hotel','rooms','rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
       ->where('hotel_id',$hotel_id)
       ->whereIn('status', ['CheckedIn','CheckedOut'])
       //->whereIn('status','CheckedOut')
       ->whereBetween('checkin_time', [$date_one,$date_two_next])
       ->orderBy('created_at', 'desc')->get();
 
-      $booking2 = Booking::with(['customer','hotel','rooms','rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
+      $booking2 = Booking::with(['booking_klc','customer','hotel','rooms','rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
       ->where('hotel_id',$hotel_id)
       ->where('status', 'CheckedIn')
       ->where('BookingFrom', '<=', $loop_date)
@@ -4224,6 +4224,7 @@ class ReportControllerTwo extends Controller
 
           $bookings_map = $bookings->map(function ($ex) {
 
+        
             $obj = new stdClass();
             $obj->id = $ex->id;
             $obj->booking_no = $ex->booking_no ?? "";
@@ -4255,7 +4256,14 @@ class ReportControllerTwo extends Controller
             }
 
 
+            if(empty($ex->booking_klc)){
+                $obj->klc_status = "Old Klc"; 
+            } 
+            else {
+              $obj->klc_status = "New Klc"; 
+            }
 
+        
             $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
             $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
             $obj->corporate_client_name = $ex->invoice->corporate_client_name ?? "";
@@ -4380,7 +4388,7 @@ class ReportControllerTwo extends Controller
             $obj->user_name = $ex->created_by_user->name ?? "";
             $obj->status = $ex->status ?? "";
 
-            if($obj->hotel_type == 'Partner Hotels'){
+            if($obj->hotel_type == 'Partner Hotels' || $obj->klc_status == 'New Klc'){
               return $obj;
             }
 

@@ -36,6 +36,7 @@
                         <th scope="col">Amount Balance  (I - J) </th>
                         <!--<th scope="col">KTOWN Booking Comission</th>
                         <th scope="col">KTOWN Software Fees</th> -->
+                        <th scope="col">New/Old Klc</th>
                         <th scope="col">User Name</th>
 
                       </tr>
@@ -57,6 +58,7 @@
                                 <td>[[k.total_amount]]</td>
                                 <td>[[k.total_amount_received]]</td>
                                 <td>[[k.amount_balance]]</td>
+                                <td>[[k.klc_status]]</td>
                                 <td>[[k.user_name]]</td>
                           </tr>
                     </tbody>

@@ -59,6 +59,10 @@ class Booking extends Model
         return $this->hasOne(BookingInvoice::class, 'booking_id', 'id');
     }
 
+    public function booking_klc() {
+        return $this->hasOne(BookingsKlc::class,'booking_id','id');
+    }
+
     public function promotion() {
         return $this->belongsTo(Promotion::class);
     }
