@@ -233,14 +233,166 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.calculateTotalAmount();
     }
     $scope.getCheckoutDiscount = function(c_discount) {
+
+        console.log('Scope Invoice');
+        console.log($scope.Invoice.id);
+        var booking_id = $scope.Invoice.id;
+        console.log('Booking Id');
+        console.log(booking_id);
+
+        //$scope.InvoiceFull = $scope.Invoice;
+        // Non - Btc Room Total
+        $scope.Invoice.nonbtc_total = 0; 
+        $scope.Invoice.nonbtc_tax_rate = $scope.Invoice.invoice.tax_rate; 
+        $scope.Invoice.nonbtc_total_with_tax = 0;
+        $scope.Invoice.nonbtc_payment_received = 0;
+        $scope.Invoice.nonbtc_payment_amount = 0;  // Balance Payable
+        
+       
+        for (i = 0;  i < $scope.Invoice.rooms.length; i++) {
+            $scope.Invoice.nonbtc_total += $scope.Invoice.invoice.nights*$scope.Invoice.rooms[i].pivot.room_charges_onbooking;
+        }
+        
+        
+      
+        // Sum BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+
+        // Sum Non BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+        $scope.Invoice.service_total_non_btc = 0;
+
+        // Calculate non BTC Service Amount Total
+        for (i = 0; i < $scope.Invoice.services.length; i++) {
+            if( $scope.Invoice.services[i].is_btc==0)
+            {
+                $scope.Invoice.service_total_non_btc += $scope.Invoice.services[i].amount;
+            }
+        }
+        // Sum Non BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+        $scope.Invoice.nonbtc_total += $scope.Invoice.service_total_non_btc;
+
+        // Sum Non BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+        $scope.miscellaneous_amounts_total_non_btc =0;
+        // Calculate Non BTC Misc Amount Total
+        for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+            if( $scope.miscellaneous_amounts[i].is_complementary=='0')
+            {
+                $scope.miscellaneous_amounts_total_non_btc += $scope.miscellaneous_amounts[i].amount;
+            }
+        }
+        // Sum Non BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+
+        $scope.Invoice.nonbtc_total += $scope.miscellaneous_amounts_total_non_btc;
+        $scope.Invoice.nonbtc_tax_rate *= $scope.Invoice.nonbtc_total / 100;
+        $scope.Invoice.nonbtc_tax_rate =  Math.round($scope.Invoice.nonbtc_tax_rate);
+        $scope.Invoice.nonbtc_total_with_tax += $scope.Invoice.nonbtc_tax_rate+$scope.Invoice.nonbtc_total;
+        $scope.Invoice.nonbtc_payment_received += $scope.Invoice.invoice.payment_amount;
+        $scope.Invoice.nonbtc_payment_amount  += $scope.Invoice.nonbtc_total_with_tax-$scope.Invoice.nonbtc_payment_received;
+
+
+        console.log('Booking Id');
+        console.log($scope.Invoice.id);
+
+        console.log('Non Btc Total');
+        console.log($scope.Invoice.nonbtc_total);
+
+        console.log('Payment Received');
+        console.log($scope.Invoice.nonbtc_payment_received);
+
+        console.log('Non Btc Tax');
+        console.log($scope.Invoice.nonbtc_tax_rate);
+
+        console.log('Total with Tax');
+        console.log($scope.Invoice.nonbtc_total_with_tax);
+
+        console.log('Check Disocunt Value 33');
+        console.log(c_discount);
+
+
+        console.log('Payment Amount');
+        console.log( $scope.Invoice.nonbtc_payment_amount);
+
         if (c_discount >= 1) {
             $scope.checkout_discount_remarks = true;
         }
-        $scope.calculateTotalAmount(true);
+
+        console.log('Check Discount Value');
+        console.log($scope.Invoice.invoice.checkout_discount);
+        console.log('Check Net total Value');
+        console.log($scope.Invoice.invoice.net_total);
+
+        if ($scope.Invoice.invoice.checkout_discount) {
+
+            if($scope.Invoice.nonbtc_payment_received > 0){
+
+                let payable = $scope.Invoice.nonbtc_payment_amount - c_discount;
+
+                if(c_discount > $scope.Invoice.nonbtc_payment_amount){
+
+                    $scope.Invoice.invoice.checkout_discount = $scope.Invoice.nonbtc_payment_amount;
+                    $scope.Invoice.nonbtc_payment_amount = 0;
+                    
+                }
+                else {
+                    $scope.Invoice.nonbtc_payment_amount = payable;
+                }
+                
+                
+                /*
+                console.log("Payable amouut");
+                console.log(payable);
+                console.log("Checkout Discount");
+                console.log($scope.Invoice.invoice.checkout_discount);
+                if ($scope.Invoice.invoice.checkout_discount > payable) {
+                    $scope.Invoice.invoice.checkout_discount = payable;
+                    console.log("Checkout Discount 1");
+                console.log($scope.Invoice.invoice.checkout_discount);
+                }
+                //$scope.Invoice.nonbtc_payment_amount -= parseInt($scope.Invoice.invoice.checkout_discount);
+                $scope.Invoice.nonbtc_payment_amount = payable;
+                **/
+
+            }
+            else {
+
+                let payable = $scope.Invoice.nonbtc_total_with_tax - $scope.Invoice.invoice.payment_amount;
+                if ($scope.Invoice.invoice.checkout_discount > payable) {
+                    $scope.Invoice.invoice.checkout_discount = payable;
+                }
+                $scope.Invoice.nonbtc_total_with_tax -= parseInt($scope.Invoice.invoice.checkout_discount);
+
+            }
+
+        
+            
+        
+        }
+
+
+
+    
+        //if (invoice.checkout_discount) {
+        //    let payable = invoice.net_total - invoice.payment_amount
+        //    if (invoice.checkout_discount > payable) {
+        //        invoice.checkout_discount = payable;
+        //    }
+        //    invoice.net_total -= parseInt(invoice.checkout_discount);
+        //}
+
+        /*
+        //$scope.calculateTotalAmount(true);
         if (moment((new Date()).toISOString().split('T')[0], 'YYYY-MM-DD').diff(moment($scope.sdTemp, "MM/DD/YYYY")) > 0) {
             $scope.check_cout_rules($scope.Invoice, true);
         }
         $scope.applycheckOutDiscount($scope.nBooking.invoice);
+
+        **/
+
+
+
+
+
+    
+    
     }
 
     $scope.showcheckoutDiscountForm = function() {
@@ -2711,11 +2863,64 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     $scope.checkout = function() {
 
 
+    
+        if($scope.nBooking.nonbtc_payment_received > 0) {
+
+            var nonbtc_payment_orignal = $scope.nBooking.nonbtc_payment_amount;
+
+            $scope.nBooking.nonbtc_payment_amount = $scope.nBooking.nonbtc_payment_amount-$scope.nBooking.invoice.checkout_discount;
+            
+            var cchecking_comparison = nonbtc_payment_orignal - $scope.nBooking.nonbtc_payment_amount;
+            
+            //if ($scope.nBooking.nonbtc_payment_amount > $scope.nBooking.invoice.payment_amount) {
+            
+            if ($scope.nBooking.nonbtc_payment_amount > 0) {
+                bootbox.dialog({
+                    closeButton: false,
+                    title: "Error",
+                    message: 'Checkout cannot be done without payment',
+                    buttons: {
+                        success: {
+                            label: "Ok",
+                            callback: function() {
+                                return;
+                            }
+                        }
+                    }
+                });
+                return;
+            }
+        }
+        else {
+
+            if ($scope.nBooking.nonbtc_total_with_tax > $scope.nBooking.invoice.payment_amount) {
+                bootbox.dialog({
+                    closeButton: false,
+                    title: "Error",
+                    message: 'Checkout cannot be done without payment',
+                    buttons: {
+                        success: {
+                            label: "Ok",
+                            callback: function() {
+                            return;
+                        }
+                    }
+                    }
+                });
+                return;
+            }
+           
+
+        }
+
+
 
         // release rooms
         // check the user has paid or not
 
-        if ($scope.nBooking.invoice.net_total > $scope.nBooking.invoice.payment_amount) {
+        //if ($scope.nBooking.invoice.net_total > $scope.nBooking.invoice.payment_amount) {
+        /*
+        if ($scope.nBooking.nonbtc_total_with_tax > $scope.nBooking.invoice.payment_amount) {
             bootbox.dialog({
                 closeButton: false,
                 title: "Error",
@@ -2732,9 +2937,9 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             return;
         }
 
-        
-       
+        **/
 
+    
         $scope.nBooking.start_date = moment($scope.sdTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
         $scope.nBooking.end_date = moment($scope.edTemp, "MM/DD/YYYY").format("YYYY/MM/DD");
 
@@ -2751,6 +2956,10 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
                 booking: $scope.tempBooking,
                 remarks: $scope.tempBooking.invoice.checkout_discount_remarks
             }, false).then(function(response) {
+
+                console.log('Response A');
+                console.log(response);
+
                 if (response.success) {
                     response.booking.BookingDate = moment(response.booking.BookingDate).format('MM/DD/YYYY');
                     $scope.bookings = $scope.bookings.map((booking) => booking.id == response.booking.id ? response.booking : booking)
@@ -2765,7 +2974,7 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             });
         };
 
-
+       
 
         // update and checkout
         if ($scope.nBooking.invoice.refund) {
@@ -3168,9 +3377,90 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     $scope.bookingReceipt = function(id) {
         $scope.inBooking = false;
         $scope.findBooking(id, function() {
+            
+            $scope.Invoice = $scope.fBooking;
+
+            // Non - Btc Room Total
+            $scope.Invoice.nonbtc_total = 0; 
+            $scope.Invoice.nonbtc_tax_rate = $scope.Invoice.invoice.tax_rate; 
+            $scope.Invoice.nonbtc_total_with_tax = 0;
+            $scope.Invoice.nonbtc_payment_received = 0;
+            $scope.Invoice.nonbtc_payment_amount = 0;  // Balance Payable
+            
+           
+            for (i = 0;  i < $scope.Invoice.rooms.length; i++) {
+                $scope.Invoice.nonbtc_total += $scope.Invoice.invoice.nights*$scope.Invoice.rooms[i].pivot.room_charges_onbooking;
+            }
+            
+            
+            // Sum BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+            $scope.Invoice.service_total_btc = 0;
+            // Calculate BTC Service Amount Total
+            for (i = 0; i < $scope.Invoice.services.length; i++) {
+
+                if( $scope.Invoice.services[i].is_btc==1)
+                {
+                    $scope.Invoice.service_total_btc += $scope.Invoice.services[i].amount;
+                }
+                
+            }
+
+            // Sum BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+
+            // Sum Non BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+            $scope.Invoice.service_total_non_btc = 0;
+
+            // Calculate non BTC Service Amount Total
+            for (i = 0; i < $scope.Invoice.services.length; i++) {
+                if( $scope.Invoice.services[i].is_btc==0)
+                {
+                    $scope.Invoice.service_total_non_btc += $scope.Invoice.services[i].amount;
+                }
+            }
+            // Sum Non BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+            $scope.Invoice.nonbtc_total += $scope.Invoice.service_total_non_btc;
+
+            // Sum Non BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+            $scope.miscellaneous_amounts_total_non_btc =0;
+            // Calculate Non BTC Misc Amount Total
+            for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+                if( $scope.miscellaneous_amounts[i].is_complementary=='0')
+                {
+                    $scope.miscellaneous_amounts_total_non_btc += $scope.miscellaneous_amounts[i].amount;
+                }
+            }
+            // Sum Non BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+
+            $scope.Invoice.nonbtc_total += $scope.miscellaneous_amounts_total_non_btc;
+            $scope.Invoice.nonbtc_tax_rate *= $scope.Invoice.nonbtc_total / 100;
+            $scope.Invoice.nonbtc_tax_rate =  Math.round($scope.Invoice.nonbtc_tax_rate);
+
+            $scope.Invoice.nonbtc_total_with_tax += $scope.Invoice.nonbtc_tax_rate+$scope.Invoice.nonbtc_total;
+
+
+            $scope.Invoice.nonbtc_payment_received += $scope.Invoice.invoice.payment_amount;
+            $scope.Invoice.nonbtc_payment_amount  += $scope.Invoice.nonbtc_total_with_tax-$scope.Invoice.nonbtc_payment_received;
+
+        
+            // Sum BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+            $scope.miscellaneous_amounts_total_btc =0;
+            // Calculate BTC Misc Amount Total
+            for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+
+                if( $scope.miscellaneous_amounts[i].is_complementary=='1')
+                {
+                    $scope.miscellaneous_amounts_total_btc += $scope.miscellaneous_amounts[i].amount;
+
+                }
+            }
+            // Sum BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+            
+
+
             $scope.old_status = $scope.fBooking.status;
             $scope.viewPOS($scope.fBooking, 'checkout');
         });
+
         // $scope.findRoomBooking(id, function() {
         //     $scope.Invoice = angular.copy($scope.nBooking);
         //     $scope.nBooking.rooms = [];
@@ -3393,19 +3683,184 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
     }
 
     $scope.checkoutFromReceipt = function() {
+
         // show prompt
 
-        if (parseInt($scope.Invoice.invoice.net_total) > parseInt($scope.Invoice.invoice.payment_amount)) {
+        console.log('Invoice Fahad');
+        console.log($scope.Invoice.id);
 
-            var remaining_amount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR', minimumFractionDigits: 0 }).format($scope.Invoice.invoice.net_total - $scope.Invoice.invoice.payment_amount);
-            toastr.error($scope.Invoice.invoice.customer_first_name + ' ' + $scope.Invoice.invoice.customer_last_name + ' remaining amount is ' + remaining_amount + '. Kindly collect remaining payment before proceed to checkout');
+        var booking_id = $scope.Invoice.id;
+    
+        // Mr Optimist 23 Nov 2021
+        $scope.Invoice.cservice_total = 0;
+        if ($scope.Invoice.is_corporate == 1) {
+
+            if ($scope.Invoice.invoice.corporate_type == 1) {
+                $scope.Invoice.invoice.corporate_type_name = 'Full Board';
+                $scope.Invoice.corporate_type_total = 0;
+            }
+            else if($scope.Invoice.invoice.corporate_type == 2){
+                $scope.Invoice.invoice.corporate_type_name = 'Half Board';
+                $scope.Invoice.corporate_type_total = $scope.Invoice.invoice.net_total/2;
+            }
+            else if($scope.Invoice.invoice.corporate_type == 3){
+                $scope.Invoice.invoice.corporate_type_name = 'Room Only';
+                // Calculate Service Total
+                for (i = 0; i < $scope.Invoice.services.length; i++) {
+                    $scope.Invoice.cservice_total += $scope.Invoice.services[i].amount;
+                }
+                $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
+            }
+
+        }
+
+        // Is Btc and Is not btc
+        console.log('BOOKING miscellaneous');
+        console.log($scope.miscellaneous_amounts);
+    
+        console.log('BOOKING Services');
+        console.log($scope.Invoice.services);
+        console.log('All BTC Services');
+        console.log($scope.Invoice.booking_services_btc);
+
+        // Non - Btc Room Total
+        $scope.Invoice.nonbtc_total = 0; 
+        $scope.Invoice.nonbtc_tax_rate = $scope.Invoice.invoice.tax_rate; 
+        $scope.Invoice.nonbtc_total_with_tax = 0;
+        $scope.Invoice.nonbtc_payment_received = 0;
+        $scope.Invoice.nonbtc_payment_amount = 0;  // Balance Payable
+        
+        console.log('Tax Rate');
+        console.log($scope.Invoice.nonbtc_tax_rate);
+        
+        for (i = 0;  i < $scope.Invoice.rooms.length; i++) {
+            $scope.Invoice.nonbtc_total += $scope.Invoice.invoice.nights*$scope.Invoice.rooms[i].pivot.room_charges_onbooking;
+        }
+            
+            
+        // Sum BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+        $scope.Invoice.service_total_btc = 0;
+        // Calculate BTC Service Amount Total
+        for (i = 0; i < $scope.Invoice.services.length; i++) {
+
+            if( $scope.Invoice.services[i].is_btc==1)
+            {
+                $scope.Invoice.service_total_btc += $scope.Invoice.services[i].amount;
+            }
+            
+        }
+
+        // Sum BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+
+        // Sum Non BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+        $scope.Invoice.service_total_non_btc = 0;
+
+        // Calculate non BTC Service Amount Total
+        for (i = 0; i < $scope.Invoice.services.length; i++) {
+            if( $scope.Invoice.services[i].is_btc==0)
+            {
+                $scope.Invoice.service_total_non_btc += $scope.Invoice.services[i].amount;
+            }
+        }
+        // Sum Non BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+        $scope.Invoice.nonbtc_total += $scope.Invoice.service_total_non_btc;
+
+        // Sum Non BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+        $scope.miscellaneous_amounts_total_non_btc =0;
+        // Calculate Non BTC Misc Amount Total
+        for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+            if( $scope.miscellaneous_amounts[i].is_complementary=='0')
+            {
+                $scope.miscellaneous_amounts_total_non_btc += $scope.miscellaneous_amounts[i].amount;
+            }
+        }
+        // Sum Non BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+
+        $scope.Invoice.nonbtc_total += $scope.miscellaneous_amounts_total_non_btc;
+        $scope.Invoice.nonbtc_tax_rate *= $scope.Invoice.nonbtc_total / 100;
+        $scope.Invoice.nonbtc_tax_rate =  Math.round($scope.Invoice.nonbtc_tax_rate);
+
+        $scope.Invoice.nonbtc_total_with_tax += $scope.Invoice.nonbtc_tax_rate+$scope.Invoice.nonbtc_total;
+
+        $scope.Invoice.nonbtc_payment_received += $scope.Invoice.invoice.payment_amount;
+        $scope.Invoice.nonbtc_payment_amount  += $scope.Invoice.nonbtc_total_with_tax-$scope.Invoice.nonbtc_payment_received;
+
+        console.log('Non Btc Total');
+        console.log($scope.Invoice.nonbtc_total);
+
+        console.log('Non Btc Tax');
+        console.log($scope.Invoice.nonbtc_tax_rate);
+
+        console.log('Total with Tax');
+        console.log($scope.Invoice.nonbtc_total_with_tax);
+
+        console.log('Total Received');
+        console.log($scope.Invoice.nonbtc_payment_received);
+
+    
+        if($scope.Invoice.nonbtc_payment_received > 0) {
+
+            $scope.Invoice.nonbtc_payment_orignal = $scope.Invoice.nonbtc_payment_amount;
+
+    
+            $scope.Invoice.nonbtc_payment_amount = $scope.Invoice.nonbtc_payment_amount-$scope.Invoice.invoice.checkout_discount;
+            
+            var checking_comparison = $scope.Invoice.nonbtc_payment_orignal -$scope.Invoice.nonbtc_payment_amount;
+            console.log('Checking Comparison');
+            console.log(checking_comparison);
+            console.log($scope.Invoice.nonbtc_payment_amount);
+
+            //if (parseInt($scope.Invoice.nonbtc_payment_amount) > parseInt($scope.Invoice.invoice.payment_amount)) {
+            if (parseInt($scope.Invoice.nonbtc_payment_amount) > 0) {
+                //var remaining_amount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR', minimumFractionDigits: 0 }).format($scope.Invoice.nonbtc_payment_amount - $scope.Invoice.invoice.payment_amount);
+                var remaining_amount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR', minimumFractionDigits: 0 }).format($scope.Invoice.nonbtc_payment_amount);
+                toastr.error($scope.Invoice.invoice.customer_first_name + ' ' + $scope.Invoice.invoice.customer_last_name + ' remaining amount is ' + remaining_amount + '. Kindly collect remaining payment before proceed to checkout fahad muzammil Daanesh');
+                return false;
+            }
+        }
+        else {
+
+            if (parseInt($scope.Invoice.nonbtc_total_with_tax) > parseInt($scope.Invoice.invoice.payment_amount)) {
+
+                var remaining_amount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR', minimumFractionDigits: 0 }).format($scope.Invoice.nonbtc_total_with_tax - $scope.Invoice.invoice.payment_amount);
+                toastr.error($scope.Invoice.invoice.customer_first_name + ' ' + $scope.Invoice.invoice.customer_last_name + ' remaining amount is ' + remaining_amount + '. Kindly collect remaining payment before proceed to checkout fahad muzammil Daanesh');
+                return false;
+            }
+
+        }
+
+    
+
+        /*
+        if (parseInt($scope.Invoice.nonbtc_total_with_tax) > parseInt($scope.Invoice.invoice.payment_amount)) {
+
+            var remaining_amount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR', minimumFractionDigits: 0 }).format($scope.Invoice.nonbtc_total_with_tax - $scope.Invoice.invoice.payment_amount);
+            toastr.error($scope.Invoice.invoice.customer_first_name + ' ' + $scope.Invoice.invoice.customer_last_name + ' remaining amount is ' + remaining_amount + '. Kindly collect remaining payment before proceed to checkout fahad muzammil Daanesh');
             return false;
         }
+        **/
+
 
         $scope.bed_dead = 0;
         $scope.checkout_in_process = true;
         // $scope.checkoutCallback();
         $scope.checkout();
+
+
+        /*
+        if (parseInt($scope.Invoice.invoice.net_total) > parseInt($scope.Invoice.invoice.payment_amount)) {
+
+            var remaining_amount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR', minimumFractionDigits: 0 }).format($scope.Invoice.invoice.net_total - $scope.Invoice.invoice.payment_amount);
+            toastr.error($scope.Invoice.invoice.customer_first_name + ' ' + $scope.Invoice.invoice.customer_last_name + ' remaining amount is ' + remaining_amount + '. Kindly collect remaining payment before proceed to checkout fahad muzammil zindabad');
+            return false;
+        }
+        **/
+        
+
+        //$scope.bed_dead = 0;
+        //$scope.checkout_in_process = true;
+        // $scope.checkoutCallback();
+        //$scope.checkout();
 
         // $('#modalPayment').modal('show');
         // if ($scope.Invoice.invoice.is_corporate != 1 && $scope.Invoice.invoice.payment_amount < $scope.Invoice.invoice.net_total) {
@@ -3431,6 +3886,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         // } else {
         //     $scope.checkoutCallback();
         // }
+    
+    
     }
 
     $scope.checkoutCallback = function() {
@@ -3801,6 +4258,8 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
         $scope.findBooking(booking_id, function() {
             // $scope.invoice_details = $scope.invoice_details;
             $scope.Invoice = $scope.fBooking;
+
+         
            
             // Mr Optimist 23 Nov 2021
             $scope.Invoice.cservice_total = 0;
@@ -3833,6 +4292,99 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             console.log($scope.Invoice.services);
             console.log('All BTC Services');
             console.log($scope.Invoice.booking_services_btc);
+
+            // Non - Btc Room Total
+            $scope.Invoice.nonbtc_total = 0; 
+            $scope.Invoice.nonbtc_tax_rate = $scope.Invoice.invoice.tax_rate; 
+            $scope.Invoice.nonbtc_total_with_tax = 0;
+            $scope.Invoice.nonbtc_payment_received = 0;
+            $scope.Invoice.nonbtc_payment_amount = 0;  // Balance Payable
+            
+            console.log('Tax Rate');
+            console.log($scope.Invoice.nonbtc_tax_rate);
+            
+            for (i = 0;  i < $scope.Invoice.rooms.length; i++) {
+                $scope.Invoice.nonbtc_total += $scope.Invoice.invoice.nights*$scope.Invoice.rooms[i].pivot.room_charges_onbooking;
+            }
+            
+            
+            // Sum BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+            $scope.Invoice.service_total_btc = 0;
+            // Calculate BTC Service Amount Total
+            for (i = 0; i < $scope.Invoice.services.length; i++) {
+
+                if( $scope.Invoice.services[i].is_btc==1)
+                {
+                    $scope.Invoice.service_total_btc += $scope.Invoice.services[i].amount;
+                }
+                
+            }
+
+            // Sum BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+
+            // Sum Non BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+            $scope.Invoice.service_total_non_btc = 0;
+
+            // Calculate non BTC Service Amount Total
+            for (i = 0; i < $scope.Invoice.services.length; i++) {
+                if( $scope.Invoice.services[i].is_btc==0)
+                {
+                    $scope.Invoice.service_total_non_btc += $scope.Invoice.services[i].amount;
+                }
+            }
+            // Sum Non BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+            $scope.Invoice.nonbtc_total += $scope.Invoice.service_total_non_btc;
+
+            // Sum Non BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+            $scope.miscellaneous_amounts_total_non_btc =0;
+            // Calculate Non BTC Misc Amount Total
+            for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+                if( $scope.miscellaneous_amounts[i].is_complementary=='0')
+                {
+                    $scope.miscellaneous_amounts_total_non_btc += $scope.miscellaneous_amounts[i].amount;
+                }
+            }
+            // Sum Non BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+
+            $scope.Invoice.nonbtc_total += $scope.miscellaneous_amounts_total_non_btc;
+            $scope.Invoice.nonbtc_tax_rate *= $scope.Invoice.nonbtc_total / 100;
+            $scope.Invoice.nonbtc_tax_rate =  Math.round($scope.Invoice.nonbtc_tax_rate);
+
+            $scope.Invoice.nonbtc_total_with_tax += $scope.Invoice.nonbtc_tax_rate+$scope.Invoice.nonbtc_total;
+
+
+            $scope.Invoice.nonbtc_payment_received += $scope.Invoice.invoice.payment_amount;
+            $scope.Invoice.nonbtc_payment_amount  += $scope.Invoice.nonbtc_total_with_tax-$scope.Invoice.nonbtc_payment_received;
+
+        
+            console.log('Non Btc Total');
+            console.log($scope.Invoice.nonbtc_total);
+
+            
+            console.log('Non Btc Tax');
+            console.log($scope.Invoice.nonbtc_tax_rate);
+
+            console.log('Total with Tax');
+            console.log($scope.Invoice.nonbtc_total_with_tax);
+
+            $scope.Invoice.nonbtc_payment_received
+            console.log('Total with Tax');
+            console.log($scope.Invoice.nonbtc_total_with_tax);
+            
+
+            // Sum BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+            $scope.miscellaneous_amounts_total_btc =0;
+            // Calculate BTC Misc Amount Total
+            for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+
+                if( $scope.miscellaneous_amounts[i].is_complementary=='1')
+                {
+                    $scope.miscellaneous_amounts_total_btc += $scope.miscellaneous_amounts[i].amount;
+
+                }
+            }
+            // Sum BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+
 
 
 

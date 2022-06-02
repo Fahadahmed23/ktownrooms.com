@@ -57,6 +57,8 @@ use App\Models\HotelCategories;
 use App\Models\HotelCategory;
 use App\Models\HotelCobranding;
 
+use App\Models\BookingsKlc;
+
 class BookingsController extends Controller
 {
     protected $booking;
@@ -564,7 +566,15 @@ class BookingsController extends Controller
                         }
                         else {
 
-                            $is_klc = Auth::user()->can('can-add-klc') ?'yes':'no';
+                            //$is_klc = Auth::user()->can('can-add-klc') ?'yes':'no';
+                            $BookingsKlc =  BookingsKlc::where('booking_id',$booking_id)->first();
+                            if($BookingsKlc){
+                                $is_klc = 'yes';
+                            }
+                            else {
+                                $is_klc = 'no';
+                            }
+
                         }
     
                     }
@@ -961,15 +971,10 @@ class BookingsController extends Controller
     public function store(AddBookingRequest $request)
     {
 
-        //echo "<pre>";
-        //var_dump($request);
-        //echo "</pre>";
-        //die;
-
 
         // dd($request->all());
         $this->booking = $request->booking;
-        
+        $this->checkout_status_available = $request->status;
         $this->new_booking = $request->formType == "create";
         
         if (empty($this->booking['status'])) {
@@ -980,7 +985,6 @@ class BookingsController extends Controller
             ]);
         }
 
-        // dd($this->new_booking);
         if (!$this->roomsAreAvailable()) {
             if ($this->new_booking){
                 return response()->json([
@@ -1042,20 +1046,15 @@ class BookingsController extends Controller
         }
         // dd(request()->all());
 
-
-        //echo "<pre>";
-        //var_dump($this->booking);
-        //echo "</pre>";
-        //die;
-
         DB::beginTransaction();
             
         // try {
             $booking_ids = $this->createBooking();
-            
+            $this->checkKlc($booking_ids);
             $this->createInvoice($booking_ids);
             $this->allocateRooms($booking_ids);
             $this->addOccupants($booking_ids);
+
 
             $booking = Booking::find($booking_ids[0]);
 
@@ -1741,7 +1740,13 @@ class BookingsController extends Controller
 
         $this->booking['invoice']['net_total'] = round($this->booking['invoice']['net_total'], 0);
 
-        if(!empty($this->booking['invoice']['checkout_discount'])){
+
+        // Mr Optimist 27 May 2022
+        if(isset($this->booking['invoice']['is_corporate']) && isset($this->booking['nonbtc_total_with_tax']) && $this->booking['invoice']['is_corporate']==1){
+            $this->booking['invoice']['net_total'] = $this->booking['nonbtc_total_with_tax'];
+            $this->booking['invoice']['checkout_discount'] = $this->booking['invoice']['checkout_discount'];
+        }
+        else if(!empty($this->booking['invoice']['checkout_discount'])){
            
             $payable = $this->booking['invoice']['net_total'] - $this->booking['invoice']['payment_amount'];
             if($this->booking['invoice']['checkout_discount'] > $payable){
@@ -1878,6 +1883,69 @@ class BookingsController extends Controller
 
             $this->lockdown = true;
         }
+    }
+
+
+    
+    // Mr Optimist 6 June 2022
+    private function checkKlc($booking_ids) {
+
+        if(Auth::user()->can('can-add-klc')) {
+
+
+        
+            $hotel_id = $this->booking['hotel_id'];
+            $booking_id = $booking_ids[0];
+            $customer_id = $booking_ids[1];
+
+            $customer_bookings_count =  Booking::where('customer_id',$customer_id)->whereIn('status', ['CheckedIn','CheckedOut'])->count();
+            if($customer_bookings_count > 1){
+
+                $customer_booking_first =  Booking::where('customer_id',$customer_id)->whereIn('status',['CheckedIn','CheckedOut'])->first();
+                $customer_first_hotel =  $customer_booking_first->hotel_id;
+
+                if($hotel_id == $customer_first_hotel){
+
+                    $BookingsKlc_count =  BookingsKlc::where('customer_id',$customer_id)->count();
+                    if($BookingsKlc_count > 0){
+
+                        if ($this->new_booking) {
+                            $BookingsKlc = new BookingsKlc();
+                        } 
+                        else {
+                            $BookingsKlc =  BookingsKlc::where('booking_id',$booking_id)->first();
+                        }
+            
+                        $BookingsKlc->user_id = Auth::id() ?? 1;
+                        $BookingsKlc->booking_id = $booking_ids[0];
+                        $BookingsKlc->customer_id = $booking_ids[1];
+                        $BookingsKlc->is_klc = 1;
+                        $BookingsKlc->save();
+
+                    }
+
+                }
+
+            }
+            else {
+
+                if ($this->new_booking) {
+                    $BookingsKlc = new BookingsKlc();
+                } 
+                else {
+                    $BookingsKlc =  BookingsKlc::where('booking_id',$booking_id)->first();
+                }
+    
+                $BookingsKlc->user_id = Auth::id() ?? 1;
+                $BookingsKlc->booking_id = $booking_ids[0];
+                $BookingsKlc->customer_id = $booking_ids[1];
+                $BookingsKlc->is_klc = 1;
+                $BookingsKlc->save();
+
+            }
+            
+        }
+
     }
 
     private function createBooking() {
@@ -2289,7 +2357,7 @@ class BookingsController extends Controller
             ]);
 
             $invoice = BookingInvoice::where('booking_id', $booking->id)->first();
-// dd($invoice);
+            // dd($invoice);
             if ($invoice->net_total > $invoice->payment_amount) {
                 if ($invoice->is_corporate == 0) {
                     // check bed dead

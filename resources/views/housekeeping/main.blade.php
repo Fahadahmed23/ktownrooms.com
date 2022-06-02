@@ -143,9 +143,11 @@
                             <div class="col-md-4">
                                 <div class="booking_information">
                                     <div class=" pt-2 px-2 detail">
+                                        <!--
                                         <div class="booking-channel">
                                             <span class="font-weight-bold"> Channel : </span><span>[[booking.channel]] </span>
                                         </div>
+                                        -->
                                         <div class="checkin-date">
                                             <span class="font-weight-bold">Booking Date: </span><span>[[booking.BookingDate | date]]</span>
                                         </div> 
