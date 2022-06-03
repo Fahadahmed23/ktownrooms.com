@@ -33,52 +33,26 @@
                         <tr>
                             <th>Task Id</th>
                             <th>Task Name</th>
-                            <th>BTC Status</th>
+                            <th>Date</th>
                             <th>Qty</th>
                             <th>Rate</th>
                             <th>Total Amount</th>
+                            <th>BTC Status</th>
                         </tr>
                     </thead>
                     <tbody data-link="row" class="rowlink">
                         <tr class="col-lg-12">
                             <td>1</td>
                             <td>Sample Task Name 1</td>
-                            <td>Yes</td>
+                            <td>2022-02-06</td>
                             <td>6</td>
                             <td>100</td>
                             <td>600</td>
-                        </tr>
-                        <tr class="col-lg-12">
-                            <td>2</td>
-                            <td>Sample Task Name 2</td>
-                            <td>Yes</td>
-                            <td>2</td>
-                            <td>150</td>
-                            <td>300</td>
-                        </tr>
-                        <tr class="col-lg-12">
-                            <td>3</td>
-                            <td>Sample Task Name 3</td>
-                            <td>Yes</td>
-                            <td>2</td>
-                            <td>500</td>
-                            <td>1000</td>
-                        </tr>
-                        <tr class="col-lg-12">
-                            <td>4</td>
-                            <td>Sample Task Name 4</td>
-                            <td>No</td>
-                            <td>4</td>
-                            <td>600</td>
-                            <td>2400</td>
-                        </tr>
-                        <tr class="col-lg-12">
-                            <td>5</td>
-                            <td>Sample Task Name 5</td>
-                            <td>No</td>
-                            <td>4</td>
-                            <td>400</td>
-                            <td>1600</td>
+                            <td>
+                            <a ng-click="" class="list-icons-item text-danger delete" data-popup="tooltip" title="Delete" data-trigger="hover"><i class="fas fa-trash" aria-hidden="true"></i></a>
+                            <md-switch  style="display:inline;" tabindex="0" type="checkbox" role="checkbox" class="ng-pristine ng-untouched ng-valid ng-empty" aria-checked="false" aria-invalid="false">
+                                </md-switch>
+                            </td>
                         </tr>
                         {{-- <tr class="col-lg-12" dir-paginate="booking in bookings | itemsPerPage:perPage" current-page="currentPage" total-items="TotalRecords" pagination-id="bookingPagination" ng-cloak>
                             <td>[[booking.booking_no ? booking.booking_no : (booking.is_third_party ? booking.third_party_booking_no  : '')]]</td>

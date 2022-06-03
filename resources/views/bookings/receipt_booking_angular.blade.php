@@ -317,6 +317,9 @@ ul.invoice-list-ul {
             title="This size is use for 'Portable Printer'">58mm</option>
     </select>
 </div>
+<div style="float: right;margin-right: 20px;margin-top: 20px;">
+    <button onclick="location.href = '/tasks-list';" id="myButton" class="float-left submit-button" >Edit</button>
+</div>
 <div class="ticket" id="for_blackcopper">
     <div class="centered-content">
         <div id="receiptButtons">
