@@ -25,6 +25,7 @@
                     <th scope="col">Date</th>
                     <th scope="col">Expense Details</th>
                     <th scope="col">Expense Amount</th>
+                    <th scope="col">Username</th>
                     <th scope="col" style="visibility: hidden;">Date</th>
                     <th scope="col" style="visibility: hidden;">Expense Details</th>
            
@@ -36,6 +37,7 @@
                         <td>[[a.created_at]]</td>
                         <td>[[a.description]]</td>
                         <td>[[a.cr_amount]]</td>
+                        <td>[[a.post_user]]</td>
                         <td style="visibility: hidden;">[[a.created_at]]</td>
                         <td style="visibility: hidden;">[[a.description]]</td>
                     </tr>

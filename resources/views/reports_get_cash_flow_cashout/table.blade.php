@@ -23,23 +23,25 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">Date-Time</th>
                             <th scope="col">Expense Details</th>
-                            <th scope="col">Date</th>
                             <th scope="col">Amount Paid</th>
-                            <th scope="col">User Name</th>
-                            <th scope="col">Closing Balance</th>
                             <th scope="col">Cash in Drawer</th>
-                          </tr>
+                            <th scope="col">Closing Balance</th>
+                            <th scope="col">User Name</th>
+                        </tr>
                     </thead>
                     <tbody data-link="row" class="rowlink">
                         <tr class="col-lg-12 unread" ng-repeat="d in cashflowcashout" ng-cloak>
                                 <th scope="row">[[$index +1]]</th>
-                                <td>[[d.description]]</td>
                                 <td>[[d.created_at]]</td>
+                                <td>[[d.description]]</td>
                                 <td>[[d.cr_amount]]</td>
-                                <td>[[d.post_user]]</td>
-                                <td>[[d.closing_balance]]</td>
                                 <td>[[d.cash_in_drawer]]</td>
+                                <td>[[d.closing_balance]]</td>
+                                <td>[[d.post_user]]</td>
+                                
+                                
                           </tr>
                     </tbody>
                 </table>

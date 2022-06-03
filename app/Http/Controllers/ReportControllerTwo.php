@@ -2334,7 +2334,7 @@ class ReportControllerTwo extends Controller
 
       $voucher_master = VoucherMaster::where('hotel_id', $hotel_id)
                         ->with(['voucher_details' => function($q) {
-                          
+                          $q->with('account_head:id,title');
                           $q->where('dr_amount', '>',  0);
                           $q->where('account_gl_id',191);
 
@@ -2360,6 +2360,7 @@ class ReportControllerTwo extends Controller
           
       if(count($voucher_master)) {
 
+    
         foreach($voucher_master as $single_vouchers_master){
 
           $inner_idd_arr = array();
@@ -2368,10 +2369,12 @@ class ReportControllerTwo extends Controller
           $voucher_debit_amount = $voucher_details[0]->dr_amount;
           $voucher_narration = $voucher_details[0]->narration;
 
+          $account_head_title = $single_vouchers_master->voucher_details[0]->account_head['title'];
+
           $inner_idd_arr['id'] = $single_vouchers_master->id;
           $inner_idd_arr['booking_no']  = $single_vouchers_master->voucher_no ?? "";
-          $inner_idd_arr['booking_date']  = $single_vouchers_master->created_at->format('y-m-d');
-          $inner_idd_arr['customer_first_name']  = "Voucher";
+          $inner_idd_arr['booking_date']  = $single_vouchers_master->created_at->format('y-m-d H:i:s');
+          $inner_idd_arr['customer_first_name']  =  $account_head_title;
           $inner_idd_arr['customer_last_name']  = "";
           $inner_idd_arr['HotelName'] = "";
           $inner_idd_arr['rooms'] = "";
@@ -2381,7 +2384,7 @@ class ReportControllerTwo extends Controller
           $inner_idd_arr['roomNumber'] = "";
           $inner_idd_arr['checkin_time'] = "";
           $inner_idd_arr['checkout_time'] = "";
-          $inner_idd_arr['BookingDate'] = $single_vouchers_master->created_at->format('y-m-d');
+          $inner_idd_arr['BookingDate'] = $single_vouchers_master->created_at->format('y-m-d H:i:s');
           $inner_idd_arr['BookingFrom'] = "";
           $inner_idd_arr['BookingTo'] = "";
           $inner_idd_arr['net_total'] = $voucher_debit_amount;
@@ -2390,7 +2393,6 @@ class ReportControllerTwo extends Controller
           $inner_idd_arr['user_name'] =  $single_vouchers_master->post_user->name  ?? "";
           $inner_idd_arr['status'] = "";
 
-
           $invoice_details_arr[] = $inner_idd_arr;
 
         }
@@ -2398,14 +2400,6 @@ class ReportControllerTwo extends Controller
       }
 
 
-      //return response()->json([
-      //  'success' => true,
-      //  'count' => $invoice_details_arr,
-      //  'msgtype' => 'success',
-      //]);
-     
-
-    
       $bookings = Booking::whereHas('invoice_details', function ($q1) use($date_one,$date_two_next)  {
 
         $q1->where('type','payment');
@@ -2424,7 +2418,6 @@ class ReportControllerTwo extends Controller
 
        // Bookings Mapping
        if(!empty($bookings)){
-
 
         $count = $bookings->count();
 
@@ -2520,8 +2513,6 @@ class ReportControllerTwo extends Controller
           }
 
           
-
-       
           if(count($invoice_details_arr) > 0){
             foreach($invoice_details_arr as $bookings_map_single){
 
@@ -2620,10 +2611,7 @@ class ReportControllerTwo extends Controller
 
     }
 
-    
-
-
-
+  
     return response()->json([
       'success' => true,
       'result' => $get_cash_flow_whole,
@@ -2770,7 +2758,7 @@ class ReportControllerTwo extends Controller
             $obj->closing_balance = "";
             $obj->cash_in_drawer = "";
             //$obj->created_at = $ex->created_at ?? "";
-            $obj->created_at = $ex->created_at->format('y-m-d') ?? "";
+            $obj->created_at = $ex->created_at->format('Y-m-d H:i:s') ?? "";
             $obj->voucher_details = $ex->voucher_details->map(function($voucher_detail) {
 
               $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
@@ -2813,11 +2801,11 @@ class ReportControllerTwo extends Controller
       $bookings_exec_array = array();
 
       
-      $objj_closing_balance = new stdClass();
-      $objj_closing_balance->id = 0000;
-      $objj_closing_balance->closing_balance = $closing_balance;
-
-      $bookings_exec_array[]  = $objj_closing_balance; 
+      $objj_cash_in_drawer = new stdClass();
+      $objj_cash_in_drawer->id = 1111;
+      //$objj_cash_in_drawer->cash_in_drawer = $closing_balance;
+      $objj_cash_in_drawer->cash_in_drawer = $user_opening_balance;
+      $bookings_exec_array[]  = $objj_cash_in_drawer;
 
 
       foreach($vouchers_exec as $single_vouchers_exec) {
@@ -2825,13 +2813,13 @@ class ReportControllerTwo extends Controller
       }
 
 
-    
-      $objj_cash_in_drawer = new stdClass();
-      $objj_cash_in_drawer->id = 1111;
-      $objj_cash_in_drawer->cash_in_drawer = $closing_balance;
-      
-      $bookings_exec_array[]  = $objj_cash_in_drawer;
-      
+      $objj_closing_balance = new stdClass();
+      $objj_closing_balance->id = 0000;
+      $objj_closing_balance->closing_balance = $closing_balance;
+      $bookings_exec_array[]  = $objj_closing_balance; 
+
+
+  
       $get_cash_flow_arr[] = $bookings_exec_array;
 
       
@@ -3737,22 +3725,21 @@ class ReportControllerTwo extends Controller
             $obj->voucher_type_id = $ex->voucher_type_id ?? "";
             $obj->description = $ex->description ?? "";
             //$obj->created_at = $ex->created_at ?? "";
-            $obj->created_at = $ex->created_at->format('y-m-d') ?? "";
+            $obj->created_at = $ex->created_at->format('y-m-d H:i:s') ?? "";
             //$obj->created_at = '$loop_date' ?? "";
 
 
             $obj->voucher_details = $ex->voucher_details->map(function($voucher_detail) {
 
-              $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
+            $obj['cr_amount'] = ($voucher_detail->cr_amount > 0) ? $voucher_detail->cr_amount:0;
               return $obj;
 
             });
 
             $obj->cr_amount =  $obj->voucher_details[0]['cr_amount'];
-
-            
-
             $obj->CreatedBy = $ex->createdByUser->name ?? "";
+            $obj->post_user = $ex->post_user->name ?? "";
+
             return $obj;
 
           });
