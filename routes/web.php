@@ -94,6 +94,12 @@ Route::post('search-customers', 'BookingsController@searchCustomers')->middlewar
 // FrontDesk
 Route::get('frontdesk', 'BookingsController@frontdesk')->middleware('permission:can-view-frontdesk-booking');
 
+// Mr Optimist BTC + KLC  7 June 2022
+//Route::get('bookings/editable-invoice/{id}', 'BookingsController@editableInvoice')->middleware('permission:can-edit-booking||can-edit-frontdesk-booking');
+Route::get('bookings/editable-invoice/{id}', 'BookingsController@editableInvoice');
+Route::post('bookings/updateStatusMiscellaneous','BookingsController@updateStatusMiscellaneous');
+Route::post('bookings/deleteMiscellaneousAmount','BookingsController@deleteMiscellaneousAmount');
+
 /**
  * Miscellaneous Amount
  * Mr Optimist

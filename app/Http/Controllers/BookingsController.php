@@ -2526,6 +2526,100 @@ class BookingsController extends Controller
         ]);
     }
 
+    // Mr Optimist 7 June 2022
+    public function editableInvoice($id)
+    {
+       
+        return view ('tasks-list.index', [
+            'breadcrumb' => 'Miscellaneous & Service amount',
+            'booking_id' => $id
+        ]);
+    }
+
+     // Mr Optimist 7 June 2022 ends
+
+    // Mr Optimist 8 June 2022
+    public function updateStatusMiscellaneous(Request $request)
+    {
+
+        //$booking_id =  $request->booking['id'];
+        
+        $booking_id =  $request->booking_id;
+        $is_btc_status = $request->is_btc;
+        $misc_id =  $request->misc_id;
+
+     
+
+
+        $BookingMiscellaneousAmountExist = BookingMiscellaneousAmount::where('id',$misc_id)->where('booking_id',$booking_id)->count();
+        if ($BookingMiscellaneousAmountExist==0) {
+            $BookingMiscellaneousAmount = new BookingMiscellaneousAmount();
+        }
+
+        else {
+            $BookingMiscellaneousAmount = BookingMiscellaneousAmount::where('id',$misc_id)->where('booking_id',$booking_id)->first();
+  
+        }
+
+
+        $BookingMiscellaneousAmount->is_complementary = $is_btc_status; 
+        $BookingMiscellaneousAmount->save();
+        
+
+        $miscellaneous_amounts = BookingMiscellaneousAmount::where('booking_id',$booking_id)->where('status',1)->get();
+
+        
+        return response()->json([
+            'success' => true,
+            'message' => ['Status Updated Successfully'],
+            'msgtype' => 'success',
+            'miscellaneous_amounts' => $miscellaneous_amounts,
+            'id' => $booking_id
+        ]);
+       
+    }
+
+    public function deleteMiscellaneousAmount(Request $request)
+    {
+
+        //$booking_id =  $request->booking['id'];
+        $booking_id =  $request->booking_id;
+        $misc_name = $request->misc_name;
+        $misc_id =  $request->misc_id;
+
+        BookingMiscellaneousAmount::find($misc_id)->delete();  
+
+        $miscellaneous_amounts = BookingMiscellaneousAmount::where('booking_id',$booking_id)->where('status',1)->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => ['Misc Amount ('.$misc_name.') Delete Successfully'],
+            'msgtype' => 'success',
+            'miscellaneous_amounts' => $miscellaneous_amounts,
+            'id' =>  $misc_id
+        ]);
+
+        
+        /*
+        return response()->json([
+            'success' => true,
+            'message' => ['Misc Amount ('.$misc_name .') Delete Successfully'],
+            'msgtype' => 'success',
+            'booking_id' => $booking_id,
+            'misc_name' =>  $misc_name,
+            'misc_id' => $misc_id
+
+        ]);
+        **/
+       
+
+      
+       
+    }
+
+    // Mr Optimist 8 June 2022 ends
+
+
     private function bookingFromRoom($data) {
         $id = RoomSchedule::where('status', '=', 1)
         ->where('room_id', $data['room_id'])

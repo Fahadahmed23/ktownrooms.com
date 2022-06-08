@@ -296,6 +296,7 @@ display: none;
                                                         <a ng-show="room.st.name=='Booked'" ng-click="showmiscamount(room.booking_id)" class="dropdown-item"><i class="icon-coin-dollar"></i>Add Miscellaneous Amount</a>
                                                         <a ng-click="requestForService(room.id)" ng-if="room.st.name=='Booked'" class="dropdown-item"><i class="fas fa-concierge-bell"></i>Request For Services </a>
                                                         <a ng-show="room.st.name=='Booked'" ng-click="checkOutExtend(room.id)" class="dropdown-item"><i class="fa fa-calendar"></i>Extend Booking </a>
+                                                        <a ng-click="bookingEditableInvoice(room.booking_id)" class="dropdown-item"><i class="list-icons-item edit-sec icon-pencil5"></i>Editable Invoice</a>
                                                         <a ng-click="bookingReceiptRedirect(room.booking_id)" class="dropdown-item"><i class=" fa fa-print"></i>Printable Invoice</a>
                                                         <a ng-hide="room.st.is_checkedout" ng-if="room.st.name=='Booked'" ng-click="bookingReceipt(room.booking_id, 'checkout')" class="dropdown-item"><i class="fa fa-sign-out-alt"></i> Checkout</a>
                                                         <a ng-hide="room.st.is_checkedout" ng-click="getRoomsForTransfer(room)" class="dropdown-item"><i class="icon-redo2"></i>Transfer Room</a>

@@ -4244,15 +4244,313 @@ app.controller('bookingsCtrl', function($scope, $rootScope, DTColumnDefBuilder, 
             }
         })
     }
-// $scope.name=null;
-//     $scope.savepayment = function() {
-//         debugger;
-//         alert($scope.name);
-//     }
+    
+    // $scope.name=null;
+    //     $scope.savepayment = function() {
+    //         debugger;
+    //         alert($scope.name);
+    //     }
 
     $scope.bookingReceiptRedirect = function(booking_id) {
         window.open('bookings/receipt/' + booking_id);
     }
+
+    // Mr Optimist 7 June 2022
+    $scope.bookingEditableInvoice = function(booking_id) {
+        window.open('bookings/editable-invoice/' + booking_id);
+    }
+
+    $scope.editableInvoice = function(booking_id) {
+
+        $scope.findBooking(booking_id, function() {
+            // $scope.invoice_details = $scope.invoice_details;
+            $scope.Invoice = $scope.fBooking;
+
+         
+           
+            // Mr Optimist 23 Nov 2021
+            $scope.Invoice.cservice_total = 0;
+            if ($scope.Invoice.is_corporate == 1) {
+
+                if ($scope.Invoice.invoice.corporate_type == 1) {
+                    $scope.Invoice.invoice.corporate_type_name = 'Full Board';
+                    $scope.Invoice.corporate_type_total = 0;
+                }
+                else if($scope.Invoice.invoice.corporate_type == 2){
+                    $scope.Invoice.invoice.corporate_type_name = 'Half Board';
+                    $scope.Invoice.corporate_type_total = $scope.Invoice.invoice.net_total/2;
+                }
+                else if($scope.Invoice.invoice.corporate_type == 3){
+                    $scope.Invoice.invoice.corporate_type_name = 'Room Only';
+                    // Calculate Service Total
+                    for (i = 0; i < $scope.Invoice.services.length; i++) {
+                        $scope.Invoice.cservice_total += $scope.Invoice.services[i].amount;
+                    }
+                    $scope.Invoice.corporate_type_total = $scope.Invoice.cservice_total;
+                }
+
+            }
+
+            // Is Btc and Is not btc
+            console.log('BOOKING miscellaneous');
+            console.log($scope.miscellaneous_amounts);
+        
+            console.log('BOOKING Services');
+            console.log($scope.Invoice.services);
+            console.log('All BTC Services');
+            console.log($scope.Invoice.booking_services_btc);
+
+            // Non - Btc Room Total
+            $scope.Invoice.nonbtc_total = 0; 
+            $scope.Invoice.nonbtc_tax_rate = $scope.Invoice.invoice.tax_rate; 
+            $scope.Invoice.nonbtc_total_with_tax = 0;
+            $scope.Invoice.nonbtc_payment_received = 0;
+            $scope.Invoice.nonbtc_payment_amount = 0;  // Balance Payable
+            
+            console.log('Tax Rate');
+            console.log($scope.Invoice.nonbtc_tax_rate);
+            
+            for (i = 0;  i < $scope.Invoice.rooms.length; i++) {
+                $scope.Invoice.nonbtc_total += $scope.Invoice.invoice.nights*$scope.Invoice.rooms[i].pivot.room_charges_onbooking;
+            }
+            
+            
+            // Sum BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+            $scope.Invoice.service_total_btc = 0;
+            // Calculate BTC Service Amount Total
+            for (i = 0; i < $scope.Invoice.services.length; i++) {
+
+                if( $scope.Invoice.services[i].is_btc==1)
+                {
+                    $scope.Invoice.service_total_btc += $scope.Invoice.services[i].amount;
+                }
+                
+            }
+
+            // Sum BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+
+            // Sum Non BTC Services - Arman Ahmad - Start - Saturday 21-May-2022
+            $scope.Invoice.service_total_non_btc = 0;
+
+            // Calculate non BTC Service Amount Total
+            for (i = 0; i < $scope.Invoice.services.length; i++) {
+                if( $scope.Invoice.services[i].is_btc==0)
+                {
+                    $scope.Invoice.service_total_non_btc += $scope.Invoice.services[i].amount;
+                }
+            }
+            // Sum Non BTC Services - Arman Ahmad - End - Saturday 21-May-2022
+            $scope.Invoice.nonbtc_total += $scope.Invoice.service_total_non_btc;
+
+            // Sum Non BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+            $scope.miscellaneous_amounts_total_non_btc =0;
+            // Calculate Non BTC Misc Amount Total
+            for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+                if( $scope.miscellaneous_amounts[i].is_complementary=='0')
+                {
+                    $scope.miscellaneous_amounts_total_non_btc += $scope.miscellaneous_amounts[i].amount;
+                }
+            }
+            // Sum Non BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+
+            $scope.Invoice.nonbtc_total += $scope.miscellaneous_amounts_total_non_btc;
+            $scope.Invoice.nonbtc_tax_rate *= $scope.Invoice.nonbtc_total / 100;
+            $scope.Invoice.nonbtc_tax_rate =  Math.round($scope.Invoice.nonbtc_tax_rate);
+
+            $scope.Invoice.nonbtc_total_with_tax += $scope.Invoice.nonbtc_tax_rate+$scope.Invoice.nonbtc_total;
+
+
+            $scope.Invoice.nonbtc_payment_received += $scope.Invoice.invoice.payment_amount;
+            $scope.Invoice.nonbtc_payment_amount  += $scope.Invoice.nonbtc_total_with_tax-$scope.Invoice.nonbtc_payment_received;
+
+            console.log('Non Btc Total');
+            console.log($scope.Invoice.nonbtc_total);
+
+            
+            console.log('Non Btc Tax');
+            console.log($scope.Invoice.nonbtc_tax_rate);
+
+            console.log('Total with Tax');
+            console.log($scope.Invoice.nonbtc_total_with_tax);
+
+           
+            // Sum BTC Misc Amount - Arman Ahmad - Start - Friday 20-May-2022
+            $scope.miscellaneous_amounts_total_btc =0;
+            // Calculate BTC Misc Amount Total
+            for (i = 0; i < $scope.miscellaneous_amounts.length; i++) {
+
+                if( $scope.miscellaneous_amounts[i].is_complementary=='1')
+                {
+                    $scope.miscellaneous_amounts_total_btc += $scope.miscellaneous_amounts[i].amount;
+
+                }
+            }
+            // Sum BTC Misc Amount - Arman Ahmad - End - Friday 20-May-2022
+
+            $scope.Invoice.service_total = 0;
+            // Calculate Service Total
+            for (i = 0; i < $scope.Invoice.services.length; i++) {
+                $scope.Invoice.service_total += $scope.Invoice.services[i].amount;
+            }
+            $scope.current_timestamp = $scope.getCurrentTimestamp();
+            $scope.inNewPage = true;
+            $scope.urlparam = window.location.search.substring(1);
+            $scope.invoice_no = $scope.urlparam.split('=')[1];
+            setTimeout(() => {
+                $('li[data-inv="' + $scope.invoice_no + '"]').click()
+            }, 500);
+
+
+        });
+    }
+
+    $scope.updateMiscellaneous = function(misc_id,e,column) {
+
+        
+        if(e==false){
+            $scope.isSelected =1;
+
+        }
+        else if(e==true){
+            $scope.isSelected =0;
+
+        }
+
+
+        console.log($scope.isSelected);
+        //return;
+
+    
+         $scope.ajaxPost('bookings/updateStatusMiscellaneous',{
+            
+            booking_id:column.id,
+            is_btc:$scope.isSelected,
+            misc_id:misc_id
+
+        }, false).then(function(response) {
+
+            console.log(response);
+
+            if (response.success) {
+
+                editableInvoice(response.id);
+                //$scope.miscellaneous_amounts = response.miscellaneous_amounts;
+            }
+            
+           
+        }).catch(function(e) {
+            console.log(e);
+        })
+
+
+        
+     
+    
+    }
+
+    // Mr Optimist 7 June 2022 Ends
+    // Mr Optimist 8 June 2022 Starts
+
+    $scope.deleteMiscellaneous = function(d,misc_id,misc_name,column) {
+
+        $scope.miscellaneous_amount = angular.copy(d);
+
+        bootbox.confirm({
+            title: 'Confirm Deletion',
+            message: "Are you sure you want to delete '" + misc_name + "'?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-link'
+                }
+            },
+            callback: function(result) {
+                if (result) {
+                    $scope.ajaxPost('bookings/deleteMiscellaneousAmount', {
+
+                        booking_id:column.id,
+                        misc_name:misc_name,
+                        misc_id:misc_id
+
+                    },false)
+                        .then(function(response) {
+
+                            if (response.success) {
+
+                                $scope.miscellaneous_amounts  = $scope.miscellaneous_amounts.filter((miscellaneous_amount) => miscellaneous_amount.id != response.id);
+                                window.scrollTop();
+                              
+
+                                //$scope.miscellaneous_amounts  = $scope.clients.filter((client) => client.id != response.id);
+                                //window.scrollTop();
+
+                                //$scope.miscellaneous_amounts = response.miscellaneous_amounts;
+                                //editableInvoice(response.id);
+                            }
+                        })
+                        .catch(function(e) {
+                            toastr.error(e);
+                        })
+                }
+            }
+        });
+    }
+
+    $scope.updateService = function(service_name,e,column) {
+
+        
+        if(e==false) {
+            $scope.isSelected =1;
+
+        }
+        else if(e==true){
+            $scope.isSelected =0;
+
+        }
+
+        console.log($scope.isSelected);
+        return;
+
+    
+         $scope.ajaxPost('bookings/updateStatusMiscellaneous', {
+            
+            booking: column,
+            is_btc : $scope.isSelected,
+            misc_id:misc_id
+
+        }, false).then(function(response) {
+
+            //if (response.success) {
+
+            //    editableInvoice(response.id);
+                //$scope.miscellaneous_amounts = response.miscellaneous_amounts;
+            //}
+            
+           
+        }).catch(function(e) {
+            console.log(e);
+        })
+
+
+        console.log(e);
+        console.log(column);
+        console.log('Hahaha');
+        console.log('Booking Id');
+        console.log(column.id);
+        console.log($scope.isSelected);
+     
+    
+    }
+    
+
+
+
+
+
 
     $scope.initReceipt = function(booking_id) {
         $scope.findBooking(booking_id, function() {
