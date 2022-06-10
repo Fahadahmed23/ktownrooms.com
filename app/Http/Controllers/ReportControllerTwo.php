@@ -2,6 +2,8 @@
 // Mr Optimist 14 Jan 2022
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use App\Models\AccountGeneralLedger;
 use App\Models\OpeningShiftHandover;
 use App\Models\Permission;
@@ -653,13 +655,39 @@ class ReportControllerTwo extends Controller
 
 
       // $receiving_date = $request->receiving_date;
-      $date_one = $loop_date.' 06:01:00';
+      //$date_one = $loop_date.' 06:01:00';
+      $date_one = $loop_date.' 06:00:00';
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
-      $date_one_next = $next_date.' 00:00';
-      $date_two_next = $next_date.' 06:00';
+      $date_one_next = $next_date.' 00:00:00';
+      //$date_two_next = $next_date.' 06:00:00';
+      $date_two_next = $next_date.' 05:59:59';
+
+      $dt_one_cst = Carbon::parse($date_one)->timezone('America/Chicago');
+     
+      $dt_one_toYear = $dt_one_cst->format('Y');
+      $dt_one_toMonth = $dt_one_cst->format('m');
+      $dt_one_toDay = $dt_one_cst->format('d');
+      
+      $dt_one_toHour = $dt_one_cst->format('H');
+      $dt_one_toMin = $dt_one_cst->format('i');
+      $dt_one_toSec = $dt_one_cst->format('s');
+
+      $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+
+      $dt_two_cst = Carbon::parse($date_two_next)->timezone('America/Chicago');
+
+      $dt_two_toYear = $dt_two_cst->format('Y');
+      $dt_two_toMonth = $dt_two_cst->format('m');
+      $dt_two_toDay = $dt_two_cst->format('d');
+      
+      $dt_two_toHour = $dt_two_cst->format('H');
+      $dt_two_toMin = $dt_two_cst->format('i');
+      $dt_two_toSec = $dt_two_cst->format('s');
+      $date_two_next  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
 
 
       $total_no_of_occupants = 0;
@@ -1393,14 +1421,41 @@ class ReportControllerTwo extends Controller
 
       $loop_date = date_format($date,"Y-m-d");
 
-      // $receiving_date = $request->receiving_date;
-      $date_one = $loop_date.' 06:01:00';
+      //$date_one = $loop_date.' 06:01:00';
+      $date_one = $loop_date.' 06:00:00';
+
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
-      $date_one_next = $next_date.' 00:00';
-      $date_two_next = $next_date.' 06:00';
+      $date_one_next = $next_date.' 00:00:00';
+      //$date_two_next = $next_date.' 06:00:00';
+      $date_two_next = $next_date.' 05:59:59';
+
+      $dt_one_cst = Carbon::parse($date_one)->timezone('America/Chicago');
+     
+      $dt_one_toYear = $dt_one_cst->format('Y');
+      $dt_one_toMonth = $dt_one_cst->format('m');
+      $dt_one_toDay = $dt_one_cst->format('d');
+      
+      $dt_one_toHour = $dt_one_cst->format('H');
+      $dt_one_toMin = $dt_one_cst->format('i');
+      $dt_one_toSec = $dt_one_cst->format('s');
+
+      $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+    
+      $dt_two_cst = Carbon::parse($date_two_next)->timezone('America/Chicago');
+
+      $dt_two_toYear = $dt_two_cst->format('Y');
+      $dt_two_toMonth = $dt_two_cst->format('m');
+      $dt_two_toDay = $dt_two_cst->format('d');
+      
+      $dt_two_toHour = $dt_two_cst->format('H');
+      $dt_two_toMin = $dt_two_cst->format('i');
+      $dt_two_toSec = $dt_two_cst->format('s');
+
+      $date_two_next  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
 
 
       $today_occupancy=0;
@@ -1685,10 +1740,7 @@ class ReportControllerTwo extends Controller
     $payment_amount_revenue = 0;
     $balance_outstanding_revenue = 0;
 
-    //$user_email = 'fahadahmedoptimist@gmail.com';
-    //$user_email = $request->email ?? null;
-    //$user_cnic = $request->cnic ?? null;
-
+  
     $user = User::find(Auth::user()->id);
     $hotels = auth()->user()->user_hotels()->get(['id','HotelName']);
     $hotel_id = $hotels[0]->id;
@@ -1722,11 +1774,6 @@ class ReportControllerTwo extends Controller
       $date_to = date('Y-m-d');
     }
 
-    //$date_from = $request['date_from'];
-    //$date_to = $request['date_to'];
-
-    //$date_from = '2022-03-27';
-    //$date_to = '2022-04-01';
 
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
@@ -1734,20 +1781,41 @@ class ReportControllerTwo extends Controller
 
     for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
 
-      //echo $date->format(DateTime::ATOM);
-      //date("Y-m-d H:i");
+  
       $loop_date = date_format($date,"Y-m-d");
 
-
-      // $receiving_date = $request->receiving_date;
-      $date_one = $loop_date.' 06:01:00';
+      //$date_one = $loop_date.' 06:01:00';
+      $date_one = $loop_date.' 06:00:00';
+      
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
-      $date_one_next = $next_date.' 00:00';
-      $date_two_next = $next_date.' 06:00';
+      $date_one_next = $next_date.' 00:00:00';
+      //$date_two_next = $next_date.' 06:00:00';
+      $date_two_next = $next_date.' 05:59:59';
 
+      $dt_one_cst = Carbon::parse($date_one)->timezone('America/Chicago');
+      $dt_one_toYear = $dt_one_cst->format('Y');
+      $dt_one_toMonth = $dt_one_cst->format('m');
+      $dt_one_toDay = $dt_one_cst->format('d');      
+      $dt_one_toHour = $dt_one_cst->format('H');
+      $dt_one_toMin = $dt_one_cst->format('i');
+      $dt_one_toSec = $dt_one_cst->format('s');
+      $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+      
+      $dt_two_cst = Carbon::parse($date_two_next)->timezone('America/Chicago');
+      $dt_two_toYear = $dt_two_cst->format('Y');
+      $dt_two_toMonth = $dt_two_cst->format('m');
+      $dt_two_toDay = $dt_two_cst->format('d');      
+      $dt_two_toHour = $dt_two_cst->format('H');
+      $dt_two_toMin = $dt_two_cst->format('i');
+      $dt_two_toSec = $dt_two_cst->format('s');
+      $date_two_next  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
+      
+      
+      
       /*
       $bookings = Booking::with(['hotel','rooms', 'rooms.category','services','invoice', 'promotion','tax_rate','invoice.payment_mode'])
       ->where('hotel_id',$hotel_id)
@@ -2253,33 +2321,60 @@ class ReportControllerTwo extends Controller
  
       $loop_date = date_format($date,"Y-m-d");
 
-      // $receiving_date = $request->receiving_date;
-      $date_one = $loop_date.' 06:01:00';
+      //$date_one = $loop_date.' 06:01:00';
+      $date_one = $loop_date.' 06:00:00';
 
-      //echo "<pre>";
-      //var_dump("Date One");
-      //var_dump($date_one);
       
       //$date_one_new = date('Y-m-d H:i:s',strtotime('-10 hours',strtotime($date_one)));
       
-      //var_dump("Date One New");
-      //var_dump($date_one_new);
-
-
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
-      $date_one_next = $next_date.' 00:00';
-      $date_two_next = $next_date.' 06:00';
+      $date_one_next = $next_date.' 00:00:00';
+      //$date_two_next = $next_date.' 06:00:00';
+      $date_two_next = $next_date.' 05:59:59';
 
-      //$date_two_new = date('Y-m-d H:i:s',strtotime('-10 hours',strtotime($date_two_next)));
+
+      $dt_one_cst = Carbon::parse($date_one)->timezone('America/Chicago');
+
+      $dt_one_toYear = $dt_one_cst->format('Y');
+      $dt_one_toMonth = $dt_one_cst->format('m');
+      $dt_one_toDay = $dt_one_cst->format('d');
       
-      //var_dump("Date Two");
-      //var_dump($date_two_next);
+      $dt_one_toHour = $dt_one_cst->format('H');
+      $dt_one_toMin = $dt_one_cst->format('i');
+      $dt_one_toSec = $dt_one_cst->format('s');
 
-      //var_dump("Date One New");
-      //var_dump($date_two_new);
+      //$dt_one_cstt  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+      $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+    
+      $dt_two_cst = Carbon::parse($date_two_next)->timezone('America/Chicago');
+
+      $dt_two_toYear = $dt_two_cst->format('Y');
+      $dt_two_toMonth = $dt_two_cst->format('m');
+      $dt_two_toDay = $dt_two_cst->format('d');
+      
+      $dt_two_toHour = $dt_two_cst->format('H');
+      $dt_two_toMin = $dt_two_cst->format('i');
+      $dt_two_toSec = $dt_two_cst->format('s');
+
+      //$dt_two_cstt  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
+      $date_two_next  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
+
+
+      /*
+      return response()->json([
+        'success' => true,
+        'result' => '',
+        'Date One Pakistan' =>$date_one,
+        'Date One American' =>$dt_one_cstt,
+        'Date Two Pakistan' =>$date_two_next,
+        'Date Two American' =>$dt_two_cstt,
+        'msgtype' => 'success',
+      ]);
+      **/
 
 
       // Opening Balance
@@ -2428,7 +2523,8 @@ class ReportControllerTwo extends Controller
             $obj = new stdClass();
             $obj->id = $ex->id;
             $obj->booking_no = $ex->booking_no ?? "";
-            $obj->booking_date = $ex->BookingDate ?? "";
+            //$obj->booking_date = $ex->BookingDate ?? "";
+            $obj->booking_date = $this->updateTime($ex->BookingDate);
             $obj->customer_first_name = $ex->invoice->customer_first_name ?? "";
             $obj->customer_last_name = $ex->invoice->customer_last_name ?? "";
             $obj->HotelName = $ex->hotel->HotelName ?? "";
@@ -2484,7 +2580,9 @@ class ReportControllerTwo extends Controller
 
                   $inner_id_arr['id'] = $bookings_map_single->id;
                   $inner_id_arr['booking_no']  = $bookings_map_single->booking_no ?? "";
-                  $inner_id_arr['booking_date']  = $single_invoicedetail['created_at'] ?? "";
+                  //$inner_id_arr['booking_date']  = $single_invoicedetail['created_at'] ?? "";
+                  $inner_id_arr['booking_date']  = $this->updateTime($single_invoicedetail['created_at']);
+
                   $inner_id_arr['customer_first_name']  = $bookings_map_single->customer_first_name ?? "";
                   $inner_id_arr['customer_last_name']  = $bookings_map_single->customer_last_name ?? "";
                   $inner_id_arr['HotelName'] = $bookings_map_single->HotelName ?? "";
@@ -2648,25 +2746,25 @@ class ReportControllerTwo extends Controller
     $get_cash_flow_arr = array();
 
     if(!empty($request['booked_from']) && is_null($request->booked_to)) {
-        $date_from = $request['booked_from'];
-        $date_to = $request['booked_from'];
-      }
-      else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
-        $date_from = $request['booked_to'];
-        $date_to = $request['booked_to'];
-      }
-      else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
-        $date_from = $request['booked_from'];
-        $date_to = $request['booked_to'];
-      }
-      elseif( empty($request['booked_from']) && empty($request['booked_to'])){
-        $date_from = date('Y-m-d');
-        $date_to = date('Y-m-d');
-      }
-      else {
-        $date_from = date('Y-m-d');
-        $date_to = date('Y-m-d');
-      }
+      $date_from = $request['booked_from'];
+      $date_to = $request['booked_from'];
+    }
+    else if(!empty($request['booked_to']) && is_null($request->booked_from)) {
+      $date_from = $request['booked_to'];
+      $date_to = $request['booked_to'];
+    }
+    else if(!empty($request['booked_from']) && !empty($request['booked_to'])){
+      $date_from = $request['booked_from'];
+      $date_to = $request['booked_to'];
+    }
+    elseif( empty($request['booked_from']) && empty($request['booked_to'])){
+      $date_from = date('Y-m-d');
+      $date_to = date('Y-m-d');
+    }
+    else {
+      $date_from = date('Y-m-d');
+      $date_to = date('Y-m-d');
+    }
 
     // $date_from = "2022-03-28";
     // $date_to = "2022-03-30";
@@ -2686,15 +2784,41 @@ class ReportControllerTwo extends Controller
       //date("Y-m-d H:i");
       $loop_date = date_format($date,"Y-m-d");
 
-      // $receiving_date = $request->receiving_date;
-      $date_one = $loop_date.' 06:01:00';
+
+      //$date_one = $loop_date.' 06:01:00';
+      $date_one = $loop_date.' 06:00:00';
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
-      $date_one_next = $next_date.' 00:00';
-      $date_two_next = $next_date.' 06:00';
+      $date_one_next = $next_date.' 00:00:00';
+      //$date_two_next = $next_date.' 06:00:00';
+      $date_two_next = $next_date.' 05:59:59';
 
+      $dt_one_cst = Carbon::parse($date_one)->timezone('America/Chicago');
+     
+      $dt_one_toYear = $dt_one_cst->format('Y');
+      $dt_one_toMonth = $dt_one_cst->format('m');
+      $dt_one_toDay = $dt_one_cst->format('d');
+      
+      $dt_one_toHour = $dt_one_cst->format('H');
+      $dt_one_toMin = $dt_one_cst->format('i');
+      $dt_one_toSec = $dt_one_cst->format('s');
+
+      $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+
+      $dt_two_cst = Carbon::parse($date_two_next)->timezone('America/Chicago');
+
+      $dt_two_toYear = $dt_two_cst->format('Y');
+      $dt_two_toMonth = $dt_two_cst->format('m');
+      $dt_two_toDay = $dt_two_cst->format('d');
+      
+      $dt_two_toHour = $dt_two_cst->format('H');
+      $dt_two_toMin = $dt_two_cst->format('i');
+      $dt_two_toSec = $dt_two_cst->format('s');
+
+      $date_two_next  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
 
       // Opening Balance
       $user_opening_balance = 0;
@@ -2742,7 +2866,7 @@ class ReportControllerTwo extends Controller
         ->whereBetween('created_at', [$date_one,$date_two_next])
         ->get();
 
-     
+    
 
       // Vouchers Mappings
       if(!empty($voucher_master)) {
@@ -3684,13 +3808,36 @@ class ReportControllerTwo extends Controller
 
       $loop_date = date_format($date,"Y-m-d");
 
-      $date_one = $loop_date.' 06:01:00';
+      //$date_one = $loop_date.' 06:01:00';
+      $date_one = $loop_date.' 06:00:00';
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
-      $date_one_next = $next_date.' 00:00';
-      $date_two_next = $next_date.' 06:00';
+      $date_one_next = $next_date.' 00:00:00';
+      //$date_two_next = $next_date.' 06:00:00';
+      $date_two_next = $next_date.' 05:59:59';
 
+
+      $dt_one_cst = Carbon::parse($date_one)->timezone('America/Chicago');
+      $dt_one_toYear = $dt_one_cst->format('Y');
+      $dt_one_toMonth = $dt_one_cst->format('m');
+      $dt_one_toDay = $dt_one_cst->format('d');
+      $dt_one_toHour = $dt_one_cst->format('H');
+      $dt_one_toMin = $dt_one_cst->format('i');
+      $dt_one_toSec = $dt_one_cst->format('s');
+      $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+      $dt_two_cst = Carbon::parse($date_two_next)->timezone('America/Chicago');
+      $dt_two_toYear = $dt_two_cst->format('Y');
+      $dt_two_toMonth = $dt_two_cst->format('m');
+      $dt_two_toDay = $dt_two_cst->format('d');
+      $dt_two_toHour = $dt_two_cst->format('H');
+      $dt_two_toMin = $dt_two_cst->format('i');
+      $dt_two_toSec = $dt_two_cst->format('s');
+      $date_two_next  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
+      
+      
+      
       // Cashout Work
       $created_by_ids = $this->getIncludedVouchers();
 
@@ -4152,30 +4299,46 @@ class ReportControllerTwo extends Controller
       $date_to = date('Y-m-d');
     }
 
-    //$date_from = "2022-03-29";
-    //$date_to = "2022-03-30";
-
     $date_from_dt = new DateTime($date_from);
     $date_to_dt = new DateTime($date_to);
-
-    //$date_from = $request['date_from'];
-    //$date_to = $request['date_to'];
-
-
 
     for($date = $date_from_dt; $date <= $date_to_dt; $date->modify('+1 day')) {
 
       $loop_date = date_format($date,"Y-m-d");
 
-      // $receiving_date = $request->receiving_date;
-      $date_one = $loop_date.' 06:01:00';
+      //$date_one = $loop_date.' 06:01:00';
+      $date_one = $loop_date.' 06:00:00';
       $date_two = $loop_date.' 23:59:00';
 
       $next_date = date('Y-m-d', strtotime($loop_date .' +1 day'));
 
-      $date_one_next = $next_date.' 00:00';
-      $date_two_next = $next_date.' 06:00';
+      $date_one_next = $next_date.' 00:00:00';
+      //$date_two_next = $next_date.' 06:00:00';
+      $date_two_next = $next_date.' 05:59:59';
 
+
+      $dt_one_cst = Carbon::parse($date_one)->timezone('America/Chicago');
+      $dt_one_toYear = $dt_one_cst->format('Y');
+      $dt_one_toMonth = $dt_one_cst->format('m');
+      $dt_one_toDay = $dt_one_cst->format('d');      
+      $dt_one_toHour = $dt_one_cst->format('H');
+      $dt_one_toMin = $dt_one_cst->format('i');
+      $dt_one_toSec = $dt_one_cst->format('s');
+      $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+      
+      $dt_two_cst = Carbon::parse($date_two_next)->timezone('America/Chicago');
+      $dt_two_toYear = $dt_two_cst->format('Y');
+      $dt_two_toMonth = $dt_two_cst->format('m');
+      $dt_two_toDay = $dt_two_cst->format('d');      
+      $dt_two_toHour = $dt_two_cst->format('H');
+      $dt_two_toMin = $dt_two_cst->format('i');
+      $dt_two_toSec = $dt_two_cst->format('s');
+      $date_two_next  =  $dt_two_toYear.':'.$dt_two_toMonth.':'.$dt_two_toDay.' '.$dt_two_toHour.':'.$dt_two_toMin.':'.$dt_two_toSec;
+      
+      
+      
+      
       /*
       $bookings = Booking::with(['customer','hotel','rooms','rooms.category','services','booking_miscellaneous_amount','invoice','invoice_details','promotion','tax_rate', 'invoice.payment_mode'])
         ->where('hotel_id',$hotel_id)
@@ -4477,6 +4640,31 @@ class ReportControllerTwo extends Controller
         }
         $created_by_ids[] = $user->id;
         return $created_by_ids;
+  }
+
+
+
+  // Calling Functions
+
+  protected function updateTime($date_first) {
+
+    date_default_timezone_set('America/Chicago');
+
+    $dt_one_cst = Carbon::parse($date_first)->timezone('Asia/Karachi');
+
+    $dt_one_toYear = $dt_one_cst->format('Y');
+    $dt_one_toMonth = $dt_one_cst->format('m');
+    $dt_one_toDay = $dt_one_cst->format('d');
+
+    $dt_one_toHour = $dt_one_cst->format('H');
+    $dt_one_toMin = $dt_one_cst->format('i');
+    $dt_one_toSec = $dt_one_cst->format('s');
+
+    //$dt_one_cstt  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+    $date_one  =  $dt_one_toYear.':'.$dt_one_toMonth.':'.$dt_one_toDay.' '.$dt_one_toHour.':'.$dt_one_toMin.':'.$dt_one_toSec;
+
+    return $date_one;
+  
   }
 
 
