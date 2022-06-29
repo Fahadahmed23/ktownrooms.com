@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('company', 'CompanyController');
 // Route::resource('companies', 'CompaniesController');
 
+
+Route::get('mergingdata', 'DataMergeController@mergingdata');
+
 // Route::group(['middleware' => ['activity']], function () {
 Route::get('/', function () {
     if (Auth::user()) {
