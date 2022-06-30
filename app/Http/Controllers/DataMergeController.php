@@ -90,12 +90,19 @@ class DataMergeController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function mergingdata()
+    public function dumb_admin()
     {
 
 
+        return response()->json([
+            'success' => true,
+            'bookings_partner' => 'working properly'
+
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+
         $partners_two = array();
-        $booking_partner = BookingPartner::get();
+        //$booking_partner = BookingPartner::get();
+        $booking_partner = Booking::get();
 
         //  booking_no
         // booking_code
@@ -114,11 +121,13 @@ class DataMergeController extends Controller
         }
 
         /*
+        
         return response()->json([
             'success' => true,
             'bookings_partner' => $partners_two
 
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+        
         **/
 
         /*
@@ -169,9 +178,10 @@ class DataMergeController extends Controller
             'bookings_ktown' => $ktown_two
 
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-            
-        **/        
-
+        
+        **/
+        
+                
         /*
         $arrr = array(
             "BookingID"=>642,
@@ -197,14 +207,20 @@ class DataMergeController extends Controller
     
         //$common1 = array_intersect_assoc($partners_two,$ktown_two);
 
-
-        foreach($partners_two as $key=>$value){
+        foreach($partners_two as $key=>$value) {
 
             if (array_key_exists($key,$ktown_two)) {
 
+                /*
+                return response()->json([
+                    'success' => true,
+                    'key' => $key
+                ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+                
+                **/
 
 
-                $first_name = $ktown_two[$key]['FirstName'];
+                $FirstName = $ktown_two[$key]['FirstName'];
                 $LastName = $ktown_two[$key]['LastName'];
                 $CompanyName = $ktown_two[$key]['CompanyName'];
                 $Email = $ktown_two[$key]['Email'];
@@ -214,13 +230,13 @@ class DataMergeController extends Controller
                 $Referal = $ktown_two[$key]['Referal'];
                 $FullAddress = $ktown_two[$key]['FullAddress'];
                 $Description = $ktown_two[$key]['Description'];
+                $BookingTotal = $ktown_two[$key]['BookingTotal'];
                 $Discount = $ktown_two[$key]['Discount'];
                 $PromoDiscount = $ktown_two[$key]['PromoDiscount'];
                 $TotalAmount = $ktown_two[$key]['TotalAmount'];
 
 
                 $PaymentStatus = $ktown_two[$key]['PaymentStatus'];
-                $Status = $ktown_two[$key]['Status'];
                 $CheckingStatus = $ktown_two[$key]['CheckingStatus'];
                 $FeedbackToken = $ktown_two[$key]['FeedbackToken'];
                 $DateAdded = $ktown_two[$key]['DateAdded'];
@@ -228,45 +244,239 @@ class DataMergeController extends Controller
 
 
 
+                $booking_find = Booking::where('booking_no',$key)->first();
 
-                return response()->json([
-                    'success' => true,
-                    'bookings_common' => $ktown_two[$key],
-                    'first_name' =>  $first_name,
-                    'Referal' =>  $Referal,
-                    'PaymentStatus' =>  $PaymentStatus,
-                    'CheckingStatus' =>  $CheckingStatus,
-                ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-                return 'Yes '.$key;
-            
+                if(isset($booking_find)){
+
+                    //$booking = new Booking();
+                    
+                    $booking = Booking::find($booking_find->id);
+                    
+                    $booking->id = $booking->id;
+                    $booking->FirstName = $FirstName;
+                    $booking->LastName = $LastName;
+                    $booking->CompanyName = $CompanyName;
+                    $booking->Email = $Email;
+                    $booking->Cell = $Cell;
+                    $booking->Identity = $Identity;
+
+                    $booking->Referal = $Referal;
+                    $booking->FullAddress = $FullAddress;
+                    $booking->Description = $Description;
+                    $booking->BookingTotal = $BookingTotal;
+                    $booking->Discount = $Discount;
+                    $booking->PromoDiscount = $PromoDiscount;
+
+                    $booking->TotalAmount = $TotalAmount;
+                    $booking->PaymentStatus = $PaymentStatus;
+                    $booking->CheckingStatus = $CheckingStatus;
+                    $booking->FeedbackToken = $FeedbackToken;
+                    $booking->DateAdded = $DateAdded;
+                    $booking->DateModified = $DateModified;
+
+                    $booking->save();
+
+                }
+               
             }
 
         
         }
 
-       
-        die;
-        return response()->json([
-            'success' => true,
-            'bookings_common' => $common1
-        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
-        return response()->json([
-            'success' => true,
-            'bookings_partner_count' => count($partners_two),
-            'bookings_ktown_count' => count($ktown_two),
-            'bookings_partner' => $partners_two,
-            'bookings_ktown' => $ktown_two
-        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
-
-        die;
-
-       
-
+        return 'Booking Merging Run';
     
-        return 'fahadahmed';
-      
+    }
+
+    public function mergingdata_booking()
+    {
+
+
+        $partners_two = array();
+        //$booking_partner = BookingPartner::get();
+        $booking_partner = Booking::get();
+
+        //  booking_no
+        // booking_code
+
+        foreach($booking_partner as $single_partner){
+
+            $inner_partner_arr = array();
+            if(!empty($single_partner['booking_no'])){
+
+                $partners_two[$single_partner['booking_no']] = $single_partner;
+                //$partners_two[$single_partner['booking_no']] = $single_partner->toArray();
+
+
+            }
+
+        }
+
+        /*
         
+        return response()->json([
+            'success' => true,
+            'bookings_partner' => $partners_two
+
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+        
+        **/
+
+        /*
+        $arrr1 = array(
+            "id"=>5,
+            "booking_no"=>"KTR090078601",
+            "booking_code"=>"HLwBLV",
+            "booking_title"=>"",
+            "status"=>"CheckedIn",
+            "agent_id"=>null,
+            "customer_id" => 4,
+            "tax_rate_id" => 47,
+            "hotel_id" => 86,
+            "BookingDate" => "2021-09-09 00:00:00",
+            "BookingFrom" => "2021-09-09",
+            "BookingTo" => "2021-09-09",
+            "no_occupants" => 1,
+            "promotion_id" => null,
+            "IsDocumentSubmitted" => 0,
+            "IsCheckedIn" => 0
+
+        );
+        $partners_two['KTR0900786011'] = $arrr1;
+        **/
+
+      
+        $ktown_two = array();
+        $booking_ktown = BookingKtown::get();
+
+        foreach($booking_ktown as $single_ktown){
+
+            $inner_partner_arr = array();
+
+            if(!empty($single_ktown->BookingCode)){
+                
+                //$ktown_two[$single_ktown->BookingCode] = $single_ktown;
+                $ktown_two[$single_ktown->BookingCode] = $single_ktown->toArray();
+
+                //$users = $users->toArray();
+            }
+            
+        }
+
+        
+        /*
+        return response()->json([
+            'success' => true,
+            'bookings_ktown' => $ktown_two
+
+        ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+        
+        **/
+        
+                
+        /*
+        $arrr = array(
+            "BookingID"=>642,
+            "BookingCode"=>1021642,
+            "UserID"=>null,
+            "FirstName"=>"Ahsan",
+            "LastName"=>"Soorani",
+            "CompanyName"=>null,
+            "Email"=>"ahsan.soorani@gmail.com",
+            "Cell"=>"(92)-333-3251547",
+            "Identity"=>null,
+            "Referal"=> 2,
+            "FullAddress"=>null,
+            "Description"=>null,
+            "BookingTotal"=>4500,
+            "Discount"=> 0,
+            "PromoDiscount"=>0,
+            "TotalAmount"=>4500
+        );
+        $ktown_two['KTR0900786011'] = $arrr;
+        **/
+     
+    
+        //$common1 = array_intersect_assoc($partners_two,$ktown_two);
+
+        foreach($partners_two as $key=>$value) {
+
+            if (array_key_exists($key,$ktown_two)) {
+
+                /*
+                return response()->json([
+                    'success' => true,
+                    'key' => $key
+                ])->setEncodingOptions(JSON_NUMERIC_CHECK);
+                
+                **/
+
+
+                $FirstName = $ktown_two[$key]['FirstName'];
+                $LastName = $ktown_two[$key]['LastName'];
+                $CompanyName = $ktown_two[$key]['CompanyName'];
+                $Email = $ktown_two[$key]['Email'];
+                $Cell = $ktown_two[$key]['Cell'];
+                $Identity = $ktown_two[$key]['Identity'];
+
+                $Referal = $ktown_two[$key]['Referal'];
+                $FullAddress = $ktown_two[$key]['FullAddress'];
+                $Description = $ktown_two[$key]['Description'];
+                $BookingTotal = $ktown_two[$key]['BookingTotal'];
+                $Discount = $ktown_two[$key]['Discount'];
+                $PromoDiscount = $ktown_two[$key]['PromoDiscount'];
+                $TotalAmount = $ktown_two[$key]['TotalAmount'];
+
+
+                $PaymentStatus = $ktown_two[$key]['PaymentStatus'];
+                $CheckingStatus = $ktown_two[$key]['CheckingStatus'];
+                $FeedbackToken = $ktown_two[$key]['FeedbackToken'];
+                $DateAdded = $ktown_two[$key]['DateAdded'];
+                $DateModified = $ktown_two[$key]['DateModified'];
+
+
+
+                $booking_find = Booking::where('booking_no',$key)->first();
+
+                if(isset($booking_find)){
+
+                    //$booking = new Booking();
+                    
+                    $booking = Booking::find($booking_find->id);
+                    
+                    $booking->id = $booking->id;
+                    $booking->FirstName = $FirstName;
+                    $booking->LastName = $LastName;
+                    $booking->CompanyName = $CompanyName;
+                    $booking->Email = $Email;
+                    $booking->Cell = $Cell;
+                    $booking->Identity = $Identity;
+
+                    $booking->Referal = $Referal;
+                    $booking->FullAddress = $FullAddress;
+                    $booking->Description = $Description;
+                    $booking->BookingTotal = $BookingTotal;
+                    $booking->Discount = $Discount;
+                    $booking->PromoDiscount = $PromoDiscount;
+
+                    $booking->TotalAmount = $TotalAmount;
+                    $booking->PaymentStatus = $PaymentStatus;
+                    $booking->CheckingStatus = $CheckingStatus;
+                    $booking->FeedbackToken = $FeedbackToken;
+                    $booking->DateAdded = $DateAdded;
+                    $booking->DateModified = $DateModified;
+
+                    $booking->save();
+
+                }
+               
+            }
+
+        
+        }
+
+
+        return 'Booking Merging Run';
     
     }
 

@@ -24,7 +24,9 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('companies', 'CompaniesController');
 
 
-Route::get('mergingdata', 'DataMergeController@mergingdata');
+Route::get('mergingdata-booking', 'DataMergeController@mergingdata_booking');
+
+//Route::get('dumb-admin', 'DataMergeController@dumb_admin');
 
 // Route::group(['middleware' => ['activity']], function () {
 Route::get('/', function () {
