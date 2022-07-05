@@ -6,7 +6,7 @@
                     Basic Information
                 </legend>
 
-                <div class="row ">
+                <div class="row">
                     <div class="col-md-4">
                         <label>Name <span class="text-danger">*</span></label>
                         <input type="text" name="HotelName" class="form-control alpha_numeric" maxlength="50" ng-model="hotel.HotelName" required placeholder="Regend Plaza" >
@@ -34,6 +34,15 @@
                             <div class="text-danger" ng-message="minlength">Code length must be 6 characters</div>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Original Hotel Name<span class="text-danger">*</span></label>
+                        <input type="text" name="OriginalHotelName" class="form-control alpha_numeric" maxlength="50" ng-model="hotel.OriginalHotelName" required placeholder="Regend Plaza" >
+                        <div ng-messages="hotelForm.OriginalHotelName.$error" ng-if='hotelForm.OriginalHotelName.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                            <div class="text-danger" ng-message="required">Hotel Name is required</div>
+                        </div>
+                    </div>    
                 </div>
                 <div class="row">    
                     <div class="col-md-12 mt-2">
@@ -109,15 +118,25 @@
                     Address information
                 </legend> 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="col-form-label">Address <span class="text-danger">*</span></label>
-                        <input aria-invalid="true" name="Address" required ng-model="hotel.Address" maxlength="50" type="text" class="form-control" placeholder="Main Shahrah e Faisal Karachi Cantonment">
-                        
+                            <input aria-invalid="true" name="Address" required ng-model="hotel.Address" maxlength="50" type="text" class="form-control" placeholder="Main Shahrah e Faisal Karachi Cantonment">
+
                         <div ng-messages="hotelForm.Address.$error" ng-if='hotelForm.Address.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                             <div class="text-danger" ng-message="required"> Address is required</div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">Address 2 <span class="text-danger">*</span></label>
+                            <input aria-invalid="true" name="Address2" required ng-model="hotel.Address2" maxlength="50" type="text" class="form-control" placeholder="Main Shahrah e Faisal Karachi Cantonment">
+
+                        <div ng-messages="hotelForm.Address2.$error" ng-if='hotelForm.Address2.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                            <div class="text-danger" ng-message="required"> Address 2 is required</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
                         <label class="col-form-label">City <span class="text-danger">*</span></label>
 
                         <md-select name="city_id" md-no-asterisk class="m-0" ng-model="hotel.city_id" placeholder="Select a City" required>
@@ -129,13 +148,34 @@
                         </div>
                     </div> 
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="col-form-label">Zip Code <span class="text-danger">*</span></label>
                         <input required name="ZipCode" type="text" ng-model="hotel.ZipCode" placeholder="35950" class="form-control zip_us">
                         
                         <div ng-messages="hotelForm.ZipCode.$error" ng-if='hotelForm.ZipCode.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                             <div class="text-danger" ng-message="required"> ZipCode is required</div>
                         </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">Slug <span class="text-danger"></span></label>
+                        <input name="Slug" type="text" ng-model="hotel.Slug" placeholder="hotel-farhan" class="form-control">
+                        
+                        <!--
+                        <div ng-messages="hotelForm.Slug.$error" ng-if='hotelForm.Slug.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                            <div class="text-danger" ng-message="required"> Slug is required</div>
+                        </div>
+                        -->
+                    </div> 
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">Slug Id<span class="text-danger"></span></label>
+                        <input name="SlugId" type="number" ng-model="hotel.SlugId" placeholder="11" class="form-control">
+                        <!--
+                        <div ng-messages="hotelForm.SlugId.$error" ng-if='hotelForm.SlugId.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                            <div class="text-danger" ng-message="required"> SlugId is required</div>
+                        </div>
+                        -->
 
                     </div>
 
@@ -165,7 +205,133 @@
                         Partner information
                     </legend> 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Owner Name<span class="text-danger"></span></label>
+                            <input name="OwnerName" type="text" ng-model="hotel.OwnerName" placeholder="Ali Masood" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.OwnerName.$error" ng-if='hotelForm.OwnerName.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> OwnerName is required</div>
+                            </div>
+                            -->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Partner RequestID<span class="text-danger"></span></label>
+                            <input name="PartnerRequestID" type="number" ng-model="hotel.PartnerRequestID" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.PartnerRequestID.$error" ng-if='hotelForm.PartnerRequestID.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> PartnerRequestID is required</div>
+                            </div>
+                            -->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Hotel TypeID<span class="text-danger"></span></label>
+                            <input name="HotelTypeID" type="number" ng-model="hotel.HotelTypeID" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.HotelTypeID.$error" ng-if='hotelForm.HotelTypeID.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> HotelTypeID is required</div>
+                            </div>
+                            -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">HotelRoomTypeId<span class="text-danger"></span></label>
+                            <input name="HotelRoomTypeId" type="number" ng-model="hotel.HotelRoomTypeId" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.HotelRoomTypeId.$error" ng-if='hotelForm.HotelRoomTypeId.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> HotelRoomTypeId is required</div>
+                            </div>
+                            -->
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">SellingPrice<span class="text-danger"></span></label>
+                            <input name="SellingPrice" type="number" ng-model="hotel.SellingPrice" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.SellingPrice.$error" ng-if='hotelForm.SellingPrice.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> SellingPrice is required</div>
+                            </div>
+                            -->
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">NoOfGuests<span class="text-danger"></span></label>
+                            <input name="NoOfGuests" type="number" ng-model="hotel.NoOfGuests" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.NoOfGuests.$error" ng-if='hotelForm.NoOfGuests.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> NoOfGuests is required</div>
+                            </div>
+                            -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">NoOfRooms<span class="text-danger"></span></label>
+                            <input name="NoOfRooms" type="number" ng-model="hotel.NoOfRooms" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.NoOfRooms.$error" ng-if='hotelForm.NoOfRooms.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> NoOfRooms is required</div>
+                            </div>
+                            -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">AdultCharges<span class="text-danger"></span></label>
+                            <input name="AdultCharges" type="number" ng-model="hotel.AdultCharges" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.AdultCharges.$error" ng-if='hotelForm.AdultCharges.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> AdultCharges is required</div>
+                            </div>
+                            -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">Discount<span class="text-danger"></span></label>
+                            <input name="Discount" type="number" ng-model="hotel.Discount" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.Discount.$error" ng-if='hotelForm.Discount.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> Discount is required</div>
+                            </div>
+                            -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">MapUrl<span class="text-danger"></span></label>
+                            <input name="MapUrl" type="text" ng-model="hotel.MapUrl" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.MapUrl.$error" ng-if='hotelForm.MapUrl.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> MapUrl is required</div>
+                            </div>
+                            -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">Status</label>
+                            <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.Status" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">AutoApprove</label>
+                            <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.AutoApprove" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">IsVisible</label>
+                            <md-switch ng-true-value="1" ng-false-value="0" ng-model="hotel.IsVisible" style="display:inline;float: right; margin-top: 5px; margin-right: 50px;"></md-switch>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="col-form-label">AdditionalGuestCharges<span class="text-danger"></span></label>
+                            <input name="AdditionalGuestCharges" type="number" ng-model="hotel.AdditionalGuestCharges" placeholder="12" class="form-control">
+                            <!--
+                            <div ng-messages="hotelForm.AdditionalGuestCharges.$error" ng-if='hotelForm.AdditionalGuestCharges.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                                <div class="text-danger" ng-message="required"> AdditionalGuestCharges is required</div>
+                            </div>
+                            -->
+                        </div>
+
+                        
+                        <div class="col-md-6">
                             <label class="col-form-label">Partner <span class="text-danger">*</span></label>
                             <md-select name="partner_id" md-no-asterisk required class="m-0" ng-model="hotel.partner_id" placeholder="Select a Partner">
                                 <md-option ng-repeat="partner in partners" ng-value="partner.id">[[partner.FullName]]</md-option>
@@ -175,7 +341,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="col-form-label">Ratings <span class="text-danger">*</span></label>                                       
                             <md-select name="Rating" md-no-asterisk required class="m-0" ng-model="hotel.Rating" placeholder="Select Rating">
                                 <md-option ng-value="1"> <md-icon> 1 </md-option>
@@ -183,15 +349,14 @@
                                 <md-option ng-value="3">3</md-option>
                                 <md-option ng-value="4">4</md-option>
                                 <md-option ng-value="5">5</md-option>
-                            </md-select>
-
-
-                            
+                            </md-select>                            
                             <div ng-messages="hotelForm.Rating.$error" ng-if='hotelForm.Rating.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required">Rating is required</div>
                             </div>
-
                         </div>
+
+
+
                     </div>
             </fieldset>
             
@@ -323,6 +488,65 @@
             
                         </div>
                     </div>
+
+
+                    <div class="col-lg-6">
+                        <div class="row">
+                        <div class="col-md-12">
+                        <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom">
+                            <i class="icon-image2 mr-2"></i>
+                            Image
+                        </legend>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="wrapper prof-wrap">
+                            <img id="preview" class="output_image" ng-src="[[hotel.image!=null ? hotel.image : 'https://icons-for-free.com/iconfiles/png/512/add+photo+instagram+upload+icon-1320184027593509107.png']]">
+                            <div class="custom-file">
+                                <input name="logo" type="file" class="custom-file-input logo" form="mail-img-form">
+                                <label id="fileLabel" class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="btns-div">
+                            <button ng-hide="hotel.image" name="hotel" class="btn m-b-xs w-auto btn-success upload-image-img" type="button"><i class="icon-upload"></i> Upload</button>
+                            <button ng-show="hotel.image" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearImagePicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
+                            </div>
+            
+                        </div>
+            
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="row">
+                        <div class="col-md-12">
+                        <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom">
+                            <i class="icon-image2 mr-2"></i>
+                            Thumbnail
+                        </legend>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="wrapper prof-wrap">
+                            <img id="preview" class="output_image" ng-src="[[hotel.thumbnail!=null ? hotel.thumbnail : 'https://icons-for-free.com/iconfiles/png/512/add+photo+instagram+upload+icon-1320184027593509107.png']]">
+                            <div class="custom-file">
+                                <input name="logo" type="file" class="custom-file-input logo" form="mail-img-form">
+                                <label id="fileLabel" class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="btns-div">
+                            <button ng-hide="hotel.thumbnail" name="hotel" class="btn m-b-xs w-auto btn-success upload-thumbnail-img" type="button"><i class="icon-upload"></i> Upload</button>
+                            <button ng-show="hotel.thumbnail" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearThumbnailPicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
+                            </div>
+            
+                        </div>
+            
+                        </div>
+                    </div>
+
+
                 </div>
             </fieldset>
 
