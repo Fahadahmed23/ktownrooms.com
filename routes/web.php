@@ -390,6 +390,10 @@ Route::post('hotel/get', 'HotelController@getData');
 Route::post('mailImage', 'HotelController@mailImage');
 Route::post('posImage', 'HotelController@posImage');
 
+// Mr Optimist 6 July 2022
+Route::post('mainImage', 'HotelController@mainImage');
+Route::post('thumbnailImage', 'HotelController@thumbnailImage');
+
 Route::post('hotel/deleteHotel', 'HotelController@deleteHotel')->middleware('permission:can-delete-hotel');
 Route::post('hotel/deleteContact', 'HotelController@deleteContact')->middleware('permission:can-delete-hotel');
 Route::post('hotel/saveHotel', 'HotelController@saveHotel')->middleware('permission:can-add-hotel-basic-info');

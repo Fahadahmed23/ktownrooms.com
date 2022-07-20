@@ -235,9 +235,9 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">HotelRoomTypeId<span class="text-danger"></span></label>
-                            <input name="HotelRoomTypeId" type="number" ng-model="hotel.HotelRoomTypeId" placeholder="12" class="form-control">
+                            <input name="hotel_room_type_id" type="number" ng-model="hotel.hotel_room_type_id" placeholder="12" class="form-control">
                             <!--
-                            <div ng-messages="hotelForm.HotelRoomTypeId.$error" ng-if='hotelForm.HotelRoomTypeId.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
+                            <div ng-messages="hotelForm.hotel_room_type_id.$error" ng-if='hotelForm.hotel_room_type_id.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> HotelRoomTypeId is required</div>
                             </div>
                             -->
@@ -500,7 +500,7 @@
                         </div>
                         <div class="col-lg-3">
                             <div class="wrapper prof-wrap">
-                            <img id="preview" class="output_image" ng-src="[[hotel.image!=null ? hotel.image : 'https://icons-for-free.com/iconfiles/png/512/add+photo+instagram+upload+icon-1320184027593509107.png']]">
+                            <img id="preview" class="output_image" ng-src="[[hotel.Image!=null ? hotel.Image : 'https://icons-for-free.com/iconfiles/png/512/add+photo+instagram+upload+icon-1320184027593509107.png']]">
                             <div class="custom-file">
                                 <input name="logo" type="file" class="custom-file-input logo" form="mail-img-form">
                                 <label id="fileLabel" class="custom-file-label" for="customFile">Choose file</label>
@@ -509,8 +509,8 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="btns-div">
-                            <button ng-hide="hotel.image" name="hotel" class="btn m-b-xs w-auto btn-success upload-image-img" type="button"><i class="icon-upload"></i> Upload</button>
-                            <button ng-show="hotel.image" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearImagePicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
+                            <button ng-hide="hotel.Image" name="hotel" class="btn m-b-xs w-auto btn-success upload-mainimage-img" type="button"><i class="icon-upload"></i> Upload</button>
+                            <button ng-show="hotel.Image" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearImagePicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
                             </div>
             
                         </div>
@@ -528,7 +528,7 @@
                         </div>
                         <div class="col-lg-3">
                             <div class="wrapper prof-wrap">
-                            <img id="preview" class="output_image" ng-src="[[hotel.thumbnail!=null ? hotel.thumbnail : 'https://icons-for-free.com/iconfiles/png/512/add+photo+instagram+upload+icon-1320184027593509107.png']]">
+                            <img id="preview" class="output_image" ng-src="[[hotel.Thumbnail!=null ? hotel.Thumbnail : 'https://icons-for-free.com/iconfiles/png/512/add+photo+instagram+upload+icon-1320184027593509107.png']]">
                             <div class="custom-file">
                                 <input name="logo" type="file" class="custom-file-input logo" form="mail-img-form">
                                 <label id="fileLabel" class="custom-file-label" for="customFile">Choose file</label>
@@ -537,8 +537,8 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="btns-div">
-                            <button ng-hide="hotel.thumbnail" name="hotel" class="btn m-b-xs w-auto btn-success upload-thumbnail-img" type="button"><i class="icon-upload"></i> Upload</button>
-                            <button ng-show="hotel.thumbnail" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearThumbnailPicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
+                            <button ng-hide="hotel.Thumbnail" name="hotel" class="btn m-b-xs w-auto btn-success upload-thumbnail-img" type="button"><i class="icon-upload"></i> Upload</button>
+                            <button ng-show="hotel.Thumbnail" class="btn m-b-xs w-auto btn-danger" type="button" ng-click="clearThumbnailPicture(hotel)"><i class="icon-cancel-circle2"></i> Remove</button>
                             </div>
             
                         </div>

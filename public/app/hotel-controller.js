@@ -69,6 +69,9 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
         $scope.ajaxPost('hotel/get', {}, true)
             .then(function(response) {
+                console.log('All Hotels');
+                console.log(response);
+
                 // $scope.hotel_gl_accounts = response.hotel_gl_accounts;
                 $scope.companies = response.companies;
                 $scope.cities = response.cities;
@@ -201,6 +204,16 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
     $scope.clearPosPicture = function(r) {
         document.getElementById('fileLabel').innerHTML = "";
         $scope.hotel.posimage = null;
+    }
+
+    $scope.clearImagePicture = function(r) {
+        document.getElementById('fileLabel').innerHTML = "";
+        $scope.hotel.Image = null;
+    }
+
+    $scope.clearThumbnailPicture = function(r) {
+        document.getElementById('fileLabel').innerHTML = "";
+        $scope.hotel.Thumbnail = null;
     }
 
     // $scope.addContact = function() {
@@ -373,6 +386,8 @@ app.controller('hotelCtrl', function($scope, DTColumnDefBuilder, DTOptionsBuilde
 
         $scope.ajaxPost('hotel/saveHotel', request_data, false)
             .then(function(response) {
+
+
                 if (response.success) {
                     // delete unnecessary feilds nad object
                     delete response.hotel.city;

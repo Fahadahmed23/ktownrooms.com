@@ -849,6 +849,7 @@
     
 
     $(function() {
+
         $('.upload-logo').click(function(e) {
             e.preventDefault();
             elem = $(this);
@@ -1033,7 +1034,108 @@
                 toastr.warning('Please select a file to upload', 'Warning');
                 HideLoader();
             }
-        })
+         
+        });
+
+        $('.upload-mainimage-img').click(function(e) {
+            e.preventDefault();
+            elem = $(this);
+            logoctrl = elem.closest('.row').find('.logo');
+            if (logoctrl.val()) {
+                let formData = new FormData();
+                let file = logoctrl[0].files[0];
+                formData.append('image', file);
+                ShowLoader();
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // tell jQuery not to process the data
+                    contentType: false, // tell jQuery not to set contentType
+
+                    url: 'mainImage',
+                    success: function(response) {
+                        var response = JSON.parse(response);
+                        if (response.success) {
+                            toastr.success('File uploaded successfully', 'Success');
+                            var controllername = document.getElementById('main-content').getAttribute("ng-controller")
+                            var scope = angular.element(document.querySelector('[ng-controller="' + controllername + '"]')).scope();
+                            HideLoader()
+                            scope.$apply(function() {
+                                switch (controllername) {
+                                    case "hotelCtrl":
+                                    scope.hotel.Image = response.payload;
+                                    break;
+                                }
+                            })
+
+                        }
+                    },
+                    error: function(response) {
+                        toastr.error(response.responseJSON.errors.image[0]);
+                        HideLoader();
+                    }
+                })
+
+            } else {
+                toastr.warning('Please select a file to upload', 'Warning');
+                HideLoader();
+            }
+         
+        });
+        
+        $('.upload-thumbnail-img').click(function(e) {
+            e.preventDefault();
+            elem = $(this);
+            logoctrl = elem.closest('.row').find('.logo');
+            if (logoctrl.val()) {
+                let formData = new FormData();
+                let file = logoctrl[0].files[0];
+                formData.append('image', file);
+                ShowLoader();
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // tell jQuery not to process the data
+                    contentType: false, // tell jQuery not to set contentType
+
+                    url: 'thumbnailImage',
+                    success: function(response) {
+                        var response = JSON.parse(response);
+                        if (response.success) {
+                            toastr.success('File uploaded successfully', 'Success');
+                            var controllername = document.getElementById('main-content').getAttribute("ng-controller")
+                            var scope = angular.element(document.querySelector('[ng-controller="' + controllername + '"]')).scope();
+                            HideLoader()
+                            scope.$apply(function() {
+                                switch (controllername) {
+                                    case "hotelCtrl":
+                                    scope.hotel.Thumbnail = response.payload;
+                                    break;
+                                }
+                            })
+
+                        }
+                    },
+                    error: function(response) {
+                        toastr.error(response.responseJSON.errors.image[0]);
+                        HideLoader();
+                    }
+                })
+
+            } else {
+                toastr.warning('Please select a file to upload', 'Warning');
+                HideLoader();
+            }
+         
+        });
+
+
 
     $(document).on('click','.upload-images',function(e){
             e.preventDefault();

@@ -21,6 +21,9 @@ use App\Models\DefaultRule;
 use App\Models\HotelCinCoutRule;
 use App\Models\HotelRoomCategory;
 
+// Mr Optimist 06 July 2022
+use App\Models\HotelImage;
+
 // Mr Optimist 15 Nov 2021
 use App\Models\HotelCategory;
 use App\Models\HotelCategories;
@@ -141,28 +144,32 @@ class HotelController extends Controller
 
     public function saveHotel(Request $request)
     {
-        //    dd($request->all());
-                \DB::beginTransaction();
-                try {
-                $startdate= $request->hotel['AgreStartDate'];
-                $enddate= $request->hotel['AgreEndDate'];
+        
+        
+        //dd($request->all());
+        
+        
+        \DB::beginTransaction();
+        try {
+            $startdate= $request->hotel['AgreStartDate'];
+            $enddate= $request->hotel['AgreEndDate'];
 
                 if ($startdate > $enddate) 
-                    {
-                        return response()->json([
-                            'success' => false,
-                            'message' => ["End Date should be greater than Start Date"],
-                            'msgtype' => 'danger',
-                        ]);
-                    }
-                    if ($enddate < $startdate) 
-                    {
-                        return response()->json([
-                            'success' => false,
-                            'message' => ["Start Date should be less than End Date"],
-                            'msgtype' => 'danger',
-                        ]);
-                    }
+                {
+                    return response()->json([
+                        'success' => false,
+                        'message' => ["End Date should be greater than Start Date"],
+                        'msgtype' => 'danger',
+                    ]);
+                }
+                if ($enddate < $startdate) 
+                {
+                    return response()->json([
+                        'success' => false,
+                        'message' => ["Start Date should be less than End Date"],
+                        'msgtype' => 'danger',
+                    ]);
+                }
 
                 if ($request->formType == 'save') {
                     $hotel = new Hotel();
@@ -180,11 +187,12 @@ class HotelController extends Controller
                             'msgtype' => 'error',
                             ]);
                     }
-                } else {
+                } 
+                else {
                     $hotel = Hotel::find($request->hotel['id']);
                     $msg="updated";
                 }
-               
+            
                 $hotel->HotelName = $request->hotel['HotelName'];
                 $hotel->company_id = $request->hotel['company_id'];
                 $hotel->city_id = $request->hotel['city_id'];
@@ -193,6 +201,47 @@ class HotelController extends Controller
                 $hotel->Latitude = $request->hotel['Latitude'];
                 $hotel->Longitude = $request->hotel['Longitude'];
                 $hotel->has_tax = $request->hotel['has_tax'];
+
+                $hotel->OriginalHotelName = $request->hotel['OriginalHotelName'] ?? '';
+                $hotel->Slug = $request->hotel['Slug'] ?? '';
+                $hotel->SlugId = $request->hotel['SlugId'] ?? '';
+                $hotel->OwnerName = $request->hotel['OwnerName'] ?? '';
+
+                $hotel->Address2 = $request->hotel['Address2'] ?? '';
+                $hotel->PartnerRequestID = $request->hotel['PartnerRequestID'] ?? '';
+                $hotel->HotelTypeID = $request->hotel['HotelTypeID'] ?? '';
+                //$hotel->hotel_room_type_id = $request->hotel['HotelRoomTypeId'];
+                $hotel->hotel_room_type_id = $request->hotel['hotel_room_type_id'] ?? '';
+
+                $hotel->SellingPrice = $request->hotel['SellingPrice'] ?? '';
+                $hotel->NoOfGuests = $request->hotel['NoOfGuests'] ?? '';
+                $hotel->NoOfRooms = $request->hotel['NoOfRooms'] ?? '';
+                $hotel->AdultCharges = $request->hotel['AdultCharges'] ?? '';
+
+                $hotel->Discount = $request->hotel['Discount'] ?? '';
+                if (!empty($request->hotel['Image'])) {
+                    $hotel->Image = $request->hotel['Image'];
+                }
+                else {
+                    $hotel->Image = null;
+                }
+
+                $hotel->MapUrl = $request->hotel['MapUrl'] ?? '';
+
+                if (!empty($request->hotel['Thumbnail'])) {
+                    $hotel->Thumbnail = $request->hotel['Thumbnail'];
+                }
+                else {
+                    $hotel->Thumbnail = null;
+                }
+
+                $hotel->Status = $request->hotel['Status'] ?? '';
+                $hotel->AutoApprove = $request->hotel['AutoApprove'] ?? '';
+                $hotel->AdditionalGuestCharges = $request->hotel['AdditionalGuestCharges'] ?? '';
+                $hotel->IsVisible = $request->hotel['IsVisible'] ?? '';
+
+
+            
                 if ($request->hotel['has_tax'] == 1) {
                     $hotel->tax_rate_id = $request->hotel['tax_rate_id'];
                 }else{
@@ -208,12 +257,24 @@ class HotelController extends Controller
                 if (!empty($request->hotel['mapimage'])) {
                     $hotel->mapimage = $request->hotel['mapimage'];
                 }
+                else {
+                    $hotel->mapimage = null;
+                }
+
                 if (!empty($request->hotel['mailimage'])) {
                     $hotel->mailimage = $request->hotel['mailimage'];
                 }
+                else {
+                    $hotel->mailimage = null;
+                }
+
                 if (!empty($request->hotel['posimage'])) {
                     $hotel->posimage = $request->hotel['posimage'];
                 }
+                else {
+                    $hotel->posimage = null;
+                }
+
                 $hotel->AgreStartDate = $startdate;
                 $hotel->AgreEndDate = $enddate;
                 $hotel->created_by = Auth::id();
@@ -223,7 +284,7 @@ class HotelController extends Controller
 
                 $hotel->save();
 
-                 /**
+                /**
                  * Hotel Categories and Cobranding
                  */
 
@@ -234,7 +295,7 @@ class HotelController extends Controller
                     //$hotell->hotel_categories()->attach($request->hotel['hotelcateogry_id']);
                     
                     $hotell->hotel_categories()->attach($request->hotel['hotelcateogry_id'],['created_by' => Auth::id(),'updated_by' => Auth::id() ]);
-                  
+                
                 }
                 if (!empty($request->hotel['has_cobranding'])) { 
 
@@ -266,33 +327,29 @@ class HotelController extends Controller
                 }
 
 
-                $hotel = Hotel::with(['city:id,CityName'])->where('id', '=', $hotel->id)
-                ->first(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','posimage', 'mapimage','mailimage','ZipCode','AgreStartDate','AgreEndDate']);
+            $hotel = Hotel::with(['city:id,CityName'])->where('id', '=', $hotel->id)
+            ->first(['HotelName','Address','id','city_id','code as Code' ,'company_id','tax_rate_id','has_tax','Longitude','Latitude','Description','partner_id','Rating','posimage', 'mapimage','mailimage','ZipCode','AgreStartDate','AgreEndDate']);
 
-            } catch (\Exception $e) {
-                dd($e);
-                \DB::rollback();
-                return response()->json([
-                    'success' => false,
-                    'message' => ['Hotel cannot be created'],
-                    'msgtype' => 'danger',
-                    'hotel' => $hotel
-                ]);
-            }
-
-            \DB::commit();
-
-
-
-
-
+        } catch (\Exception $e) {
+            dd($e);
+            \DB::rollback();
             return response()->json([
-                'success' => true,
-                'message' => ["'$hotel->HotelName' $msg successfully"],
-                'msgtype' => 'success',
-                'hotel' => $hotel,
-                'hotel_id'=>$hotel->id 
+                'success' => false,
+                'message' => ['Hotel cannot be created'],
+                'msgtype' => 'danger',
+                'hotel' => $hotel
             ]);
+        }
+
+        \DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => ["'$hotel->HotelName' $msg successfully"],
+            'msgtype' => 'success',
+            'hotel' => $hotel,
+            'hotel_id'=>$hotel->id 
+        ]);
     }
 
     public function getHotelRoomCategories(Request $request)
@@ -883,4 +940,42 @@ class HotelController extends Controller
         $image->move($destinationPath, $name);
         echo json_encode(['success' => true, 'payload' => url('images/' . $name)]);
     }
+
+    // Mr Optimist 6 July 2022
+    public function mainImage(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'image' => 'required|mimes:jpeg,png,jpg,gif,svg',
+            ],
+            [
+                'image.mimes' => 'The image must be file of type jpeg,png,jpg,gif,svg'
+            ]
+        );
+        $image = $request->file('image');
+        $name = time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('/images');
+        $image->move($destinationPath, $name);
+        echo json_encode(['success' => true, 'payload' => url('images/' . $name)]);
+    }
+
+    public function thumbnailImage(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'image' => 'required|mimes:jpeg,png,jpg,gif,svg',
+            ],
+            [
+                'image.mimes' => 'The image must be file of type jpeg,png,jpg,gif,svg'
+            ]
+        );
+        $image = $request->file('image');
+        $name = time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('/images');
+        $image->move($destinationPath, $name);
+        echo json_encode(['success' => true, 'payload' => url('images/' . $name)]);
+    }
+
 }

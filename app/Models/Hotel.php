@@ -37,6 +37,12 @@ class Hotel extends Model
     //     'CreationIP', 'created_by', 'CreatedByModule', 'updated_at', 
     //     'UpdationIP', 'updated_by', 'UpdatedByModule' ,'HotelName'
     // ];
+    
+    // Mr Optimist 6 July 2022
+    public function images()
+    {
+        return $this->hasMany(HotelImage::class);
+    }
 
     public function allUsers(){
         return $this->belongsToMany(User::class,'user_hotels');
