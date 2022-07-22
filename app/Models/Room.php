@@ -36,7 +36,13 @@ class Room extends Model
     }
     public function room_type()
     {
-        return $this->belongsTo(RoomType::class, 'room_type_id', 'id');
+        return $this->belongsTo(RoomType::class,'room_type_id','id');
+    }
+
+    // Mr Optimist 22 July 2022
+    public function room_types()
+    {
+        return $this->belongsTo(RoomType::class,'room_type_id','id');
     }
 
     public function hotel() {

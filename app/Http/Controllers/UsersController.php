@@ -468,10 +468,12 @@ class UsersController extends Controller
         $this->validate(
             $request,
             [
-                'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:10240',
+                'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:500|dimensions:max_width=1000,max_height=1000',
             ],
             [
-                'image.mimes' => 'The image must be file of type jpeg,png,jpg,gif,svg'
+                'image.mimes' => 'The image must be file of type jpeg,png,jpg,gif,svg',
+                'image.max'   => 'The image size can not be greater than 500kb',
+                'image.dimensions' => 'The image dimensions consists on 1000*1000'
             ]
         );
 

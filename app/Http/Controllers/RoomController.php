@@ -56,23 +56,192 @@ class RoomController extends Controller
         ]);
         
     }
+
+    public function fetchrooms(Request $request)
+    {
+        $user = Auth::user();
+        //$rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings']);
+        
+        $results_per_page = $request->has('results_per_page') ? $request->results_per_page : 300;
+        $total_rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings'])->count();
+        
+         //determine the total number of pages available  
+        $number_of_page = ceil ($total_rooms / $results_per_page);
+
+        $page = $request->has('PageNo') ? $request->PageNo : 1;
+
+        //determine the sql LIMIT starting number for the results on the displaying page  
+        $page_first_result = ($page-1) * $results_per_page;  
+
+        //$rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings']);
+        //$rooms = Room::with(['hotel', 'room_type' , 'category','images']);
+
+        
+    
+        $rooms = Room::with(['hotel']);
+        
+        if($request->has('HotelName')){
+
+            $hotel_name = $request->HotelName;
+            //$hotel_name = 'GOHO Rooms DHA Phase 7';
+            //$hotel_name = 'GOHO Hunza Peace Point';
+
+            $rooms->whereHas('hotel', function ($hh) use ($hotel_name)  {
+                $hh->where('HotelName',$hotel_name);
+            });
+
+        }
+
+        
+        
+        $request->RoomCategory = ['Budget Double Room','Deluxe Double Room','Quad Room','Master Room','Deluxe Room'];
+        //$request->RoomCategory = ['Budget Double Room'];
+
+        if($request->has('RoomCategory')){
+            if(is_array($request->RoomCategory) && count($request->RoomCategory) >0){
+                
+                $room_category = $request->RoomCategory;
+
+                $rooms->with('category');
+                //$rooms->with(['category'=> function($c) use ($room_category){
+                //    $c->whereIn('RoomCategory',$room_category);
+                //}]);
+
+                $rooms->whereHas('category', function ($cc) use ($room_category)  {
+                    $cc->whereIn('RoomCategory',$room_category);
+                });
+
+                //return  response()->json([
+                //    'success'=>true,
+                //    'fahad'=>'ahmed'
+                //]);
+                
+                //$rooms->whereIn('RoomCategory',$request->RoomCategory);
+            }
+        }
+        
+
+        $request->RoomType = ['Premium','Budget','Quad Room','Deluxe Room','Family Hall'];
+        //$request->RoomType = ['Budget'];
+        if($request->has('RoomType')){
+            if(is_array($request->RoomType) && count($request->RoomType)>0){
+                
+                $room_types = $request->RoomType;
+                $rooms->with('room_types');
+                
+               
+                $rooms->whereHas('room_types', function($rr) use ($room_types) {
+                    $rr->whereIn('RoomType',$room_types);
+                });
+ 
+            }
+        }
+
+        if($request->has('RoomTitle')) {
+
+            $room_title = $request->RoomTitle;
+            //$room_title = 'Deluxe Rooms';
+            $rooms->where('room_title',$room_title);
+
+        }
+
+        // filters name
+        // HotelName , RoomTitle, RoomType, RoomCategory, RoomNumber, FloorNo, RoomCharges
+        // HotelNameMinus , RoomTitleMinus, RoomTypeMinus, RoomCategoryMinus, RoomNumberMinus, 
+        // FloorNoMinus, RoomChargesMinus
+
+        // RoomTitle(room_title) , RoomNumber(RoomNumber),FloorNo(FloorNo), RoomCharges (RoomCharges)
+
+        
+        //if($request->has('OrderBy')) {
+
+            //$filter_order_by = $request->OrderBy;
+            $filter_order_by = 'HotelName';
+
+            /*
+            if($filter_order_by == 'HotelName'){
+
+                //return 3232;
+                $rooms->orderBy('hotel.HotelName', 'DESC');
+                //$rooms->orderBy('hotel.HotelName', 'DESC');
+                
+                //$rooms->orderBy('HotelName', 'DESC');
+                //$rooms->whereHas('hotel', function ($hh) {
+                //    $hh->orderBy('HotelName','desc');
+                //});
+            
+            }
+            elseif($filter_order_by == 'HotelNameMinus'){
+                $rooms->whereHas('hotel', function ($hh) {
+                    $hh->orderBy('HotelName', 'ASC');
+                });
+            }
+
+            **/
+            
+            if($filter_order_by == 'RoomTitle'){
+                $rooms->orderBy('room_title', 'DESC');
+            }
+            elseif($filter_order_by == 'RoomTitleMinus'){
+                $rooms->orderBy('room_title', 'ASC');
+            }
+            elseif($filter_order_by == 'RoomNumber'){
+                $rooms->orderBy('RoomNumber', 'DESC');
+            }
+            elseif($filter_order_by == 'RoomNumberMinus'){
+                $rooms->orderBy('RoomNumber', 'ASC');
+            }
+            elseif($filter_order_by == 'FloorNo'){
+                $rooms->orderBy('RoomNumber', 'DESC');
+            }
+            elseif($filter_order_by == 'FloorNoMinus'){
+                $rooms->orderBy('RoomNumber', 'ASC');
+            }
+            elseif($filter_order_by == 'RoomCharges'){
+                $rooms->orderBy('RoomCharges', 'DESC');
+            }
+            elseif($filter_order_by == 'RoomChargesMinus'){
+                $rooms->orderBy('RoomCharges', 'ASC');
+            }
+           
+        //}
+        
+
+
+        $rooms->skip($page_first_result)->take($results_per_page);
+   
+        return  response()->json([
+            'success'=>true,
+            //'rooms' => count($rooms->get()),
+            'count' => $total_rooms,
+            'page_no' => $page,
+            'total_pages' => $number_of_page,
+            'result_count' =>count($rooms->get()), 
+            'result' =>$rooms->get()
+        
+        ]);
+
+
+
+    }
+
     public function getnRooms()
     {
         $user = Auth::user();
         $rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings']);
         if (!auth()->user()->hasRole('Admin')) 
-            {
-                if($user->self_manipulated()){
-                    $rooms = $rooms->where('created_by',$user->id);
-                }else{
-                    $rooms = $rooms->whereIn('hotel_id',$user->HotelIds);
-                }
-                $is_admin = false;
+        {
+            if($user->self_manipulated()){
+                $rooms = $rooms->where('created_by',$user->id);
+            }else{
+                $rooms = $rooms->whereIn('hotel_id',$user->HotelIds);
             }
+            $is_admin = false;
+        }
         else
-            {
-                $is_admin = true;
-            }
+        {
+            $is_admin = true;
+        }
 
             
         // $rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings'])->get();   
@@ -98,7 +267,7 @@ class RoomController extends Controller
             'services'=>$services,
 
         ]);
-        }
+    }
 
     /**
      * Store a newly created resource in storage.

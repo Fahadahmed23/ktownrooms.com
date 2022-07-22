@@ -960,7 +960,7 @@
                 toastr.warning('Please select a file to upload', 'Warning');
                 HideLoader();
             }
-        })
+        });
 
         $('.upload-mail-img').click(function(e) {
             e.preventDefault();
@@ -1059,65 +1059,65 @@
             }
         })
 
-    $(document).on('click','.upload-images',function(e){
-            e.preventDefault();
-            elem = $(this);
-            logoctrl = elem.closest('.row').find('.logo');
-            if (logoctrl.val()) {
-                let formData = new FormData();
-                let file = logoctrl[0].files[0];
-                formData.append('image', file);
-                ShowLoader();
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type: 'POST',
-                    data: formData,
-                    processData: false, // tell jQuery not to process the data
-                    contentType: false, // tell jQuery not to set contentType
-                    url: '/saveImages',
-                    success: function(response) {
-                        var response = JSON.parse(response);
-                        if (response.success) {
-                            toastr.success('File uploaded successfully', 'Success');
-                            var controllername = document.getElementById('main-content').getAttribute("ng-controller")
-                            var scope = angular.element(document.querySelector('[ng-controller="' + controllername + '"]')).scope();
-                            HideLoader()
-                            scope.$apply(function() {
-                                switch (controllername) {
-                                    case "roomCtrl":
-                                        scope.room.images.push({id: scope.room.images.length, ImagePath: response.payload});
-                                        // ().attr('src', URL.createObjectURL(file));
-                                        console.log(scope.room.images);
-                                        console.log(response);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            })
-                            // after succes upload show this as img thumbnail
-                            $('.previewroomimg').attr('src', 'https://www.new.dominionembassygh.org/wp-content/uploads/2018/10/accommodate.png');
-                            $("#selectimage").val('');
+        $(document).on('click','.upload-images',function(e){
+                e.preventDefault();
+                elem = $(this);
+                logoctrl = elem.closest('.row').find('.logo');
+                if (logoctrl.val()) {
+                    let formData = new FormData();
+                    let file = logoctrl[0].files[0];
+                    formData.append('image', file);
+                    ShowLoader();
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: 'POST',
+                        data: formData,
+                        processData: false, // tell jQuery not to process the data
+                        contentType: false, // tell jQuery not to set contentType
+                        url: '/saveImages',
+                        success: function(response) {
+                            var response = JSON.parse(response);
+                            if (response.success) {
+                                toastr.success('File uploaded successfully', 'Success');
+                                var controllername = document.getElementById('main-content').getAttribute("ng-controller")
+                                var scope = angular.element(document.querySelector('[ng-controller="' + controllername + '"]')).scope();
+                                HideLoader()
+                                scope.$apply(function() {
+                                    switch (controllername) {
+                                        case "roomCtrl":
+                                            scope.room.images.push({id: scope.room.images.length, ImagePath: response.payload});
+                                            // ().attr('src', URL.createObjectURL(file));
+                                            console.log(scope.room.images);
+                                            console.log(response);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                })
+                                // after succes upload show this as img thumbnail
+                                $('.previewroomimg').attr('src', 'https://www.new.dominionembassygh.org/wp-content/uploads/2018/10/accommodate.png');
+                                $("#selectimage").val('');
 
+                            }
+                        },
+                        error: function(response) {
+                            toastr.error(response.responseJSON.errors.image[0]);
                         }
-                    },
-                    error: function(response) {
-                        toastr.error(response.responseJSON.errors.image[0]);
-                    }
-                })
+                    })
 
-            } else {
-                toastr.warning('Please select a file to upload', 'Warning');
-            }
+                } else {
+                    toastr.warning('Please select a file to upload', 'Warning');
+                }
 
-    })
+        })
 
 
 
-// excel upload
+        // excel upload
 
-$(document).on('click','.excel-upload',function(e){
+        $(document).on('click','.excel-upload',function(e){
             e.preventDefault();
             elem = $(this);
             // excelsheet = $('.excel-sheet').val();
@@ -1174,11 +1174,7 @@ $(document).on('click','.excel-upload',function(e){
                 toastr.warning('Please select a file to upload', 'Warning');
             }
 
-    })
-
-
-
-
+        })
 
 
     });
@@ -1188,7 +1184,7 @@ $(document).on('click','.excel-upload',function(e){
 //   console.log( $( this ).text() );
 // });
 
-$(document).on({
+    $(document).on({
             keypress: function(evt) {
                 a = $(this);
                 evt = (evt) ? evt : window.event;

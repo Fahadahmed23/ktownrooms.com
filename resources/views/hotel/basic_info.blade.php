@@ -170,7 +170,7 @@
 
                     <div class="col-md-6">
                         <label class="col-form-label">Slug Id<span class="text-danger"></span></label>
-                        <input name="SlugId" type="number" ng-model="hotel.SlugId" placeholder="11" class="form-control">
+                        <input name="SlugId" type="text" ng-model="hotel.SlugId" placeholder="11" class="form-control">
                         <!--
                         <div ng-messages="hotelForm.SlugId.$error" ng-if='hotelForm.SlugId.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                             <div class="text-danger" ng-message="required"> SlugId is required</div>
@@ -216,7 +216,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Partner RequestID<span class="text-danger"></span></label>
-                            <input name="PartnerRequestID" type="number" ng-model="hotel.PartnerRequestID" placeholder="12" class="form-control">
+                            <input name="PartnerRequestID" type="text" ng-model="hotel.PartnerRequestID" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.PartnerRequestID.$error" ng-if='hotelForm.PartnerRequestID.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> PartnerRequestID is required</div>
@@ -225,7 +225,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Hotel TypeID<span class="text-danger"></span></label>
-                            <input name="HotelTypeID" type="number" ng-model="hotel.HotelTypeID" placeholder="12" class="form-control">
+                            <input name="HotelTypeID" type="text" ng-model="hotel.HotelTypeID" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.HotelTypeID.$error" ng-if='hotelForm.HotelTypeID.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> HotelTypeID is required</div>
@@ -235,7 +235,7 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">HotelRoomTypeId<span class="text-danger"></span></label>
-                            <input name="hotel_room_type_id" type="number" ng-model="hotel.hotel_room_type_id" placeholder="12" class="form-control">
+                            <input name="hotel_room_type_id" type="text" ng-model="hotel.hotel_room_type_id" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.hotel_room_type_id.$error" ng-if='hotelForm.hotel_room_type_id.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> HotelRoomTypeId is required</div>
@@ -246,7 +246,7 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">SellingPrice<span class="text-danger"></span></label>
-                            <input name="SellingPrice" type="number" ng-model="hotel.SellingPrice" placeholder="12" class="form-control">
+                            <input name="SellingPrice" type="text" ng-model="hotel.SellingPrice" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.SellingPrice.$error" ng-if='hotelForm.SellingPrice.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> SellingPrice is required</div>
@@ -257,7 +257,7 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">NoOfGuests<span class="text-danger"></span></label>
-                            <input name="NoOfGuests" type="number" ng-model="hotel.NoOfGuests" placeholder="12" class="form-control">
+                            <input name="NoOfGuests" type="text" ng-model="hotel.NoOfGuests" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.NoOfGuests.$error" ng-if='hotelForm.NoOfGuests.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> NoOfGuests is required</div>
@@ -267,7 +267,7 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">NoOfRooms<span class="text-danger"></span></label>
-                            <input name="NoOfRooms" type="number" ng-model="hotel.NoOfRooms" placeholder="12" class="form-control">
+                            <input name="NoOfRooms" type="text" ng-model="hotel.NoOfRooms" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.NoOfRooms.$error" ng-if='hotelForm.NoOfRooms.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> NoOfRooms is required</div>
@@ -277,7 +277,7 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">AdultCharges<span class="text-danger"></span></label>
-                            <input name="AdultCharges" type="number" ng-model="hotel.AdultCharges" placeholder="12" class="form-control">
+                            <input name="AdultCharges" type="text" ng-model="hotel.AdultCharges" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.AdultCharges.$error" ng-if='hotelForm.AdultCharges.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> AdultCharges is required</div>
@@ -287,7 +287,7 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">Discount<span class="text-danger"></span></label>
-                            <input name="Discount" type="number" ng-model="hotel.Discount" placeholder="12" class="form-control">
+                            <input name="Discount" type="text" ng-model="hotel.Discount" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.Discount.$error" ng-if='hotelForm.Discount.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> Discount is required</div>
@@ -322,7 +322,7 @@
 
                         <div class="col-md-6">
                             <label class="col-form-label">AdditionalGuestCharges<span class="text-danger"></span></label>
-                            <input name="AdditionalGuestCharges" type="number" ng-model="hotel.AdditionalGuestCharges" placeholder="12" class="form-control">
+                            <input name="AdditionalGuestCharges" type="text" ng-model="hotel.AdditionalGuestCharges" placeholder="12" class="form-control">
                             <!--
                             <div ng-messages="hotelForm.AdditionalGuestCharges.$error" ng-if='hotelForm.AdditionalGuestCharges.$touched || hotelForm.$submitted' ng-cloak style="color:#e9322d;">
                                 <div class="text-danger" ng-message="required"> AdditionalGuestCharges is required</div>
@@ -403,7 +403,7 @@
 
             <fieldset class="mt-3">
                 <legend class="font-weight-semibold text-uppercase font-size-sm border-bottom p-2 bg-light"><i class="icon-city mr-2"></i>
-                    Images
+                    Images gg
                 </legend> 
                 <div class="row d-flex">
                     <div class="col-lg-6">

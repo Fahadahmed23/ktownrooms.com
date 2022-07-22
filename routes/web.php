@@ -332,6 +332,8 @@ Route::post('rcategories/{id}', 'RCategoriesController@update')->middleware('per
 Route::get('rcategories/delete/{id}', 'RCategoriesController@delete')->middleware('permission:can-delete-room-category');
 
 // room new routes
+Route::get('fetchrooms', 'RoomController@fetchrooms');
+
 Route::get('nrooms', 'RoomController@index')->middleware('permission:can-view-room');
 Route::get('getnRooms', 'RoomController@getnRooms');
 Route::get('getRoomBookings', 'RoomController@getRoomBookings');
