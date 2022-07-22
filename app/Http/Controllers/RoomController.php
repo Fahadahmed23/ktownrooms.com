@@ -62,7 +62,7 @@ class RoomController extends Controller
         $user = Auth::user();
         //$rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings']);
         
-        $results_per_page = $request->has('results_per_page') ? $request->results_per_page : 300;
+        $results_per_page = $request->has('results_per_page') ? $request->results_per_page : 10;
         $total_rooms = Room::with(['hotel', 'room_type' , 'category.facilities' , 'tax_rate','facilities', 'services','images', 'bookings'])->count();
         
          //determine the total number of pages available  
