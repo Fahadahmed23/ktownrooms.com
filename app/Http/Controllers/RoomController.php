@@ -94,7 +94,7 @@ class RoomController extends Controller
 
         
         
-        $request->RoomCategory = ['Budget Double Room','Deluxe Double Room','Quad Room','Master Room','Deluxe Room'];
+        //$request->RoomCategory = ['Budget Double Room','Deluxe Double Room','Quad Room','Master Room','Deluxe Room'];
         //$request->RoomCategory = ['Budget Double Room'];
 
         if($request->has('RoomCategory')){
@@ -121,7 +121,7 @@ class RoomController extends Controller
         }
         
 
-        $request->RoomType = ['Premium','Budget','Quad Room','Deluxe Room','Family Hall'];
+        //$request->RoomType = ['Premium','Budget','Quad Room','Deluxe Room','Family Hall'];
         //$request->RoomType = ['Budget'];
         if($request->has('RoomType')){
             if(is_array($request->RoomType) && count($request->RoomType)>0){
@@ -156,7 +156,7 @@ class RoomController extends Controller
         //if($request->has('OrderBy')) {
 
             //$filter_order_by = $request->OrderBy;
-            $filter_order_by = 'HotelName';
+            //$filter_order_by = 'HotelName';
 
             /*
             if($filter_order_by == 'HotelName'){
@@ -177,7 +177,7 @@ class RoomController extends Controller
                 });
             }
 
-            **/
+           
             
             if($filter_order_by == 'RoomTitle'){
                 $rooms->orderBy('room_title', 'DESC');
@@ -203,6 +203,7 @@ class RoomController extends Controller
             elseif($filter_order_by == 'RoomChargesMinus'){
                 $rooms->orderBy('RoomCharges', 'ASC');
             }
+             **/
            
         //}
         
