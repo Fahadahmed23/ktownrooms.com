@@ -3,7 +3,7 @@
     <a ng-if="boundaryLinks" class="paginate_button first [[pagination.current == 1?'disabled' :'' ]]"
         ng-click="setCurrent(1)">First</a>
     <a ng-if="directionLinks" class="paginate_button previous [[pagination.current == 1?'disabled' :'' ]]"
-        ng-click="setCurrent(pagination.current - 1)">Previous</a>
+        ng-click="setCurrent(pagination.current - 1)"><-</a>
     <span>
 
         <a ng-repeat="pageNumber in pages track by $index"
@@ -13,7 +13,7 @@
         </a>
     </span>
     <a ng-if="directionLinks" class="paginate_button next [[pagination.current == pagination.last?'disabled' :'' ]]"
-        ng-click="setCurrent(pagination.current + 1)">Next</a>
+        ng-click="setCurrent(pagination.current + 1)">-></a>
     <a ng-if="boundaryLinks" class="paginate_button last [[pagination.current == pagination.last?'disabled' :'' ]]"
         ng-click="setCurrent(pagination.last)">Last</a>
 </div>

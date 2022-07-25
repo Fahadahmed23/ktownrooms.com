@@ -22,10 +22,10 @@
             </div>
 
             <div class="card-body">
-                <div class="floating-label"> 
-                  <input ng-model="searchHotel" type="text" class="form-control" placeholder=" ">
+                <div class="floating-label">
+                  <input ng-model="filters.hotel" type="text" class="form-control" placeholder=" ">
                   <span class="highlight"></span>
-                  <label>Hotel</label> 
+                  <label>Hotel</label>
                 </div>
 
                 <div class="floating-label">
@@ -43,36 +43,36 @@
                 <div class="floating-label">
                   <input ng-model="filters.room_title" type="text" class="form-control" placeholder=" ">
                   <span class="highlight"></span>
-                  <label>Room Title</label> 
-                </div>
-                
-                <div class="float-right">
-                  <button type="button" class="btn btn-primary float-right" ng-click="filterData(filters)">Filter</button>
+                  <label>Room Title</label>
                 </div>
 
-                {{-- <div class="floating-label"> 
+                <div class="float-right">
+                  <button type="button" class="btn btn-primary float-right" ng-click="filter_rooms(filters)">Filter</button>
+                </div>
+
+                {{-- <div class="floating-label">
                     <input ng-model="searchRoom" type="text" class="form-control" placeholder=" ">
                     <span class="highlight"></span>
-                    <label>Room</label> 
+                    <label>Room</label>
                 </div> --}}
 
 
-                  {{-- <div class="floating-label"> 
+                  {{-- <div class="floating-label">
                     <input ng-model="searchType" type="text" class="form-control" placeholder=" ">
                     <span class="highlight"></span>
-                    <label>Type </label> 
+                    <label>Type </label>
                   </div>
 
-                  <div class="floating-label"> 
+                  <div class="floating-label">
                     <input ng-model="searchCategory" type="text" class="form-control" placeholder=" ">
                     <span class="highlight"></span>
-                    <label>Room Category </label> 
+                    <label>Room Category </label>
                   </div> --}}
 
             </div>
         </div>
         <!-- /filter -->
-        
+
     </div>
     <!-- /sidebar content -->
 
