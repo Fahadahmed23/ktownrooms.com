@@ -148,7 +148,8 @@ class RoomController extends Controller
                 $room_category_arr = explode(",", $request->RoomCategory);  
                 if(is_array($room_category_arr) && count($room_category_arr)>0){
 
-                    $rooms->whereIn('room_categories.RoomCategory',$room_category_arr);
+                    $rooms->whereIn('room_categories.id',$room_category_arr);
+                   // $rooms->whereIn('room_categories.RoomCategory',$room_category_arr);
 
                 }
             }
@@ -168,7 +169,8 @@ class RoomController extends Controller
                 $room_type_arr = explode(",", $request->RoomType);  
                 if(is_array($room_type_arr) && count($room_type_arr)>0){
 
-                    $rooms->whereIn('room_types.RoomType',$room_type_arr);
+                    //$rooms->whereIn('room_types.RoomType',$room_type_arr);
+                    $rooms->whereIn('room_types.id',$room_category_arr);
 
                 }
             }
