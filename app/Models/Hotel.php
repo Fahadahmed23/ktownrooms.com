@@ -11,6 +11,7 @@ class Hotel extends Model
     use SoftDeletes;
 
     protected $table = "hotels";
+    protected $primaryKey = 'id';
     
     public $timestamps = true;
 

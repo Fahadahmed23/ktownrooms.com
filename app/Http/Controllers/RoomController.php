@@ -78,7 +78,48 @@ class RoomController extends Controller
 
         
     
-        $rooms = Room::with(['hotel']);
+        //$rooms = Room::query();  
+        // </Room:query>:with(['hotel']);
+        //$rooms = Room::with(['hotels']);
+        
+        //$rooms = Room::select('rooms.id', 'rooms.hotel_id', 'rooms.room_title', 'rooms.thumbnail','rooms.room_type_id','rooms.room_category_id','rooms.RoomNumber','rooms.FloorNo','rooms.RoomCharges','rooms.tax_rate_id')
+        //    ->with(['hotels' => function ($q) {
+        //        $q->select('id','OriginalHotelName','HotelName','Address','Address2');
+        //       // $q->with(['position', 'customaryFoot']);
+       //     }])->orderBy('hotels.HotelName', 'asc')->get();
+        
+        
+       
+       //$rooms = Room::select('hotels.*','rooms.id as room_id','rooms.hotel_id','rooms.room_title', 'rooms.thumbnail','rooms.room_type_id','rooms.room_category_id','rooms.RoomNumber','rooms.FloorNo','rooms.RoomCharges','rooms.tax_rate_id')
+       
+       //$room_categories = ['Budget Double Room','Deluxe Double Room','Quad Room','Master Room','Deluxe Room'];
+        $room_categories = ['Budget Double Room','Deluxe Double Room','Quad Room','Master Room','Deluxe Room'];
+        $room_types = ['Premium','Budget','Quad Room','Deluxe Room','Family Hall'];
+        $room_title = 'Budget';
+
+        $rooms = Room::select('rooms.id as room_id','rooms.hotel_id','rooms.room_title', 'rooms.thumbnail','rooms.room_type_id','rooms.room_category_id','rooms.RoomNumber','rooms.FloorNo','rooms.RoomCharges','hotels.HotelName as Hotel Name','room_categories.RoomCategory as Room Category','room_types.RoomType as Room Type')
+        ->join('hotels','hotels.id', '=','rooms.hotel_id')
+        ->join('room_categories','room_categories.id', '=','rooms.room_category_id')
+        ->join('room_types','room_types.id', '=','rooms.room_type_id');
+        //->where('hotels.HotelName','GOHO Hunza Peace Point')
+        //->where('room_title',$room_title)
+        //->whereIn('room_categories.RoomCategory',$room_categories)
+        //->whereIn('room_types.RoomType',$room_types)
+        //->whereNotNull('hotels.HotelName')
+        //->whereNull('hotels.deleted_at')
+        //->orderBy('hotels.HotelName', 'asc')
+        //->get();
+
+        
+        /*
+        return  response()->json([
+            'success'=>true,
+            'fahad'=>'ahmed',
+            'all_rooms'=>$rooms
+        ]);
+        **/
+              
+
         
         if($request->has('HotelName')){
 
@@ -86,9 +127,11 @@ class RoomController extends Controller
             //$hotel_name = 'GOHO Rooms DHA Phase 7';
             //$hotel_name = 'GOHO Hunza Peace Point';
 
-            $rooms->whereHas('hotel', function ($hh) use ($hotel_name)  {
-                $hh->where('HotelName',$hotel_name);
-            });
+            //$rooms->whereHas('hotels', function ($hh) use ($hotel_name)  {
+            //    $hh->where('HotelName',$hotel_name);
+            //});
+
+            $rooms->where('hotels.HotelName',$hotel_name);
 
         }
 
@@ -98,43 +141,38 @@ class RoomController extends Controller
         //$request->RoomCategory = ['Budget Double Room'];
 
         if($request->has('RoomCategory')){
-            if(is_array($request->RoomCategory) && count($request->RoomCategory) >0){
+
+            if(!empty($request->RoomCategory)){
+
                 
-                $room_category = $request->RoomCategory;
+                $room_category_arr = explode(",", $request->RoomCategory);  
+                if(is_array($room_category_arr) && count($room_category_arr)>0){
 
-                $rooms->with('category');
-                //$rooms->with(['category'=> function($c) use ($room_category){
-                //    $c->whereIn('RoomCategory',$room_category);
-                //}]);
+                    $rooms->whereIn('room_categories.RoomCategory',$room_category_arr);
 
-                $rooms->whereHas('category', function ($cc) use ($room_category)  {
-                    $cc->whereIn('RoomCategory',$room_category);
-                });
-
-                //return  response()->json([
-                //    'success'=>true,
-                //    'fahad'=>'ahmed'
-                //]);
-                
-                //$rooms->whereIn('RoomCategory',$request->RoomCategory);
+                }
             }
         }
         
 
         //$request->RoomType = ['Premium','Budget','Quad Room','Deluxe Room','Family Hall'];
         //$request->RoomType = ['Budget'];
-        if($request->has('RoomType')){
-            if(is_array($request->RoomType) && count($request->RoomType)>0){
+
+        //$request->RoomType = 'Premium,Budget,Quad Room,Deluxe Room,Family Hall';
+
+        if($request->has('RoomType')) {
+
+            if(!empty($request->RoomType)){
+
                 
-                $room_types = $request->RoomType;
-                $rooms->with('room_types');
-                
-               
-                $rooms->whereHas('room_types', function($rr) use ($room_types) {
-                    $rr->whereIn('RoomType',$room_types);
-                });
- 
+                $room_type_arr = explode(",", $request->RoomType);  
+                if(is_array($room_type_arr) && count($room_type_arr)>0){
+
+                    $rooms->whereIn('room_types.RoomType',$room_type_arr);
+
+                }
             }
+            
         }
 
         if($request->has('RoomTitle')) {
@@ -153,63 +191,64 @@ class RoomController extends Controller
         // RoomTitle(room_title) , RoomNumber(RoomNumber),FloorNo(FloorNo), RoomCharges (RoomCharges)
 
         
-        //if($request->has('OrderBy')) {
+        if($request->has('OrderBy')) {
 
-            //$filter_order_by = $request->OrderBy;
+            $filter_order_by = $request->OrderBy;
             //$filter_order_by = 'HotelName';
 
-            /*
-            if($filter_order_by == 'HotelName'){
-
-                //return 3232;
-                $rooms->orderBy('hotel.HotelName', 'DESC');
-                //$rooms->orderBy('hotel.HotelName', 'DESC');
-                
-                //$rooms->orderBy('HotelName', 'DESC');
-                //$rooms->whereHas('hotel', function ($hh) {
-                //    $hh->orderBy('HotelName','desc');
-                //});
             
+            if($filter_order_by == 'HotelName') {
+                $rooms->orderBy('hotels.HotelName', 'desc');
             }
             elseif($filter_order_by == 'HotelNameMinus'){
-                $rooms->whereHas('hotel', function ($hh) {
-                    $hh->orderBy('HotelName', 'ASC');
-                });
+                $rooms->orderBy('hotels.HotelName', 'asc');
             }
-
-           
-            
-            if($filter_order_by == 'RoomTitle'){
-                $rooms->orderBy('room_title', 'DESC');
+            elseif($filter_order_by == 'RoomTitle'){
+                $rooms->orderBy('room_title', 'desc');
             }
             elseif($filter_order_by == 'RoomTitleMinus'){
-                $rooms->orderBy('room_title', 'ASC');
+                $rooms->orderBy('room_title', 'asc');
+            }
+            elseif($filter_order_by == 'RoomType'){
+                $rooms->orderBy('room_types.RoomType', 'desc');
+            }
+            elseif($filter_order_by == 'RoomTypeMinus'){
+                $rooms->orderBy('room_types.RoomType', 'asc');
+            }
+            elseif($filter_order_by == 'RoomCategory'){
+                $rooms->orderBy('room_categories.RoomCategory', 'desc');
+            }
+            elseif($filter_order_by == 'RoomCategoryMinus'){
+                $rooms->orderBy('room_categories.RoomCategory', 'asc');
             }
             elseif($filter_order_by == 'RoomNumber'){
-                $rooms->orderBy('RoomNumber', 'DESC');
+                $rooms->orderBy('RoomNumber', 'desc');
             }
             elseif($filter_order_by == 'RoomNumberMinus'){
-                $rooms->orderBy('RoomNumber', 'ASC');
+                $rooms->orderBy('RoomNumber', 'asc');
             }
             elseif($filter_order_by == 'FloorNo'){
-                $rooms->orderBy('RoomNumber', 'DESC');
+                $rooms->orderBy('FloorNo', 'desc');
             }
             elseif($filter_order_by == 'FloorNoMinus'){
-                $rooms->orderBy('RoomNumber', 'ASC');
+                $rooms->orderBy('FloorNo', 'asc');
             }
             elseif($filter_order_by == 'RoomCharges'){
-                $rooms->orderBy('RoomCharges', 'DESC');
+                $rooms->orderBy('RoomCharges', 'desc');
             }
             elseif($filter_order_by == 'RoomChargesMinus'){
-                $rooms->orderBy('RoomCharges', 'ASC');
+                $rooms->orderBy('RoomCharges', 'asc');
             }
-             **/
-           
-        //}
+
+        }
         
+        $rooms->skip($page_first_result)->take($results_per_page)
+            ->whereNotNull('hotels.HotelName')
+            ->whereNull('hotels.deleted_at')
+            ->orderBy('hotels.HotelName', 'asc');
+            //->get();
 
-
-        $rooms->skip($page_first_result)->take($results_per_page);
+        
    
         return  response()->json([
             'success'=>true,
